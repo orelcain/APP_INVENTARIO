@@ -5110,11 +5110,15 @@ class InventarioCompleto {
       return;
     }
 
-    // Aplicar filtros
+    // Aplicar filtros desde los dropdowns
     const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
-    const filterTipo = document.querySelector('.filter-chip.active')?.dataset.tipo;
+    const filterArea = document.getElementById('filterArea')?.value || '';
+    const filterEquipo = document.getElementById('filterEquipo')?.value || '';
+    const filterTipo = document.getElementById('filterTipo')?.value || '';
+    const filterStock = document.getElementById('filterStock')?.value || '';
 
     let filtered = this.repuestos.filter(r => {
+      // Filtro de búsqueda
       const matchSearch = !searchTerm || 
         (r.nombre && r.nombre.toLowerCase().includes(searchTerm)) ||
         (r.codSAP && r.codSAP.toLowerCase().includes(searchTerm)) ||
@@ -5122,9 +5126,34 @@ class InventarioCompleto {
         (r.area && r.area.toLowerCase().includes(searchTerm)) ||
         (r.equipo && r.equipo.toLowerCase().includes(searchTerm));
 
-      const matchTipo = !filterTipo || filterTipo === 'all' || r.tipo === filterTipo;
+      // Filtro de área
+      const matchArea = !filterArea || (r.area || r.areaGeneral) === filterArea;
+      
+      // Filtro de equipo
+      const matchEquipo = !filterEquipo || (r.equipo || r.sistemaEquipo) === filterEquipo;
+      
+      // Filtro de tipo
+      const matchTipo = !filterTipo || r.tipo === filterTipo;
 
-      return matchSearch && matchTipo;
+      // Filtro de stock
+      let matchStock = true;
+      if (filterStock) {
+        const cantidad = r.cantidad || 0;
+        const minimo = r.minimo || 0;
+        const optimo = r.optimo || (minimo * 2);
+        
+        if (filterStock === 'agotado') {
+          matchStock = cantidad === 0;
+        } else if (filterStock === 'critico') {
+          matchStock = cantidad > 0 && cantidad < minimo;
+        } else if (filterStock === 'adecuado') {
+          matchStock = cantidad >= minimo && cantidad < optimo;
+        } else if (filterStock === 'optimo') {
+          matchStock = cantidad >= optimo;
+        }
+      }
+
+      return matchSearch && matchArea && matchEquipo && matchTipo && matchStock;
     });
 
     this.filteredRepuestos = filtered;
@@ -5516,44 +5545,54 @@ class InventarioCompleto {
 
   // Renderizar filtros
   renderFilters() {
-    const filtersContainer = document.getElementById('filters');
-    if (!filtersContainer) return;
+    // Poblar dropdowns de filtros con datos únicos de los repuestos
+    const filterArea = document.getElementById('filterArea');
+    const filterEquipo = document.getElementById('filterEquipo');
+    const filterTipo = document.getElementById('filterTipo');
+    const filterStock = document.getElementById('filterStock');
+    
+    if (!filterArea || !filterEquipo || !filterTipo) return;
 
-    // Obtener tipos únicos
-    const tipos = [...new Set(this.repuestos.map(r => r.tipo).filter(Boolean))];
+    // Obtener valores únicos
+    const areas = [...new Set(this.repuestos.map(r => r.area || r.areaGeneral).filter(Boolean))].sort();
+    const equipos = [...new Set(this.repuestos.map(r => r.equipo || r.sistemaEquipo).filter(Boolean))].sort();
+    const tipos = [...new Set(this.repuestos.map(r => r.tipo).filter(Boolean))].sort();
 
-    const filtersHTML = `
-      <div style="display: flex; gap: 8px; flex-wrap: wrap; padding: 12px;">
-        <div class="filter-chip active" data-tipo="all" style="padding: 8px 16px; background: var(--primary); color: white; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
-          Todos (${this.repuestos.length})
-        </div>
-        ${tipos.map(tipo => {
-          const count = this.repuestos.filter(r => r.tipo === tipo).length;
-          return `
-            <div class="filter-chip" data-tipo="${tipo}" style="padding: 8px 16px; background: var(--bg-secondary); color: var(--text-primary); border-radius: 20px; cursor: pointer; font-size: 0.85rem; border: 1px solid var(--border-color); transition: all 0.2s;">
-              ${tipo} (${count})
-            </div>
-          `;
-        }).join('')}
-      </div>
+    // Poblar dropdown de Áreas
+    filterArea.innerHTML = `
+      <option value="">Todas las Áreas (${this.repuestos.length})</option>
+      ${areas.map(area => {
+        const count = this.repuestos.filter(r => (r.area || r.areaGeneral) === area).length;
+        return `<option value="${area}">${area} (${count})</option>`;
+      }).join('')}
     `;
 
-    filtersContainer.innerHTML = filtersHTML;
+    // Poblar dropdown de Equipos
+    filterEquipo.innerHTML = `
+      <option value="">Todos los Equipos (${this.repuestos.length})</option>
+      ${equipos.map(equipo => {
+        const count = this.repuestos.filter(r => (r.equipo || r.sistemaEquipo) === equipo).length;
+        return `<option value="${equipo}">${equipo} (${count})</option>`;
+      }).join('')}
+    `;
 
-    // Event listeners para filtros
-    document.querySelectorAll('.filter-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('.filter-chip').forEach(c => {
-          c.classList.remove('active');
-          c.style.background = 'var(--bg-secondary)';
-          c.style.color = 'var(--text-primary)';
+    // Poblar dropdown de Tipos
+    filterTipo.innerHTML = `
+      <option value="">Todos los Tipos (${this.repuestos.length})</option>
+      ${tipos.map(tipo => {
+        const count = this.repuestos.filter(r => r.tipo === tipo).length;
+        return `<option value="${tipo}">${tipo} (${count})</option>`;
+      }).join('')}
+    `;
+
+    // Event listeners para todos los dropdowns (incluyendo Stock)
+    [filterArea, filterEquipo, filterTipo, filterStock].forEach(select => {
+      if (select) {
+        select.addEventListener('change', () => {
+          this.currentPage = 1;
+          this.renderInventario();
         });
-        chip.classList.add('active');
-        chip.style.background = 'var(--primary)';
-        chip.style.color = 'white';
-        this.currentPage = 1;
-        this.renderInventario();
-      });
+      }
     });
   }
 
