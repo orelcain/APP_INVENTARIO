@@ -2627,7 +2627,10 @@ class InventarioCompleto {
       return;
     }
     
-    this.lightboxMedias = repuesto.multimedia.filter(m => m.type === 'image' || m.type === 'video');
+    // Filtrar imágenes (tanto tipo como type por compatibilidad)
+    this.lightboxMedias = repuesto.multimedia.filter(m => 
+      m.tipo === 'image' || m.type === 'image' || m.tipo === 'video' || m.type === 'video'
+    );
     console.log('🖼️ Medios encontrados:', this.lightboxMedias.length);
     
     if (this.lightboxMedias.length === 0) {
@@ -2656,23 +2659,25 @@ class InventarioCompleto {
     // Mostrar loading mientras se carga
     content.innerHTML = '<div style="color: white; text-align: center; padding: 40px; font-size: 16px;">Cargando imagen...</div>';
     
-    if (media.type === 'video') {
+    if (media.tipo === 'video' || media.type === 'video') {
       content.innerHTML = `<video src="${media.url}" controls autoplay style="max-width: 100%; max-height: 90vh; border-radius: 2px;"></video>`;
     } else {
-      // Resolver ruta correcta de imagen
-      let imageUrl = media.url;
-      console.log('🖼️ URL original:', imageUrl);
+      // Usar getImageUrl para cargar correctamente desde FileSystem o base64
+      const imageUrl = await this.getImageUrl(media);
       
-      // Si la URL es relativa, asegurar que apunte a INVENTARIO_STORAGE
-      if (!imageUrl.startsWith('http') && !imageUrl.startsWith('blob:') && !imageUrl.startsWith('data:')) {
-        if (imageUrl.startsWith('./')) {
-          imageUrl = 'INVENTARIO_STORAGE/' + imageUrl.substring(2);
-        } else if (!imageUrl.startsWith('INVENTARIO_STORAGE/')) {
-          imageUrl = 'INVENTARIO_STORAGE/' + imageUrl;
-        }
+      if (!imageUrl) {
+        console.error('❌ No se pudo obtener URL de imagen');
+        content.innerHTML = `
+          <div style="color: white; text-align: center; padding: 40px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+            <div style="font-size: 16px; margin-bottom: 8px;">No se pudo cargar la imagen</div>
+            <div style="font-size: 12px; opacity: 0.7;">${media.filename || 'Sin nombre'}</div>
+          </div>
+        `;
+        return;
       }
       
-      console.log('🖼️ URL resuelta:', imageUrl);
+      console.log('🖼️ URL de imagen:', imageUrl);
       
       // Crear imagen con manejo de errores
       const img = new Image();
