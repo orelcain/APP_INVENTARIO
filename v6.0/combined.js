@@ -2158,11 +2158,6 @@ function desactivarModoFileSystem() {
 
 
 
-// ===================================================================
-// CACHÉ GLOBAL DE BLOB URLs (Prevenir Garbage Collection)
-// ===================================================================
-const globalBlobCache = new Map();
-
 // Función para obtener o crear Blob URL con caché global
 async function getCachedBlobUrl(filename, loadFunction) {
   if (globalBlobCache.has(filename)) {
