@@ -9458,6 +9458,92 @@ console.log('Versin: 2.0');
   window.app = new InventarioCompleto();
   console.log('✅ Módulos portable cargados');
   
+  // =========================================
+  // OBJETO CONFIGURACIÓN
+  // =========================================
+  window.configuracion = {
+    renderStorageUI() {
+      const container = document.getElementById('storage-config-content');
+      if (!container) return;
+      
+      const fs = window.fsManager || window.app.fsManager;
+      const isConnected = fs && fs.isConnected;
+      
+      container.innerHTML = `
+        <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">
+          💾 Almacenamiento FileSystem
+        </h3>
+        
+        <div style="display: grid; gap: 12px;">
+          <div style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <strong style="color: var(--text-primary); font-size: 0.95rem;">Estado:</strong>
+              <span style="padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background: ${isConnected ? '#10b981' : '#ef4444'}; color: white;">
+                ${isConnected ? '🟢 Conectado' : '❌ No conectado'}
+              </span>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; font-family: monospace; padding: 10px; background: rgba(0,0,0,0.15); border-radius: 6px; min-height: 40px;">
+              ${fs && fs.folderPath ? fs.folderPath : 'No hay carpeta seleccionada'}
+            </div>
+          </div>
+          
+          ${isConnected ? `
+            <button onclick="window.app.desconectarFileSystem()" class="btn" style="width: 100%; padding: 14px; font-size: 1rem; background: var(--danger); color: white;">
+              🔴 Desconectar
+            </button>
+          ` : ''}
+          
+          <button onclick="window.app.activarFileSystem()" class="btn ${isConnected ? 'btn-secondary' : 'btn-primary'}" style="width: 100%; padding: 14px; font-size: 1rem;">
+            ${isConnected ? '📁 Cambiar Carpeta' : '📂 Seleccionar Carpeta INVENTARIO_STORAGE'}
+          </button>
+        </div>
+      `;
+    }
+  };
+  
+  // =========================================
+  // FUNCIONES DE ACORDEÓN PARA CONFIGURACIÓN
+  // =========================================
+  window.toggleConfigSection = function(sectionId) {
+    const content = document.getElementById(sectionId + '-content');
+    const icon = document.getElementById(sectionId + '-icon');
+    
+    if (!content || !icon) return;
+    
+    const isCollapsed = content.style.display === 'none' || !content.style.display;
+    
+    if (isCollapsed) {
+      content.style.display = 'block';
+      icon.textContent = '▼';
+    } else {
+      content.style.display = 'none';
+      icon.textContent = '▶';
+    }
+    
+    localStorage.setItem('config-' + sectionId, isCollapsed ? 'open' : 'closed');
+  };
+  
+  window.initConfigSections = function() {
+    const sections = ['storage-config', 'export-config', 'backup-config'];
+    
+    sections.forEach(sectionId => {
+      const content = document.getElementById(sectionId + '-content');
+      const icon = document.getElementById(sectionId + '-icon');
+      
+      if (!content || !icon) return;
+      
+      const savedState = localStorage.getItem('config-' + sectionId) || 'closed';
+      
+      if (savedState === 'open') {
+        content.style.display = 'block';
+        icon.textContent = '▼';
+      } else {
+        content.style.display = 'none';
+        icon.textContent = '▶';
+      }
+    });
+  };
+  
   // Inicializar la aplicación
   (async function() {
     try {
@@ -9476,6 +9562,27 @@ console.log('Versin: 2.0');
       
       // 3. Inicializar la app principal (carga datos)
       await window.app.init();
+      
+      // 4. Inicializar acordeones de configuración
+      setTimeout(() => {
+        if (window.initConfigSections) {
+          window.initConfigSections();
+        }
+        
+        if (window.configuracion && window.configuracion.renderStorageUI) {
+          window.configuracion.renderStorageUI();
+        }
+      }, 500);
+      
+      // 5. Toggle opciones de optimización
+      const checkboxOptimizar = document.getElementById('optimizarImagenes');
+      const opcionesOptimizacion = document.getElementById('opcionesOptimizacion');
+      
+      if (checkboxOptimizar && opcionesOptimizacion) {
+        checkboxOptimizar.addEventListener('change', function() {
+          opcionesOptimizacion.style.display = this.checked ? 'flex' : 'none';
+        });
+      }
       
       console.log('✅ Aplicación portable lista');
     } catch (error) {
