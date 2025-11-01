@@ -5352,7 +5352,7 @@ class InventarioCompleto {
       // Calcular porcentaje
       const porcentajeDisplay = minimo > 0 ? Math.round((cantidad / minimo) * 100) : 0;
 
-      // Formatear fecha del último conteo - Mejorado para legibilidad
+      // Formatear fecha del último conteo - Tamaño ajustado
       let ultimoConteoHTML = '';
       if (rep.ultimoConteo) {
         const fecha = new Date(rep.ultimoConteo);
@@ -5367,9 +5367,9 @@ class InventarioCompleto {
           hour12: false
         });
         ultimoConteoHTML = `
-          <div style="font-size: 13px; color: var(--text-tertiary); padding: 8px 0 4px 0; text-align: right; font-weight: 500; letter-spacing: 0.3px; line-height: 1.4;">
+          <div style="font-size: 10px; color: var(--text-tertiary); padding: 8px 0 4px 0; text-align: right; font-weight: 500; letter-spacing: 0.3px; line-height: 1.4;">
             <span style="color: var(--text-secondary); font-weight: 600;">Último conteo:</span>
-            <span style="font-family: 'Courier New', monospace; font-size: 14px; margin-left: 6px;">${fechaFormateada} · ${horaFormateada}</span>
+            <span style="font-family: 'Courier New', monospace; font-size: 11px; margin-left: 6px;">${fechaFormateada} · ${horaFormateada}</span>
           </div>
         `;
       }
@@ -5541,8 +5541,8 @@ class InventarioCompleto {
                 </div>
               ` : ''}
               
-              <!-- Grid KPI -->
-              <div style="display: grid; grid-template-columns: repeat(${cantidadInstalada > 0 ? '4' : '3'}, 1fr); gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #2d2d30;">
+              <!-- Grid KPI con marco visual -->
+              <div style="display: grid; grid-template-columns: repeat(${cantidadInstalada > 0 ? '4' : '3'}, 1fr); gap: 6px; margin-top: 10px; padding: 10px 8px 8px 8px; border-top: 2px solid var(--border-accent); background: rgba(0,0,0,0.2); border-radius: 0 0 2px 2px;">
                 ${cantidadInstalada > 0 ? `
                   <div style="text-align: center;">
                     <div style="font-size: 8px; color: #6e7681; text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.5px; font-weight: 600;">Uso</div>
