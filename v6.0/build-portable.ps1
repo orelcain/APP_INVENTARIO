@@ -23,18 +23,17 @@ $coreJs = Get-Content "modules/core.js" -Raw -Encoding UTF8
 # Eliminar imports/exports de los módulos
 Write-Host 'Procesando modulos...' -ForegroundColor Yellow
 
-# Storage.js - Eliminar exports
+# Storage.js - Solo eliminar la línea export final
 $storageJs = $storageJs -replace 'export \{[^}]+\};?\s*$', ''
-$storageJs = $storageJs -replace 'export default \w+;?\s*$', ''
 
-# Mapa.js - Eliminar imports y exports
-$mapaJs = $mapaJs -replace 'import \{[^}]+\} from[^;]+;', ''
-$mapaJs = $mapaJs -replace 'export default \w+;?\s*$', ''
+# Mapa.js - Eliminar imports y export
+$mapaJs = $mapaJs -replace 'import \{[^}]+\} from[^;]+;', '// [REMOVED IMPORT]'
+$mapaJs = $mapaJs -replace 'export default mapController;', 'window.mapController = mapController;'
 
 # Core.js - Eliminar imports y export
-$coreJs = $coreJs -replace 'import \{[^}]+\} from[^;]+;', ''
-$coreJs = $coreJs -replace 'import \w+ from[^;]+;', ''
-$coreJs = $coreJs -replace 'export default \w+;?\s*$', ''
+$coreJs = $coreJs -replace 'import \{[^}]+\} from[^;]+;', '// [REMOVED IMPORT]'
+$coreJs = $coreJs -replace 'import \w+ from[^;]+;', '// [REMOVED IMPORT]'
+$coreJs = $coreJs -replace 'export default InventarioCompleto;', 'window.InventarioCompleto = InventarioCompleto;'
 
 # Crear el código JavaScript combinado
 $combinedJs = @"
@@ -51,6 +50,10 @@ $combinedJs = @"
   // ========================================
   $storageJs
 
+  // Exponer globalmente
+  window.fsManager = fsManager;
+  window.mapStorage = mapStorage;
+
   // ========================================
   // MÓDULO MAPA (mapa.js)
   // ========================================
@@ -64,16 +67,19 @@ $combinedJs = @"
   // ========================================
   // INICIALIZACIÓN AUTOMÁTICA
   // ========================================
+  console.log('✅ Módulos cargados correctamente');
   window.app = new InventarioCompleto();
-  window.fsManager = fsManager;
-  window.mapStorage = mapStorage;
-  window.mapController = mapController;
 })();
 "@
 
 # Reemplazar el tag <script type="module" src="modules/core.js"></script>
 Write-Host 'Reemplazando script modules...' -ForegroundColor Yellow
+
+# Reemplazar el import del módulo
 $html = $html -replace '<script type="module" src="modules/core\.js"></script>', "<script>`n$combinedJs`n</script>"
+
+# Eliminar el bloque try-catch que importa dinámicamente
+$html = $html -replace '<script type="module">[\s\S]*?<\/script>', "<script>`n$combinedJs`n</script>"
 
 # Guardar archivo portable
 Write-Host 'Guardando archivo portable...' -ForegroundColor Yellow
