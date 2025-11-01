@@ -2919,6 +2919,39 @@ class InventarioCompleto {
     document.getElementById('modal').classList.remove('active');
   }
 
+  // Cargar opciones del siguiente nivel (cascada)
+  cargarNivel(nivel) {
+    console.log(`🔄 Cargando nivel ${nivel}...`);
+    
+    // TODO: Implementar carga desde keywords de configuración
+    // Por ahora solo habilitamos el siguiente select
+    const selectActual = document.getElementById(`nivel${nivel}`);
+    if (selectActual) {
+      selectActual.disabled = false;
+      
+      // Limpiar niveles posteriores
+      for (let i = nivel + 1; i <= 8; i++) {
+        const selectPosterior = document.getElementById(`nivel${i}`);
+        if (selectPosterior) {
+          if (i < 8) {
+            selectPosterior.innerHTML = '<option value="">Seleccionar...</option>';
+            selectPosterior.disabled = true;
+          } else {
+            selectPosterior.value = '';
+            selectPosterior.disabled = true;
+          }
+        }
+      }
+    }
+  }
+
+  // Vincular con área del mapa
+  vincularConMapa() {
+    console.log('🗺️ Vincular con mapa...');
+    // TODO: Implementar vinculación con áreas del mapa
+    this.showToast('🚧 Función en desarrollo', 'info');
+  }
+
   // ===============================================
   // SINCRONIZACIÓN DE UBICACIONES DESDE EL DOM
   // ===============================================
