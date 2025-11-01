@@ -1460,6 +1460,11 @@
       cursor: pointer;
       background: var(--bg-secondary);
       border: 2px dashed var(--border-color);
+      min-height: 44px;
+      display: block !important;
+      width: 100%;
+      font-size: 14px;
+      color: var(--text-primary);
     }
 
     input[type="file"].form-control:hover {
@@ -1469,6 +1474,23 @@
 
     input[type="file"].form-control:focus {
       border-style: solid;
+    }
+
+    /* Asegurar que el file input tenga el texto visible */
+    input[type="file"].form-control::file-selector-button {
+      padding: 6px 12px;
+      margin-right: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    input[type="file"].form-control::file-selector-button:hover {
+      background: #6a8fb5;
     }
 
     .form-actions {
