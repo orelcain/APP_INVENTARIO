@@ -5158,6 +5158,19 @@ class InventarioCompleto {
 
     this.filteredRepuestos = filtered;
 
+    // Actualizar contador de resultados
+    const resultsCounter = document.getElementById('resultsCounter');
+    if (resultsCounter) {
+      const totalCount = this.repuestos.length;
+      const filteredCount = filtered.length;
+      
+      if (filteredCount === totalCount) {
+        resultsCounter.textContent = `Todos (${totalCount})`;
+      } else {
+        resultsCounter.textContent = `${filteredCount} de ${totalCount}`;
+      }
+    }
+
     // Resetear a página 1 cuando cambian filtros
     if (!this.currentPage) this.currentPage = 1;
 

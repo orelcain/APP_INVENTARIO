@@ -326,6 +326,45 @@
       border-color: var(--primary);
     }
 
+    /* Barra de control de vista (encima de las tarjetas) */
+    .view-control-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      margin-bottom: 16px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-primary);
+    }
+
+    .view-control-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .view-control-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .results-counter {
+      font-size: var(--font-base);
+      font-weight: var(--font-semibold);
+      color: var(--text-primary);
+      letter-spacing: var(--letter-spacing-wide);
+    }
+
+    .view-label {
+      font-size: var(--font-sm);
+      font-weight: var(--font-medium);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-spacing-wider);
+      margin-right: 4px;
+    }
+
     /* Cards grid - 6 columnas ancho completo */
     .cards-grid {
       display: grid;
@@ -1958,15 +1997,6 @@
           ✖ Quitar Filtros
         </button>
         
-        <div class="view-btns">
-          <button class="view-btn active" data-view="cards">
-            Tarjetas
-          </button>
-          <button class="view-btn" data-view="list">
-            Lista
-          </button>
-        </div>
-        
         <div id="connectionBtn" class="disconnected" title="Estado de conexión con carpeta de datos">
           <div id="connectionIcon"></div>
           <span id="connectionText">Desconectado</span>
@@ -2000,6 +2030,24 @@
 
       <!-- Paginación superior -->
       <div id="paginationTop" class="pagination-controls hidden"></div>
+
+      <!-- Barra de control de vista (encima de las tarjetas) -->
+      <div class="view-control-bar">
+        <div class="view-control-left">
+          <span id="resultsCounter" class="results-counter">Todos (0)</span>
+        </div>
+        <div class="view-control-right">
+          <label class="view-label">Vista:</label>
+          <div class="view-btns">
+            <button class="view-btn active" data-view="cards">
+              Tarjetas
+            </button>
+            <button class="view-btn" data-view="list">
+              Lista
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- Grid de tarjetas -->
       <div id="cardsGrid" class="cards-grid"></div>
