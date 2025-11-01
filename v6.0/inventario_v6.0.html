@@ -2097,6 +2097,20 @@
     .btn-vincular-mapa {
       margin-top: 8px;
     }
+
+    /* Grid para multimedia (imágenes y documentos lado a lado) */
+    .form-multimedia-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .form-multimedia-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
