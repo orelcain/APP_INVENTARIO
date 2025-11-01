@@ -3276,7 +3276,23 @@ class InventarioCompleto {
         repuesto.ubicaciones.push(ubicacion);
       }
       
-      // TODO: Procesar multimedia (próximo commit)
+      // Procesar multimedia
+      if (this.currentMultimedia && this.currentMultimedia.length > 0) {
+        // Combinar multimedia existente con nuevo
+        const multimediaExistente = repuesto.multimedia || [];
+        repuesto.multimedia = [...multimediaExistente, ...this.currentMultimedia];
+        console.log(`📎 Agregadas ${this.currentMultimedia.length} nuevas imágenes (total: ${repuesto.multimedia.length})`);
+      }
+      
+      if (this.currentDocuments && this.currentDocuments.length > 0) {
+        // Combinar documentos existentes con nuevos
+        const documentosExistentes = repuesto.documentos || [];
+        repuesto.documentos = [...documentosExistentes, ...this.currentDocuments];
+        console.log(`📎 Agregados ${this.currentDocuments.length} nuevos documentos (total: ${repuesto.documentos.length})`);
+      }
+      
+      // Actualizar fecha de modificación
+      repuesto.fechaModificacion = new Date().toISOString();
       
       console.log('✅ Repuesto actualizado:', repuesto.nombre);
       
@@ -3316,6 +3332,7 @@ class InventarioCompleto {
         ...formData,
         ubicaciones: [ubicacion],
         multimedia: this.currentMultimedia || [],
+        documentos: this.currentDocuments || [],
         fechaCreacion: new Date().toISOString(),
         fechaModificacion: new Date().toISOString()
       };
@@ -3346,6 +3363,208 @@ class InventarioCompleto {
     } catch (error) {
       console.error('❌ Error al guardar:', error);
       this.showToast('❌ Error al guardar: ' + error.message, 'error');
+    }
+  }
+
+  // ===============================================
+  // MANEJO DE MULTIMEDIA (IMÁGENES Y DOCUMENTOS)
+  // ===============================================
+  
+  async handleMultimedia(event, type) {
+    const files = Array.from(event.target.files);
+    
+    if (files.length === 0) return;
+    
+    console.log(`📎 Procesando ${files.length} archivo(s) de tipo: ${type}`);
+    
+    if (type === 'image') {
+      await this.handleImageUpload(files);
+    } else if (type === 'document') {
+      await this.handleDocumentUpload(files);
+    }
+  }
+  
+  async handleImageUpload(files) {
+    const previewContainer = document.getElementById('imagePreview');
+    
+    for (const file of files) {
+      // Validar que sea imagen
+      if (!file.type.startsWith('image/')) {
+        this.showToast(`❌ ${file.name} no es una imagen válida`, 'error');
+        continue;
+      }
+      
+      // Validar tamaño (máximo 5MB por imagen)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        this.showToast(`❌ ${file.name} excede 5MB (${(file.size / (1024 * 1024)).toFixed(1)}MB)`, 'error');
+        continue;
+      }
+      
+      try {
+        // Leer archivo como base64
+        const base64 = await this.fileToBase64(file);
+        
+        // Generar nombre único
+        const timestamp = Date.now();
+        const filename = `${timestamp}_${file.name}`;
+        
+        // Agregar a multimedia actual
+        if (!this.currentMultimedia) {
+          this.currentMultimedia = [];
+        }
+        
+        this.currentMultimedia.push({
+          tipo: 'image',
+          filename: filename,
+          originalName: file.name,
+          data: base64,
+          size: file.size,
+          mimeType: file.type,
+          uploadDate: new Date().toISOString()
+        });
+        
+        // Crear preview
+        const previewItem = document.createElement('div');
+        previewItem.className = 'multimedia-preview-item';
+        previewItem.innerHTML = `
+          <img src="${base64}" alt="${file.name}">
+          <button type="button" class="multimedia-remove-btn" onclick="app.removeMultimedia('${filename}', 'image')" title="Eliminar imagen">
+            ×
+          </button>
+          <div class="multimedia-preview-name">${file.name}</div>
+        `;
+        
+        previewContainer.appendChild(previewItem);
+        
+        console.log(`✅ Imagen agregada: ${file.name} (${(file.size / 1024).toFixed(1)}KB)`);
+        
+      } catch (error) {
+        console.error(`❌ Error procesando ${file.name}:`, error);
+        this.showToast(`❌ Error al procesar ${file.name}`, 'error');
+      }
+    }
+    
+    // Limpiar input
+    event.target.value = '';
+    
+    this.showToast(`✅ ${files.length} imagen(es) agregada(s)`, 'success', 2000);
+  }
+  
+  async handleDocumentUpload(files) {
+    const documentsContainer = document.getElementById('documentsList');
+    
+    for (const file of files) {
+      // Validar tamaño (máximo 10MB por documento)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        this.showToast(`❌ ${file.name} excede 10MB (${(file.size / (1024 * 1024)).toFixed(1)}MB)`, 'error');
+        continue;
+      }
+      
+      try {
+        // Leer archivo como base64
+        const base64 = await this.fileToBase64(file);
+        
+        // Generar nombre único
+        const timestamp = Date.now();
+        const filename = `${timestamp}_${file.name}`;
+        
+        // Agregar a documentos actuales
+        if (!this.currentDocuments) {
+          this.currentDocuments = [];
+        }
+        
+        this.currentDocuments.push({
+          tipo: 'document',
+          filename: filename,
+          originalName: file.name,
+          data: base64,
+          size: file.size,
+          mimeType: file.type,
+          uploadDate: new Date().toISOString()
+        });
+        
+        // Determinar icono según tipo
+        let icon = '📄';
+        if (file.type.includes('pdf')) icon = '📕';
+        else if (file.type.includes('excel') || file.type.includes('spreadsheet')) icon = '📊';
+        else if (file.type.includes('word') || file.type.includes('document')) icon = '📝';
+        else if (file.type.includes('video')) icon = '🎥';
+        
+        // Crear item en lista
+        const documentItem = document.createElement('div');
+        documentItem.className = 'document-list-item';
+        documentItem.innerHTML = `
+          <span class="document-icon">${icon}</span>
+          <span class="document-name">${file.name}</span>
+          <span class="document-size">(${(file.size / 1024).toFixed(1)}KB)</span>
+          <button type="button" class="document-remove-btn" onclick="app.removeMultimedia('${filename}', 'document')" title="Eliminar documento">
+            ×
+          </button>
+        `;
+        
+        documentsContainer.appendChild(documentItem);
+        
+        console.log(`✅ Documento agregado: ${file.name} (${(file.size / 1024).toFixed(1)}KB)`);
+        
+      } catch (error) {
+        console.error(`❌ Error procesando ${file.name}:`, error);
+        this.showToast(`❌ Error al procesar ${file.name}`, 'error');
+      }
+    }
+    
+    // Limpiar input
+    event.target.value = '';
+    
+    this.showToast(`✅ ${files.length} documento(s) agregado(s)`, 'success', 2000);
+  }
+  
+  // Convertir archivo a base64
+  fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
+  }
+  
+  // Eliminar multimedia del preview
+  removeMultimedia(filename, type) {
+    console.log(`🗑️ Eliminando ${type}: ${filename}`);
+    
+    if (type === 'image') {
+      // Eliminar de currentMultimedia
+      this.currentMultimedia = this.currentMultimedia.filter(m => m.filename !== filename);
+      
+      // Eliminar del preview
+      const previewContainer = document.getElementById('imagePreview');
+      const items = previewContainer.querySelectorAll('.multimedia-preview-item');
+      items.forEach(item => {
+        const btn = item.querySelector('.multimedia-remove-btn');
+        if (btn && btn.getAttribute('onclick').includes(filename)) {
+          item.remove();
+        }
+      });
+      
+      this.showToast('🗑️ Imagen eliminada', 'info', 2000);
+      
+    } else if (type === 'document') {
+      // Eliminar de currentDocuments
+      this.currentDocuments = this.currentDocuments.filter(d => d.filename !== filename);
+      
+      // Eliminar de la lista
+      const documentsContainer = document.getElementById('documentsList');
+      const items = documentsContainer.querySelectorAll('.document-list-item');
+      items.forEach(item => {
+        const btn = item.querySelector('.document-remove-btn');
+        if (btn && btn.getAttribute('onclick').includes(filename)) {
+          item.remove();
+        }
+      });
+      
+      this.showToast('🗑️ Documento eliminado', 'info', 2000);
     }
   }
 

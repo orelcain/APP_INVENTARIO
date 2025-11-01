@@ -1934,6 +1934,148 @@
       letter-spacing: 0.8px;
       color: var(--text-primary);
     }
+
+    /* =====================================
+       MULTIMEDIA PREVIEW
+       ===================================== */
+    .multimedia-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+    }
+
+    .multimedia-preview-margin {
+      margin-top: 12px;
+    }
+
+    .multimedia-preview-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid var(--border-color);
+      background: var(--bg-secondary);
+      aspect-ratio: 1;
+    }
+
+    .multimedia-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .multimedia-remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: rgba(220, 60, 60, 0.95);
+      color: white;
+      border-radius: 50%;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-weight: 700;
+    }
+
+    .multimedia-remove-btn:hover {
+      background: rgba(255, 70, 70, 1);
+      transform: scale(1.1);
+    }
+
+    .multimedia-preview-name {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 6px 8px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Documentos */
+    .documents-list {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .document-list-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .document-list-item:hover {
+      background: var(--bg-hover);
+      border-color: var(--primary);
+    }
+
+    .document-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .document-name {
+      flex: 1;
+      font-size: 14px;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .document-size {
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .document-remove-btn {
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: rgba(220, 60, 60, 0.9);
+      color: white;
+      border-radius: 4px;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .document-remove-btn:hover {
+      background: rgba(255, 70, 70, 1);
+    }
+
+    .form-upload-mode {
+      font-size: 11px;
+      color: var(--text-secondary);
+      background: rgba(59, 130, 246, 0.15);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
