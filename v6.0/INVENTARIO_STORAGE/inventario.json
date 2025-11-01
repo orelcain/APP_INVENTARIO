@@ -156,10 +156,10 @@
     "detalle": "",
     "precio": 0,
     "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
-    "multimedia": [],
-    "ultimaModificacion": "2025-10-31T06:34:17.781Z",
-    "ultimoConteo": null
-  },    "url": "./imagenes/1762032176113_cinta curva.webp",
+    "multimedia": [
+      {
+        "type": "image",
+        "url": "./imagenes/1762032176113_cinta curva.webp",
         "name": "1762032176113_cinta curva.webp",
         "size": 118840,
         "isFileSystem": true
