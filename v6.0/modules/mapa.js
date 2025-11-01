@@ -1140,15 +1140,16 @@ const mapController = {
   }
 };
 
-const indexedDBManager = new IndexedDBImageManager();
+// IndexedDB Manager comentado temporalmente (no implementado en v6.0)
+// const indexedDBManager = new IndexedDBImageManager();
 
-if (!('showDirectoryPicker' in window)) {
-  indexedDBManager.init().then(() => {
-    console.log('  IndexedDB Manager inicializado para modo mvil');
-  }).catch(err => {
-    console.error('- Error al inicializar IndexedDB:', err);
-  });
-}
+// if (!('showDirectoryPicker' in window)) {
+//   indexedDBManager.init().then(() => {
+//     console.log('  IndexedDB Manager inicializado para modo mvil');
+//   }).catch(err => {
+//     console.error('- Error al inicializar IndexedDB:', err);
+//   });
+// }
 
 const globalBlobCache = new Map();
 

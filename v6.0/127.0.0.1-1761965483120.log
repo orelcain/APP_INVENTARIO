@@ -1,0 +1,7 @@
+mapa.js:1143  Uncaught ReferenceError: IndexedDBImageManager is not defined
+    at mapa.js:1143:26
+(anonymous) @ mapa.js:1143
+rightclick.js:25 allow right click processing http://127.0.0.1:5500/v6.0/inventario_v6.0.html
+inventario_v6.0.html:1188  Uncaught ReferenceError: app is not defined
+    at HTMLButtonElement.onclick (inventario_v6.0.html:1188:85)
+onclick @ inventario_v6.0.html:1188

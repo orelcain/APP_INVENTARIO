@@ -2875,19 +2875,22 @@ class InventarioCompleto {
   async init() {
     this.showBrowserWarning();
     
-    // Renderizar UI de almacenamiento segn plataforma (PC o mvil)
+    // Renderizar UI de almacenamiento según plataforma (PC o móvil)
+    // TODO: Implementar módulo de configuración en v6.0
+    /*
     if (typeof configuracion !== 'undefined') {
       setTimeout(() => {
         configuracion.renderStorageUI();
         configuracion.loadICloudPathConfig(); // Cargar ruta iCloud guardada
       }, 100);
     }
+    */
     
     await this.loadData();
     this.setupEvents();
     this.setupDelegatedEvents(); // Event delegation para botones con data-attributes
-    this.setupPhotoInputs(); // NUEVO: Configurar inputs de foto segn plataforma
-    this.applyViewModeStyles(); // Aplicar modo de visualizacin guardado
+    this.setupPhotoInputs(); // NUEVO: Configurar inputs de foto según plataforma
+    this.applyViewModeStyles(); // Aplicar modo de visualización guardado
     this.updateViewModeInfo(); // Actualizar info del modo
     await this.render();
     this.renderFilters();

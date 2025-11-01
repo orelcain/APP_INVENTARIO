@@ -434,6 +434,7 @@ class FileSystemManager {
       size: totalSize 
     };
   }
+}
 
 class MapStorageService {
   constructor(fsManager) {
@@ -844,7 +845,6 @@ class MapStorageService {
     return `${year}${month}${day}-${hours}${minutes}${seconds}`;
   }
 }
-const fsManager = new FileSystemManager();
 
 // Instancias globales
 const fsManager = new FileSystemManager();

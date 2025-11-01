@@ -1567,36 +1567,49 @@
     // =========================================
     // IMPORTS - Usar módulos originales SOLAMENTE
     // =========================================
-    import { fsManager, mapStorage } from './modules/storage.js';
-    import InventarioCompleto from './modules/core.js';
-    import mapController from './modules/mapa.js';
-    
-    console.log('🚀 Inventario Pro v6.0 - Cargando módulos originales...');
-    
-    // =========================================
-    // INSTANCIA GLOBAL (igual que v5.4.0)
-    // =========================================
-    window.app = new InventarioCompleto();
-    window.fsManager = fsManager;
-    window.mapStorage = mapStorage;
-    window.mapController = mapController;
-    
-    // =========================================
-    // INICIALIZACIÓN
-    // =========================================
-    async function init() {
-      console.log('📦 Iniciando aplicación...');
+    try {
+      console.log('📦 Cargando módulos...');
       
-      // Inicializar la app original
-      await window.app.init();
+      const { fsManager, mapStorage } = await import('./modules/storage.js');
+      const { default: InventarioCompleto } = await import('./modules/core.js');
+      const { default: mapController } = await import('./modules/mapa.js');
       
-      console.log('✅ Aplicación v6.0 lista con módulos originales');
+      console.log('✅ Módulos cargados correctamente');
+      console.log('  - storage.js:', fsManager ? 'OK' : 'ERROR');
+      console.log('  - core.js:', InventarioCompleto ? 'OK' : 'ERROR');
+      console.log('  - mapa.js:', mapController ? 'OK' : 'ERROR');
+      
+      // =========================================
+      // INSTANCIA GLOBAL (igual que v5.4.0)
+      // =========================================
+      window.app = new InventarioCompleto();
+      window.fsManager = fsManager;
+      window.mapStorage = mapStorage;
+      window.mapController = mapController;
+      
+      console.log('✅ Instancia global window.app creada:', window.app);
+      
+      // =========================================
+      // INICIALIZACIÓN
+      // =========================================
+      async function init() {
+        console.log('📦 Iniciando aplicación...');
+        
+        // Inicializar la app original
+        await window.app.init();
+        
+        console.log('✅ Aplicación v6.0 lista con módulos originales');
+      }
+      
+      // =========================================
+      // INICIAR APLICACIÓN
+      // =========================================
+      await init();
+      
+    } catch (error) {
+      console.error('❌ Error crítico al cargar módulos:', error);
+      alert('Error al cargar la aplicación. Revisa la consola (F12).');
     }
-    
-    // =========================================
-    // INICIAR APLICACIÓN
-    // =========================================
-    init();
     
   </script>
 
