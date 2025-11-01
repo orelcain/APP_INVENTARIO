@@ -225,7 +225,7 @@ const mapController = {
     }
 
     zoneList.innerHTML = zones.map(zone => {
-      const color = zone.color || '#3b82f6';
+      const color = zone.color || '#5a6b7a';
       const jerarquia = zone.jerarquia ? Object.values(zone.jerarquia).filter(Boolean).join(' > ') : '';
       const equipos = Array.isArray(zone.equipos) ? zone.equipos.length : 0;
       return `
@@ -392,9 +392,9 @@ const mapController = {
     const ctx = this.ctx;
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#1e1e1e';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'rgba(148, 163, 184, 0.9)';
+    ctx.fillStyle = 'rgba(212, 212, 212, 0.9)';
     ctx.font = '16px "Segoe UI", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(message, canvas.width / 2, canvas.height / 2);
@@ -408,7 +408,7 @@ const mapController = {
     const ctx = this.ctx;
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#1e1e1e';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.translate(this.state.offsetX, this.state.offsetY);
     ctx.scale(this.state.scale, this.state.scale);
@@ -459,7 +459,7 @@ const mapController = {
     ctx.save();
     this.state.zones.forEach(zone => {
       if (!Array.isArray(zone.points) || zone.points.length < 3) return;
-      const color = zone.color || '#3b82f6';
+      const color = zone.color || '#5a6b7a';
       const opacity = typeof zone.opacity === 'number' ? zone.opacity : 0.35;
       ctx.beginPath();
       zone.points.forEach((point, index) => {
@@ -468,7 +468,7 @@ const mapController = {
       });
       ctx.closePath();
       ctx.fillStyle = this.hexToRgba(color, opacity);
-      ctx.strokeStyle = zone.id === this.state.highlightZoneId ? '#facc15' : color;
+      ctx.strokeStyle = zone.id === this.state.highlightZoneId ? '#8a7a5a' : color;
       ctx.lineWidth = zone.id === this.state.highlightZoneId ? 3 / this.state.scale : 2 / this.state.scale;
       ctx.fill();
       ctx.stroke();
@@ -476,7 +476,7 @@ const mapController = {
       const centroid = this.calculateCentroid(zone.points);
       if (centroid) {
         ctx.save();
-        ctx.fillStyle = zone.id === this.state.highlightZoneId ? '#facc15' : '#e2e8f0';
+        ctx.fillStyle = zone.id === this.state.highlightZoneId ? '#8a7a5a' : '#d4d4d4';
         ctx.font = `${Math.max(12, 24 / this.state.scale)}px "Segoe UI", sans-serif`;
         ctx.textAlign = 'center';
         ctx.fillText(zone.name || 'Zona', centroid.x, centroid.y);
@@ -509,7 +509,7 @@ const mapController = {
     }
     ctx.stroke();
 
-    ctx.fillStyle = '#3b82f6';
+    ctx.fillStyle = '#5a6b7a';
     this.state.tempPoints.forEach(point => {
       ctx.beginPath();
       ctx.arc(point.x, point.y, 4 / this.state.scale, 0, Math.PI * 2);
@@ -764,7 +764,7 @@ const mapController = {
         <div class="form-row">
           <div class="form-group">
             <label>Color</label>
-            <input type="color" name="zoneColor" value="#3b82f6" />
+            <input type="color" name="zoneColor" value="#5a6b7a" />
           </div>
           <div class="form-group">
             <label>Opacidad</label>
@@ -840,7 +840,7 @@ const mapController = {
       return;
     }
 
-    const color = (formData.get('zoneColor') || '#3b82f6').toString();
+    const color = (formData.get('zoneColor') || '#5a6b7a').toString();
     const opacityValue = parseInt(formData.get('zoneOpacity'), 10);
     const opacity = Number.isFinite(opacityValue) ? opacityValue / 100 : 0.35;
 

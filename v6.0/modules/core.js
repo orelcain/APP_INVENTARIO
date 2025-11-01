@@ -6,6 +6,32 @@
 import { fsManager, mapStorage } from './storage.js';
 import mapController from './mapa.js';
 
+// ===================================================================
+// CACHÉ GLOBAL DE BLOB URLs (Prevenir Garbage Collection)
+// ===================================================================
+const globalBlobCache = new Map();
+
+// Función para obtener o crear Blob URL con caché global
+async function getCachedBlobUrl(filename, loadFunction) {
+  if (globalBlobCache.has(filename)) {
+    const cached = globalBlobCache.get(filename);
+    console.log(`  [CACHÉ GLOBAL] Reutilizando: ${filename}`);
+    return cached.url;
+  }
+  
+  const url = await loadFunction();
+  if (url) {
+    // Guardar con referencia fuerte
+    globalBlobCache.set(filename, {
+      url: url,
+      timestamp: Date.now(),
+      filename: filename
+    });
+    console.log(`✅ [CACHÉ GLOBAL] Guardado: ${filename} (Total: ${globalBlobCache.size})`);
+  }
+  return url;
+}
+
 class InventarioCompleto {
   constructor() {
     this.repuestos = [];
@@ -2425,7 +2451,7 @@ class InventarioCompleto {
     const optimo = repuesto.optimo || minimo * 2;
     const cantidadActual = repuesto.cantidad || 0;
     const estadoStock = cantidadActual === 0 ? 'AGOTADO' : cantidadActual <= minimo ? 'BAJO' : 'OK';
-    const colorEstado = cantidadActual === 0 ? '#C76B6B' : cantidadActual <= minimo ? '#D4976C' : '#6B8E7F';
+    const colorEstado = cantidadActual === 0 ? '#7a6b6b' : cantidadActual <= minimo ? '#8a7a5a' : '#6b7280';
     const iconoEstado = cantidadActual === 0 ? '❌' : cantidadActual <= minimo ? '⚠️' : '✅';
     
     const ultimoConteo = repuesto.ultimoConteo ? new Date(repuesto.ultimoConteo) : null;
@@ -2433,105 +2459,90 @@ class InventarioCompleto {
     const horaFormateada = ultimoConteo ? ultimoConteo.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
 
     const modalHTML = `
-      <div class="modal-backdrop-custom" id="modalConteoIndividual" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px);">
-        <div class="modal-dialog-custom" style="max-width: 540px; animation: slideUp 0.3s ease-out;">
-          <div class="modal-content-custom" style="border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); border: 1px solid #4A5568; background: var(--card-bg);">
+      <div class="modal-backdrop-custom" id="modalConteoIndividual" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 10000;">
+        <div class="modal-dialog-custom" style="max-width: 480px; width: 90%; animation: slideUp 0.2s ease-out;">
+          <div class="modal-content-custom" style="border-radius: 2px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.8); background: #252526; border: 1px solid #3e3e42;">
             
-            <!-- HEADER -->
-            <div class="modal-header-custom" style="background: #4A5568; color: #F7FAFC; padding: 20px 24px; border-bottom: 3px solid #5B7C99;">
-              <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
-                <span style="font-size: 1.8rem; opacity: 0.9;">📊</span>
+            <!-- HEADER CORPORATIVO -->
+            <div class="modal-header-custom" style="background: #2d2d30; padding: 16px 20px; border-bottom: 2px solid #3e3e42;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
-                  <h3 style="margin: 0; font-size: 1.2rem; font-weight: 600; color: white;">Conteo Individual</h3>
-                  <p style="margin: 4px 0 0 0; opacity: 0.7; font-size: 0.8rem;">Actualiza la cantidad física en inventario</p>
+                  <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #d4d4d4; text-transform: uppercase; letter-spacing: 0.5px;">Conteo de Stock</h3>
+                  <p style="margin: 4px 0 0 0; font-size: 11px; color: #969696; font-weight: 500;">Actualizar cantidad física</p>
                 </div>
+                <button onclick="window.app.cerrarModalConteoIndividual()" style="background: transparent; border: none; color: #969696; font-size: 24px; cursor: pointer; padding: 0; line-height: 1; transition: color 0.15s; font-weight: 300;" onmouseover="this.style.color='#d4d4d4'" onmouseout="this.style.color='#969696'">×</button>
               </div>
-              <button onclick="window.app.cerrarModalConteoIndividual()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 32px; height: 32px; border-radius: 6px; font-size: 1.3rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">×</button>
             </div>
             
-            <div class="modal-body-custom" style="padding: 24px;">
+            <div class="modal-body-custom" style="padding: 20px;">
               
-              <!-- CARD DE INFORMACIÓN DEL PRODUCTO -->
-              <div style="background: #1e293b; border: 1px solid #334155; padding: 16px; border-radius: 8px; margin-bottom: 18px;">
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                  <h4 style="margin: 0; font-size: 1rem; color: #e2e8f0; font-weight: 600; max-width: 70%;">${repuesto.nombre}</h4>
-                  <span style="background: ${colorEstado}; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; opacity: 0.95;">${iconoEstado} ${estadoStock}</span>
+              <!-- INFORMACIÓN DEL PRODUCTO -->
+              <div style="background: #1e1e1e; border: 1px solid #3e3e42; padding: 14px; border-radius: 2px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                  <h4 style="margin: 0; font-size: 14px; color: #d4d4d4; font-weight: 600; line-height: 1.4;">${repuesto.nombre}</h4>
+                  <span style="background: ${colorEstado}; opacity: 0.95; color: #ffffff; padding: 3px 8px; border-radius: 2px; font-size: 10px; font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.3px;">${estadoStock}</span>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 0.8rem; color: #A0AEC0;">
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="color: #5B7C99;">📍</span>
-                    <span><strong style="color: #F7FAFC;">Área:</strong> ${repuesto.area || repuesto.areaGeneral || 'N/A'}</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="color: #5B7C99;">⚙️</span>
-                    <span><strong style="color: #F7FAFC;">Equipo:</strong> ${repuesto.equipo || repuesto.sistemaEquipo || 'N/A'}</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="color: #5B7C99;">🔢</span>
-                    <span><strong style="color: #F7FAFC;">SAP:</strong> ${repuesto.codSAP || 'N/A'}</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="color: #5B7C99;">🏷️</span>
-                    <span><strong style="color: #F7FAFC;">Tipo:</strong> ${repuesto.tipo || 'N/A'}</span>
-                  </div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 11px; color: #969696;">
+                  <div><strong style="color: #d4d4d4; font-weight: 600;">Área:</strong> ${repuesto.area || repuesto.areaGeneral || 'N/A'}</div>
+                  <div><strong style="color: #d4d4d4; font-weight: 600;">Equipo:</strong> ${repuesto.equipo || repuesto.sistemaEquipo || 'N/A'}</div>
+                  ${repuesto.codSAP ? `<div style="grid-column: 1 / -1;"><strong style="color: #d4d4d4; font-weight: 600;">SAP:</strong> <span style="font-family: 'Courier New', monospace;">${repuesto.codSAP}</span></div>` : ''}
                 </div>
               </div>
 
               <!-- CANTIDAD ACTUAL Y MÍNIMO -->
-              <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; margin-bottom: 20px; align-items: center;">
-                <div style="background: #4A5568; padding: 14px; border-radius: 8px; text-align: center; border-left: 3px solid #5B7C99;">
-                  <div style="font-size: 0.75rem; color: #A0AEC0; font-weight: 600; margin-bottom: 8px; text-transform: uppercase;">📦 En Sistema</div>
-                  <div style="font-size: 2.2rem; color: #5B7C99; font-weight: 700; line-height: 1;">${cantidadActual}</div>
-                  <div style="font-size: 0.7rem; color: #718096; margin-top: 4px;">unidades</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+                <div style="background: #1e1e1e; border: 2px solid #3e3e42; padding: 14px; border-radius: 2px; text-align: center;">
+                  <div style="font-size: 9px; color: #969696; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Stock Actual</div>
+                  <div style="font-size: 28px; color: ${colorEstado}; opacity: 0.95; font-weight: 700; line-height: 1;">${cantidadActual}</div>
+                  <div style="font-size: 9px; color: #6e7681; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px;">unidades</div>
                 </div>
                 
-                <div style="font-size: 1.5rem; color: #5A6778; opacity: 0.6;">→</div>
-                
-                <div style="background: #4A5568; padding: 14px; border-radius: 8px; text-align: center; border-left: 3px solid #D4976C;">
-                  <div style="font-size: 0.75rem; color: #A0AEC0; font-weight: 600; margin-bottom: 8px; text-transform: uppercase;">📋 Mínimo</div>
-                  <div style="font-size: 2.2rem; color: #D4976C; font-weight: 700; line-height: 1;">${minimo}</div>
-                  <div style="font-size: 0.7rem; color: #718096; margin-top: 4px;">requerido</div>
+                <div style="background: #1e1e1e; border: 2px solid #3e3e42; padding: 14px; border-radius: 2px; text-align: center;">
+                  <div style="font-size: 9px; color: #969696; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Mínimo</div>
+                  <div style="font-size: 28px; color: #969696; opacity: 0.95; font-weight: 700; line-height: 1;">${minimo}</div>
+                  <div style="font-size: 9px; color: #6e7681; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px;">requerido</div>
                 </div>
               </div>
 
               <!-- INFORMACIÓN DE ÚLTIMO CONTEO -->
               ${ultimoConteo ? `
-                <div style="background: rgba(107, 142, 127, 0.1); border: 1px solid rgba(107, 142, 127, 0.3); padding: 10px 12px; border-radius: 6px; margin-bottom: 18px; text-align: center;">
-                  <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">📅 Último Conteo</div>
-                  <div style="font-size: 0.85rem; color: var(--text-primary); font-weight: 600;">${fechaFormateada} a las ${horaFormateada}</div>
+                <div style="background: #1e1e1e; border-left: 3px solid #969696; padding: 10px; border-radius: 0; margin-bottom: 16px;">
+                  <div style="font-size: 9px; color: #969696; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Último conteo</div>
+                  <div style="font-size: 11px; color: #d4d4d4; font-weight: 600;">${fechaFormateada} • ${horaFormateada}</div>
                 </div>
               ` : `
-                <div style="background: rgba(212, 151, 108, 0.1); border: 1px solid rgba(212, 151, 108, 0.3); padding: 10px 12px; border-radius: 6px; margin-bottom: 18px; text-align: center;">
-                  <div style="font-size: 0.85rem; color: #D4976C; font-weight: 600;">⚠️ Sin conteo previo registrado</div>
+                <div style="background: #332b00; border-left: 3px solid #f59e0b; padding: 10px; border-radius: 0; margin-bottom: 16px;">
+                  <div style="font-size: 11px; color: #fbbf24; font-weight: 600;">Sin conteo previo registrado</div>
                 </div>
               `}
 
               <!-- INPUT NUEVA CANTIDAD -->
-              <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; border: 2px solid var(--border-color);">
-                <label for="cantidadConteoInput" style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">
-                  🔢 Nueva Cantidad Contada
+              <div style="background: #1e1e1e; padding: 16px; border-radius: 2px; border: 1px solid #3e3e42;">
+                <label for="cantidadConteoInput" style="display: block; font-size: 10px; font-weight: 700; color: #d4d4d4; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">
+                  Nueva cantidad física
                 </label>
-                <input type="number" 
-                       id="cantidadConteoInput" 
-                       value="${cantidadActual}" 
-                       min="0" 
-                       style="width: 100%; padding: 14px; font-size: 1.5rem; font-weight: 700; text-align: center; border: 2px solid var(--accent-color); border-radius: 8px; background: var(--card-bg); color: var(--text-primary); transition: all 0.2s;"
-                       onfocus="this.select()"
-                       onkeydown="if(event.key==='Enter'){window.app.guardarConteoIndividual('${id}')}"
-                />
-                <div style="display: flex; gap: 8px; margin-top: 10px; justify-content: center;">
-                  <button onclick="document.getElementById('cantidadConteoInput').value = Math.max(0, parseInt(document.getElementById('cantidadConteoInput').value || 0) - 1)" style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.2s;">−</button>
-                  <button onclick="document.getElementById('cantidadConteoInput').value = parseInt(document.getElementById('cantidadConteoInput').value || 0) + 1" style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: all 0.2s;">+</button>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button onclick="document.getElementById('cantidadConteoInput').value = Math.max(0, parseInt(document.getElementById('cantidadConteoInput').value || 0) - 1)" style="background: #2d2d30; border: 1px solid #555555; color: #d4d4d4; width: 40px; height: 40px; border-radius: 2px; cursor: pointer; font-size: 18px; font-weight: 700; transition: all 0.15s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='#3e3e42'" onmouseout="this.style.background='#2d2d30'">−</button>
+                  <input type="number" 
+                         id="cantidadConteoInput" 
+                         value="${cantidadActual}" 
+                         min="0" 
+                         style="flex: 1; padding: 10px; font-size: 24px; font-weight: 700; text-align: center; border: 2px solid #555555; border-radius: 2px; background: #0d0d0d; color: #d4d4d4; transition: border-color 0.15s;"
+                         onfocus="this.select(); this.style.borderColor='#5a6b7a'"
+                         onblur="this.style.borderColor='#555555'"
+                         onkeydown="if(event.key==='Enter'){window.app.guardarConteoIndividual('${id}')}"
+                  />
+                  <button onclick="document.getElementById('cantidadConteoInput').value = parseInt(document.getElementById('cantidadConteoInput').value || 0) + 1" style="background: #2d2d30; border: 1px solid #555555; color: #d4d4d4; width: 40px; height: 40px; border-radius: 2px; cursor: pointer; font-size: 18px; font-weight: 700; transition: all 0.15s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='#3e3e42'" onmouseout="this.style.background='#2d2d30'">+</button>
                 </div>
               </div>
 
               <!-- BOTONES DE ACCIÓN -->
-              <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button onclick="window.app.cerrarModalConteoIndividual()" style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s;">
+              <div style="display: flex; gap: 8px; margin-top: 20px;">
+                <button onclick="window.app.cerrarModalConteoIndividual()" style="flex: 1; background: #2d2d30; border: 1px solid #555555; color: #d4d4d4; padding: 11px; border-radius: 2px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.3px;" onmouseover="this.style.background='#3e3e42'" onmouseout="this.style.background='#2d2d30'">
                   Cancelar
                 </button>
-                <button onclick="window.app.guardarConteoIndividual('${id}')" style="flex: 2; background: #6B8E7F; border: none; color: white; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.95rem; transition: all 0.2s; box-shadow: 0 2px 8px rgba(107, 142, 127, 0.3);">
-                  ✅ Guardar Conteo
+                <button onclick="window.app.guardarConteoIndividual('${id}')" style="flex: 2; background: #5a6b7a; border: none; color: #ffffff; padding: 11px; border-radius: 2px; cursor: pointer; font-weight: 700; font-size: 12px; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.3px;" onmouseover="this.style.background='#6a7b8a'" onmouseout="this.style.background='#5a6b7a'">
+                  Guardar Conteo
                 </button>
               </div>
             </div>
@@ -2598,14 +2609,21 @@ class InventarioCompleto {
     if (!this.escapeHandler) {
       this.escapeHandler = (e) => {
         if (e.key === 'Escape') {
-          // Cerrar modal personalizado si est abierto
+          // Cerrar lightbox si está activo
+          const lightbox = document.getElementById('lightbox');
+          if (lightbox && lightbox.classList.contains('active')) {
+            this.closeLightbox();
+            return;
+          }
+          
+          // Cerrar modal personalizado si está abierto
           const customModal = document.getElementById('customModalOverlay');
           if (customModal && customModal.style.display === 'flex') {
             this.closeCustomModal();
             return;
           }
           
-          // Cerrar modal principal si est abierto
+          // Cerrar modal principal si está abierto
           const mainModal = document.getElementById('modal');
           if (mainModal && mainModal.classList.contains('active')) {
             this.closeModal();
@@ -2623,8 +2641,154 @@ class InventarioCompleto {
     }
   }
 
+  // ========================================
+  // LIGHTBOX COMPLETO - Con zoom y navegación
+  // ========================================
+  
+  async openLightbox(id) {
+    console.log('🖼️ openLightbox llamado con ID:', id);
+    
+    const repuesto = this.repuestos.find(r => r.id === id);
+    console.log('📦 Repuesto encontrado:', repuesto ? repuesto.nombre : 'NO ENCONTRADO');
+    
+    if (!repuesto) {
+      console.error('❌ No se encontró el repuesto con ID:', id);
+      return;
+    }
+    
+    if (!repuesto.multimedia || repuesto.multimedia.length === 0) {
+      console.warn('⚠️ El repuesto no tiene multimedia');
+      this.showToast('⚠️ Este repuesto no tiene imágenes', 'warning');
+      return;
+    }
+    
+    this.lightboxMedias = repuesto.multimedia.filter(m => m.type === 'image' || m.type === 'video');
+    console.log('🖼️ Medios encontrados:', this.lightboxMedias.length);
+    
+    if (this.lightboxMedias.length === 0) {
+      console.warn('⚠️ No hay imágenes o videos para mostrar');
+      this.showToast('⚠️ No hay imágenes disponibles', 'warning');
+      return;
+    }
+    
+    this.lightboxIndex = 0;
+    
+    // Mostrar lightbox primero
+    const lightbox = document.getElementById('lightbox');
+    console.log('🎬 Activando lightbox...');
+    lightbox.classList.add('active');
+    
+    // Luego cargar la imagen
+    console.log('⏳ Cargando imagen...');
+    await this.showLightbox();
+    console.log('✅ Lightbox mostrado');
+  }
+
+  async showLightbox() {
+    const media = this.lightboxMedias[this.lightboxIndex];
+    const content = document.getElementById('lightboxContent');
+    
+    // Mostrar loading mientras se carga
+    content.innerHTML = '<div style="color: white; text-align: center; padding: 40px; font-size: 16px;">Cargando...</div>';
+    
+    if (media.type === 'video') {
+      content.innerHTML = `<video src="${media.url}" controls autoplay style="max-width: 100%; max-height: 90vh; border-radius: 2px;"></video>`;
+    } else {
+      let imageUrl = media.url;
+      
+      content.innerHTML = `<img id="lightboxImage" src="${imageUrl}" style="max-width: 100%; max-height: 90vh; transition: transform 0.2s ease; cursor: grab; border-radius: 2px;" alt="Imagen ampliada">`;
+      
+      // 🔍 AGREGAR ZOOM CON SCROLL
+      setTimeout(() => {
+        const img = document.getElementById('lightboxImage');
+        if (img) {
+          let scale = 1;
+          let isDragging = false;
+          let startX = 0, startY = 0;
+          let translateX = 0, translateY = 0;
+          
+          // Zoom con scroll
+          content.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+            scale = Math.max(1, Math.min(5, scale + delta));
+            
+            if (scale === 1) {
+              translateX = 0;
+              translateY = 0;
+              img.style.cursor = 'grab';
+            } else {
+              img.style.cursor = scale > 1 ? 'grab' : 'default';
+            }
+            
+            img.style.transform = `translate(${translateX / scale}px, ${translateY / scale}px) scale(${scale})`;
+          }, { passive: false });
+          
+          // Arrastre
+          img.addEventListener('mousedown', (e) => {
+            if (scale > 1) {
+              e.preventDefault();
+              isDragging = true;
+              startX = e.clientX - translateX;
+              startY = e.clientY - translateY;
+              img.style.cursor = 'grabbing';
+            }
+          });
+          
+          document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+              translateX = e.clientX - startX;
+              translateY = e.clientY - startY;
+              img.style.transform = `translate(${translateX / scale}px, ${translateY / scale}px) scale(${scale})`;
+            }
+          });
+          
+          document.addEventListener('mouseup', () => {
+            if (isDragging) {
+              isDragging = false;
+              img.style.cursor = scale > 1 ? 'grab' : 'default';
+            }
+          });
+          
+          // Resetear con doble click
+          img.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+            img.style.cursor = 'grab';
+            img.style.transform = 'translate(0px, 0px) scale(1)';
+          });
+        }
+      }, 100);
+    }
+    
+    document.getElementById('lightboxCounter').textContent = `${this.lightboxIndex + 1} / ${this.lightboxMedias.length}`;
+  }
+
+  closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    lightbox.classList.remove('active');
+    
+    // Limpiar contenido para liberar memoria
+    const content = document.getElementById('lightboxContent');
+    if (content) {
+      content.innerHTML = '';
+    }
+  }
+
+  async lightboxPrev() {
+    this.lightboxIndex = (this.lightboxIndex - 1 + this.lightboxMedias.length) % this.lightboxMedias.length;
+    await this.showLightbox();
+  }
+
+  async lightboxNext() {
+    this.lightboxIndex = (this.lightboxIndex + 1) % this.lightboxMedias.length;
+    await this.showLightbox();
+  }
+
   // ===============================================
-  // SINCRONIZACIN DE UBICACIONES DESDE EL DOM
+  // SINCRONIZACIÓN DE UBICACIONES DESDE EL DOM
   // ===============================================
   
   /**
@@ -3469,6 +3633,36 @@ class InventarioCompleto {
     
   }
 
+  // ===================================================================
+  // ACTIVAR FILESYSTEM MANUAL
+  // ===================================================================
+  async activarFileSystem() {
+    try {
+      console.log('🗂️ Activando FileSystem Access API...');
+      this.showToast('Selecciona la carpeta INVENTARIO_STORAGE', 'info');
+      
+      // Llamar al método selectFolder de fsManager
+      const success = await fsManager.selectFolder();
+      
+      if (success) {
+        this.showToast('✅ FileSystem activado correctamente', 'success');
+        console.log('✅ FileSystem conectado:', fsManager.folderPath);
+        
+        // Recargar datos desde FileSystem
+        console.log('🔄 Recargando datos desde FileSystem...');
+        await this.loadData();
+        await this.render();
+        
+        this.showToast('✅ Datos recargados desde carpeta', 'success');
+      } else {
+        this.showToast('❌ No se pudo activar FileSystem', 'error');
+      }
+    } catch (error) {
+      console.error('❌ Error activando FileSystem:', error);
+      this.showToast('Error: ' + error.message, 'error');
+    }
+  }
+
   async saveData() {
     try {
       //   MVIL: Actualizar EMBEDDED_DATA automticamente
@@ -3625,9 +3819,11 @@ class InventarioCompleto {
     } else if (tabName === 'valores') {
       this.renderValores();
     } else if (tabName === 'configuracion') {
-      if (typeof configuracion !== 'undefined') {
-        configuracion.renderStorageUI();
-      }
+      // TODO: Implementar módulo configuracion completo
+      // if (typeof configuracion !== 'undefined') {
+      //   configuracion.renderStorageUI();
+      // }
+      console.log('📋 TAB Configuración cargado (modo básico)');
     }
   }
 
@@ -3810,35 +4006,35 @@ class InventarioCompleto {
     }
 
     statsGridEl.innerHTML = `
-      <div class="stats-card" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; border: none;">
+      <div class="stats-card" style="background: #5a6b7a; color: white; border: none;">
         <div class="stat-value">${formatNumber(total)}</div>
         <div class="stat-label" style="color: rgba(255,255,255,0.9);">Repuestos totales</div>
         <div style="margin-top: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.7);">Promedio: ${formatCurrency(valorPromedio)}</div>
       </div>
-      <div class="stats-card" style="border-left: 4px solid var(--success);">
-        <div class="stat-value" style="color: var(--success);">${formatCurrency(valorTotal)}</div>
+      <div class="stats-card" style="border-left: 4px solid #5a7a5a;">
+        <div class="stat-value" style="color: #5a7a5a;">${formatCurrency(valorTotal)}</div>
         <div class="stat-label">Valor inventario</div>
-        <div style="margin-top: 8px; font-size: 0.85rem; color: var(--gray-500);">${totalAreas} areas | ${totalEquipos} equipos | ${totalTipos} tipos</div>
+        <div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary);">${totalAreas} areas | ${totalEquipos} equipos | ${totalTipos} tipos</div>
       </div>
-      <div class="stats-card" style="border-left: 4px solid var(--danger);">
-        <div class="stat-value" style="color: var(--danger);">${formatNumber(sinStock)}</div>
+      <div class="stats-card" style="border-left: 4px solid #8a5a5a;">
+        <div class="stat-value" style="color: #8a5a5a;">${formatNumber(sinStock)}</div>
         <div class="stat-label">Sin stock</div>
-        <div style="margin-top: 8px; font-size: 0.85rem; color: var(--gray-500);">${formatPercent(sinStock, total)} del total</div>
+        <div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary);">${formatPercent(sinStock, total)} del total</div>
       </div>
-      <div class="stats-card" style="border-left: 4px solid var(--warning);">
-        <div class="stat-value" style="color: var(--warning);">${formatNumber(bajoStock)}</div>
+      <div class="stats-card" style="border-left: 4px solid #8a7a5a;">
+        <div class="stat-value" style="color: #8a7a5a;">${formatNumber(bajoStock)}</div>
         <div class="stat-label">Stock critico</div>
-        <div style="margin-top: 8px; font-size: 0.85rem; color: var(--gray-500);">${formatPercent(bajoStock, total)} del total</div>
+        <div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary);">${formatPercent(bajoStock, total)} del total</div>
       </div>
-      <div class="stats-card" style="border-left: 4px solid var(--success);">
-        <div class="stat-value" style="color: var(--success);">${saludStock.toFixed(1)}%</div>
+      <div class="stats-card" style="border-left: 4px solid #5a7a5a;">
+        <div class="stat-value" style="color: #5a7a5a;">${saludStock.toFixed(1)}%</div>
         <div class="stat-label">Salud de stock</div>
-        <div style="margin-top: 8px; font-size: 0.85rem; color: var(--gray-500);">Nivel: <span style="color: ${colorAlerta}; font-weight: 600;">${nivelAlerta}</span></div>
+        <div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary);">Nivel: <span style="color: ${colorAlerta}; font-weight: 600;">${nivelAlerta}</span></div>
       </div>
-      <div class="stats-card" style="border-left: 4px solid var(--info);">
-        <div class="stat-value" style="color: var(--info);">${cobertura.toFixed(1)}%</div>
+      <div class="stats-card" style="border-left: 4px solid #6a7a8a;">
+        <div class="stat-value" style="color: #6a7a8a;">${cobertura.toFixed(1)}%</div>
         <div class="stat-label">Cobertura multimedia</div>
-        <div style="margin-top: 8px; font-size: 0.85rem; color: var(--gray-500);">${formatNumber(summary.conMultimedia)} con imagenes</div>
+        <div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-secondary);">${formatNumber(summary.conMultimedia)} con imagenes</div>
       </div>
     `;
 
@@ -3847,21 +4043,21 @@ class InventarioCompleto {
         title: 'Stock saludable',
         value: stockOk,
         percent: total > 0 ? (stockOk / total) * 100 : 0,
-        color: 'var(--success)',
+        color: '#5a7a5a',  // Verde grisáceo
         detail: `Valor en stock: ${formatCurrency(valorHealthy)}`
       },
       {
         title: 'Stock bajo',
         value: bajoStock,
         percent: total > 0 ? (bajoStock / total) * 100 : 0,
-        color: 'var(--warning)',
+        color: '#8a7a5a',  // Naranja grisáceo
         detail: `Cobertura media: ${avgCoveragePercent.toFixed(0)}% | Deficit medio: ${formatNumber(avgDeficit.toFixed(1))}`
       },
       {
         title: 'Sin stock',
         value: sinStock,
         percent: total > 0 ? (sinStock / total) * 100 : 0,
-        color: 'var(--danger)',
+        color: '#8a5a5a',  // Rojo grisáceo
         detail: `Areas afectadas: ${formatNumber(sinStockAreas)}`
       }
     ];
@@ -3951,7 +4147,7 @@ class InventarioCompleto {
     };
 
     const renderSinStockItem = (item, accentColor) => `
-      <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid ${accentColor}; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px;">
+      <div style="background: var(--bg-secondary); border: 1px solid ${accentColor}; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px;">
         <div style="display: flex; justify-content: space-between; align-items: baseline;">
           <strong style="color: ${accentColor};">${sanitize(item.nombre)}</strong>
           <span style="font-size: 0.75rem; color: var(--text-secondary);">${sanitize(item.area)}</span>
@@ -3964,7 +4160,7 @@ class InventarioCompleto {
     const renderBajoStockItem = (item, accentColor) => {
       const coberturaPorc = item.cobertura !== undefined ? Math.max(0, Math.min(1, item.cobertura)) * 100 : 0;
       return `
-        <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid ${accentColor}; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px;">
+        <div style="background: var(--bg-secondary); border: 1px solid ${accentColor}; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; justify-content: space-between; align-items: baseline;">
             <strong style="color: ${accentColor};">${sanitize(item.nombre)}</strong>
             <span style="font-size: 0.75rem; color: var(--text-secondary);">${sanitize(item.area)}</span>
@@ -3990,26 +4186,26 @@ class InventarioCompleto {
         const pctBajo = (areaStat.bajoStock / totalArea) * 100;
         const pctSin = (areaStat.sinStock / totalArea) * 100;
         return `
-          <div style="padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.5); display: flex; flex-direction: column; gap: 12px;">
+          <div style="padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-secondary); display: flex; flex-direction: column; gap: 12px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <strong style="color: var(--primary); font-size: 1.05rem;">${sanitize(areaStat.area)}</strong>
+                <strong style="color: #5a6b7a; font-size: 1.05rem;">${sanitize(areaStat.area)}</strong>
                 <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">${formatNumber(areaStat.total)} repuestos | ${formatCurrency(areaStat.valor)}</div>
               </div>
               <div style="text-align: right;">
-                <div style="font-size: 1.1rem; font-weight: 600; color: var(--success);">${pctOk.toFixed(0)}%</div>
+                <div style="font-size: 1.1rem; font-weight: 600; color: #5a7a5a;">${pctOk.toFixed(0)}%</div>
                 <div style="font-size: 0.7rem; color: var(--text-secondary);">saludable</div>
               </div>
             </div>
-            <div style="display: flex; height: 8px; border-radius: 6px; overflow: hidden;">
-              <div style="width: ${pctOk}%; background: var(--success);" title="${formatNumber(areaStat.ok)} OK"></div>
-              <div style="width: ${pctBajo}%; background: var(--warning);" title="${formatNumber(areaStat.bajoStock)} Bajo stock"></div>
-              <div style="width: ${pctSin}%; background: var(--danger);" title="${formatNumber(areaStat.sinStock)} Sin stock"></div>
+            <div style="display: flex; height: 8px; border-radius: 6px; overflow: hidden; background: var(--bg-tertiary);">
+              <div style="width: ${pctOk}%; background: #5a7a5a;" title="${formatNumber(areaStat.ok)} OK"></div>
+              <div style="width: ${pctBajo}%; background: #8a7a5a;" title="${formatNumber(areaStat.bajoStock)} Bajo stock"></div>
+              <div style="width: ${pctSin}%; background: #8a5a5a;" title="${formatNumber(areaStat.sinStock)} Sin stock"></div>
             </div>
             <div style="display: flex; gap: 12px; font-size: 0.78rem;">
-              <span style="color: var(--success);">${formatNumber(areaStat.ok)} OK</span>
-              <span style="color: var(--warning);">${formatNumber(areaStat.bajoStock)} Bajo</span>
-              <span style="color: var(--danger);">${formatNumber(areaStat.sinStock)} Sin</span>
+              <span style="color: #5a7a5a;">${formatNumber(areaStat.ok)} OK</span>
+              <span style="color: #8a7a5a;">${formatNumber(areaStat.bajoStock)} Bajo</span>
+              <span style="color: #8a5a5a;">${formatNumber(areaStat.sinStock)} Sin</span>
             </div>
           </div>
         `;
@@ -4061,15 +4257,15 @@ class InventarioCompleto {
 
     const alertsSection = `
       <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px;">
-        <h3 style="margin-bottom: 16px; color: var(--primary); display: flex; align-items: center; gap: 10px;">Alertas rapidas</h3>
+        <h3 style="margin-bottom: 16px; color: #5a6b7a; display: flex; align-items: center; gap: 10px;">Alertas rapidas</h3>
         <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
           <div>
-            <h4 style="margin-bottom: 12px; color: var(--danger);">Sin stock (${formatNumber(sinStock)})</h4>
-            ${renderAlerts(sinStockHighlights, 'var(--danger)', 'No hay repuestos en estado critico.', renderSinStockItem)}
+            <h4 style="margin-bottom: 12px; color: #8a5a5a;">Sin stock (${formatNumber(sinStock)})</h4>
+            ${renderAlerts(sinStockHighlights, '#8a5a5a', 'No hay repuestos en estado critico.', renderSinStockItem)}
           </div>
           <div>
-            <h4 style="margin-bottom: 12px; color: var(--warning);">Stock bajo (${formatNumber(bajoStock)})</h4>
-            ${renderAlerts(bajoStockHighlights, 'var(--warning)', 'No hay repuestos con stock bajo.', renderBajoStockItem)}
+            <h4 style="margin-bottom: 12px; color: #8a7a5a;">Stock bajo (${formatNumber(bajoStock)})</h4>
+            ${renderAlerts(bajoStockHighlights, '#8a7a5a', 'No hay repuestos con stock bajo.', renderBajoStockItem)}
             <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-secondary);">Promedio de coberturas: ${avgCoveragePercent.toFixed(0)}% | Areas afectadas: ${formatNumber(lowStockAreas)}</div>
           </div>
         </div>
@@ -4933,16 +5129,92 @@ class InventarioCompleto {
 
     this.filteredRepuestos = filtered;
 
+    // Resetear a página 1 cuando cambian filtros
+    if (!this.currentPage) this.currentPage = 1;
+
     // Renderizar según la vista activa
     if (this.currentView === 'cards') {
       cardsContainer.style.display = 'grid';
       listContainer.style.display = 'none';
-      await this.renderCards(cardsContainer, filtered);
+      
+      // PAGINACIÓN: 18 items por página (6 columnas x 3 filas)
+      const itemsPerPage = 18;
+      const startIndex = (this.currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedItems = filtered.slice(startIndex, endIndex);
+      
+      await this.renderCards(cardsContainer, paginatedItems);
+      this.renderPagination(filtered.length);
     } else if (this.currentView === 'list') {
       cardsContainer.style.display = 'none';
       listContainer.style.display = 'block';
       this.renderList(listContainer, filtered);
     }
+  }
+
+  // Renderizar paginación
+  renderPagination(totalItems) {
+    const paginationTop = document.getElementById('paginationTop');
+    const paginationBottom = document.getElementById('paginationBottom');
+    
+    if (!paginationTop && !paginationBottom) return;
+
+    const itemsPerPage = 18; // 6 columnas x 3 filas
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Generar HTML de paginación
+    let html = '';
+    
+    if (totalPages <= 1) {
+      // Ocultar paginación si solo hay 1 página o menos
+      if (paginationTop) paginationTop.style.display = 'none';
+      if (paginationBottom) paginationBottom.style.display = 'none';
+      return;
+    }
+
+    // Mostrar paginación
+    if (paginationTop) {
+      paginationTop.style.display = 'flex';
+      paginationTop.className = 'pagination-container';
+    }
+    if (paginationBottom) {
+      paginationBottom.style.display = 'flex';
+      paginationBottom.className = 'pagination-container';
+    }
+
+    html = `
+      <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.goToPage(1)">‹‹</button>
+      <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.goToPage(${this.currentPage - 1})">‹</button>
+    `;
+
+    // Botones de páginas
+    const maxButtons = 5;
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+    if (endPage - startPage < maxButtons - 1) {
+      startPage = Math.max(1, endPage - maxButtons + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      html += `<button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" onclick="app.goToPage(${i})">${i}</button>`;
+    }
+
+    html += `
+      <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.goToPage(${this.currentPage + 1})">›</button>
+      <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.goToPage(${totalPages})">››</button>
+      <span class="pagination-info">${totalItems} items</span>
+    `;
+
+    // Aplicar HTML a ambos contenedores
+    if (paginationTop) paginationTop.innerHTML = html;
+    if (paginationBottom) paginationBottom.innerHTML = html;
+  }
+
+  goToPage(page) {
+    this.currentPage = page;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.renderInventario();
   }
 
   // Renderizar tarjetas con diseño mejorado y limpio
@@ -4951,7 +5223,7 @@ class InventarioCompleto {
 
     if (repuestos.length === 0) {
       container.innerHTML = `
-        <div style="text-align: center; padding: 60px 20px; color: var(--text-secondary);">
+        <div style="text-align: center; padding: 60px 20px; color: var(--text-secondary); grid-column: 1 / -1;">
           <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.3;">📦</div>
           <p style="font-size: 18px; margin: 0;">No se encontraron repuestos</p>
           <p style="font-size: 14px; margin: 10px 0 0 0; opacity: 0.7;">Intenta ajustar los filtros</p>
@@ -4960,6 +5232,7 @@ class InventarioCompleto {
       return;
     }
 
+    // Renderizar repuestos (ya vienen paginados desde renderInventario)
     const cards = await Promise.all(repuestos.map(async (rep) => {
       // Cargar imagen
       const imageURL = await this.getFirstImage(rep.multimedia || rep.imagenes);
@@ -4976,31 +5249,31 @@ class InventarioCompleto {
       let textoStock = '';
 
       if (cantidad === 0) {
-        stockStatus = '⚠️ AGOTADO';
-        stockColor = '#ef4444';
+        stockStatus = 'AGOTADO';
+        stockColor = '#7a6b6b';  // Gris rojizo grisáceo
         porcentajeBarra = 0;
-        textoStock = '⚠️ Stock agotado. Necesita reposición urgente.';
+        textoStock = `0 de ${minimo}`;
       } else if (cantidad < minimo) {
-        stockStatus = '🔴 CRÍTICO';
-        stockColor = '#f97316';
-        porcentajeBarra = (cantidad / minimo) * 100;
-        const faltante = minimo - cantidad;
-        textoStock = `⚠️ Tenemos ${cantidad} unid. de ${minimo} mínimas requeridas. Faltan ${faltante} unid.`;
+        stockStatus = 'BAJO';
+        stockColor = '#8a7a5a';  // Naranja grisáceo
+        porcentajeBarra = Math.min((cantidad / minimo) * 100, 95);
+        textoStock = `${cantidad} de ${minimo}`;
       } else if (cantidad >= minimo && cantidad < optimo) {
-        stockStatus = '🟡 ADECUADO';
-        stockColor = '#eab308';
+        stockStatus = 'ADECUADO';
+        stockColor = '#6b7280';  // Gris neutro (ya estaba bien)
         porcentajeBarra = 100;
-        const exceso = cantidad - minimo;
-        textoStock = `✓ Tenemos ${cantidad} unid. de ${minimo} mínimas. Stock adecuado (+${exceso} sobre mínimo).`;
+        textoStock = `${cantidad} de ${minimo}`;
       } else {
-        stockStatus = '✅ ÓPTIMO';
-        stockColor = '#22c55e';
+        stockStatus = 'ÓPTIMO';
+        stockColor = '#5a7a5a';  // Verde grisáceo
         porcentajeBarra = 100;
-        const exceso = cantidad - optimo;
-        textoStock = `✓ Tenemos ${cantidad} unid. Stock óptimo alcanzado (+${exceso} sobre óptimo).`;
+        textoStock = `${cantidad} de ${optimo}`;
       }
 
-      // Formatear fecha del último conteo con hora
+      // Calcular porcentaje
+      const porcentajeDisplay = minimo > 0 ? Math.round((cantidad / minimo) * 100) : 0;
+
+      // Formatear fecha del último conteo - COMPACTO
       let ultimoConteoHTML = '';
       if (rep.ultimoConteo) {
         const fecha = new Date(rep.ultimoConteo);
@@ -5014,44 +5287,37 @@ class InventarioCompleto {
           minute: '2-digit'
         });
         ultimoConteoHTML = `
-          <div style="font-size: 11px; color: rgba(255,255,255,0.85); padding: 6px; background: rgba(15, 23, 42, 0.6); border-radius: 4px; text-align: center; margin-top: 6px;">
-            📋 Contadas el ${fechaFormateada} a las ${horaFormateada}
-          </div>
-        `;
-      } else {
-        ultimoConteoHTML = `
-          <div style="font-size: 11px; color: #f97316; padding: 6px; background: rgba(15, 23, 42, 0.6); border-radius: 4px; text-align: center; margin-top: 6px;">
-            ⚠️ Sin conteo previo
+          <div style="font-size: 9px; color: #9ca3af; padding-top: 6px; text-align: right; font-weight: 500; letter-spacing: 0.2px;">
+            Conteo: ${fechaFormateada} ${horaFormateada}
           </div>
         `;
       }
 
-      // Generar sección de datos técnicos si existen
+      // Datos técnicos - SIN ICONOS
       let datosTecnicosHTML = '';
       if (rep.datosTecnicos && rep.datosTecnicos.trim() !== '') {
         datosTecnicosHTML = `
-          <div style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 10px 12px; border-radius: 6px; margin-top: 10px;">
-            <div style="font-size: 11px; font-weight: 700; color: #3b82f6; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-              <span>⚙️</span>
-              <span>DATOS TÉCNICOS</span>
+          <div style="background: #f8f9fa; border-left: 2px solid #6c757d; padding: 8px 10px; border-radius: 0; margin-top: 10px;">
+            <div style="font-size: 9px; font-weight: 700; color: #6c757d; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
+              Datos Técnicos
             </div>
-            <div style="font-size: 12px; color: var(--text-primary); line-height: 1.6; font-family: 'Courier New', monospace; white-space: pre-line; word-break: break-word;">${rep.datosTecnicos}</div>
+            <div style="font-size: 11px; color: #495057; line-height: 1.5; font-family: 'Courier New', monospace; white-space: pre-line; word-break: break-word;">${rep.datosTecnicos}</div>
           </div>
         `;
       }
 
-      // Botones de mapa si tiene ubicaciones
+      // Botones de mapa si tiene ubicaciones - GRISÁCEO
       let botonesMapaHTML = '';
       if (rep.ubicaciones && rep.ubicaciones.length > 0) {
         botonesMapaHTML = `
-          <button class="btn-icon" onclick="window.app?.verRepuestoEnMapa('${rep.id}')" style="flex: 1; padding: 8px 12px; border: none; background: linear-gradient(135deg, #8b5cf6, #6366f1); color: white; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.2s; box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);">
-            🗺️ Ver en Mapa (${rep.ubicaciones.length})
+          <button class="card-btn" onclick="window.app?.verRepuestoEnMapa('${rep.id}')" style="flex: 1; padding: 8px 12px; border: 1px solid #5a6b7a; background: #2d2d30; color: #d4d4d4; border-radius: 2px; cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;">
+            VER EN MAPA (${rep.ubicaciones.length})
           </button>
         `;
       } else {
         botonesMapaHTML = `
-          <button class="btn-icon" onclick="window.app?.agregarUbicacionMapa('${rep.id}')" style="flex: 1; padding: 8px 12px; border: 1px dashed var(--border-color); background: transparent; color: var(--text-secondary); border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.2s;">
-            📍 Añadir Ubicación
+          <button class="card-btn" onclick="window.app?.agregarUbicacionMapa('${rep.id}')" style="flex: 1; padding: 8px 12px; border: 1px dashed #3e3e42; background: transparent; color: #6e7681; border-radius: 2px; cursor: pointer; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;">
+            AÑADIR UBICACIÓN
           </button>
         `;
       }
@@ -5067,120 +5333,111 @@ class InventarioCompleto {
       }
 
       return `
-        <div class="repuesto-card" data-id="${rep.id}" style="background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; border: 1px solid var(--border-color);">
+        <div class="repuesto-card" data-id="${rep.id}" style="background: #252526; border-radius: 2px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.6); transition: all 0.2s; border: 1px solid #3e3e42;">
           
-          <!-- Imagen principal -->
-          <div class="card-image" style="width: 100%; height: 200px; background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: pointer;" ${imageURL ? `data-action="lightbox" data-id="${rep.id}"` : ''}>
-            ${imageURL ? `<img src="${imageURL}" alt="${rep.nombre || 'Imagen'}" style="width: 100%; height: 100%; object-fit: cover;">` : '<div style="font-size: 64px; opacity: 0.3;">📦</div>'}
+          <!-- Imagen -->
+          <div class="card-image" style="width: 100%; height: 160px; background: #1e1e1e; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: pointer; border-bottom: 1px solid #3e3e42;" ${imageURL ? `data-action="lightbox" data-id="${rep.id}"` : ''}>
+            ${imageURL ? `<img src="${imageURL}" alt="${rep.nombre || 'Imagen'}" style="width: 100%; height: 100%; object-fit: cover;">` : '<div style="font-size: 11px; color: #6e7681; font-weight: 600; letter-spacing: 0.5px;">SIN IMAGEN</div>'}
             ${(rep.multimedia && rep.multimedia.length > 1) ? `
-              <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;">
-                📸 ${rep.multimedia.length}
+              <div style="position: absolute; bottom: 6px; right: 6px; background: rgba(0, 0, 0, 0.9); color: #d4d4d4; padding: 3px 7px; border-radius: 2px; font-size: 9px; font-weight: 600; letter-spacing: 0.3px; border: 1px solid #3e3e42;">
+                ${rep.multimedia.length} IMGS
+              </div>
+            ` : ''}
+            ${rep.tipo ? `
+              <div style="position: absolute; top: 6px; left: 6px; background: rgba(0, 122, 204, 0.95); color: #ffffff; padding: 3px 8px; border-radius: 2px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">
+                ${rep.tipo}
               </div>
             ` : ''}
           </div>
 
-          <!-- Contenido de la card -->
-          <div class="card-content" style="padding: 16px;">
+          <!-- Contenido -->
+          <div class="card-content" style="padding: 12px;">
             
-            <!-- Título -->
-            <h3 style="margin: 0 0 8px 0; font-size: 17px; color: var(--text-primary); font-weight: 600; line-height: 1.3;">
-              ${rep.nombre || 'Sin nombre'}
-            </h3>
+            <!-- Header: Título + SAP -->
+            <div style="margin-bottom: 10px; border-bottom: 1px solid #3e3e42; padding-bottom: 8px;">
+              <h3 style="margin: 0 0 4px 0; font-size: 13px; color: #d4d4d4; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-transform: uppercase; letter-spacing: 0.3px;">
+                ${rep.nombre || 'SIN NOMBRE'}
+              </h3>
+              ${rep.codSAP || rep.codigo_sap ? `
+                <div style="font-size: 10px; color: #969696; font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: 0.5px; margin-top: 3px;">
+                  SAP: ${rep.codSAP || rep.codigo_sap}
+                </div>
+              ` : ''}
+            </div>
 
-            <!-- Códigos -->
-            ${rep.codSAP || rep.codigo_sap ? `
-              <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 6px;">
-                <strong style="color: var(--text-primary);">Cód. SAP:</strong> 
-                <span style="font-weight: 600; color: var(--primary);">${rep.codSAP || rep.codigo_sap}</span>
-              </div>
-            ` : ''}
-            ${rep.codProv ? `
-              <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">
-                <strong style="color: var(--text-primary);">Cód. Proveedor:</strong> 
-                <span style="font-weight: 600; color: var(--info);">${rep.codProv}</span>
-              </div>
-            ` : ''}
-
-            <!-- Tipo y Categoría -->
-            ${rep.tipo ? `
-              <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 4px;">
-                <strong>Tipo:</strong> ${rep.tipo}
-              </div>
-            ` : ''}
-            ${rep.categoria ? `
-              <div style="margin-bottom: 10px;">
-                <span style="font-weight: 700; font-size: 14px; padding: 4px 12px; border-radius: 6px; display: inline-block; background: rgba(91, 124, 153, 0.2); color: #5B7C99;">
-                  ${rep.categoria}
-                </span>
-              </div>
-            ` : ''}
-
-            <!-- Datos Técnicos -->
-            ${datosTecnicosHTML}
-
-            <!-- Sección de Stock -->
-            <div style="background: #334155; padding: 8px; border-radius: 6px; margin-top: 12px; border-left: 3px solid ${stockColor};">
+            <!-- Sección Stock -->
+            <div style="background: #1e1e1e; padding: 10px; border-radius: 2px; margin-bottom: 10px; border-left: 3px solid ${stockColor}; border: 1px solid #2d2d30;">
               
-              <!-- Texto descriptivo del estado -->
-              <div style="font-size: 11px; color: ${stockColor}; font-weight: 600; margin-bottom: 6px; line-height: 1.4;">
+              <!-- Header: Estado + Porcentaje -->
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 9px; color: #969696; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;">Estado</span>
+                <div style="display: flex; align-items: baseline; gap: 4px;">
+                  <span style="font-size: 10px; color: ${stockColor}; font-weight: 800; letter-spacing: 0.5px;">${stockStatus}</span>
+                  <span style="font-size: 9px; color: #6e7681; font-weight: 600;">${porcentajeDisplay}%</span>
+                </div>
+              </div>
+              
+              <!-- Barra horizontal simple -->
+              <div style="width: 100%; height: 4px; background: #0d0d0d; border-radius: 0; overflow: hidden; margin-bottom: 8px;">
+                <div style="height: 100%; width: ${porcentajeBarra}%; background: ${stockColor}; opacity: 0.95; transition: width 0.3s ease;"></div>
+              </div>
+              
+              <!-- Texto compacto -->
+              <div style="font-size: 10px; color: #969696; font-weight: 600; letter-spacing: 0.2px;">
                 ${textoStock}
               </div>
               
-              <!-- Barra visual de stock -->
-              <div style="position: relative; width: 100%; height: 24px; background: rgba(15, 23, 42, 0.8); border-radius: 6px; overflow: hidden; margin-bottom: 6px; border: 2px solid ${stockColor}40;">
-                
-                <!-- Barra de progreso -->
-                <div style="position: absolute; left: 0; top: 0; height: 100%; width: ${porcentajeBarra}%; background: linear-gradient(90deg, ${stockColor}dd, ${stockColor}); transition: width 0.4s ease; box-shadow: 0 0 10px ${stockColor}50;"></div>
-                
-                <!-- Contenido superpuesto -->
-                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 3;">
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="font-size: 13px; font-weight: 700; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">${cantidad}</span>
-                    <span style="font-size: 10px; color: rgba(255,255,255,0.7);">/</span>
-                    <span style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);">${minimo}</span>
-                    <span style="font-size: 10px; color: rgba(255,255,255,0.8); font-weight: 500;">unid.</span>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Grid de métricas -->
-              <div style="display: grid; grid-template-columns: repeat(${cantidadInstalada > 0 ? '4' : '3'}, 1fr); gap: 6px; margin-bottom: 6px;">
+              <!-- Grid KPI -->
+              <div style="display: grid; grid-template-columns: repeat(${cantidadInstalada > 0 ? '4' : '3'}, 1fr); gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #2d2d30;">
                 ${cantidadInstalada > 0 ? `
-                  <div style="text-align: center; background: rgba(107, 148, 136, 0.15); padding: 4px; border-radius: 4px; border: 1px solid rgba(107, 148, 136, 0.3);">
-                    <div style="font-size: 9px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 2px;">En Uso</div>
-                    <div style="font-size: 11px; font-weight: 700; color: #6D9488;">⚙️ ${cantidadInstalada}</div>
+                  <div style="text-align: center;">
+                    <div style="font-size: 8px; color: #6e7681; text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.5px; font-weight: 600;">Uso</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #d4d4d4;">${cantidadInstalada}</div>
                   </div>
                 ` : ''}
                 <div style="text-align: center;">
-                  <div style="font-size: 9px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 2px;">Mínimo</div>
-                  <div style="font-size: 11px; font-weight: 700; color: #C75300;">${minimo}</div>
-                </div>
-                <div style="text-align: center; background: rgba(91, 124, 153, 0.2); padding: 4px; border-radius: 4px;">
-                  <div style="font-size: 9px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 2px;">Stock</div>
-                  <div style="font-size: 12px; font-weight: 700; color: ${stockColor};">${cantidad}</div>
+                  <div style="font-size: 8px; color: #6e7681; text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.5px; font-weight: 600;">Min</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #d4d4d4;">${minimo}</div>
                 </div>
                 <div style="text-align: center;">
-                  <div style="font-size: 9px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 2px;">Óptimo</div>
-                  <div style="font-size: 11px; font-weight: 700; color: #527853;">${optimo}</div>
+                  <div style="font-size: 8px; color: #6e7681; text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.5px; font-weight: 600;">Stock</div>
+                  <div style="font-size: 16px; font-weight: 800; color: ${stockColor}; opacity: 0.95;">${cantidad}</div>
+                </div>
+                <div style="text-align: center;">
+                  <div style="font-size: 8px; color: #6e7681; text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.5px; font-weight: 600;">Ópt</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #d4d4d4;">${optimo}</div>
                 </div>
               </div>
               
-              <!-- Información de último conteo -->
+              <!-- Último conteo inline -->
               ${ultimoConteoHTML}
             </div>
+
+            <!-- Datos técnicos -->
+            ${datosTecnicosHTML}
           </div>
 
-          <!-- Footer con botones de acción -->
-          <div class="card-footer" style="display: flex; justify-content: center; align-items: center; gap: 8px; padding: 10px 12px; background: var(--bg-secondary);">
-            <button class="card-btn" data-action="edit" data-id="${rep.id}" style="background: #4A6278; color: #F7FAFC; border: 1px solid #5B7C99; padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s ease; flex: 1; max-width: 100px;">
-              Editar
-            </button>
-            <button class="card-btn" data-action="contar" data-id="${rep.id}" style="background: #557566; color: #F7FAFC; border: 1px solid #6B8E7F; padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s ease; flex: 1; max-width: 100px;">
-              Contar
-            </button>
-            <button class="card-btn" data-action="delete" data-id="${rep.id}" style="background: #A85555; color: #F7FAFC; border: 1px solid #C76B6B; padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s ease; flex: 1; max-width: 100px;">
-              Eliminar
-            </button>
+          <!-- Footer: Botones compactos en dos filas -->
+          <div class="card-footer" style="padding: 8px 12px; background: #1e1e1e; border-top: 1px solid #3e3e42;">
+            <!-- Fila 1: Botones de mapa (si aplica) -->
+            ${botonesMapaHTML ? `
+              <div style="display: flex; gap: 4px; margin-bottom: 6px;">
+                ${botonesMapaHTML}
+              </div>
+            ` : ''}
+            
+            <!-- Fila 2: Botones de acción -->
+            <div style="display: flex; justify-content: flex-end; gap: 4px;">
+              <button class="card-btn" data-action="edit" data-id="${rep.id}" style="background: #2d2d30; border: 1px solid #555555; color: #d4d4d4; padding: 6px 10px; border-radius: 2px; font-weight: 700; font-size: 10px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.5px;">
+                Editar
+              </button>
+              <button class="card-btn" data-action="contar" data-id="${rep.id}" style="background: #5a6b7a; border: none; color: #ffffff; padding: 6px 12px; border-radius: 2px; font-weight: 700; font-size: 10px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.5px;">
+                Contar
+              </button>
+              <button class="card-btn" data-action="delete" data-id="${rep.id}" style="background: #2d2d30; border: 1px solid #8a5a5a; color: #8a5a5a; padding: 6px 8px; border-radius: 2px; font-weight: 700; font-size: 10px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.5px;">
+                Del
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -5415,25 +5672,25 @@ class InventarioCompleto {
 
     container.innerHTML = `
       <div style="padding: 20px;">
-        <h3 style="margin-bottom: 20px;">Valor del Inventario</h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-          <div style="background: var(--card-bg); padding: 24px; border-radius: 12px; border: 2px solid var(--border-color);">
-            <div style="font-size: 2rem; font-weight: 700; color: var(--success); margin-bottom: 8px;">
+        <h3 style="margin-bottom: 20px; color: var(--text-primary); font-size: 18px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px;">VALOR DEL INVENTARIO</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+          <div style="background: var(--bg-secondary); padding: 24px; border-radius: 4px; border: 1px solid var(--border-color);">
+            <div style="font-size: 2rem; font-weight: 700; color: #5a7a5a; margin-bottom: 8px;">
               $${valorTotal.toLocaleString('es-CL', { minimumFractionDigits: 2 })}
             </div>
-            <div style="color: var(--text-secondary);">Valor Total</div>
+            <div style="color: var(--text-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">VALOR TOTAL</div>
           </div>
-          <div style="background: var(--card-bg); padding: 24px; border-radius: 12px; border: 2px solid var(--border-color);">
-            <div style="font-size: 2rem; font-weight: 700; color: var(--info); margin-bottom: 8px;">
+          <div style="background: var(--bg-secondary); padding: 24px; border-radius: 4px; border: 1px solid var(--border-color);">
+            <div style="font-size: 2rem; font-weight: 700; color: #6a7a8a; margin-bottom: 8px;">
               ${conPrecio}
             </div>
-            <div style="color: var(--text-secondary);">Repuestos con Precio</div>
+            <div style="color: var(--text-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">REPUESTOS CON PRECIO</div>
           </div>
-          <div style="background: var(--card-bg); padding: 24px; border-radius: 12px; border: 2px solid var(--border-color);">
-            <div style="font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 8px;">
+          <div style="background: var(--bg-secondary); padding: 24px; border-radius: 4px; border: 1px solid var(--border-color);">
+            <div style="font-size: 2rem; font-weight: 700; color: #5a6b7a; margin-bottom: 8px;">
               $${conPrecio > 0 ? (valorTotal / conPrecio).toLocaleString('es-CL', { minimumFractionDigits: 2 }) : '0'}
             </div>
-            <div style="color: var(--text-secondary);">Valor Promedio</div>
+            <div style="color: var(--text-secondary); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">VALOR PROMEDIO</div>
           </div>
         </div>
       </div>

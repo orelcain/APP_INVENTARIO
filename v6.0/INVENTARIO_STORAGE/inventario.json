@@ -97,7 +97,7 @@
     "equipo": "Cintas Filete",
     "sistema": "Cinta Curva",
     "detalleUbicacion": "",
-    "cantidad": 0,
+    "cantidad": 1,
     "cantidadInstalada": 8,
     "minimo": 4,
     "optimo": 8,
@@ -105,7 +105,7 @@
     "datosTecnicos": "",
     "multimedia": [],
     "ultimaModificacion": "2025-10-31T06:21:06.323Z",
-    "ultimoConteo": null
+    "ultimoConteo": "2025-11-01T05:17:48.738Z"
   },
   {
     "id": "17613705032580.9346793152482653",
