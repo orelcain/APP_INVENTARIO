@@ -2275,23 +2275,78 @@
           <input type="text" class="form-control" id="nombre" required placeholder="Descripción detallada del repuesto">
         </div>
         
-        <!-- UBICACIONES MÚLTIPLES (core.js inyecta dinámicamente) -->
+        <!-- JERARQUÍA/UBICACIÓN (8 Niveles con Cascada) -->
         <div class="ubicaciones-section">
           <div class="ubicaciones-header">
-            <h4 class="ubicaciones-title">Ubicaciones del Repuesto</h4>
-            <button type="button" onclick="app.agregarUbicacion()" class="btn btn-success btn-agregar-ubicacion">
-              + Agregar Ubicación
-            </button>
+            <h4 class="ubicaciones-title">📍 Jerarquía y Ubicación</h4>
           </div>
           
           <div class="ubicaciones-hint">
-            💡 <strong>Múltiples ubicaciones:</strong> Puedes agregar varias ubicaciones si el repuesto se usa en diferentes máquinas o áreas.
+            💡 <strong>Sistema jerárquico:</strong> Selecciona desde el nivel más general hasta el más específico.
           </div>
           
-          <!-- Contenedor donde core.js inyecta las ubicaciones -->
-          <div id="ubicacionesContainer">
-            <!-- El core.js llena esto dinámicamente con renderUbicaciones() -->
+          <!-- Grid de 8 niveles jerárquicos -->
+          <div class="form-row-quad">
+            <div class="form-group">
+              <label>N1: Empresa *</label>
+              <select class="form-control" id="nivel1" required onchange="app.cargarNivel(2)">
+                <option value="">Seleccionar...</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>N2: Área *</label>
+              <select class="form-control" id="nivel2" required onchange="app.cargarNivel(3)" disabled>
+                <option value="">Seleccionar...</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>N3: Sub-área</label>
+              <select class="form-control" id="nivel3" onchange="app.cargarNivel(4)" disabled>
+                <option value="">Seleccionar...</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>N4: Sistema/Equipo</label>
+              <select class="form-control" id="nivel4" onchange="app.cargarNivel(5)" disabled>
+                <option value="">Seleccionar...</option>
+              </select>
+            </div>
           </div>
+          
+          <div class="form-row-quad">
+            <div class="form-group">
+              <label>N5: Sub-sistema</label>
+              <select class="form-control" id="nivel5" onchange="app.cargarNivel(6)" disabled>
+                <option value="">Seleccionar...</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>N6: Sección</label>
+              <select class="form-control" id="nivel6" onchange="app.cargarNivel(7)" disabled>
+                <option value="">Seleccionar...</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>N7: Sub-sección</label>
+              <select class="form-control" id="nivel7" onchange="app.cargarNivel(8)" disabled>
+                <option value="">Seleccionar...</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>N8: Detalles</label>
+              <input type="text" class="form-control" id="nivel8" placeholder="Detalles descriptivos específicos..." disabled>
+            </div>
+          </div>
+          
+          <button type="button" onclick="app.vincularConMapa()" class="btn btn-secondary" style="margin-top: 8px;">
+            🗺️ Vincular con Área del Mapa
+          </button>
         </div>
         
         <!-- Stock y Precio (5 columnas) -->
