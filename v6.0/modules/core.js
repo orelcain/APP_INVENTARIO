@@ -2038,7 +2038,7 @@ class InventarioCompleto {
     const maxY = Math.max(...nodosConPosicion.map(n => n.y)) + altoNodo + 60;
     
     // Generar SVG con lneas y nodos (VERTICAL)
-    let svg = `<svg width="${maxX}" height="${maxY}" style="font-family: system-ui, -apple-system, sans-serif; display: block; min-width: 100%;">`;
+    let svg = `<svg width="${maxX}" height="${maxY}" style="font-family: var(--font-family); display: block; min-width: 100%;">`;
     
     // Definir gradientes y filtros SUAVES
     svg += `
@@ -2485,7 +2485,7 @@ class InventarioCompleto {
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 11px; color: #969696;">
                   <div><strong style="color: #d4d4d4; font-weight: 600;">Área:</strong> ${repuesto.area || repuesto.areaGeneral || 'N/A'}</div>
                   <div><strong style="color: #d4d4d4; font-weight: 600;">Equipo:</strong> ${repuesto.equipo || repuesto.sistemaEquipo || 'N/A'}</div>
-                  ${repuesto.codSAP ? `<div style="grid-column: 1 / -1;"><strong style="color: #d4d4d4; font-weight: 600;">SAP:</strong> <span style="font-family: 'Courier New', monospace;">${repuesto.codSAP}</span></div>` : ''}
+                  ${repuesto.codSAP ? `<div style="grid-column: 1 / -1;"><strong style="color: #d4d4d4; font-weight: 600;">SAP:</strong> <span style="font-family: var(--font-mono);">${repuesto.codSAP}</span></div>` : ''}
                 </div>
               </div>
 
@@ -5369,7 +5369,7 @@ class InventarioCompleto {
         ultimoConteoHTML = `
           <div style="font-size: 10px; color: var(--text-tertiary); padding: 8px 0 4px 0; text-align: right; font-weight: 500; letter-spacing: 0.3px; line-height: 1.4;">
             <span style="color: var(--text-secondary); font-weight: 600;">Último conteo:</span>
-            <span style="font-family: 'Courier New', monospace; font-size: 11px; margin-left: 6px;">${fechaFormateada} · ${horaFormateada}</span>
+            <span style="font-family: var(--font-mono); font-size: 11px; margin-left: 6px;">${fechaFormateada} · ${horaFormateada}</span>
           </div>
         `;
       }
@@ -5406,7 +5406,7 @@ class InventarioCompleto {
               </span>
               <span style="font-size: 10px; opacity: 0.6;">▼</span>
             </summary>
-            <div style="padding: 10px 12px; font-size: 11px; color: var(--text-secondary); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+            <div style="padding: 10px 12px; font-size: 11px; color: var(--text-secondary); font-family: var(--font-family);">
               ${contenidoHTML}
             </div>
           </details>
@@ -5486,7 +5486,7 @@ class InventarioCompleto {
                 ${rep.codSAP || rep.codigo_sap ? `
                   <div style="display: flex; align-items: center; gap: 6px; background: var(--bg-input); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-secondary);">
                     <span style="font-size: 13px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;">SAP:</span>
-                    <span style="font-size: 13px; color: var(--text-primary); font-family: 'Courier New', monospace; font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codSAP || rep.codigo_sap}</span>
+                    <span style="font-size: 13px; color: var(--text-primary); font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codSAP || rep.codigo_sap}</span>
                     <button onclick="navigator.clipboard.writeText('${(rep.codSAP || rep.codigo_sap).replace(/'/g, "\\'")}').then(() => { const btn = event.target; const original = btn.innerHTML; btn.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--success)\\' stroke-width=\\'2\\'><polyline points=\\'20 6 9 17 4 12\\'></polyline></svg>'; setTimeout(() => { btn.innerHTML = original; }, 1000); })" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 2px 4px; transition: all 0.15s; display: flex; align-items: center; line-height: 0;" title="Copiar código SAP">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -5498,7 +5498,7 @@ class InventarioCompleto {
                 ${rep.codProv || rep.codigo_prov ? `
                   <div style="display: flex; align-items: center; gap: 6px; background: var(--bg-input); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-secondary);">
                     <span style="font-size: 13px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;">Prov:</span>
-                    <span style="font-size: 13px; color: var(--text-primary); font-family: 'Courier New', monospace; font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codProv || rep.codigo_prov}</span>
+                    <span style="font-size: 13px; color: var(--text-primary); font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codProv || rep.codigo_prov}</span>
                     <button onclick="navigator.clipboard.writeText('${(rep.codProv || rep.codigo_prov).replace(/'/g, "\\'")}').then(() => { const btn = event.target; const original = btn.innerHTML; btn.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--success)\\' stroke-width=\\'2\\'><polyline points=\\'20 6 9 17 4 12\\'></polyline></svg>'; setTimeout(() => { btn.innerHTML = original; }, 1000); })" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 2px 4px; transition: all 0.15s; display: flex; align-items: center; line-height: 0;" title="Copiar código proveedor">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -5530,18 +5530,26 @@ class InventarioCompleto {
                   <!-- Barra de progreso actual -->
                   <div style="height: 100%; width: ${Math.min(porcentajeBarra, 100)}%; background: ${stockColor}; opacity: 0.95; transition: width 0.3s ease; border-radius: 1px;"></div>
                   
-                  <!-- Marcador en Mínimo -->
-                  <div style="position: absolute; left: ${(minimo / optimo * 100)}%; top: -2px; width: 2px; height: 12px; background: #e67e22; z-index: 2;" title="Mínimo: ${minimo}"></div>
-                  
-                  <!-- Marcador en Óptimo (100%) -->
-                  <div style="position: absolute; right: 0; top: -2px; width: 2px; height: 12px; background: #27ae60; z-index: 2;" title="Óptimo: ${optimo}"></div>
+                  ${minimo === optimo ? `
+                    <!-- Marcador combinado cuando Min = Ópt -->
+                    <div style="position: absolute; right: 0; top: -2px; width: 2px; height: 12px; background: linear-gradient(to bottom, #e67e22 0%, #e67e22 50%, #27ae60 50%, #27ae60 100%); z-index: 2;" title="Min/Ópt: ${optimo}"></div>
+                  ` : `
+                    <!-- Marcador en Mínimo -->
+                    <div style="position: absolute; left: ${(minimo / optimo * 100)}%; top: -2px; width: 2px; height: 12px; background: #e67e22; z-index: 2;" title="Mínimo: ${minimo}"></div>
+                    <!-- Marcador en Óptimo (100%) -->
+                    <div style="position: absolute; right: 0; top: -2px; width: 2px; height: 12px; background: #27ae60; z-index: 2;" title="Óptimo: ${optimo}"></div>
+                  `}
                 </div>
                 
                 <!-- Etiquetas de los marcadores -->
-                <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 8px; color: #6e7681; font-weight: 600;">
+                <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 8px; color: #6e7681; font-weight: 600; font-family: var(--font-family);">
                   <span>0</span>
-                  <span style="position: absolute; left: ${(minimo / optimo * 100)}%; transform: translateX(-50%); color: #e67e22;">Min: ${minimo}</span>
-                  <span style="color: #27ae60;">Ópt: ${optimo}</span>
+                  ${minimo === optimo ? `
+                    <span style="color: #e67e22;">Min/Ópt: ${optimo}</span>
+                  ` : `
+                    <span style="position: absolute; left: ${(minimo / optimo * 100)}%; transform: translateX(-50%); color: #e67e22;">Min: ${minimo}</span>
+                    <span style="color: #27ae60;">Ópt: ${optimo}</span>
+                  `}
                 </div>
               </div>
               
