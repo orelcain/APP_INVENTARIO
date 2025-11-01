@@ -3540,6 +3540,19 @@ class InventarioCompleto {
   async handleImageUpload(files, event) {
     const previewContainer = document.getElementById('imagePreview');
     
+    // =========================================
+    // LEER OPCIONES DE OPTIMIZACIÓN DEL USUARIO
+    // =========================================
+    const optimizarCheckbox = document.getElementById('optimizarImagenes');
+    const calidadSelect = document.getElementById('calidadOptimizacion');
+    const anchoMaximoSelect = document.getElementById('anchoMaximo');
+    
+    const debeOptimizar = optimizarCheckbox ? optimizarCheckbox.checked : true;
+    const calidadUsuario = calidadSelect ? parseFloat(calidadSelect.value) : 0.85;
+    const anchoMaximoUsuario = anchoMaximoSelect ? parseInt(anchoMaximoSelect.value) : 800;
+    
+    console.log(`🔧 Opciones de optimización: ${debeOptimizar ? 'SÍ' : 'NO'} | Calidad: ${(calidadUsuario * 100).toFixed(0)}% | Ancho máx: ${anchoMaximoUsuario}px`);
+    
     for (const file of files) {
       // Validar que sea imagen
       if (!file.type.startsWith('image/')) {
@@ -3557,19 +3570,25 @@ class InventarioCompleto {
       try {
         console.log(`📸 Procesando: ${file.name} (${(file.size / 1024).toFixed(1)}KB)`);
         
-        // Comprimir imagen a WebP
-        const compressedBase64 = await this.compressImageToWebP(file);
+        // Comprimir imagen a WebP (o no, según configuración)
+        const compressedBase64 = debeOptimizar 
+          ? await this.compressImageToWebP(file, anchoMaximoUsuario, calidadUsuario)
+          : await this.fileToBase64(file); // Guardar original sin optimizar
         
         if (!compressedBase64) {
-          this.showToast(`❌ Error al comprimir ${file.name}`, 'error');
+          this.showToast(`❌ Error al procesar ${file.name}`, 'error');
           continue;
         }
         
-        // Calcular tamaño comprimido
-        const compressedSize = (compressedBase64.length * 0.75) / 1024; // Aproximado en KB
-        const reduction = ((1 - compressedSize / (file.size / 1024)) * 100).toFixed(0);
+        // Calcular tamaño final
+        const finalSize = (compressedBase64.length * 0.75) / 1024; // Aproximado en KB
+        const reduction = ((1 - finalSize / (file.size / 1024)) * 100).toFixed(0);
         
-        console.log(`✅ Comprimida: ${file.name} → ${compressedSize.toFixed(1)}KB (${reduction}% reducción)`);
+        if (debeOptimizar) {
+          console.log(`✅ Optimizada: ${file.name} → ${finalSize.toFixed(1)}KB (${reduction}% reducción)`);
+        } else {
+          console.log(`✅ Original: ${file.name} → ${finalSize.toFixed(1)}KB (sin optimizar)`);
+        }
         
         // Generar nombre único con extensión .webp
         const timestamp = Date.now();
@@ -3586,10 +3605,10 @@ class InventarioCompleto {
           filename: filename,
           originalName: file.name,
           data: compressedBase64,
-          size: Math.round(compressedSize * 1024), // Tamaño en bytes
+          size: Math.round(finalSize * 1024), // Tamaño en bytes
           mimeType: 'image/webp',
           uploadDate: new Date().toISOString(),
-          compressed: true,
+          compressed: debeOptimizar,
           originalSize: file.size
         });
         
@@ -3608,10 +3627,14 @@ class InventarioCompleto {
           <div class="multimedia-preview-info">
             <div class="multimedia-preview-name" title="${file.name}">${baseName}.webp</div>
             <div class="multimedia-preview-size">
-              <span class="size-original" style="text-decoration: line-through; opacity: 0.6;">${originalSizeKB}KB</span>
-              <span class="size-arrow" style="margin: 0 4px;">→</span>
-              <span class="size-compressed" style="color: #4ade80; font-weight: 600;">${compressedSize.toFixed(1)}KB</span>
-              <span class="size-reduction" style="margin-left: 6px; background: rgba(74, 222, 128, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700;">-${reduction}%</span>
+              ${debeOptimizar 
+                ? `<span class="size-original" style="text-decoration: line-through; opacity: 0.6;">${originalSizeKB}KB</span>
+                   <span class="size-arrow" style="margin: 0 4px;">→</span>
+                   <span class="size-compressed" style="color: #4ade80; font-weight: 600;">${finalSize.toFixed(1)}KB</span>
+                   <span class="size-reduction" style="margin-left: 6px; background: rgba(74, 222, 128, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700;">-${reduction}%</span>`
+                : `<span class="size-compressed" style="color: #60a5fa; font-weight: 600;">${finalSize.toFixed(1)}KB</span>
+                   <span class="size-reduction" style="margin-left: 6px; background: rgba(96, 165, 250, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700;">Original</span>`
+              }
             </div>
           </div>
         `;
@@ -3627,7 +3650,10 @@ class InventarioCompleto {
     // Limpiar input
     event.target.value = '';
     
-    this.showToast(`✅ ${files.length} imagen(es) optimizada(s) a WebP`, 'success', 2000);
+    const mensajeToast = debeOptimizar 
+      ? `✅ ${files.length} imagen(es) optimizada(s) a WebP`
+      : `✅ ${files.length} imagen(es) cargada(s) sin optimizar`;
+    this.showToast(mensajeToast, 'success', 2000);
   }
   
   // Comprimir imagen a WebP con optimización adaptativa
@@ -3689,8 +3715,21 @@ class InventarioCompleto {
           // Optimización adaptativa de calidad
           let currentQuality = quality;
           let iterations = 0;
-          const targetSize = 150000; // ~150KB objetivo
           
+          // Tamaño objetivo basado en la calidad inicial del usuario
+          // Calidad alta (>0.8) → ~150KB, Media (0.7-0.8) → ~100KB, Baja (<0.7) → ~70KB
+          let targetSize = 150000; // Por defecto ~150KB
+          if (quality >= 0.80) {
+            targetSize = 200000; // ~200KB para calidad máxima
+          } else if (quality >= 0.70) {
+            targetSize = 150000; // ~150KB para calidad alta/media
+          } else if (quality >= 0.60) {
+            targetSize = 100000; // ~100KB para calidad media-baja
+          } else {
+            targetSize = 70000;  // ~70KB para calidad baja
+          }
+          
+          // Intentar reducir tamaño sin bajar demasiado la calidad
           while (compressedUrl.length > targetSize && currentQuality > 0.5 && iterations < 5) {
             currentQuality -= 0.08;
             compressedUrl = canvas.toDataURL(`image/${format}`, currentQuality);
@@ -4748,6 +4787,11 @@ class InventarioCompleto {
         this.showToast('✅ FileSystem activado correctamente', 'success');
         console.log('✅ FileSystem conectado:', fsManager.folderPath);
         
+        // Actualizar UI de configuración si está visible
+        if (window.configuracion && window.configuracion.renderStorageUI) {
+          configuracion.renderStorageUI();
+        }
+        
         // Recargar datos desde FileSystem
         console.log('🔄 Recargando datos desde FileSystem...');
         await this.loadData();
@@ -4759,6 +4803,28 @@ class InventarioCompleto {
       }
     } catch (error) {
       console.error('❌ Error activando FileSystem:', error);
+      this.showToast('Error: ' + error.message, 'error');
+    }
+  }
+
+  desconectarFileSystem() {
+    try {
+      console.log('🔌 Desconectando FileSystem...');
+      
+      const fs = window.fsManager || fsManager;
+      if (fs && fs.disconnect) {
+        fs.disconnect();
+      }
+      
+      // Actualizar UI de configuración si está visible
+      if (window.configuracion && window.configuracion.renderStorageUI) {
+        configuracion.renderStorageUI();
+      }
+      
+      this.showToast('✅ FileSystem desconectado. Los datos quedan en la carpeta.', 'info', 4000);
+      console.log('✅ FileSystem desconectado');
+    } catch (error) {
+      console.error('❌ Error desconectando FileSystem:', error);
       this.showToast('Error: ' + error.message, 'error');
     }
   }

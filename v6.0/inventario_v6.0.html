@@ -1965,6 +1965,229 @@
       border-color: #6a7b8a;
     }
 
+    /* ====================================
+       ACORDEONES Y TARJETAS CONFIG
+    ==================================== */
+    .config-grid {
+      display: grid;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .config-card {
+      background: var(--bg-secondary);
+      padding: 16px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+    }
+
+    .config-section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 12px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      margin-bottom: 16px;
+      transition: background 0.2s;
+      user-select: none;
+    }
+
+    .config-section-header:hover {
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .config-section-header span:first-child {
+      font-size: 12px;
+      transition: transform 0.3s;
+    }
+
+    .config-section-content {
+      display: none;
+      padding: 12px;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .config-buttons-container {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .config-btn-mobile,
+    .config-btn-full,
+    .config-btn-pdf {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .config-btn-mobile {
+      background: #4a5568;
+      color: white;
+    }
+
+    .config-btn-mobile:hover {
+      background: #5a6578;
+      transform: translateY(-1px);
+    }
+
+    .config-btn-full {
+      background: var(--primary);
+      color: white;
+    }
+
+    .config-btn-full:hover {
+      background: #5558dd;
+      transform: translateY(-1px);
+    }
+
+    .config-btn-pdf {
+      background: #dc2626;
+      color: white;
+    }
+
+    .config-btn-pdf:hover {
+      background: #ef4444;
+      transform: translateY(-1px);
+    }
+
+    .backup-structure {
+      background: var(--bg-primary);
+      padding: 16px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    .backup-structure-title {
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .backup-structure-path {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+
+    .backup-file-name {
+      color: #60a5fa;
+    }
+
+    .backup-file-hint {
+      color: #94a3b8;
+      font-size: 11px;
+    }
+
+    .backup-file-hint-special {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+
+    .backup-manual-guide {
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(99, 102, 241, 0.1);
+      border-left: 3px solid var(--primary);
+      border-radius: 4px;
+    }
+
+    .backup-manual-title {
+      color: var(--primary);
+      font-size: 13px;
+    }
+
+    .backup-guide-text {
+      color: var(--text-secondary);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .config-divider {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .config-small-text {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .config-small-text-line-height {
+      line-height: 1.7;
+    }
+
+    .config-inline-code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #60a5fa;
+    }
+
+    .config-success-note {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 4px;
+      padding: 12px;
+      margin-top: 16px;
+    }
+
+    .config-btn-warning {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .config-btn-warning:hover {
+      background: #fbbf24;
+    }
+
+    .config-btn-info {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .config-btn-info:hover {
+      background: #60a5fa;
+    }
+
+    .config-btn-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .config-btn-gradient:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      transform: translateY(-1px);
+    }
+
     /* TAB MAPA - Título */
     .map-title {
       font-size: 18px;
@@ -2385,47 +2608,88 @@
 
     <!-- TAB CONFIGURACIÓN -->
     <div id="configuracion" class="tab-content">
-      <h2 class="config-title">CONFIGURACIÓN</h2>
+      <h2 class="config-title">Configuración</h2>
       
-      <!-- Panel de almacenamiento FileSystem -->
-      <div class="config-panel">
-        <h3 class="config-section-title">SISTEMA DE ALMACENAMIENTO</h3>
-        
-        <!-- Indicador de conexión -->
-        <div id="connectionIndicator" class="connection-indicator disconnected">
-          <div id="connectionIcon" class="connection-icon">OFF</div>
-          <div class="connection-info">
-            <div id="connectionText" class="connection-text">INVENTARIO_STORAGE NO CONECTADO</div>
-            <div class="connection-subtext">Activa FileSystem para cargar imágenes y datos</div>
+      <div class="config-grid">
+        <!-- ALMACENAMIENTO -->
+        <div id="storage-config-container" class="config-card">
+          <div id="storage-config-content"></div>
+        </div>
+
+        <!-- EXPORTACIÓN Y REPORTES -->
+        <div class="config-card">
+          <h3 onclick="toggleConfigSection('export-config')" class="config-section-header">
+            <span id="export-config-icon">▶</span>
+            <span>📊 Exportación y Reportes</span>
+          </h3>
+          
+          <div id="export-config-content" class="config-section-content">
+            <div class="config-buttons-container">
+              <button onclick="app.exportJSON()" class="btn config-btn-mobile">
+                📱 Exportar JSON
+              </button>
+
+              <button onclick="document.getElementById('importFileInput').click()" class="btn btn-primary config-btn-full">
+                📥 Importar JSON
+              </button>
+              <input type="file" id="importFileInput" accept=".json" style="display: none;" onchange="app.importJSON(event)">
+            </div>
           </div>
         </div>
-        
-        <!-- Botón activar FileSystem -->
-        <button onclick="window.app?.activarFileSystem()" class="btn-filesystem">
-          ACTIVAR FILESYSTEM (CARGAR CARPETA)
-        </button>
-        
-        <div class="config-help-text">
-          <strong>📁 Estructura requerida:</strong><br>
-          INVENTARIO_STORAGE/<br>
-          ├── inventario.json<br>
-          ├── mapas.json<br>
-          ├── zonas.json<br>
-          └── imagenes/ (carpeta con todas las imágenes)
-        </div>
-      </div>
-      
-      <!-- Panel de exportación -->
-      <div class="config-panel">
-        <h3 class="config-section-title">EXPORTACIÓN</h3>
-        
-        <div class="config-buttons-grid">
-          <button onclick="window.app?.exportJSON()" class="btn-config">
-            EXPORTAR JSON
-          </button>
-          <button onclick="window.app?.importJSON(event)" class="btn-config">
-            IMPORTAR JSON
-          </button>
+
+        <!-- SISTEMA DE BACKUPS Y RESPALDOS -->
+        <div class="config-card">
+          <h3 onclick="toggleConfigSection('backup-config')" class="config-section-header">
+            <span id="backup-config-icon">▶</span>
+            <span>🔄 Sistema de Backups y Respaldos</span>
+          </h3>
+          
+          <div id="backup-config-content" class="config-section-content">
+            <!-- Estructura de carpetas -->
+            <div class="backup-structure">
+              <strong class="backup-structure-title">� Estructura de Backups:</strong><br>
+              <div class="backup-structure-path">
+                INVENTARIO_STORAGE/<br>
+                ├── <strong class="backup-file-name">inventario.json</strong> <span class="backup-file-hint">← Datos principales</span><br>
+                ├── <strong class="backup-file-name">mapas.json</strong> <span class="backup-file-hint">← Mapas interactivos</span><br>
+                ├── <strong class="backup-file-name">zonas.json</strong> <span class="backup-file-hint">← Áreas del mapa</span><br>
+                ├── imagenes/ <span class="backup-file-hint backup-file-hint-special">← Carpeta de imágenes</span><br>
+                └── backups/<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;└── automaticos/ <span class="backup-file-name">← Backups automáticos (5 últimos)</span>
+              </div>
+              <div class="backup-manual-guide">
+                <strong class="backup-manual-title">💡 Para actualizar manualmente:</strong><br>
+                <small class="backup-guide-text">
+                  1. Pega el JSON en el archivo correspondiente<br>
+                  2. Copia las imágenes a la carpeta imagenes/<br>
+                  3. Recarga la app (F5) para ver los cambios<br>
+                  4. La app creará un backup automático al guardar
+                </small>
+              </div>
+            </div>
+            
+            <div class="config-buttons-container">
+              <button onclick="app.createBackup?.()" class="btn btn-success config-btn-full">
+                💾 Crear Backup Manual Ahora
+              </button>
+              
+              <div class="config-divider">
+                <small class="config-small-text">
+                  <strong>💡 Respaldo Completo:</strong> Incluye datos + imágenes. Ideal para migrar entre versiones.
+                </small>
+              </div>
+            </div>
+            
+            <div class="config-success-note">
+              <small class="config-small-text config-small-text-line-height">
+                <strong>✅ Sistema de Backups con FileSystem:</strong><br>
+                • Se crean en la carpeta backups/automaticos/<br>
+                • <strong>Incluyen JSON + TODAS las imágenes</strong><br>
+                • Se mantienen los últimos 5 backups completos<br>
+                • <strong>Restauración:</strong> Datos + Imágenes en un solo paso<br>
+              </small>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2608,6 +2872,44 @@
         <div class="form-multimedia-grid">
           <div class="form-group">
             <label class="form-label-margin">📸 Imágenes</label>
+            
+            <!-- Opciones de Optimización -->
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;">
+                  <input type="checkbox" id="optimizarImagenes" checked style="width: 18px; height: 18px; cursor: pointer;">
+                  <span style="font-weight: 600; font-size: 13px;">🔧 Optimizar imágenes (WebP)</span>
+                </label>
+              </div>
+              
+              <div id="opcionesOptimizacion" style="display: flex; flex-direction: column; gap: 8px; padding-left: 26px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <label style="font-size: 12px; font-weight: 600; min-width: 80px;">Calidad:</label>
+                  <select id="calidadOptimizacion" class="form-control" style="flex: 1; font-size: 12px;">
+                    <option value="0.95">Máxima (95%) - ~200KB</option>
+                    <option value="0.85" selected>Alta (85%) - ~150KB</option>
+                    <option value="0.75">Media (75%) - ~100KB</option>
+                    <option value="0.65">Baja (65%) - ~70KB</option>
+                    <option value="0.50">Mínima (50%) - ~50KB</option>
+                  </select>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <label style="font-size: 12px; font-weight: 600; min-width: 80px;">Ancho máx:</label>
+                  <select id="anchoMaximo" class="form-control" style="flex: 1; font-size: 12px;">
+                    <option value="1920">1920px (Full HD)</option>
+                    <option value="1280">1280px (HD)</option>
+                    <option value="800" selected>800px (Óptimo)</option>
+                    <option value="640">640px (Compacto)</option>
+                  </select>
+                </div>
+                
+                <small style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
+                  💡 La optimización reduce el peso sin pérdida visible de calidad
+                </small>
+              </div>
+            </div>
+            
             <input type="file" class="form-control" id="imagenFile" accept="image/*" multiple onchange="app.handleMultimedia(event, 'image')" title="Seleccionar imágenes del repuesto">
             <div id="imagePreview" class="multimedia-preview multimedia-preview-margin"></div>
           </div>
@@ -2695,9 +2997,123 @@
       }
       
       // =========================================
+      // OBJETO CONFIGURACIÓN
+      // =========================================
+      window.configuracion = {
+        renderStorageUI() {
+          const container = document.getElementById('storage-config-content');
+          if (!container) return;
+          
+          const fs = window.fsManager || window.app.fsManager;
+          const isConnected = fs && fs.isConnected;
+          
+          container.innerHTML = `
+            <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">
+              💾 Almacenamiento FileSystem
+            </h3>
+            
+            <div style="display: grid; gap: 12px;">
+              <div style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <strong style="color: var(--text-primary); font-size: 0.95rem;">Estado:</strong>
+                  <span style="padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background: ${isConnected ? '#10b981' : '#ef4444'}; color: white;">
+                    ${isConnected ? '🟢 Conectado' : '❌ No conectado'}
+                  </span>
+                </div>
+                <div style="color: var(--text-secondary); font-size: 0.85rem; font-family: monospace; padding: 10px; background: rgba(0,0,0,0.15); border-radius: 6px; min-height: 40px;">
+                  ${fs && fs.folderPath ? fs.folderPath : 'No hay carpeta seleccionada'}
+                </div>
+              </div>
+              
+              ${isConnected ? `
+                <button onclick="window.app.desconectarFileSystem()" class="btn" style="width: 100%; padding: 14px; font-size: 1rem; background: var(--danger); color: white;">
+                  🔴 Desconectar
+                </button>
+              ` : ''}
+              
+              <button onclick="window.app.activarFileSystem()" class="btn ${isConnected ? 'btn-secondary' : 'btn-primary'}" style="width: 100%; padding: 14px; font-size: 1rem;">
+                ${isConnected ? '📁 Cambiar Carpeta' : '📂 Seleccionar Carpeta INVENTARIO_STORAGE'}
+              </button>
+            </div>
+          `;
+        }
+      };
+      
+      // =========================================
+      // FUNCIONES DE ACORDEÓN PARA CONFIGURACIÓN
+      // =========================================
+      window.toggleConfigSection = function(sectionId) {
+        const content = document.getElementById(sectionId + '-content');
+        const icon = document.getElementById(sectionId + '-icon');
+        
+        if (!content || !icon) return;
+        
+        const isCollapsed = content.style.display === 'none' || !content.style.display;
+        
+        if (isCollapsed) {
+          content.style.display = 'block';
+          icon.textContent = '▼';
+        } else {
+          content.style.display = 'none';
+          icon.textContent = '▶';
+        }
+        
+        // Guardar estado en localStorage
+        localStorage.setItem('config-' + sectionId, isCollapsed ? 'open' : 'closed');
+      };
+      
+      window.initConfigSections = function() {
+        const sections = [
+          'storage-config',
+          'export-config',
+          'backup-config'
+        ];
+        
+        sections.forEach(sectionId => {
+          const content = document.getElementById(sectionId + '-content');
+          const icon = document.getElementById(sectionId + '-icon');
+          
+          if (!content || !icon) return;
+          
+          // Leer estado guardado o usar 'closed' por defecto
+          const savedState = localStorage.getItem('config-' + sectionId) || 'closed';
+          
+          if (savedState === 'open') {
+            content.style.display = 'block';
+            icon.textContent = '▼';
+          } else {
+            content.style.display = 'none';
+            icon.textContent = '▶';
+          }
+        });
+      };
+      
+      // =========================================
       // INICIAR APLICACIÓN
       // =========================================
       await init();
+      
+      // Inicializar acordeones de configuración
+      initConfigSections();
+      
+      // Renderizar UI de almacenamiento
+      if (window.configuracion && window.configuracion.renderStorageUI) {
+        setTimeout(() => {
+          window.configuracion.renderStorageUI();
+        }, 100);
+      }
+      
+      // =========================================
+      // TOGGLE OPCIONES DE OPTIMIZACIÓN
+      // =========================================
+      const checkboxOptimizar = document.getElementById('optimizarImagenes');
+      const opcionesOptimizacion = document.getElementById('opcionesOptimizacion');
+      
+      if (checkboxOptimizar && opcionesOptimizacion) {
+        checkboxOptimizar.addEventListener('change', function() {
+          opcionesOptimizacion.style.display = this.checked ? 'flex' : 'none';
+        });
+      }
       
     } catch (error) {
       console.error('❌ Error crítico al cargar módulos:', error);

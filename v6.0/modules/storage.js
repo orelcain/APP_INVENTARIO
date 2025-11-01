@@ -160,6 +160,16 @@ class FileSystemManager {
     }
   }
 
+  disconnect() {
+    console.log('🔌 Desconectando FileSystem...');
+    this.directoryHandle = null;
+    this.imagesFolder = null;
+    this.isFileSystemMode = false;
+    this.folderPath = '';
+    this.updateStatusIndicator(false);
+    console.log('✅ FileSystem desconectado');
+  }
+
   async selectFolder() {
     try {
       const selectedFolder = await window.showDirectoryPicker({ mode: 'readwrite' });
