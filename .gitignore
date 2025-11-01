@@ -1,0 +1,22 @@
+# Backups automáticos temporales
+INVENTARIO_STORAGE/backups/automaticos/
+INVENTARIO_STORAGE/backups/zip/
+INVENTARIO_STORAGE/backups_marcadores/
+
+# Logs
+INVENTARIO_STORAGE/logs/
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backups antiguos de mapas y zonas (mantener solo los más recientes)
+INVENTARIO_STORAGE/backups/mapas/*
+INVENTARIO_STORAGE/backups/zonas/*
+INVENTARIO_STORAGE/backups/repuestos/*
+
+# Excepciones: mantener los archivos más recientes
+!INVENTARIO_STORAGE/backups/mapas/.gitkeep
+!INVENTARIO_STORAGE/backups/zonas/.gitkeep
+!INVENTARIO_STORAGE/backups/repuestos/.gitkeep

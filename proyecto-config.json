@@ -1,0 +1,274 @@
+{
+  "nombre": "Inventario Visual PRO v2.4",
+  "version": "2.4.0",
+  "descripcion": "Sistema completo de gestión de inventario con FileSystem API y conteo inteligente",
+  "ruta_proyecto": "D:\\PROYECTOS APP WEBS\\INVENTARIO_PORTABLE",
+  
+  "estructura_carpetas": {
+    "raiz": "INVENTARIO_PORTABLE/",
+    "datos": "INVENTARIO_STORAGE/",
+    "imagenes": "INVENTARIO_STORAGE/imagenes/"
+  },
+  
+  "archivos_principales": {
+    "app": {
+      "archivo": "inventario_PRO_v2_filesystem_MANUAL.html",
+      "tipo": "HTML",
+      "descripcion": "Aplicación principal - Sistema de inventario completo",
+      "dependencias": [
+        "INVENTARIO_STORAGE/inventario.json",
+        "INVENTARIO_STORAGE/repuestos.json"
+      ],
+      "caracteristicas": [
+        "FileSystem API para acceso ilimitado a archivos",
+        "Sistema de conteo inteligente",
+        "Sincronización JSON",
+        "Gestión de imágenes con caché global",
+        "Modo offline completo",
+        "Responsive design optimizado para móvil"
+      ]
+    },
+    "documentacion": [
+      {
+        "archivo": "README.txt",
+        "descripcion": "Instrucciones básicas de uso"
+      },
+      {
+        "archivo": "GUIA_USO_MOVIL_COMPLETA.md",
+        "descripcion": "Guía detallada para uso en dispositivos móviles"
+      },
+      {
+        "archivo": "GUIA_RAPIDA_MOVIL.html",
+        "descripcion": "Guía rápida visual interactiva"
+      }
+    ]
+  },
+  
+  "almacenamiento_datos": {
+    "carpeta": "INVENTARIO_STORAGE",
+    "archivos": {
+      "inventario.json": {
+        "descripcion": "Datos principales de repuestos (con o sin imágenes embebidas)",
+        "formato": "JSON",
+        "campos_principales": [
+          "id",
+          "nombre",
+          "codSAP",
+          "area",
+          "equipo",
+          "tipo",
+          "cantidad",
+          "minimo",
+          "precio",
+          "multimedia",
+          "ultimoConteo",
+          "ultimaModificacion"
+        ]
+      },
+      "repuestos.json": {
+        "descripcion": "Copia de sincronización (sin imágenes embebidas)",
+        "formato": "JSON",
+        "uso": "Exportación para transferencia entre dispositivos"
+      }
+    }
+  },
+  
+  "sistema_imagenes": {
+    "carpeta": "INVENTARIO_STORAGE/imagenes/",
+    "formato_soportado": [".jpg", ".jpeg", ".png", ".webp"],
+    "gestion": {
+      "carga": "FileSystem Access API",
+      "cache": "globalBlobCache (Map JavaScript)",
+      "persistencia": "Blob URLs con referencias fuertes"
+    },
+    "flujo": [
+      "1. Usuario selecciona carpeta INVENTARIO_STORAGE",
+      "2. Sistema lee archivos de imagenes/",
+      "3. Crea Blob URLs con URL.createObjectURL()",
+      "4. Guarda en caché global con referencias fuertes",
+      "5. URLs persisten durante toda la sesión"
+    ]
+  },
+  
+  "funcionalidades": {
+    "pestanas": [
+      {
+        "nombre": "Inventario",
+        "descripcion": "Vista principal de tarjetas de repuestos",
+        "componentes": ["Búsqueda", "Filtros", "Tarjetas", "Paginación"]
+      },
+      {
+        "nombre": "Conteo",
+        "descripcion": "Sistema de conteo inteligente por área",
+        "componentes": ["Búsqueda tiempo real", "Filtros de estado", "Conteo individual", "Confirmación"]
+      },
+      {
+        "nombre": "Jerarquía",
+        "descripcion": "Árbol de áreas y equipos",
+        "componentes": ["Vista de árbol", "Navegación por área", "Estadísticas por equipo"]
+      },
+      {
+        "nombre": "Mapa",
+        "descripcion": "Mapa interactivo de ubicaciones",
+        "componentes": ["Mapa SVG", "Puntos interactivos", "Zoom y pan"]
+      },
+      {
+        "nombre": "Stats",
+        "descripcion": "Estadísticas y análisis",
+        "componentes": ["Gráficos", "Resumen de stock", "Análisis de valor"]
+      },
+      {
+        "nombre": "Valores",
+        "descripcion": "Análisis de precios e inversión",
+        "componentes": ["Valor total", "Valor por área", "Valor crítico"]
+      },
+      {
+        "nombre": "Configuración",
+        "descripcion": "Configuración del sistema FileSystem",
+        "componentes": ["Selector de carpeta", "Estado de conexión", "Exportar/Importar JSON"]
+      }
+    ],
+    "modales": [
+      {
+        "nombre": "Modal Agregar/Editar",
+        "descripcion": "Formulario completo para crear o editar repuestos"
+      },
+      {
+        "nombre": "Modal Conteo Individual",
+        "descripcion": "Contador rápido con botones +/- para conteo individual",
+        "mejoras_v2_4": [
+          "Colores acordes a la app",
+          "Botones +/- táctiles grandes (60px)",
+          "Cierre automático al guardar",
+          "Actualización inmediata de fecha"
+        ]
+      },
+      {
+        "nombre": "Lightbox",
+        "descripcion": "Visor de imágenes con zoom y navegación"
+      }
+    ]
+  },
+  
+  "tecnologias": {
+    "frontend": "HTML5 + CSS3 + JavaScript (Vanilla)",
+    "apis": [
+      "FileSystem Access API",
+      "Blob API",
+      "LocalStorage API"
+    ],
+    "estilos": {
+      "tema": "Modo oscuro profesional",
+      "paleta_colores": {
+        "primary": "#3b82f6",
+        "secondary": "#8b5cf6",
+        "success": "#10b981",
+        "warning": "#f59e0b",
+        "danger": "#ef4444",
+        "bg_primary": "#0f172a",
+        "bg_secondary": "#1e293b",
+        "text_primary": "#f8fafc"
+      }
+    }
+  },
+  
+  "compatibilidad": {
+    "navegadores": [
+      "Google Chrome 86+",
+      "Microsoft Edge 86+",
+      "Opera 72+"
+    ],
+    "dispositivos": [
+      "Desktop (Windows, Mac, Linux)",
+      "Móvil (Android con Chrome)",
+      "iOS (con limitaciones en FileSystem API)"
+    ]
+  },
+  
+  "flujo_uso_recomendado": {
+    "primer_uso": [
+      "1. Copiar carpeta INVENTARIO_PORTABLE al dispositivo",
+      "2. Abrir inventario_PRO_v2_filesystem_MANUAL.html en navegador",
+      "3. Ir a pestaña Configuración",
+      "4. Click en 'Elegir Carpeta de Trabajo'",
+      "5. Seleccionar carpeta INVENTARIO_STORAGE",
+      "6. Sistema carga automáticamente datos e imágenes"
+    ],
+    "uso_diario": [
+      "1. Abrir HTML (mantiene última carpeta conectada)",
+      "2. Trabajar normalmente (agregar, editar, contar)",
+      "3. Cambios se guardan automáticamente en FileSystem",
+      "4. No requiere exportar/importar (datos siempre sincronizados)"
+    ],
+    "sincronizacion_dispositivos": [
+      "1. En dispositivo A: Exportar JSON (sin imágenes)",
+      "2. Copiar JSON a dispositivo B",
+      "3. En dispositivo B: Importar JSON",
+      "4. Sistema fusiona datos preservando imágenes locales"
+    ]
+  },
+  
+  "proximas_mejoras": [
+    {
+      "prioridad": "alta",
+      "descripcion": "Verificar que todas las imágenes del JSON se vinculen correctamente",
+      "estado": "en_progreso"
+    },
+    {
+      "prioridad": "alta",
+      "descripcion": "Agregar opción de re-escaneo de carpeta de imágenes",
+      "estado": "pendiente"
+    },
+    {
+      "prioridad": "media",
+      "descripcion": "Implementar limpieza automática de caché de Blob URLs antiguos",
+      "estado": "pendiente"
+    },
+    {
+      "prioridad": "media",
+      "descripcion": "Agregar estadísticas de uso de caché en Configuración",
+      "estado": "pendiente"
+    },
+    {
+      "prioridad": "baja",
+      "descripcion": "Implementar modo de trabajo offline con Service Worker",
+      "estado": "idea"
+    }
+  ],
+  
+  "notas_tecnicas": {
+    "cache_imagenes": {
+      "problema_resuelto": "Garbage Collection liberaba Blob URLs",
+      "solucion": "Caché global (globalBlobCache) con referencias fuertes",
+      "implementacion": "Map() fuera de la clase con objetos {url, timestamp, filename}"
+    },
+    "pestanas_fijas": {
+      "problema_resuelto": "Pestañas scrolleaban con contenido",
+      "solucion": "Incluir nav-tabs dentro de sticky-header-container",
+      "implementacion": "CSS position: sticky en contenedor padre"
+    },
+    "modal_conteo": {
+      "mejoras_v2_4": [
+        "Colores con variables CSS de la app",
+        "Botones +/- táctiles de 60px",
+        "Cierre automático al guardar (antes de mostrar toast)",
+        "Llamada a renderCards() para actualizar fecha inmediatamente"
+      ]
+    }
+  },
+  
+  "mantenimiento": {
+    "archivo_principal": "inventario_PRO_v2_filesystem_MANUAL.html",
+    "backups_recomendados": [
+      "Hacer backup antes de cambios mayores",
+      "Mantener versiones numeradas",
+      "Exportar JSON regularmente"
+    ],
+    "testing": [
+      "Probar en Chrome/Edge antes de desplegar",
+      "Verificar en móvil Android",
+      "Comprobar carga de imágenes después de reconexión",
+      "Validar que conteo individual actualice fecha"
+    ]
+  }
+}
