@@ -5417,26 +5417,26 @@ class InventarioCompleto {
       
       if (rep.ubicaciones && rep.ubicaciones.length > 0) {
         botonVerMapaHTML = `
-          <button class="card-btn" onclick="window.app?.verRepuestoEnMapa('${rep.id}')" style="flex: 1; padding: 6px 10px; border: 1px solid var(--primary); background: var(--primary); color: white; border-radius: var(--radius-md); cursor: pointer; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;">
-            📍 Ver (${rep.ubicaciones.length})
+          <button class="card-btn" onclick="window.app?.verRepuestoEnMapa('${rep.id}')" style="flex: 1; padding: 8px 12px; border: 1px solid var(--primary); background: var(--primary); color: white; border-radius: var(--radius-md); cursor: pointer; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
+            Ver en Mapa (${rep.ubicaciones.length})
           </button>
         `;
       } else {
         botonVerMapaHTML = `
-          <button class="card-btn" onclick="alert('No hay ubicaciones registradas')" style="flex: 1; padding: 6px 10px; border: 1px solid var(--border-secondary); background: var(--bg-tertiary); color: var(--text-disabled); border-radius: var(--radius-md); cursor: not-allowed; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; opacity: 0.5; display: flex; align-items: center; justify-content: center; gap: 4px;">
-            📍 Ver (0)
+          <button class="card-btn" onclick="alert('No hay ubicaciones registradas')" style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-secondary); background: var(--bg-tertiary); color: var(--text-tertiary); border-radius: var(--radius-md); cursor: not-allowed; font-size: 11px; font-weight: 500; letter-spacing: 0.3px; opacity: 0.6; display: flex; align-items: center; justify-content: center;">
+            Ver en Mapa (0)
           </button>
         `;
       }
       
       botonAnadirUbicacionHTML = `
-        <button class="card-btn" onclick="window.app?.agregarUbicacionMapa('${rep.id}')" style="flex: 1; padding: 6px 10px; border: 1px solid var(--border-accent); background: transparent; color: var(--text-secondary); border-radius: var(--radius-md); cursor: pointer; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;">
-          ➕ Añadir
+        <button class="card-btn" onclick="window.app?.agregarUbicacionMapa('${rep.id}')" style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-accent); background: transparent; color: var(--text-secondary); border-radius: var(--radius-md); cursor: pointer; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
+          Añadir Ubicación
         </button>
       `;
       
       let botonesMapaHTML = `
-        <div style="display: flex; gap: 4px;">
+        <div style="display: flex; gap: 6px; margin-top: 8px;">
           ${botonVerMapaHTML}
           ${botonAnadirUbicacionHTML}
         </div>
