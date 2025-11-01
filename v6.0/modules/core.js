@@ -5497,8 +5497,8 @@ class InventarioCompleto {
                 ` : ''}
                 ${rep.codProv || rep.codigo_prov ? `
                   <div style="display: flex; align-items: center; gap: 6px; background: var(--bg-input); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-secondary);">
-                    <span style="font-size: 9px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;">Prov:</span>
-                    <span style="font-size: 11px; color: var(--text-primary); font-family: 'Courier New', monospace; font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codProv || rep.codigo_prov}</span>
+                    <span style="font-size: 13px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;">Prov:</span>
+                    <span style="font-size: 13px; color: var(--text-primary); font-family: 'Courier New', monospace; font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codProv || rep.codigo_prov}</span>
                     <button onclick="navigator.clipboard.writeText('${(rep.codProv || rep.codigo_prov).replace(/'/g, "\\'")}').then(() => { const btn = event.target; const original = btn.innerHTML; btn.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--success)\\' stroke-width=\\'2\\'><polyline points=\\'20 6 9 17 4 12\\'></polyline></svg>'; setTimeout(() => { btn.innerHTML = original; }, 1000); })" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 2px 4px; transition: all 0.15s; display: flex; align-items: center; line-height: 0;" title="Copiar código proveedor">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -5518,18 +5518,31 @@ class InventarioCompleto {
             <!-- Sección Stock -->
             <div style="background: #1e1e1e; padding: 10px; border-radius: 2px; margin-bottom: 10px; border-left: 3px solid ${stockColor}; border: 1px solid #2d2d30;">
               
-              <!-- Header: Estado + Porcentaje -->
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <!-- Header: Solo Estado -->
+              <div style="margin-bottom: 8px;">
                 <span style="font-size: 9px; color: #969696; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;">Estado</span>
-                <div style="display: flex; align-items: baseline; gap: 4px;">
-                  <span style="font-size: 10px; color: ${stockColor}; font-weight: 800; letter-spacing: 0.5px;">${stockStatus}</span>
-                  <span style="font-size: 9px; color: #6e7681; font-weight: 600;">${porcentajeDisplay}%</span>
-                </div>
               </div>
               
-              <!-- Barra horizontal simple -->
-              <div style="width: 100%; height: 4px; background: #0d0d0d; border-radius: 0; overflow: hidden; margin-bottom: 8px;">
-                <div style="height: 100%; width: ${porcentajeBarra}%; background: ${stockColor}; opacity: 0.95; transition: width 0.3s ease;"></div>
+              <!-- Barra de progreso visual con marcadores -->
+              <div style="position: relative; margin-bottom: 12px;">
+                <!-- Barra de fondo -->
+                <div style="width: 100%; height: 8px; background: #0d0d0d; border-radius: 1px; position: relative; overflow: visible;">
+                  <!-- Barra de progreso actual -->
+                  <div style="height: 100%; width: ${Math.min(porcentajeBarra, 100)}%; background: ${stockColor}; opacity: 0.95; transition: width 0.3s ease; border-radius: 1px;"></div>
+                  
+                  <!-- Marcador en Mínimo -->
+                  <div style="position: absolute; left: ${(minimo / optimo * 100)}%; top: -2px; width: 2px; height: 12px; background: #e67e22; z-index: 2;" title="Mínimo: ${minimo}"></div>
+                  
+                  <!-- Marcador en Óptimo (100%) -->
+                  <div style="position: absolute; right: 0; top: -2px; width: 2px; height: 12px; background: #27ae60; z-index: 2;" title="Óptimo: ${optimo}"></div>
+                </div>
+                
+                <!-- Etiquetas de los marcadores -->
+                <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 8px; color: #6e7681; font-weight: 600;">
+                  <span>0</span>
+                  <span style="position: absolute; left: ${(minimo / optimo * 100)}%; transform: translateX(-50%); color: #e67e22;">Min: ${minimo}</span>
+                  <span style="color: #27ae60;">Ópt: ${optimo}</span>
+                </div>
               </div>
               
               <!-- Texto compacto -->
