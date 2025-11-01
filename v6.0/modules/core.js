@@ -2728,41 +2728,46 @@ class InventarioCompleto {
     let startX = 0, startY = 0;
     let translateX = 0, translateY = 0;
     
-    // Zoom con rueda del mouse
+    // Zoom con rueda del mouse - CENTRADO
     container.addEventListener('wheel', (e) => {
       e.preventDefault();
       e.stopPropagation();
       
-      const delta = e.deltaY > 0 ? -0.15 : 0.15;
+      // Incremento más suave
+      const delta = e.deltaY > 0 ? -0.2 : 0.2;
       const newScale = Math.max(0.5, Math.min(5, scale + delta));
       
-      // Calcular punto de zoom (donde está el cursor)
-      const rect = img.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      if (newScale === scale) return; // No cambió, salir
       
-      // Ajustar traducción para hacer zoom en el punto del cursor
-      const scaleChange = newScale / scale;
-      translateX = e.clientX - (e.clientX - translateX) * scaleChange;
-      translateY = e.clientY - (e.clientY - translateY) * scaleChange;
+      // Obtener el centro del contenedor
+      const containerRect = container.getBoundingClientRect();
+      const containerCenterX = containerRect.width / 2;
+      const containerCenterY = containerRect.height / 2;
+      
+      // Calcular nuevo translate para mantener centrado
+      const scaleRatio = newScale / scale;
+      translateX = containerCenterX + (translateX - containerCenterX) * scaleRatio;
+      translateY = containerCenterY + (translateY - containerCenterY) * scaleRatio;
       
       scale = newScale;
       
-      // Resetear posición si zoom = 1
+      // Resetear si volvemos a escala 1
       if (scale === 1) {
         translateX = 0;
         translateY = 0;
         img.style.cursor = 'grab';
+        img.style.transform = `scale(1)`;
+        img.style.transformOrigin = 'center center';
       } else {
         img.style.cursor = 'grab';
+        img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        img.style.transformOrigin = '0 0';
       }
-      
-      img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
     }, { passive: false });
     
-    // Arrastre de imagen
+    // Arrastre de imagen (solo si está con zoom)
     img.addEventListener('mousedown', (e) => {
-      if (scale >= 1) {
+      if (scale > 1) {
         e.preventDefault();
         isDragging = true;
         startX = e.clientX - translateX;
@@ -2787,13 +2792,48 @@ class InventarioCompleto {
     });
     
     // Doble click para resetear zoom
-    img.addEventListener('dblclick', () => {
+    img.addEventListener('dblclick', (e) => {
+      e.preventDefault();
       scale = 1;
       translateX = 0;
       translateY = 0;
       img.style.cursor = 'grab';
-      img.style.transform = `translate(0px, 0px) scale(1)`;
+      img.style.transform = `scale(1)`;
+      img.style.transformOrigin = 'center center';
     });
+    
+    // Indicador de zoom
+    const indicator = document.createElement('div');
+    indicator.id = 'zoomIndicator';
+    indicator.style.cssText = `
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    `;
+    container.appendChild(indicator);
+    
+    // Actualizar indicador en zoom
+    let indicatorTimeout;
+    const updateIndicator = () => {
+      indicator.textContent = `${Math.round(scale * 100)}%`;
+      indicator.style.opacity = '1';
+      clearTimeout(indicatorTimeout);
+      indicatorTimeout = setTimeout(() => {
+        indicator.style.opacity = '0';
+      }, 1500);
+    };
+    
+    container.addEventListener('wheel', updateIndicator);
   }
 
   closeLightbox() {
