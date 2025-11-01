@@ -3011,16 +3011,10 @@ class InventarioCompleto {
       try {
         let imageUrl = null;
         
-        // Intentar cargar desde FileSystem primero
+        // SOLO cargar desde FileSystem
         if (media.url && fs && fs.isConnected) {
-          // Cargar desde FileSystem
           const filename = media.url.replace('./imagenes/', '');
           imageUrl = await fs.loadImage(filename);
-        }
-        
-        // Fallback a base64 si está disponible
-        if (!imageUrl && media.data) {
-          imageUrl = media.data;
         }
         
         if (!imageUrl) {
@@ -3365,11 +3359,20 @@ class InventarioCompleto {
       if (this.currentMultimedia && this.currentMultimedia.length > 0) {
         console.log(`📸 Procesando ${this.currentMultimedia.length} imagen(es) NUEVA(S)`);
         
-        // Guardar imágenes en FileSystem si está disponible
+        const fs = window.fsManager || fsManager;
+        
+        // VERIFICAR FileSystem conectado
+        if (!fs || !fs.isConnected) {
+          this.showToast('❌ Debes conectar FileSystem para guardar imágenes', 'error', 5000);
+          console.error('❌ FileSystem NO conectado - imágenes NO guardadas');
+          return; // NO guardar sin FileSystem
+        }
+        
+        // Guardar en FileSystem
         const imagesSaved = await this.saveImagesToFileSystem(this.currentMultimedia, repuesto);
         
         if (imagesSaved) {
-          // Convertir a referencias de archivo en lugar de base64
+          // Guardar solo referencias (NO base64)
           const multimediaRefs = this.currentMultimedia.map(img => ({
             tipo: 'image',
             filename: img.filename,
@@ -3379,20 +3382,17 @@ class InventarioCompleto {
             uploadDate: img.uploadDate,
             compressed: img.compressed,
             originalSize: img.originalSize,
-            // NO incluir data base64 - se carga desde FileSystem
             url: `./imagenes/${img.filename}`
+            // NO incluir data
           }));
           
-          // AGREGAR solo las nuevas a las existentes
           const multimediaExistente = repuesto.multimedia || [];
           repuesto.multimedia = [...multimediaExistente, ...multimediaRefs];
+          console.log(`✅ Imágenes guardadas en FileSystem: ${repuesto.multimedia.length} total`);
         } else {
-          // Fallback: guardar base64 en JSON (modo sin FileSystem)
-          const multimediaExistente = repuesto.multimedia || [];
-          repuesto.multimedia = [...multimediaExistente, ...this.currentMultimedia];
+          this.showToast('❌ Error guardando imágenes en FileSystem', 'error');
+          return; // NO continuar si falla
         }
-        
-        console.log(`✅ Total de imágenes después de agregar nuevas: ${repuesto.multimedia.length}`);
       }
       
       if (this.currentDocuments && this.currentDocuments.length > 0) {
@@ -3437,15 +3437,21 @@ class InventarioCompleto {
         : 0;
       const nuevoId = maxId + 1;
       
-      // Preparar multimedia
+      // Preparar multimedia - SOLO FileSystem
       let multimediaFinal = [];
       if (this.currentMultimedia && this.currentMultimedia.length > 0) {
-        // Crear objeto temporal para guardar imágenes
+        const fs = window.fsManager || fsManager;
+        
+        if (!fs || !fs.isConnected) {
+          this.showToast('❌ Debes conectar FileSystem para guardar imágenes', 'error', 5000);
+          return; // NO crear repuesto sin FileSystem para imágenes
+        }
+        
         const tempRepuesto = { id: nuevoId, ...formData, ubicaciones: [ubicacion] };
         const imagesSaved = await this.saveImagesToFileSystem(this.currentMultimedia, tempRepuesto);
         
         if (imagesSaved) {
-          // Referencias de archivo
+          // Solo referencias
           multimediaFinal = this.currentMultimedia.map(img => ({
             tipo: 'image',
             filename: img.filename,
@@ -3458,8 +3464,8 @@ class InventarioCompleto {
             url: `./imagenes/${img.filename}`
           }));
         } else {
-          // Fallback: base64
-          multimediaFinal = this.currentMultimedia || [];
+          this.showToast('❌ Error guardando imágenes', 'error');
+          return;
         }
       }
       

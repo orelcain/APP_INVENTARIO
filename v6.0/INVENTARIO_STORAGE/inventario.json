@@ -41,13 +41,17 @@
     "codProv": "",
     "tipo": "",
     "categoria": "Repuesto",
-    "nombre": "Cinta Curva ",
+    "nombre": "Cinta Curva",
     "ubicaciones": [
       {
         "areaGeneral": "Planta Principal",
         "subArea": "Filete",
-        "sistemaEquipo": "Cintas Filete",
-        "subSistema": "Cinta Curva"
+        "sistemaEquipo": "",
+        "subSistema": "",
+        "planta": "Aquachile Antarfood Chonchi",
+        "seccion": "",
+        "subSeccion": "",
+        "detalles": ""
       }
     ],
     "planta": "Aquachile Antarfood Chonchi",
@@ -67,9 +71,22 @@
     "optimo": 1,
     "precio": 0,
     "datosTecnicos": "",
-    "multimedia": [],
+    "multimedia": [
+      {
+        "tipo": "image",
+        "filename": "1762030524513_cinta curva.webp",
+        "originalName": "cinta curva.jpg",
+        "size": 64910,
+        "mimeType": "image/webp",
+        "uploadDate": "2025-11-01T20:55:24.513Z",
+        "compressed": true,
+        "originalSize": 430009,
+        "url": "./imagenes/1762030524513_cinta curva.webp"
+      }
+    ],
     "ultimaModificacion": "2025-10-31T06:21:32.453Z",
-    "ultimoConteo": null
+    "ultimoConteo": null,
+    "fechaModificacion": "2025-11-01T20:55:37.960Z"
   },
   {
     "id": "17613752737800.26683069476947185",
