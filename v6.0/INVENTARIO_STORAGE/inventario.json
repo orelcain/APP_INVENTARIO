@@ -120,7 +120,15 @@
     "optimo": 8,
     "precio": 0,
     "datosTecnicos": "",
-    "multimedia": [],
+    "multimedia": [
+      {
+        "type": "image",
+        "url": "./imagenes/1762032176113_cinta curva.webp",
+        "name": "1762032176113_cinta curva.webp",
+        "size": 118840,
+        "isFileSystem": true
+      }
+    ],
     "ultimaModificacion": "2025-10-31T06:21:06.323Z",
     "ultimoConteo": "2025-11-01T21:07:05.139Z"
   },
@@ -156,7 +164,15 @@
     "optimo": 1,
     "precio": 0,
     "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
-    "multimedia": [],
+    "multimedia": [
+      {
+        "type": "image",
+        "url": "./imagenes/1762032176113_cinta curva.webp",
+        "name": "1762032176113_cinta curva.webp",
+        "size": 118840,
+        "isFileSystem": true
+      }
+    ],
     "ultimaModificacion": "2025-10-31T06:34:17.781Z",
     "ultimoConteo": null
   },
