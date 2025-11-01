@@ -1454,6 +1454,23 @@
       min-height: 80px;
     }
 
+    /* Inputs de archivo - asegurar visibilidad */
+    input[type="file"].form-control {
+      padding: 8px 12px;
+      cursor: pointer;
+      background: var(--bg-secondary);
+      border: 2px dashed var(--border-color);
+    }
+
+    input[type="file"].form-control:hover {
+      border-color: var(--primary);
+      background: var(--bg-hover);
+    }
+
+    input[type="file"].form-control:focus {
+      border-style: solid;
+    }
+
     .form-actions {
       display: flex;
       gap: 12px;
