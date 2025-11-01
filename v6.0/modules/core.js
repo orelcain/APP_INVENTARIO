@@ -5367,10 +5367,9 @@ class InventarioCompleto {
           hour12: false
         });
         ultimoConteoHTML = `
-          <div style="font-size: 10px; color: var(--text-tertiary); padding: 8px 0 4px 0; text-align: right; font-weight: 500; letter-spacing: 0.3px; line-height: 1.4;">
+          <div style="font-size: 13px; color: var(--text-tertiary); padding: 8px 0 4px 0; text-align: right; font-weight: 500; letter-spacing: 0.3px; line-height: 1.4;">
             <span style="color: var(--text-secondary); font-weight: 600;">Último conteo:</span>
-            <br>
-            <span style="font-family: 'Courier New', monospace; font-size: 11px;">${fechaFormateada} · ${horaFormateada}</span>
+            <span style="font-family: 'Courier New', monospace; font-size: 14px; margin-left: 6px;">${fechaFormateada} · ${horaFormateada}</span>
           </div>
         `;
       }
