@@ -38,7 +38,7 @@ $coreJs = $coreJs -replace 'export default InventarioCompleto;', 'window.Inventa
 # Crear el código JavaScript combinado
 $combinedJs = @"
 // ========================================
-// VERSIÓN PORTABLE - TODO INLINEADO
+// VERSIÓN PORTABLE v6.0
 // Generado automáticamente por build-portable.ps1
 // ========================================
 
@@ -49,10 +49,6 @@ $combinedJs = @"
   // MÓDULO STORAGE (storage.js)
   // ========================================
   $storageJs
-
-  // Exponer globalmente
-  window.fsManager = fsManager;
-  window.mapStorage = mapStorage;
 
   // ========================================
   // MÓDULO MAPA (mapa.js)
@@ -65,52 +61,177 @@ $combinedJs = @"
   $coreJs
 
   // ========================================
-  // INICIALIZACIÓN AUTOMÁTICA
+  // EXPONER GLOBALMENTE
   // ========================================
-  console.log('✅ Módulos cargados correctamente');
+  window.fsManager = fsManager;
+  window.mapStorage = mapStorage;
+  window.mapController = mapController;
+  window.InventarioCompleto = InventarioCompleto;
   window.app = new InventarioCompleto();
+  console.log('✅ Módulos portable cargados');
+  
+  // =========================================
+  // OBJETO CONFIGURACIÓN
+  // =========================================
+  window.configuracion = {
+    renderStorageUI() {
+      const container = document.getElementById('storage-config-content');
+      if (!container) return;
+      
+      const fs = window.fsManager || window.app.fsManager;
+      const isConnected = fs && fs.isConnected;
+      
+      container.innerHTML = \`
+        <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">
+          💾 Almacenamiento FileSystem
+        </h3>
+        
+        <div style="display: grid; gap: 12px;">
+          <div style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <strong style="color: var(--text-primary); font-size: 0.95rem;">Estado:</strong>
+              <span style="padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background: \${isConnected ? '#10b981' : '#ef4444'}; color: white;">
+                \${isConnected ? '🟢 Conectado' : '❌ No conectado'}
+              </span>
+            </div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem; font-family: monospace; padding: 10px; background: rgba(0,0,0,0.15); border-radius: 6px; min-height: 40px;">
+              \${fs && fs.folderPath ? fs.folderPath : 'No hay carpeta seleccionada'}
+            </div>
+          </div>
+          
+          \${isConnected ? \`
+            <button onclick="window.app.desconectarFileSystem()" class="btn" style="width: 100%; padding: 14px; font-size: 1rem; background: var(--danger); color: white;">
+              🔴 Desconectar
+            </button>
+          \` : ''}
+          
+          <button onclick="window.app.activarFileSystem()" class="btn \${isConnected ? 'btn-secondary' : 'btn-primary'}" style="width: 100%; padding: 14px; font-size: 1rem;">
+            \${isConnected ? '📁 Cambiar Carpeta' : '📂 Seleccionar Carpeta INVENTARIO_STORAGE'}
+          </button>
+        </div>
+      \`;
+    }
+  };
+  
+  // =========================================
+  // FUNCIONES DE ACORDEÓN
+  // =========================================
+  window.toggleConfigSection = function(sectionId) {
+    const content = document.getElementById(sectionId + '-content');
+    const icon = document.getElementById(sectionId + '-icon');
+    
+    if (!content || !icon) return;
+    
+    const isCollapsed = content.style.display === 'none' || !content.style.display;
+    
+    if (isCollapsed) {
+      content.style.display = 'block';
+      icon.textContent = '▼';
+    } else {
+      content.style.display = 'none';
+      icon.textContent = '▶';
+    }
+    
+    localStorage.setItem('config-' + sectionId, isCollapsed ? 'open' : 'closed');
+  };
+  
+  window.initConfigSections = function() {
+    const sections = ['storage-config', 'export-config', 'backup-config'];
+    
+    sections.forEach(sectionId => {
+      const content = document.getElementById(sectionId + '-content');
+      const icon = document.getElementById(sectionId + '-icon');
+      
+      if (!content || !icon) return;
+      
+      const savedState = localStorage.getItem('config-' + sectionId) || 'closed';
+      
+      if (savedState === 'open') {
+        content.style.display = 'block';
+        icon.textContent = '▼';
+      } else {
+        content.style.display = 'none';
+        icon.textContent = '▶';
+      }
+    });
+  };
+  
+  // =========================================
+  // INICIALIZACIÓN
+  // =========================================
+  (async function() {
+    try {
+      console.log('📦 Iniciando aplicación portable...');
+      
+      const restored = await fsManager.restoreFromPreviousSession();
+      if (restored) {
+        console.log('✅ FileSystem restaurado');
+      }
+      
+      if (mapController && typeof mapController.init === 'function') {
+        await mapController.init();
+      }
+      
+      await window.app.init();
+      
+      setTimeout(() => {
+        if (window.initConfigSections) {
+          window.initConfigSections();
+        }
+        
+        if (window.configuracion && window.configuracion.renderStorageUI) {
+          window.configuracion.renderStorageUI();
+        }
+      }, 500);
+      
+      const checkboxOptimizar = document.getElementById('optimizarImagenes');
+      const opcionesOptimizacion = document.getElementById('opcionesOptimizacion');
+      
+      if (checkboxOptimizar && opcionesOptimizacion) {
+        checkboxOptimizar.addEventListener('change', function() {
+          opcionesOptimizacion.style.display = this.checked ? 'flex' : 'none';
+        });
+      }
+      
+      console.log('✅ Aplicación portable lista');
+    } catch (error) {
+      console.error('❌ Error al inicializar:', error);
+    }
+  })();
 })();
 "@
 
-# Reemplazar el tag <script type="module">...</script> que hace imports
-Write-Host 'Reemplazando script modules...' -ForegroundColor Yellow
+# Guardar combined.js
+Write-Host 'Guardando combined.js...' -ForegroundColor Yellow
+[System.IO.File]::WriteAllLines("$PWD\combined.js", $combinedJs, (New-Object System.Text.UTF8Encoding $false))
 
-# Buscar y reemplazar el bloque que contiene los imports dinámicos
-$pattern = '(?s)<script type="module">\s*// =+\s*// IMPORTS.*?</script>'
-$replacement = "<script>`n$combinedJs`n</script>"
-$html = $html -replace $pattern, $replacement
-
-# Si no funcionó el primer patrón, usar uno más simple
-if ($html -match 'import\(''\.\/modules\/storage\.js''\)') {
-  Write-Host 'Usando patron alternativo...' -ForegroundColor Yellow
-  $startMarker = '<!-- SCRIPTS MODULARES -->'
-  $endMarker = '</script>'
-  
-  $startIdx = $html.IndexOf($startMarker)
-  if ($startIdx -ge 0) {
-    $scriptStart = $html.IndexOf('<script type="module">', $startIdx)
-    $scriptEnd = $html.IndexOf('</script>', $scriptStart) + 9
-    
-    $before = $html.Substring(0, $scriptStart)
-    $after = $html.Substring($scriptEnd)
-    
-    $html = $before + "<script>`n$combinedJs`n</script>" + $after
-  }
-}
-
-# Guardar archivo portable
-Write-Host 'Guardando archivo portable...' -ForegroundColor Yellow
-
-# Eliminar declaraciones duplicadas de globalBlobCache
-$count = ([regex]::Matches($html, 'const globalBlobCache')).Count
+# Eliminar declaraciones duplicadas si existen
+$jsContent = Get-Content 'combined.js' -Raw
+$count = ([regex]::Matches($jsContent, 'const globalBlobCache')).Count
 if ($count -gt 1) {
-  Write-Host "  Encontradas $count declaraciones de globalBlobCache, eliminando duplicados..." -ForegroundColor Yellow
-  # Reemplazar la segunda y subsecuentes ocurrencias
-  $html = $html -replace '(?<=const globalBlobCache = new Map\(\);)[\s\S]*?const globalBlobCache = new Map\(\);', ''
+  Write-Host "  Eliminando $count declaraciones duplicadas de globalBlobCache..." -ForegroundColor Yellow
+  $jsContent = $jsContent -replace '// ===+\s*// CACHÉ GLOBAL DE BLOB URLs.*?\s*// ===+\s*const globalBlobCache = new Map\(\);', ''
+  [System.IO.File]::WriteAllText("$PWD\combined.js", $jsContent, (New-Object System.Text.UTF8Encoding $false))
 }
 
-# Guardar con Set-Content (mejor compatibilidad)
-Set-Content -Path $outputHtml -Value $html -Encoding UTF8
+# Copiar HTML y reemplazar script
+Write-Host 'Creando HTML portable...' -ForegroundColor Yellow
+Copy-Item $sourceHtml $outputHtml -Force
+
+# Leer HTML portable y reemplazar el bloque de script
+$htmlPortable = Get-Content $outputHtml -Raw -Encoding UTF8
+
+# Buscar el bloque <script type="module">...</script> y reemplazarlo
+$pattern = '(?s)<script type="module">.*?</script>'
+$replacement = '  <script src="combined.js"></script>'
+
+if ($htmlPortable -match $pattern) {
+  $htmlPortable = $htmlPortable -replace $pattern, $replacement
+  Set-Content -Path $outputHtml -Value $htmlPortable -Encoding UTF8
+  Write-Host '  Bloque de script reemplazado exitosamente' -ForegroundColor Green
+} else {
+  Write-Host '  ERROR: No se encontro el bloque de script' -ForegroundColor Red
+}
 
 Write-Host ''
 Write-Host 'Version portable creada exitosamente!' -ForegroundColor Green
