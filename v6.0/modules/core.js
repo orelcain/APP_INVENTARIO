@@ -5473,18 +5473,35 @@ class InventarioCompleto {
           <!-- Contenido -->
           <div class="card-content" style="padding: 12px;">
             
-            <!-- Header: Título + SAP -->
+            <!-- Header: Título + Códigos -->
             <div style="margin-bottom: 10px; border-bottom: 1px solid #3e3e42; padding-bottom: 8px;">
-              <h3 style="margin: 0 0 4px 0; font-size: 13px; color: #d4d4d4; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-transform: uppercase; letter-spacing: 0.3px;">
+              <h3 style="margin: 0 0 6px 0; font-size: 13px; color: #d4d4d4; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-transform: uppercase; letter-spacing: 0.3px;">
                 ${rep.nombre || 'SIN NOMBRE'}
               </h3>
-              ${rep.codSAP || rep.codigo_sap ? `
-                <div style="font-size: 10px; color: #969696; font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: 0.5px; margin-top: 3px;">
-                  SAP: ${rep.codSAP || rep.codigo_sap}
-                </div>
-              ` : ''}
               
-              <!-- Botones de mapa SIEMPRE visibles debajo del SAP -->
+              <!-- Códigos SAP y Proveedor con botones copiar -->
+              <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 6px;">
+                ${rep.codSAP || rep.codigo_sap ? `
+                  <div style="display: flex; align-items: center; gap: 6px; background: var(--bg-input); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-secondary);">
+                    <span style="font-size: 9px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;">SAP:</span>
+                    <span style="font-size: 10px; color: var(--text-primary); font-family: 'Courier New', monospace; font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codSAP || rep.codigo_sap}</span>
+                    <button onclick="navigator.clipboard.writeText('${(rep.codSAP || rep.codigo_sap).replace(/'/g, "\\'")}').then(() => { const btn = event.target; const original = btn.innerHTML; btn.innerHTML = '✓'; btn.style.color = 'var(--success)'; setTimeout(() => { btn.innerHTML = original; btn.style.color = 'var(--text-secondary)'; }, 1000); })" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 2px 4px; font-size: 11px; transition: all 0.15s; display: flex; align-items: center;" title="Copiar código SAP">
+                      📋
+                    </button>
+                  </div>
+                ` : ''}
+                ${rep.codProv || rep.codigo_prov ? `
+                  <div style="display: flex; align-items: center; gap: 6px; background: var(--bg-input); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-secondary);">
+                    <span style="font-size: 9px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;">Prov:</span>
+                    <span style="font-size: 10px; color: var(--text-primary); font-family: 'Courier New', monospace; font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codProv || rep.codigo_prov}</span>
+                    <button onclick="navigator.clipboard.writeText('${(rep.codProv || rep.codigo_prov).replace(/'/g, "\\'")}').then(() => { const btn = event.target; const original = btn.innerHTML; btn.innerHTML = '✓'; btn.style.color = 'var(--success)'; setTimeout(() => { btn.innerHTML = original; btn.style.color = 'var(--text-secondary)'; }, 1000); })" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 2px 4px; font-size: 11px; transition: all 0.15s; display: flex; align-items: center;" title="Copiar código proveedor">
+                      📋
+                    </button>
+                  </div>
+                ` : ''}
+              </div>
+              
+              <!-- Botones de mapa SIEMPRE visibles debajo de los códigos -->
               <div style="margin-top: 8px;">
                 ${botonesMapaHTML}
               </div>
