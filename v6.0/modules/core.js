@@ -3394,20 +3394,34 @@ class InventarioCompleto {
         continue;
       }
       
-      // Validar tamaño (máximo 5MB por imagen)
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      // Validar tamaño original (máximo 10MB antes de comprimir)
+      const maxSize = 10 * 1024 * 1024; // 10MB
       if (file.size > maxSize) {
-        this.showToast(`❌ ${file.name} excede 5MB (${(file.size / (1024 * 1024)).toFixed(1)}MB)`, 'error');
+        this.showToast(`❌ ${file.name} excede 10MB (${(file.size / (1024 * 1024)).toFixed(1)}MB)`, 'error');
         continue;
       }
       
       try {
-        // Leer archivo como base64
-        const base64 = await this.fileToBase64(file);
+        console.log(`📸 Procesando: ${file.name} (${(file.size / 1024).toFixed(1)}KB)`);
         
-        // Generar nombre único
+        // Comprimir imagen a WebP
+        const compressedBase64 = await this.compressImageToWebP(file);
+        
+        if (!compressedBase64) {
+          this.showToast(`❌ Error al comprimir ${file.name}`, 'error');
+          continue;
+        }
+        
+        // Calcular tamaño comprimido
+        const compressedSize = (compressedBase64.length * 0.75) / 1024; // Aproximado en KB
+        const reduction = ((1 - compressedSize / (file.size / 1024)) * 100).toFixed(0);
+        
+        console.log(`✅ Comprimida: ${file.name} → ${compressedSize.toFixed(1)}KB (${reduction}% reducción)`);
+        
+        // Generar nombre único con extensión .webp
         const timestamp = Date.now();
-        const filename = `${timestamp}_${file.name}`;
+        const baseName = file.name.replace(/\.(jpg|jpeg|png|gif|webp)$/i, '');
+        const filename = `${timestamp}_${baseName}.webp`;
         
         // Agregar a multimedia actual
         if (!this.currentMultimedia) {
@@ -3418,26 +3432,26 @@ class InventarioCompleto {
           tipo: 'image',
           filename: filename,
           originalName: file.name,
-          data: base64,
-          size: file.size,
-          mimeType: file.type,
-          uploadDate: new Date().toISOString()
+          data: compressedBase64,
+          size: Math.round(compressedSize * 1024), // Tamaño en bytes
+          mimeType: 'image/webp',
+          uploadDate: new Date().toISOString(),
+          compressed: true,
+          originalSize: file.size
         });
         
         // Crear preview
         const previewItem = document.createElement('div');
         previewItem.className = 'multimedia-preview-item';
         previewItem.innerHTML = `
-          <img src="${base64}" alt="${file.name}">
+          <img src="${compressedBase64}" alt="${file.name}">
           <button type="button" class="multimedia-remove-btn" onclick="app.removeMultimedia('${filename}', 'image')" title="Eliminar imagen">
             ×
           </button>
-          <div class="multimedia-preview-name">${file.name}</div>
+          <div class="multimedia-preview-name" title="${file.name} → ${compressedSize.toFixed(1)}KB WebP">${baseName}.webp</div>
         `;
         
         previewContainer.appendChild(previewItem);
-        
-        console.log(`✅ Imagen agregada: ${file.name} (${(file.size / 1024).toFixed(1)}KB)`);
         
       } catch (error) {
         console.error(`❌ Error procesando ${file.name}:`, error);
@@ -3448,7 +3462,93 @@ class InventarioCompleto {
     // Limpiar input
     event.target.value = '';
     
-    this.showToast(`✅ ${files.length} imagen(es) agregada(s)`, 'success', 2000);
+    this.showToast(`✅ ${files.length} imagen(es) optimizada(s) a WebP`, 'success', 2000);
+  }
+  
+  // Comprimir imagen a WebP con optimización adaptativa
+  async compressImageToWebP(file, maxWidth = 800, quality = 0.85) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Redimensionar manteniendo aspecto
+          if (width > maxWidth || height > maxWidth) {
+            if (width > height) {
+              height = (height * maxWidth) / width;
+              width = maxWidth;
+            } else {
+              width = (width * maxWidth) / height;
+              height = maxWidth;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          
+          // Optimización de renderizado
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          
+          // Fondo blanco para transparencias
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, width, height);
+          
+          // Dibujar imagen con suavizado
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Intentar WebP primero (mejor compresión)
+          let compressedUrl = null;
+          let format = 'webp';
+          
+          try {
+            compressedUrl = canvas.toDataURL('image/webp', quality);
+            
+            // Si WebP no funciona o es muy grande, probar JPEG
+            if (!compressedUrl.startsWith('data:image/webp') || compressedUrl.length > 200000) {
+              format = 'jpeg';
+              compressedUrl = canvas.toDataURL('image/jpeg', quality);
+            }
+          } catch (e) {
+            // Fallback a JPEG si WebP no está soportado
+            format = 'jpeg';
+            compressedUrl = canvas.toDataURL('image/jpeg', quality);
+          }
+
+          // Optimización adaptativa de calidad
+          let currentQuality = quality;
+          let iterations = 0;
+          const targetSize = 150000; // ~150KB objetivo
+          
+          while (compressedUrl.length > targetSize && currentQuality > 0.5 && iterations < 5) {
+            currentQuality -= 0.08;
+            compressedUrl = canvas.toDataURL(`image/${format}`, currentQuality);
+            iterations++;
+          }
+          
+          const finalSizeKB = (compressedUrl.length * 0.75 / 1024).toFixed(1);
+          console.log(`  → Formato: ${format.toUpperCase()}, ${finalSizeKB}KB, calidad: ${(currentQuality * 100).toFixed(0)}%`);
+
+          resolve(compressedUrl);
+        };
+        img.onerror = () => {
+          console.error('❌ Error cargando imagen para comprimir');
+          resolve(null);
+        };
+        img.src = e.target.result;
+      };
+      reader.onerror = () => {
+        console.error('❌ Error leyendo archivo');
+        resolve(null);
+      };
+      reader.readAsDataURL(file);
+    });
   }
   
   async handleDocumentUpload(files, event) {
