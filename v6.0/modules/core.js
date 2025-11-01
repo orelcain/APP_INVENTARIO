@@ -2867,6 +2867,25 @@ class InventarioCompleto {
     document.getElementById('imagePreview').innerHTML = '';
     document.getElementById('documentsList').innerHTML = '';
     
+    // Poblar select de Tipo
+    this.poblarSelectTipo();
+    
+    // Poblar Nivel 1 (Planta) - siempre habilitado
+    this.cargarNivel(1);
+    
+    // Deshabilitar niveles 2-8 inicialmente
+    for (let i = 2; i <= 8; i++) {
+      const select = document.getElementById(`nivel${i}`);
+      if (select) {
+        if (i < 8) {
+          select.innerHTML = '<option value="">Seleccionar...</option>';
+        } else {
+          select.value = '';
+        }
+        select.disabled = true;
+      }
+    }
+    
     // Inicializar ubicaciones
     this.ubicacionesActuales = [];
     
@@ -2883,7 +2902,7 @@ class InventarioCompleto {
         document.getElementById('codSAP').value = repuesto.codSAP || repuesto.codigo_sap || '';
         document.getElementById('codProv').value = repuesto.codProv || repuesto.codigo_prov || '';
         document.getElementById('tipo').value = repuesto.tipo || '';
-        document.getElementById('categoria').value = repuesto.categoria || '';
+        document.getElementById('categoria').value = repuesto.categoria || 'Repuesto';
         document.getElementById('nombre').value = repuesto.nombre || '';
         
         // Campos de stock
@@ -2896,7 +2915,11 @@ class InventarioCompleto {
         // Datos técnicos
         document.getElementById('datosTecnicos').value = repuesto.datosTecnicos || '';
         
-        // TODO: Cargar ubicaciones (próximo commit)
+        // Cargar ubicaciones (primera ubicación si existe)
+        if (repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
+          await this.cargarUbicacionEnFormulario(repuesto.ubicaciones[0]);
+        }
+        
         // TODO: Cargar multimedia (próximo commit)
         
       } else {
@@ -2906,13 +2929,132 @@ class InventarioCompleto {
       }
     } else {
       console.log('🆕 Modo AGREGAR nuevo repuesto');
-      // TODO: Agregar ubicación inicial (próximo commit)
+      // Seleccionar valores por defecto
+      document.getElementById('categoria').value = 'Repuesto';
+      document.getElementById('minimo').value = 5;
+      document.getElementById('optimo').value = 10;
     }
     
     // Mostrar modal
     document.getElementById('modal').classList.add('active');
     
     console.log('========== MODAL ABIERTO ==========\n');
+  }
+  
+  // Poblar select de Tipo con opciones existentes
+  poblarSelectTipo() {
+    const selectTipo = document.getElementById('tipo');
+    if (!selectTipo) return;
+    
+    // Opciones predefinidas
+    const tiposPredefinidos = [
+      'Mecánico',
+      'Eléctrico',
+      'Electrónico',
+      'Neumático',
+      'Hidráulico',
+      'Estructural',
+      'Consumible',
+      'Filtro',
+      'Rodamiento',
+      'Sello',
+      'Válvula',
+      'Sensor',
+      'Motor',
+      'Correa',
+      'Cadena',
+      'Engranaje'
+    ];
+    
+    // Obtener tipos únicos de repuestos existentes
+    const tiposExistentes = [...new Set(this.repuestos
+      .map(r => r.tipo)
+      .filter(t => t && t.trim())
+    )];
+    
+    // Combinar y ordenar
+    const todosLosTipos = [...new Set([...tiposPredefinidos, ...tiposExistentes])].sort();
+    
+    // Poblar select
+    selectTipo.innerHTML = '<option value="">Seleccionar tipo...</option>';
+    todosLosTipos.forEach(tipo => {
+      const opt = document.createElement('option');
+      opt.value = tipo;
+      opt.textContent = tipo;
+      selectTipo.appendChild(opt);
+    });
+  }
+  
+  // Cargar ubicación en formulario (cascada jerárquica)
+  async cargarUbicacionEnFormulario(ubicacion) {
+    if (!ubicacion) return;
+    
+    console.log('📍 Cargando ubicación en formulario:', ubicacion);
+    
+    // Cargar nivel 1 (Planta)
+    const nivel1Select = document.getElementById('nivel1');
+    if (nivel1Select && ubicacion.planta) {
+      nivel1Select.value = ubicacion.planta;
+    }
+    
+    // Cargar nivel 2 (Área General) si existe
+    if (ubicacion.areaGeneral) {
+      await this.cargarNivel(2);
+      const nivel2Select = document.getElementById('nivel2');
+      if (nivel2Select) {
+        // Esperar un momento para que se carguen las opciones
+        setTimeout(() => {
+          nivel2Select.value = ubicacion.areaGeneral;
+          
+          // Cargar nivel 3 (Sub-área) si existe
+          if (ubicacion.subArea) {
+            this.cargarNivel(3);
+            setTimeout(() => {
+              const nivel3Select = document.getElementById('nivel3');
+              if (nivel3Select) {
+                nivel3Select.value = ubicacion.subArea;
+                
+                // Continuar con los demás niveles...
+                if (ubicacion.sistemaEquipo) {
+                  this.cargarNivel(4);
+                  setTimeout(() => {
+                    document.getElementById('nivel4').value = ubicacion.sistemaEquipo;
+                    
+                    if (ubicacion.subSistema) {
+                      this.cargarNivel(5);
+                      setTimeout(() => {
+                        document.getElementById('nivel5').value = ubicacion.subSistema;
+                        
+                        if (ubicacion.seccion) {
+                          this.cargarNivel(6);
+                          setTimeout(() => {
+                            document.getElementById('nivel6').value = ubicacion.seccion;
+                            
+                            if (ubicacion.subSeccion) {
+                              this.cargarNivel(7);
+                              setTimeout(() => {
+                                document.getElementById('nivel7').value = ubicacion.subSeccion;
+                                
+                                if (ubicacion.detalles) {
+                                  this.cargarNivel(8);
+                                  setTimeout(() => {
+                                    document.getElementById('nivel8').value = ubicacion.detalles;
+                                  }, 50);
+                                }
+                              }, 50);
+                            }
+                          }, 50);
+                        }
+                      }, 50);
+                    }
+                  }, 50);
+                }
+              }
+            }, 50);
+          }
+        }, 50);
+      }
+    }
   }
 
   closeModal() {
@@ -2923,26 +3065,113 @@ class InventarioCompleto {
   cargarNivel(nivel) {
     console.log(`🔄 Cargando nivel ${nivel}...`);
     
-    // TODO: Implementar carga desde keywords de configuración
-    // Por ahora solo habilitamos el siguiente select
     const selectActual = document.getElementById(`nivel${nivel}`);
-    if (selectActual) {
-      selectActual.disabled = false;
+    if (!selectActual) {
+      console.warn(`⚠️ No se encontró select para nivel ${nivel}`);
+      return;
+    }
+    
+    // Obtener el valor del nivel anterior para filtrar opciones
+    let valorNivelAnterior = null;
+    if (nivel > 1) {
+      const selectAnterior = document.getElementById(`nivel${nivel - 1}`);
+      valorNivelAnterior = selectAnterior?.value;
       
-      // Limpiar niveles posteriores
-      for (let i = nivel + 1; i <= 8; i++) {
-        const selectPosterior = document.getElementById(`nivel${i}`);
-        if (selectPosterior) {
-          if (i < 8) {
-            selectPosterior.innerHTML = '<option value="">Seleccionar...</option>';
-            selectPosterior.disabled = true;
-          } else {
-            selectPosterior.value = '';
-            selectPosterior.disabled = true;
-          }
+      if (!valorNivelAnterior) {
+        console.warn(`⚠️ Nivel anterior (${nivel - 1}) no tiene valor seleccionado`);
+        return;
+      }
+    }
+    
+    // Cargar opciones según el nivel
+    const opciones = this.getOpcionesNivel(nivel, valorNivelAnterior);
+    
+    // Poblar el select
+    if (nivel < 8) {
+      selectActual.innerHTML = '<option value="">Seleccionar...</option>';
+      opciones.forEach(opcion => {
+        const opt = document.createElement('option');
+        opt.value = opcion;
+        opt.textContent = opcion;
+        selectActual.appendChild(opt);
+      });
+      selectActual.disabled = false;
+    } else {
+      // Nivel 8 es input text, no select
+      selectActual.disabled = false;
+      selectActual.placeholder = 'Ej: Pocket 3, Zona A, etc.';
+    }
+    
+    // Limpiar y deshabilitar niveles posteriores
+    for (let i = nivel + 1; i <= 8; i++) {
+      const selectPosterior = document.getElementById(`nivel${i}`);
+      if (selectPosterior) {
+        if (i < 8) {
+          selectPosterior.innerHTML = '<option value="">Seleccionar...</option>';
+          selectPosterior.disabled = true;
+        } else {
+          selectPosterior.value = '';
+          selectPosterior.disabled = true;
         }
       }
     }
+    
+    console.log(`✅ Nivel ${nivel} cargado con ${opciones.length} opciones`);
+  }
+  
+  // Obtener opciones para un nivel específico (con filtrado por nivel anterior)
+  getOpcionesNivel(nivel, valorNivelAnterior = null) {
+    // Mapeo de niveles a keys de configuración
+    const nivelMap = {
+      1: 'planta',        // N1: Empresa/Planta
+      2: 'areaGeneral',   // N2: Área
+      3: 'subArea',       // N3: Sub-área
+      4: 'sistemaEquipo', // N4: Sistema/Equipo
+      5: 'subSistema',    // N5: Sub-sistema
+      6: 'seccion',       // N6: Sección
+      7: 'subSeccion'     // N7: Sub-sección
+    };
+    
+    const key = nivelMap[nivel];
+    if (!key) {
+      console.warn(`⚠️ Nivel ${nivel} no tiene mapeo de configuración`);
+      return [];
+    }
+    
+    // Para nivel 1 (Planta), siempre retornar la planta base
+    if (nivel === 1) {
+      return [this.plantaBase];
+    }
+    
+    // Obtener opciones desde la configuración predefinida
+    let opciones = this.opcionesJerarquiaPredefinidas[key] || [];
+    
+    // TODO: En el futuro, aquí se puede implementar filtrado basado en valorNivelAnterior
+    // Por ejemplo: si nivel=5 (subSistema) y valorNivelAnterior='Grader Marel',
+    // solo mostrar subsistemas relevantes a Grader
+    
+    // Agregar opciones únicas de repuestos existentes
+    const opcionesExistentes = this.getOpcionesExistentes(key);
+    opciones = [...new Set([...opciones, ...opcionesExistentes])].sort();
+    
+    return opciones;
+  }
+  
+  // Obtener opciones únicas de repuestos existentes
+  getOpcionesExistentes(campo) {
+    const valores = new Set();
+    
+    this.repuestos.forEach(rep => {
+      if (rep.ubicaciones && Array.isArray(rep.ubicaciones)) {
+        rep.ubicaciones.forEach(ub => {
+          if (ub[campo] && ub[campo].trim()) {
+            valores.add(ub[campo].trim());
+          }
+        });
+      }
+    });
+    
+    return Array.from(valores);
   }
 
   // Vincular con área del mapa
