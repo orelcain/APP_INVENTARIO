@@ -1,4 +1,4 @@
-﻿[
+[
   {
     "id": "17613843384470.6770781112528935",
     "codSAP": "Pendiente",
@@ -1058,7 +1058,7 @@
   },
   {
     "id": "9001",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Extintor Polvo QuÃƒÆ’Ã‚Â­mico ABC 10kg",
+    "nombre": "ðŸ§ª Extintor Polvo QuÃ­mico ABC 10kg",
     "codSAP": "TEST-EXT-001",
     "codProv": "TEST-PROV-EXT-001",
     "cantidad": 15,
@@ -1066,7 +1066,7 @@
     "optimo": 20,
     "precio": 45000,
     "planta": "Aquachile Antarfood Chonchi",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Extintor tipo ABC para fuegos clase A, B y C",
+    "descripcion": "ðŸ§ª TEST - Extintor tipo ABC para fuegos clase A, B y C",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1078,7 +1078,7 @@
   },
   {
     "id": "9002",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª BotiquÃƒÆ’Ã‚Â­n Primeros Auxilios Completo",
+    "nombre": "ðŸ§ª BotiquÃ­n Primeros Auxilios Completo",
     "codSAP": "TEST-BOT-001",
     "codProv": "TEST-PROV-BOT-001",
     "cantidad": 8,
@@ -1086,7 +1086,7 @@
     "optimo": 12,
     "precio": 35000,
     "planta": "Aquachile Antarfood Chonchi",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - BotiquÃƒÆ’Ã‚Â­n con elementos bÃƒÆ’Ã‚Â¡sicos de primeros auxilios",
+    "descripcion": "ðŸ§ª TEST - BotiquÃ­n con elementos bÃ¡sicos de primeros auxilios",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1098,7 +1098,7 @@
   },
   {
     "id": "9003",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª VÃƒÆ’Ã‚Â¡lvula Mariposa 6 Pulgadas",
+    "nombre": "ðŸ§ª VÃ¡lvula Mariposa 6 Pulgadas",
     "codSAP": "TEST-VAL-MA-006",
     "codProv": "TEST-PROV-VAL-006",
     "cantidad": 12,
@@ -1106,8 +1106,8 @@
     "optimo": 15,
     "precio": 125000,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - VÃƒÆ’Ã‚Â¡lvula mariposa para control de flujo",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
+    "descripcion": "ðŸ§ª TEST - VÃ¡lvula mariposa para control de flujo",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1119,7 +1119,7 @@
   },
   {
     "id": "9004",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Sensor de Temperatura PT100",
+    "nombre": "ðŸ§ª Sensor de Temperatura PT100",
     "codSAP": "TEST-SEN-TMP-100",
     "codProv": "TEST-PROV-SEN-100",
     "cantidad": 20,
@@ -1127,8 +1127,8 @@
     "optimo": 25,
     "precio": 28000,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Sensor PT100 rango -50Ãƒâ€šÃ‚Â°C a +200Ãƒâ€šÃ‚Â°C",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
+    "descripcion": "ðŸ§ª TEST - Sensor PT100 rango -50Â°C a +200Â°C",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1140,7 +1140,7 @@
   },
   {
     "id": "9005",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Filtro de Cartucho 5 Micras",
+    "nombre": "ðŸ§ª Filtro de Cartucho 5 Micras",
     "codSAP": "TEST-FIL-CAR-005",
     "codProv": "TEST-PROV-FIL-005",
     "cantidad": 30,
@@ -1148,9 +1148,9 @@
     "optimo": 40,
     "precio": 15000,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
     "subArea": "Sistema de Agua",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Cartucho de filtro de 5 micras",
+    "descripcion": "ðŸ§ª TEST - Cartucho de filtro de 5 micras",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1162,7 +1162,7 @@
   },
   {
     "id": "9006",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Bomba CentrÃƒÆ’Ã‚Â­fuga 5HP",
+    "nombre": "ðŸ§ª Bomba CentrÃ­fuga 5HP",
     "codSAP": "TEST-BOM-CEN-5HP",
     "codProv": "TEST-PROV-BOM-5HP",
     "cantidad": 4,
@@ -1170,9 +1170,9 @@
     "optimo": 6,
     "precio": 450000,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
     "subArea": "Sistema de Agua",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Bomba centrÃƒÆ’Ã‚Â­fuga 5HP",
+    "descripcion": "ðŸ§ª TEST - Bomba centrÃ­fuga 5HP",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1184,7 +1184,7 @@
   },
   {
     "id": "9007",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Rodamiento SKF 6205-2RS",
+    "nombre": "ðŸ§ª Rodamiento SKF 6205-2RS",
     "codSAP": "TEST-ROD-SKF-6205",
     "codProv": "TEST-SKF-6205-2RS",
     "cantidad": 25,
@@ -1192,10 +1192,10 @@
     "optimo": 30,
     "precio": 18500,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
     "subArea": "Sistema de Agua",
     "sistemaEquipo": "Bomba Principal BP-01",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Rodamiento rÃƒÆ’Ã‚Â­gido de bolas",
+    "descripcion": "ðŸ§ª TEST - Rodamiento rÃ­gido de bolas",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1207,7 +1207,7 @@
   },
   {
     "id": "9008",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Sello MecÃƒÆ’Ã‚Â¡nico 25mm",
+    "nombre": "ðŸ§ª Sello MecÃ¡nico 25mm",
     "codSAP": "TEST-SEL-MEC-025",
     "codProv": "TEST-PROV-SEL-025",
     "cantidad": 8,
@@ -1215,10 +1215,10 @@
     "optimo": 12,
     "precio": 65000,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
     "subArea": "Sistema de Agua",
     "sistemaEquipo": "Bomba Principal BP-01",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Sello mecÃƒÆ’Ã‚Â¡nico para eje 25mm",
+    "descripcion": "ðŸ§ª TEST - Sello mecÃ¡nico para eje 25mm",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1230,7 +1230,7 @@
   },
   {
     "id": "9009",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Impulsor de Bomba Acero Inox",
+    "nombre": "ðŸ§ª Impulsor de Bomba Acero Inox",
     "codSAP": "TEST-IMP-BOM-INOX",
     "codProv": "TEST-PROV-IMP-INOX",
     "cantidad": 6,
@@ -1238,11 +1238,11 @@
     "optimo": 8,
     "precio": 185000,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
     "subArea": "Sistema de Agua",
     "sistemaEquipo": "Bomba Principal BP-01",
-    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Impulsor acero inoxidable 316L",
+    "subSistema": "Sistema HidrÃ¡ulico",
+    "descripcion": "ðŸ§ª TEST - Impulsor acero inoxidable 316L",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1254,7 +1254,7 @@
   },
   {
     "id": "9010",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Carcasa de Bomba Con Bridas",
+    "nombre": "ðŸ§ª Carcasa de Bomba Con Bridas",
     "codSAP": "TEST-CAR-BOM-BRID",
     "codProv": "TEST-PROV-CAR-BRID",
     "cantidad": 3,
@@ -1262,11 +1262,11 @@
     "optimo": 5,
     "precio": 320000,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
     "subArea": "Sistema de Agua",
     "sistemaEquipo": "Bomba Principal BP-01",
-    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Carcasa con bridas de conexiÃƒÆ’Ã‚Â³n",
+    "subSistema": "Sistema HidrÃ¡ulico",
+    "descripcion": "ðŸ§ª TEST - Carcasa con bridas de conexiÃ³n",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1278,7 +1278,7 @@
   },
   {
     "id": "9011",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª O-Ring Viton 25x3mm",
+    "nombre": "ðŸ§ª O-Ring Viton 25x3mm",
     "codSAP": "TEST-ORI-VIT-25X3",
     "codProv": "TEST-PROV-ORI-25X3",
     "cantidad": 50,
@@ -1286,12 +1286,12 @@
     "optimo": 60,
     "precio": 3500,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
     "subArea": "Sistema de Agua",
     "sistemaEquipo": "Bomba Principal BP-01",
-    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
-    "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - O-Ring Viton alta temperatura",
+    "subSistema": "Sistema HidrÃ¡ulico",
+    "seccion": "SecciÃ³n de Sellado",
+    "descripcion": "ðŸ§ª TEST - O-Ring Viton alta temperatura",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1303,7 +1303,7 @@
   },
   {
     "id": "9012",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Junta Tapa Bomba TeflÃƒÆ’Ã‚Â³n",
+    "nombre": "ðŸ§ª Junta Tapa Bomba TeflÃ³n",
     "codSAP": "TEST-JUN-TAP-TEF",
     "codProv": "TEST-PROV-JUN-TEF",
     "cantidad": 15,
@@ -1311,12 +1311,12 @@
     "optimo": 20,
     "precio": 8500,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
     "subArea": "Sistema de Agua",
     "sistemaEquipo": "Bomba Principal BP-01",
-    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
-    "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Junta de teflÃƒÆ’Ã‚Â³n para tapa",
+    "subSistema": "Sistema HidrÃ¡ulico",
+    "seccion": "SecciÃ³n de Sellado",
+    "descripcion": "ðŸ§ª TEST - Junta de teflÃ³n para tapa",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1328,7 +1328,7 @@
   },
   {
     "id": "9013",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Tornillo Allen M8x40 Inox A4",
+    "nombre": "ðŸ§ª Tornillo Allen M8x40 Inox A4",
     "codSAP": "TEST-TOR-ALL-M8X40",
     "codProv": "TEST-DIN912-M8X40-A4",
     "cantidad": 100,
@@ -1336,13 +1336,13 @@
     "optimo": 150,
     "precio": 450,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
     "subArea": "Sistema de Agua",
     "sistemaEquipo": "Bomba Principal BP-01",
-    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
-    "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
-    "detalle": "Conjunto de FijaciÃƒÆ’Ã‚Â³n",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Tornillo allen M8x40mm inox A4-70",
+    "subSistema": "Sistema HidrÃ¡ulico",
+    "seccion": "SecciÃ³n de Sellado",
+    "detalle": "Conjunto de FijaciÃ³n",
+    "descripcion": "ðŸ§ª TEST - Tornillo allen M8x40mm inox A4-70",
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1354,7 +1354,7 @@
   },
   {
     "id": "9014",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Arandela PresiÃƒÆ’Ã‚Â³n M8 Inox",
+    "nombre": "ðŸ§ª Arandela PresiÃ³n M8 Inox",
     "codSAP": "TEST-ARA-PRE-M8",
     "codProv": "TEST-DIN127-M8-INOX",
     "cantidad": 150,
@@ -1362,13 +1362,13 @@
     "optimo": 200,
     "precio": 150,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "areaGeneral": "Ãrea de ProducciÃ³n",
     "subArea": "Sistema de Agua",
     "sistemaEquipo": "Bomba Principal BP-01",
-    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
-    "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
-    "detalle": "Conjunto de FijaciÃƒÆ’Ã‚Â³n",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Arandela grower M8 inoxidable",
+    "subSistema": "Sistema HidrÃ¡ulico",
+    "seccion": "SecciÃ³n de Sellado",
+    "detalle": "Conjunto de FijaciÃ³n",
+    "descripcion": "ðŸ§ª TEST - Arandela grower M8 inoxidable",
     "multimedia": [
       {
         "tipo": "imagen",
