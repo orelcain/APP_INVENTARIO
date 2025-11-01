@@ -72,17 +72,43 @@ $combinedJs = @"
 })();
 "@
 
-# Reemplazar el tag <script type="module" src="modules/core.js"></script>
+# Reemplazar el tag <script type="module">...</script> que hace imports
 Write-Host 'Reemplazando script modules...' -ForegroundColor Yellow
 
-# Reemplazar el import del módulo
-$html = $html -replace '<script type="module" src="modules/core\.js"></script>', "<script>`n$combinedJs`n</script>"
+# Buscar y reemplazar el bloque que contiene los imports dinámicos
+$pattern = '(?s)<script type="module">\s*// =+\s*// IMPORTS.*?</script>'
+$replacement = "<script>`n$combinedJs`n</script>"
+$html = $html -replace $pattern, $replacement
 
-# Eliminar el bloque try-catch que importa dinámicamente
-$html = $html -replace '<script type="module">[\s\S]*?<\/script>', "<script>`n$combinedJs`n</script>"
+# Si no funcionó el primer patrón, usar uno más simple
+if ($html -match 'import\(''\.\/modules\/storage\.js''\)') {
+  Write-Host 'Usando patron alternativo...' -ForegroundColor Yellow
+  $startMarker = '<!-- SCRIPTS MODULARES -->'
+  $endMarker = '</script>'
+  
+  $startIdx = $html.IndexOf($startMarker)
+  if ($startIdx -ge 0) {
+    $scriptStart = $html.IndexOf('<script type="module">', $startIdx)
+    $scriptEnd = $html.IndexOf('</script>', $scriptStart) + 9
+    
+    $before = $html.Substring(0, $scriptStart)
+    $after = $html.Substring($scriptEnd)
+    
+    $html = $before + "<script>`n$combinedJs`n</script>" + $after
+  }
+}
 
 # Guardar archivo portable
 Write-Host 'Guardando archivo portable...' -ForegroundColor Yellow
+
+# Eliminar declaraciones duplicadas de globalBlobCache
+$count = ([regex]::Matches($html, 'const globalBlobCache')).Count
+if ($count -gt 1) {
+  Write-Host "  Encontradas $count declaraciones de globalBlobCache, eliminando duplicados..." -ForegroundColor Yellow
+  # Reemplazar la segunda y subsecuentes ocurrencias
+  $html = $html -replace '(?<=const globalBlobCache = new Map\(\);)[\s\S]*?const globalBlobCache = new Map\(\);', ''
+}
+
 $html | Out-File $outputHtml -Encoding UTF8 -NoNewline
 
 Write-Host ''
