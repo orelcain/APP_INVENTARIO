@@ -326,45 +326,6 @@
       border-color: var(--primary);
     }
 
-    /* Barra de control de vista (encima de las tarjetas) */
-    .view-control-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      margin-bottom: 16px;
-      background: var(--bg-secondary);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-primary);
-    }
-
-    .view-control-left {
-      display: flex;
-      align-items: center;
-    }
-
-    .view-control-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .results-counter {
-      font-size: var(--font-base);
-      font-weight: var(--font-semibold);
-      color: var(--text-primary);
-      letter-spacing: var(--letter-spacing-wide);
-    }
-
-    .view-label {
-      font-size: var(--font-sm);
-      font-weight: var(--font-medium);
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: var(--letter-spacing-wider);
-      margin-right: 4px;
-    }
-
     /* Cards grid - 6 columnas ancho completo */
     .cards-grid {
       display: grid;
@@ -583,26 +544,47 @@
       z-index: 3001;
     }
 
-    /* PAGINACIÓN - Tema Oscuro */
+    /* PAGINACIÓN - Tema Oscuro con controles de vista integrados */
     .pagination-container {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 20px;
+      margin: 10px 0;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-primary);
+    }
+
+    .pagination-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pagination-center {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
-      padding: 16px 20px;
-      margin: 10px 0;
+    }
+
+    .pagination-right {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
     }
 
     #paginationTop {
       margin-top: 0;
-      margin-bottom: 20px;
-      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 16px;
     }
 
     #paginationBottom {
-      margin-top: 20px;
+      margin-top: 16px;
       margin-bottom: 0;
-      border-top: 1px solid var(--border-color);
     }
 
     .pagination-btn {
@@ -643,6 +625,15 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       padding: 0 12px;
+    }
+
+    .view-label {
+      font-size: var(--font-xs);
+      font-weight: var(--font-semibold);
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-spacing-wider);
+      white-space: nowrap;
     }
 
     /* ESTADÍSTICAS - Gráficos Donut */
@@ -2028,26 +2019,8 @@
         </select>
       </div>
 
-      <!-- Paginación superior -->
+      <!-- Paginación superior (con controles de vista integrados) -->
       <div id="paginationTop" class="pagination-controls hidden"></div>
-
-      <!-- Barra de control de vista (encima de las tarjetas) -->
-      <div class="view-control-bar">
-        <div class="view-control-left">
-          <span id="resultsCounter" class="results-counter">Todos (0)</span>
-        </div>
-        <div class="view-control-right">
-          <label class="view-label">Vista:</label>
-          <div class="view-btns">
-            <button class="view-btn active" data-view="cards">
-              Tarjetas
-            </button>
-            <button class="view-btn" data-view="list">
-              Lista
-            </button>
-          </div>
-        </div>
-      </div>
 
       <!-- Grid de tarjetas -->
       <div id="cardsGrid" class="cards-grid"></div>

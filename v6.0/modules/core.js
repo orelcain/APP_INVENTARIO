@@ -5158,19 +5158,6 @@ class InventarioCompleto {
 
     this.filteredRepuestos = filtered;
 
-    // Actualizar contador de resultados
-    const resultsCounter = document.getElementById('resultsCounter');
-    if (resultsCounter) {
-      const totalCount = this.repuestos.length;
-      const filteredCount = filtered.length;
-      
-      if (filteredCount === totalCount) {
-        resultsCounter.textContent = `Todos (${totalCount})`;
-      } else {
-        resultsCounter.textContent = `${filteredCount} de ${totalCount}`;
-      }
-    }
-
     // Resetear a página 1 cuando cambian filtros
     if (!this.currentPage) this.currentPage = 1;
 
@@ -5204,53 +5191,103 @@ class InventarioCompleto {
     const itemsPerPage = 18; // 6 columnas x 3 filas
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-    // Generar HTML de paginación
+    // Generar HTML de paginación con layout de 3 columnas
     let html = '';
     
-    if (totalPages <= 1) {
-      // Ocultar paginación si solo hay 1 página o menos
-      if (paginationTop) paginationTop.style.display = 'none';
-      if (paginationBottom) paginationBottom.style.display = 'none';
+    if (totalPages <= 1 && totalItems > 0) {
+      // Mostrar solo contador y vista cuando hay 1 página o menos
+      html = `
+        <div class="pagination-left">
+          <span class="pagination-info">${totalItems} items</span>
+        </div>
+        <div class="pagination-center"></div>
+        <div class="pagination-right">
+          <label class="view-label">Vista:</label>
+          <div class="view-btns">
+            <button class="view-btn ${this.currentView === 'cards' ? 'active' : ''}" data-view="cards">
+              Tarjetas
+            </button>
+            <button class="view-btn ${this.currentView === 'list' ? 'active' : ''}" data-view="list">
+              Lista
+            </button>
+          </div>
+        </div>
+      `;
+      
+      if (paginationTop) {
+        paginationTop.style.display = 'grid';
+        paginationTop.className = 'pagination-container';
+        paginationTop.innerHTML = html;
+      }
+      if (paginationBottom) {
+        paginationBottom.style.display = 'grid';
+        paginationBottom.className = 'pagination-container';
+        paginationBottom.innerHTML = html;
+      }
       return;
     }
 
-    // Mostrar paginación
-    if (paginationTop) {
-      paginationTop.style.display = 'flex';
-      paginationTop.className = 'pagination-container';
+    if (totalPages > 1) {
+      // Layout completo: contador | botones paginación | vista
+      let paginationButtons = `
+        <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.goToPage(1)">‹‹</button>
+        <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.goToPage(${this.currentPage - 1})">‹</button>
+      `;
+
+      // Botones de páginas
+      const maxButtons = 5;
+      let startPage = Math.max(1, this.currentPage - Math.floor(maxButtons / 2));
+      let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+      if (endPage - startPage < maxButtons - 1) {
+        startPage = Math.max(1, endPage - maxButtons + 1);
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        paginationButtons += `<button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" onclick="app.goToPage(${i})">${i}</button>`;
+      }
+
+      paginationButtons += `
+        <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.goToPage(${this.currentPage + 1})">›</button>
+        <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.goToPage(${totalPages})">››</button>
+      `;
+
+      html = `
+        <div class="pagination-left">
+          <span class="pagination-info">${totalItems} items</span>
+        </div>
+        <div class="pagination-center">
+          ${paginationButtons}
+        </div>
+        <div class="pagination-right">
+          <label class="view-label">Vista:</label>
+          <div class="view-btns">
+            <button class="view-btn ${this.currentView === 'cards' ? 'active' : ''}" data-view="cards">
+              Tarjetas
+            </button>
+            <button class="view-btn ${this.currentView === 'list' ? 'active' : ''}" data-view="list">
+              Lista
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Mostrar paginación
+      if (paginationTop) {
+        paginationTop.style.display = 'grid';
+        paginationTop.className = 'pagination-container';
+        paginationTop.innerHTML = html;
+      }
+      if (paginationBottom) {
+        paginationBottom.style.display = 'grid';
+        paginationBottom.className = 'pagination-container';
+        paginationBottom.innerHTML = html;
+      }
+    } else {
+      // Ocultar si no hay items
+      if (paginationTop) paginationTop.style.display = 'none';
+      if (paginationBottom) paginationBottom.style.display = 'none';
     }
-    if (paginationBottom) {
-      paginationBottom.style.display = 'flex';
-      paginationBottom.className = 'pagination-container';
-    }
-
-    html = `
-      <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.goToPage(1)">‹‹</button>
-      <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.goToPage(${this.currentPage - 1})">‹</button>
-    `;
-
-    // Botones de páginas
-    const maxButtons = 5;
-    let startPage = Math.max(1, this.currentPage - Math.floor(maxButtons / 2));
-    let endPage = Math.min(totalPages, startPage + maxButtons - 1);
-
-    if (endPage - startPage < maxButtons - 1) {
-      startPage = Math.max(1, endPage - maxButtons + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      html += `<button class="pagination-btn ${i === this.currentPage ? 'active' : ''}" onclick="app.goToPage(${i})">${i}</button>`;
-    }
-
-    html += `
-      <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.goToPage(${this.currentPage + 1})">›</button>
-      <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.goToPage(${totalPages})">››</button>
-      <span class="pagination-info">${totalItems} items</span>
-    `;
-
-    // Aplicar HTML a ambos contenedores
-    if (paginationTop) paginationTop.innerHTML = html;
-    if (paginationBottom) paginationBottom.innerHTML = html;
   }
 
   goToPage(page) {
