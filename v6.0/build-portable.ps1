@@ -109,7 +109,8 @@ if ($count -gt 1) {
   $html = $html -replace '(?<=const globalBlobCache = new Map\(\);)[\s\S]*?const globalBlobCache = new Map\(\);', ''
 }
 
-$html | Out-File $outputHtml -Encoding UTF8 -NoNewline
+# Guardar con Set-Content (mejor compatibilidad)
+Set-Content -Path $outputHtml -Value $html -Encoding UTF8
 
 Write-Host ''
 Write-Host 'Version portable creada exitosamente!' -ForegroundColor Green
