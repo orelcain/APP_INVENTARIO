@@ -2848,6 +2848,78 @@ class InventarioCompleto {
   }
 
   // ===============================================
+  // MODAL AGREGAR/EDITAR REPUESTO
+  // ===============================================
+  
+  async openModal(mode, id = null) {
+    console.log(`\n📝 ========== ABRIENDO MODAL ==========`);
+    console.log(`Modo: ${mode}`);
+    console.log(`ID: ${id}`);
+    
+    this.currentEditingId = id;
+    this.currentMultimedia = [];
+    
+    // Configurar título
+    document.getElementById('modalTitle').textContent = mode === 'edit' ? 'Editar Repuesto' : 'Agregar Repuesto';
+    
+    // Resetear formulario
+    document.getElementById('repuestoForm').reset();
+    document.getElementById('imagePreview').innerHTML = '';
+    document.getElementById('documentsList').innerHTML = '';
+    
+    // Inicializar ubicaciones
+    this.ubicacionesActuales = [];
+    
+    if (mode === 'edit' && id) {
+      console.log(`Buscando repuesto con ID: "${id}"`);
+      
+      const repuesto = this.repuestos.find(r => r.id === id || String(r.id) === String(id));
+      
+      if (repuesto) {
+        console.log(`✅ Repuesto encontrado: ${repuesto.nombre}`);
+        
+        // Llenar campos básicos
+        document.getElementById('repuestoId').value = repuesto.id;
+        document.getElementById('codSAP').value = repuesto.codSAP || repuesto.codigo_sap || '';
+        document.getElementById('codProv').value = repuesto.codProv || repuesto.codigo_prov || '';
+        document.getElementById('tipo').value = repuesto.tipo || '';
+        document.getElementById('categoria').value = repuesto.categoria || '';
+        document.getElementById('nombre').value = repuesto.nombre || '';
+        
+        // Campos de stock
+        document.getElementById('cantidad').value = repuesto.cantidad || 0;
+        document.getElementById('cantidadInstalada').value = repuesto.cantidadInstalada || 0;
+        document.getElementById('minimo').value = repuesto.minimo || 5;
+        document.getElementById('optimo').value = repuesto.optimo || 10;
+        document.getElementById('precio').value = repuesto.precio || 0;
+        
+        // Datos técnicos
+        document.getElementById('datosTecnicos').value = repuesto.datosTecnicos || '';
+        
+        // TODO: Cargar ubicaciones (próximo commit)
+        // TODO: Cargar multimedia (próximo commit)
+        
+      } else {
+        console.error(`❌ Repuesto no encontrado con ID: "${id}"`);
+        this.showToast('❌ Error: Repuesto no encontrado', 'error');
+        return;
+      }
+    } else {
+      console.log('🆕 Modo AGREGAR nuevo repuesto');
+      // TODO: Agregar ubicación inicial (próximo commit)
+    }
+    
+    // Mostrar modal
+    document.getElementById('modal').classList.add('active');
+    
+    console.log('========== MODAL ABIERTO ==========\n');
+  }
+
+  closeModal() {
+    document.getElementById('modal').classList.remove('active');
+  }
+
+  // ===============================================
   // SINCRONIZACIÓN DE UBICACIONES DESDE EL DOM
   // ===============================================
   
