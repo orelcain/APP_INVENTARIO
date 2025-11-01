@@ -69,7 +69,7 @@
     "datosTecnicos": "",
     "multimedia": [],
     "ultimaModificacion": "2025-10-31T06:21:32.453Z",
-    "ultimoConteo": null
+    "ultimoConteo": "2025-11-01T18:15:59.533Z"
   },
   {
     "id": "17613752737800.26683069476947185",
@@ -211,7 +211,7 @@
     "equipo": "",
     "sistema": "",
     "detalleUbicacion": "",
-    "cantidad": 5,
+    "cantidad": 4,
     "cantidadInstalada": 8,
     "minimo": 5,
     "optimo": 10,
@@ -227,7 +227,7 @@
       }
     ],
     "ultimaModificacion": "2025-10-26T05:21:56.417Z",
-    "ultimoConteo": "2025-10-25T19:09:09.791Z"
+    "ultimoConteo": "2025-11-01T18:17:12.299Z"
   },
   {
     "id": "17592196064450.2748990470030177",

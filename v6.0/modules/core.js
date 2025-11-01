@@ -5352,22 +5352,25 @@ class InventarioCompleto {
       // Calcular porcentaje
       const porcentajeDisplay = minimo > 0 ? Math.round((cantidad / minimo) * 100) : 0;
 
-      // Formatear fecha del último conteo - COMPACTO
+      // Formatear fecha del último conteo - Mejorado para legibilidad
       let ultimoConteoHTML = '';
       if (rep.ultimoConteo) {
         const fecha = new Date(rep.ultimoConteo);
         const fechaFormateada = fecha.toLocaleDateString('es-ES', {
           day: '2-digit',
-          month: '2-digit',
-          year: '2-digit'
+          month: 'short',
+          year: 'numeric'
         });
         const horaFormateada = fecha.toLocaleTimeString('es-ES', {
           hour: '2-digit',
-          minute: '2-digit'
+          minute: '2-digit',
+          hour12: false
         });
         ultimoConteoHTML = `
-          <div style="font-size: 9px; color: #9ca3af; padding-top: 6px; text-align: right; font-weight: 500; letter-spacing: 0.2px;">
-            Conteo: ${fechaFormateada} ${horaFormateada}
+          <div style="font-size: 10px; color: var(--text-tertiary); padding: 8px 0 4px 0; text-align: right; font-weight: 500; letter-spacing: 0.3px; line-height: 1.4;">
+            <span style="color: var(--text-secondary); font-weight: 600;">Último conteo:</span>
+            <br>
+            <span style="font-family: 'Courier New', monospace; font-size: 11px;">${fechaFormateada} · ${horaFormateada}</span>
           </div>
         `;
       }
