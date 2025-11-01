@@ -3182,6 +3182,174 @@ class InventarioCompleto {
   }
 
   // ===============================================
+  // GUARDAR REPUESTO (AGREGAR/EDITAR)
+  // ===============================================
+  
+  async saveRepuesto(event) {
+    event.preventDefault();
+    
+    console.log('\n💾 ========== GUARDANDO REPUESTO ==========');
+    
+    // Obtener valores del formulario
+    const formData = {
+      codSAP: document.getElementById('codSAP').value.trim(),
+      codProv: document.getElementById('codProv').value.trim(),
+      tipo: document.getElementById('tipo').value.trim(),
+      categoria: document.getElementById('categoria').value.trim(),
+      nombre: document.getElementById('nombre').value.trim(),
+      cantidad: parseInt(document.getElementById('cantidad').value) || 0,
+      cantidadInstalada: parseInt(document.getElementById('cantidadInstalada').value) || 0,
+      minimo: parseInt(document.getElementById('minimo').value) || 5,
+      optimo: parseInt(document.getElementById('optimo').value) || 10,
+      precio: parseFloat(document.getElementById('precio').value) || 0,
+      datosTecnicos: document.getElementById('datosTecnicos').value.trim()
+    };
+    
+    // Validaciones básicas
+    if (!formData.nombre) {
+      this.showToast('❌ El nombre es obligatorio', 'error');
+      document.getElementById('nombre').focus();
+      return;
+    }
+    
+    if (!formData.categoria) {
+      this.showToast('❌ La categoría es obligatoria', 'error');
+      document.getElementById('categoria').focus();
+      return;
+    }
+    
+    // Validar que al menos nivel 1 y 2 estén seleccionados
+    const nivel1 = document.getElementById('nivel1').value.trim();
+    const nivel2 = document.getElementById('nivel2').value.trim();
+    
+    if (!nivel1) {
+      this.showToast('❌ Debes seleccionar N1: Empresa/Planta', 'error');
+      return;
+    }
+    
+    if (!nivel2) {
+      this.showToast('❌ Debes seleccionar N2: Área', 'error');
+      return;
+    }
+    
+    // Construir objeto de ubicación jerárquica
+    const ubicacion = {
+      planta: nivel1,
+      areaGeneral: nivel2,
+      subArea: document.getElementById('nivel3').value.trim() || '',
+      sistemaEquipo: document.getElementById('nivel4').value.trim() || '',
+      subSistema: document.getElementById('nivel5').value.trim() || '',
+      seccion: document.getElementById('nivel6').value.trim() || '',
+      subSeccion: document.getElementById('nivel7').value.trim() || '',
+      detalles: document.getElementById('nivel8').value.trim() || ''
+    };
+    
+    console.log('📋 Datos del formulario:', formData);
+    console.log('📍 Ubicación jerárquica:', ubicacion);
+    
+    // Determinar si es edición o nuevo repuesto
+    const repuestoId = document.getElementById('repuestoId').value;
+    const isEdit = !!repuestoId;
+    
+    if (isEdit) {
+      // MODO EDICIÓN
+      console.log(`✏️ Editando repuesto ID: ${repuestoId}`);
+      
+      const repuesto = this.repuestos.find(r => String(r.id) === String(repuestoId));
+      
+      if (!repuesto) {
+        this.showToast('❌ Error: Repuesto no encontrado', 'error');
+        return;
+      }
+      
+      // Actualizar campos
+      Object.assign(repuesto, formData);
+      
+      // Actualizar ubicaciones (usar la primera o crear nueva)
+      if (!repuesto.ubicaciones) {
+        repuesto.ubicaciones = [];
+      }
+      
+      if (repuesto.ubicaciones.length > 0) {
+        Object.assign(repuesto.ubicaciones[0], ubicacion);
+      } else {
+        repuesto.ubicaciones.push(ubicacion);
+      }
+      
+      // TODO: Procesar multimedia (próximo commit)
+      
+      console.log('✅ Repuesto actualizado:', repuesto.nombre);
+      
+    } else {
+      // MODO AGREGAR NUEVO
+      console.log('🆕 Creando nuevo repuesto');
+      
+      // Verificar código SAP duplicado (si se proporciona)
+      if (formData.codSAP) {
+        const duplicado = this.repuestos.find(r => 
+          r.codSAP === formData.codSAP || r.codigo_sap === formData.codSAP
+        );
+        
+        if (duplicado) {
+          const confirmar = confirm(
+            `⚠️ CÓDIGO SAP DUPLICADO\n\n` +
+            `Ya existe un repuesto con código SAP "${formData.codSAP}":\n` +
+            `"${duplicado.nombre}"\n\n` +
+            `¿Deseas crear el repuesto de todas formas?`
+          );
+          
+          if (!confirmar) {
+            return;
+          }
+        }
+      }
+      
+      // Generar nuevo ID
+      const maxId = this.repuestos.length > 0 
+        ? Math.max(...this.repuestos.map(r => parseInt(r.id) || 0))
+        : 0;
+      const nuevoId = maxId + 1;
+      
+      // Crear nuevo repuesto
+      const nuevoRepuesto = {
+        id: nuevoId,
+        ...formData,
+        ubicaciones: [ubicacion],
+        multimedia: this.currentMultimedia || [],
+        fechaCreacion: new Date().toISOString(),
+        fechaModificacion: new Date().toISOString()
+      };
+      
+      // Agregar a la lista
+      this.repuestos.push(nuevoRepuesto);
+      
+      console.log('✅ Nuevo repuesto creado:', nuevoRepuesto.nombre, '- ID:', nuevoId);
+    }
+    
+    // Guardar datos
+    try {
+      const saveSuccess = await this.saveData();
+      
+      if (saveSuccess !== false) {
+        this.showToast(`✅ Repuesto ${isEdit ? 'actualizado' : 'creado'} exitosamente`, 'success');
+        
+        // Cerrar modal
+        this.closeModal();
+        
+        // Actualizar vista
+        this.applyFiltersAndRender();
+        
+        console.log('========== GUARDADO COMPLETO ==========\n');
+      } else {
+        this.showToast('⚠️ Repuesto creado pero no guardado (excede límite)', 'warning', 5000);
+      }
+    } catch (error) {
+      console.error('❌ Error al guardar:', error);
+      this.showToast('❌ Error al guardar: ' + error.message, 'error');
+    }
+  }
+
+  // ===============================================
   // SINCRONIZACIÓN DE UBICACIONES DESDE EL DOM
   // ===============================================
   
