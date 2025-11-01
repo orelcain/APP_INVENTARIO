@@ -5335,21 +5335,36 @@ class InventarioCompleto {
         `;
       }
 
-      // Botones de mapa - SIEMPRE visibles
-      let botonesMapaHTML = '';
+      // Botones de mapa - AMBOS SIEMPRE visibles
+      let botonVerMapaHTML = '';
+      let botonAnadirUbicacionHTML = '';
+      
       if (rep.ubicaciones && rep.ubicaciones.length > 0) {
-        botonesMapaHTML = `
-          <button class="card-btn" onclick="window.app?.verRepuestoEnMapa('${rep.id}')" style="width: 100%; padding: 6px 10px; border: 1px solid #5a7a94; background: var(--primary); color: white; border-radius: var(--radius-md); cursor: pointer; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;">
-            📍 Ver en Mapa (${rep.ubicaciones.length})
+        botonVerMapaHTML = `
+          <button class="card-btn" onclick="window.app?.verRepuestoEnMapa('${rep.id}')" style="flex: 1; padding: 6px 10px; border: 1px solid var(--primary); background: var(--primary); color: white; border-radius: var(--radius-md); cursor: pointer; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            📍 Ver (${rep.ubicaciones.length})
           </button>
         `;
       } else {
-        botonesMapaHTML = `
-          <button class="card-btn" onclick="window.app?.agregarUbicacionMapa('${rep.id}')" style="width: 100%; padding: 6px 10px; border: 1px dashed var(--border-primary); background: transparent; color: var(--text-tertiary); border-radius: var(--radius-md); cursor: pointer; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;">
-            📍 Añadir Ubicación
+        botonVerMapaHTML = `
+          <button class="card-btn" onclick="alert('No hay ubicaciones registradas')" style="flex: 1; padding: 6px 10px; border: 1px solid var(--border-secondary); background: var(--bg-tertiary); color: var(--text-disabled); border-radius: var(--radius-md); cursor: not-allowed; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; opacity: 0.5; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            📍 Ver (0)
           </button>
         `;
       }
+      
+      botonAnadirUbicacionHTML = `
+        <button class="card-btn" onclick="window.app?.agregarUbicacionMapa('${rep.id}')" style="flex: 1; padding: 6px 10px; border: 1px solid var(--border-accent); background: transparent; color: var(--text-secondary); border-radius: var(--radius-md); cursor: pointer; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          ➕ Añadir
+        </button>
+      `;
+      
+      let botonesMapaHTML = `
+        <div style="display: flex; gap: 4px;">
+          ${botonVerMapaHTML}
+          ${botonAnadirUbicacionHTML}
+        </div>
+      `;
 
       // Indicador de galería de imágenes
       let galeriaIndicador = '';
