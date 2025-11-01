@@ -5529,6 +5529,16 @@ class InventarioCompleto {
                 ${textoStock}
               </div>
               
+              <!-- Alerta de faltantes (cuando stock < mínimo) -->
+              ${cantidad < minimo && cantidad >= 0 ? `
+                <div style="margin-top: 8px; padding: 6px 8px; background: rgba(138, 122, 90, 0.15); border: 1px solid rgba(138, 122, 90, 0.3); border-radius: var(--radius-sm);">
+                  <div style="font-size: 10px; color: var(--warning); font-weight: 600; line-height: 1.4; letter-spacing: 0.2px;">
+                    ⚠️ Tenemos ${cantidad} ${cantidad === 1 ? 'unid.' : 'unids.'} de ${minimo} mínimas requeridas.
+                    ${cantidad > 0 ? `Faltan ${minimo - cantidad} ${(minimo - cantidad) === 1 ? 'unid.' : 'unids.'}` : 'Stock agotado'}
+                  </div>
+                </div>
+              ` : ''}
+              
               <!-- Grid KPI -->
               <div style="display: grid; grid-template-columns: repeat(${cantidadInstalada > 0 ? '4' : '3'}, 1fr); gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #2d2d30;">
                 ${cantidadInstalada > 0 ? `
