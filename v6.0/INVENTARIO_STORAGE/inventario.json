@@ -154,20 +154,12 @@
     "subSistema": "Cinta Curva",
     "seccion": "",
     "detalle": "",
-    "area": "Planta Principal",
-    "equipo": "Cintas Filete",
-    "sistema": "Cinta Curva",
-    "detalleUbicacion": "",
-    "cantidad": 0,
-    "cantidadInstalada": 1,
-    "minimo": 1,
-    "optimo": 1,
     "precio": 0,
     "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/1762032176113_cinta curva.webp",
+    "multimedia": [],
+    "ultimaModificacion": "2025-10-31T06:34:17.781Z",
+    "ultimoConteo": null
+  },    "url": "./imagenes/1762032176113_cinta curva.webp",
         "name": "1762032176113_cinta curva.webp",
         "size": 118840,
         "isFileSystem": true
