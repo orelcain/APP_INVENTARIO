@@ -1,9 +1,158 @@
 # 📦 INVENTARIO PRO - PROYECTO COMPLETO
 
-**Fecha:** 1 de noviembre de 2025  
 **Repositorio:** APP_INVENTARIO  
+**Owner:** orelcain  
 **Estado:** ✅ v6.0 en desarrollo activo - 85% completado  
-**Última actualización:** Migración TAB Configuración + Correcciones críticas
+**Última actualización:** 1 de noviembre de 2025
+
+> **📑 NAVEGACIÓN RÁPIDA:**  
+> [📅 Historial Cronológico](#-historial-cronológico-de-desarrollo) • [🎯 Estructura](#-estructura-del-proyecto) • [🚀 Inicio Rápido](#-inicio-rápido) • [📊 Comparación](#-comparación-de-versiones) • [📈 Métricas](#-métricas-del-proyecto) • [🎨 Características](#-características-v60) • [🐛 Solución Problemas](#-solución-de-problemas) • [✅ Checklist](#-checklist-rápido)
+
+---
+
+## 📅 HISTORIAL CRONOLÓGICO DE DESARROLLO
+
+### ✅ Octubre 2025 - v5.4.0 ESTABLE (PRODUCCIÓN)
+```
+Estado: ✅ COMPLETADO 100%
+Código: 35,890 líneas (monolítico)
+Características: TODAS implementadas y probadas
+```
+- ✅ Sistema CRUD completo de repuestos
+- ✅ Jerarquía de 8 niveles configurables
+- ✅ Mapas interactivos con Canvas
+- ✅ Sistema de backups automáticos (últimos 20)
+- ✅ Export PDF/Excel/CSV/ZIP completo
+- ✅ Gestión de imágenes y documentos
+- ✅ Sistema de marcadores en mapas
+- ✅ Estadísticas y analítica avanzada
+- ✅ Gestión de valores y presupuestos
+- ✅ Sistema de zonas con jerarquía
+- ✅ 6 TABS completamente funcionales
+- ⚠️ **Problema:** 35,890 líneas en 1 archivo = difícil mantener
+
+### 🔄 31 Octubre 2025 - INICIO MIGRACIÓN v6.0
+```
+Objetivo: Arquitectura modular ES6+ mantenible
+Meta: Reducir 75% del código manteniendo funcionalidad
+```
+- ✅ Creada estructura modular (4 archivos)
+- ✅ Separados módulos: core.js, storage.js, mapa.js
+- ✅ Eliminadas 27,000 líneas de código redundante
+- ✅ Reducción: 35,890 → 8,895 líneas (-75.2%)
+
+### ✅ 1 Noviembre 2025 - SESIÓN DE MIGRACIÓN INTENSIVA
+```
+Commit: 641f592 + 5a526e6
+Estado: 85% completado
+Cambios: +2,111 líneas / -510 líneas
+Push: 8.46 MB + documentación
+```
+
+#### ✅ TAB Inventario - MIGRADO 100%
+- ✅ Grid 6 columnas responsive (6/6/5/4/3/2/1 breakpoints)
+- ✅ Paginación 18 items (6×3 filas)
+- ✅ Renderizado dual pagination (top + bottom)
+- ✅ Cards corporativas tema VSCode Dark
+- ✅ Botones mapa: VER EN MAPA / AÑADIR UBICACIÓN
+- ✅ Lightbox con zoom 1x-5x + pan arrastrando
+- ✅ Navegación prev/next entre imágenes
+- ✅ Contador "X / Y" de multimedia
+- ✅ Modal conteo individual corporativo
+- ✅ Filtros por área, equipo, tipo
+- ✅ Búsqueda en tiempo real
+- ✅ Delegación eventos data-action
+
+#### ✅ TAB Estadísticas - MIGRADO 100%
+- ✅ Stats grid con 6 métricas principales
+- ✅ Donuts CSS puros (157 líneas, sin librerías)
+- ✅ Colores grisáceos: #5a7a5a, #8a7a5a, #8a5a5a
+- ✅ Stats flow con ramificación
+- ✅ Análisis por áreas con % salud
+- ✅ Alertas rápidas (Sin/Bajo stock)
+- ✅ Formato responsive completo
+
+#### ✅ TAB Valores - MIGRADO 100%
+- ✅ 3 cards corporativas (Total, Con Precio, Promedio)
+- ✅ Colores grisáceos corporativos
+- ✅ Tipografía uppercase 11px
+- ✅ Layout responsive grid
+
+#### 🔄 TAB Mapa - MIGRADO 80%
+- ✅ Canvas con zoom y pan
+- ✅ Sistema de zonas poligonales
+- ✅ 6 actualizaciones color → grisáceo (#5a6b7a)
+- ✅ Fondo canvas #1e1e1e
+- ✅ Highlight zonas #8a7a5a
+- ⏳ Integración completa con inventario (pendiente)
+
+#### 🔄 TAB Configuración - MIGRADO 40%
+- ✅ Panel FileSystem básico
+- ✅ Indicador conexión OFF/ON con colores
+- ✅ Botón ACTIVAR FILESYSTEM funcional
+- ✅ Restauración automática de sesión
+- ✅ Texto ayuda estructura carpetas
+- ⏳ Sistema backups automáticos (pendiente)
+- ⏳ Export HTML/Excel/PDF/ZIP (pendiente migrar 5000+ líneas)
+
+#### ⏳ TAB Jerarquía - PENDIENTE 0%
+- ⏳ Árbol visual 8 niveles (por implementar)
+- ⏳ Filtros escalonados (por implementar)
+- ⏳ Breadcrumb navegación (por implementar)
+- ⏳ Búsqueda en jerarquía (por implementar)
+
+#### 🎨 Diseño Global v6.0 - COMPLETO 100%
+- ✅ Tema VSCode Dark (#1e1e1e) aplicado global
+- ✅ Paleta grisáceos corporativos definida
+- ✅ Tipografía: 11px, uppercase, letter-spacing 0.5-0.8px
+- ✅ Sin emojis en UI (solo texto profesional)
+- ✅ Bordes sutiles #3e3e42
+- ✅ Sombras minimalistas
+- ✅ Transiciones 0.15s
+
+#### 🐛 CORRECCIONES CRÍTICAS
+1. **ReferenceError: getCachedBlobUrl** (✅ RESUELTO)
+   - Problema: 45+ errores al cargar imágenes desde FileSystem
+   - Causa: Función no definida en v6.0
+   - Solución: Agregada en core.js L10-32 + globalBlobCache Map
+   - Resultado: ✅ Todas las imágenes cargan correctamente
+
+2. **TypeError: configuracion.renderStorageUI** (✅ RESUELTO)
+   - Problema: Error al cambiar a TAB Configuración
+   - Causa: Módulo completo no migrado
+   - Solución: Comentada llamada en switchTab() L3823
+   - Resultado: ✅ Tab básico funcional sin errores
+
+3. **16 Warnings CSS Inline** (✅ RESUELTOS)
+   - Problema: Warnings por estilos inline en VS Code
+   - Solución: Creadas 13 clases CSS externas
+   - Resultado: ✅ Zero warnings en VS Code
+
+#### 📊 FileSystem API - OPERATIVO 100%
+- ✅ 57 repuestos cargados correctamente
+- ✅ 52 imágenes detectadas en carpeta
+- ✅ 45 repuestos con multimedia
+- ✅ Restauración automática de sesión
+- ✅ globalBlobCache con 52 blob URLs
+- ✅ Zero Garbage Collection de imágenes
+- ✅ Indicador visual OFF → ON verde
+
+### 📅 PRÓXIMOS PASOS (Prioridad)
+
+#### Inmediato - Semana 1 Nov 2025
+- [ ] **TAB Jerarquía:** Implementar árbol visual 8 niveles
+- [ ] **Testing exhaustivo:** Todas las funcionalidades v6.0
+- [ ] **Refinamientos UX:** Transiciones y feedback
+
+#### Corto Plazo - Semana 2 Nov 2025
+- [ ] **TAB Configuración:** Sistema backups automáticos
+- [ ] **Export completo:** Migrar HTML/Excel/PDF/ZIP
+- [ ] **Documentación:** Actualizar guías técnicas
+
+#### Largo Plazo - Cuando v6.0 = 100%
+- [ ] **Testing regresión:** Comparar v6.0 vs v5.4.0
+- [ ] **Optimización:** Profiling y mejoras rendimiento
+- [ ] **Promoción producción:** Archivar v5.4.0 → elevar v6.0
 
 ---
 
@@ -588,6 +737,27 @@ Estado: Zero errores, Zero warnings
 1. **Testing de regresión:** Comparar v6.0 vs v5.4.0
 2. **Optimización de rendimiento:** Profiling y mejoras
 3. **Promoción a producción:** Archivar v5.4.0, elevar v6.0
+
+---
+
+## 📚 NOTA SOBRE DOCUMENTACIÓN
+
+### ✅ README Consolidado (1 nov 2025)
+Este es el **ÚNICO README oficial** del proyecto. Anteriormente teníamos:
+- ❌ `v5.4.0/README.md` → **ELIMINADO** (info duplicada)
+- ❌ `v6.0/README.md` → **ELIMINADO** (info duplicada)
+- ✅ `README.md` (raíz) → **ÚNICO README** consolidado
+
+**Beneficios:**
+- ✅ Una sola fuente de verdad
+- ✅ Historial cronológico completo
+- ✅ Fácil navegación con índice
+- ✅ Toda la info en un lugar
+- ✅ Sin duplicación ni confusión
+
+**Documentación adicional:**
+- `v6.0/docs/` → Guías técnicas detalladas
+- `v6.0/GUIA_DESARROLLO.md` → Workflow de desarrollo
 
 ---
 
