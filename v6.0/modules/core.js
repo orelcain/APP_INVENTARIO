@@ -5322,16 +5322,42 @@ class InventarioCompleto {
         `;
       }
 
-      // Datos técnicos - SIN ICONOS
+      // Datos técnicos - Diseño moderno colapsable
       let datosTecnicosHTML = '';
       if (rep.datosTecnicos && rep.datosTecnicos.trim() !== '') {
+        // Detectar si tiene múltiples líneas o bullets
+        const lineas = rep.datosTecnicos.split('\n').filter(l => l.trim());
+        const esLista = lineas.some(l => l.trim().startsWith('-') || l.trim().startsWith('•'));
+        
+        let contenidoHTML = '';
+        if (esLista) {
+          // Renderizar como lista con bullets
+          contenidoHTML = lineas.map(linea => {
+            const textoLimpio = linea.replace(/^[-•]\s*/, '').trim();
+            if (!textoLimpio) return '';
+            return `<div style="display: flex; gap: 6px; margin-bottom: 4px;">
+              <span style="color: var(--primary); font-weight: 700; flex-shrink: 0;">▪</span>
+              <span style="flex: 1; line-height: 1.5;">${textoLimpio}</span>
+            </div>`;
+          }).filter(Boolean).join('');
+        } else {
+          // Renderizar como texto simple
+          contenidoHTML = `<div style="line-height: 1.6; white-space: pre-line;">${rep.datosTecnicos}</div>`;
+        }
+        
         datosTecnicosHTML = `
-          <div style="background: #f8f9fa; border-left: 2px solid #6c757d; padding: 8px 10px; border-radius: 0; margin-top: 10px;">
-            <div style="font-size: 9px; font-weight: 700; color: #6c757d; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
-              Datos Técnicos
+          <details style="margin-top: 10px; border: 1px solid var(--border-primary); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-tertiary);">
+            <summary style="padding: 8px 12px; cursor: pointer; user-select: none; font-size: 10px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: space-between; background: var(--bg-input); transition: all 0.2s;">
+              <span style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 12px;">⚙️</span>
+                Datos Técnicos
+              </span>
+              <span style="font-size: 10px; opacity: 0.6;">▼</span>
+            </summary>
+            <div style="padding: 10px 12px; font-size: 11px; color: var(--text-secondary); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+              ${contenidoHTML}
             </div>
-            <div style="font-size: 11px; color: #495057; line-height: 1.5; font-family: 'Courier New', monospace; white-space: pre-line; word-break: break-word;">${rep.datosTecnicos}</div>
-          </div>
+          </details>
         `;
       }
 

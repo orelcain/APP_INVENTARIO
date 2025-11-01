@@ -344,6 +344,31 @@
       transform: scale(0.98);
     }
 
+    /* ━━━━━━━━━━━━━━━ DATOS TÉCNICOS COLAPSABLES ━━━━━━━━━━━━━━━ */
+    details[open] summary {
+      background: var(--bg-tertiary);
+    }
+
+    details[open] summary span:last-child {
+      transform: rotate(180deg);
+    }
+
+    details summary {
+      list-style: none;
+    }
+
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details summary span:last-child {
+      transition: transform var(--transition-fast);
+    }
+
+    details summary:hover {
+      background: var(--bg-tertiary);
+    }
+
     /* LIGHTBOX - Tema Oscuro */
     .lightbox {
       display: none;
