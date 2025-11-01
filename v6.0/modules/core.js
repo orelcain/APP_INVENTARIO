@@ -5485,7 +5485,7 @@ class InventarioCompleto {
               <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 6px;">
                 ${rep.codSAP || rep.codigo_sap ? `
                   <div style="display: flex; align-items: center; gap: 6px; background: var(--bg-input); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-secondary);">
-                    <span style="font-size: 9px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;">SAP:</span>
+                    <span style="font-size: 13px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;">SAP:</span>
                     <span style="font-size: 13px; color: var(--text-primary); font-family: 'Courier New', monospace; font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codSAP || rep.codigo_sap}</span>
                     <button onclick="navigator.clipboard.writeText('${(rep.codSAP || rep.codigo_sap).replace(/'/g, "\\'")}').then(() => { const btn = event.target; const original = btn.innerHTML; btn.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--success)\\' stroke-width=\\'2\\'><polyline points=\\'20 6 9 17 4 12\\'></polyline></svg>'; setTimeout(() => { btn.innerHTML = original; }, 1000); })" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 2px 4px; transition: all 0.15s; display: flex; align-items: center; line-height: 0;" title="Copiar código SAP">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
