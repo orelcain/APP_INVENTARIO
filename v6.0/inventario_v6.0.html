@@ -2539,17 +2539,14 @@
         <!-- Multimedia (Imágenes + Documentos) -->
         <div class="form-multimedia-grid">
           <div class="form-group">
-            <label class="form-label-space-between">
-              <span>📸 Imágenes</span>
-              <small id="image-upload-mode" class="form-upload-mode">Auto</small>
-            </label>
-            <input type="file" class="form-control form-input-file" id="imagenFile" accept="image/*" multiple onchange="app.handleMultimedia(event, 'image')" title="Seleccionar imágenes del repuesto">
+            <label class="form-label-margin">📸 Imágenes</label>
+            <input type="file" class="form-control" id="imagenFile" accept="image/*" multiple onchange="app.handleMultimedia(event, 'image')" title="Seleccionar imágenes del repuesto">
             <div id="imagePreview" class="multimedia-preview multimedia-preview-margin"></div>
           </div>
           
           <div class="form-group">
             <label class="form-label-margin">📎 Documentos</label>
-            <input type="file" class="form-control form-input-file" id="documentos" accept=".pdf,.doc,.docx,.xls,.xlsx,video/*" multiple onchange="app.handleMultimedia(event, 'document')" title="Seleccionar documentos y videos">
+            <input type="file" class="form-control" id="documentos" accept=".pdf,.doc,.docx,.xls,.xlsx,video/*" multiple onchange="app.handleMultimedia(event, 'document')" title="Seleccionar documentos y videos">
             <div id="documentsList" class="documents-list"></div>
           </div>
         </div>
