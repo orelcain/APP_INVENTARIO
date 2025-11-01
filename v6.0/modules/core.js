@@ -3005,16 +3005,17 @@ class InventarioCompleto {
     console.log(`📸 Cargando ${multimedia.length} imagen(es) existente(s)...`);
     
     const previewContainer = document.getElementById('imagePreview');
+    const fs = window.fsManager || fsManager;
     
     for (const media of multimedia) {
       try {
         let imageUrl = null;
         
         // Intentar cargar desde FileSystem primero
-        if (media.url && fsManager && fsManager.isConnected) {
+        if (media.url && fs && fs.isConnected) {
           // Cargar desde FileSystem
           const filename = media.url.replace('./imagenes/', '');
-          imageUrl = await fsManager.loadImage(filename);
+          imageUrl = await fs.loadImage(filename);
         }
         
         // Fallback a base64 si está disponible
@@ -3831,7 +3832,8 @@ class InventarioCompleto {
   
   async saveImagesToFileSystem(multimedia, repuesto) {
     // Verificar si FileSystem está disponible
-    if (!fsManager || !fsManager.isConnected) {
+    const fs = window.fsManager || fsManager;
+    if (!fs || !fs.isConnected) {
       console.log('⚠️ FileSystem no disponible, guardando en JSON');
       return false;
     }
@@ -3853,7 +3855,7 @@ class InventarioCompleto {
         const blob = new Blob([byteArray], { type: media.mimeType });
         
         // Guardar en carpeta imagenes/
-        const success = await fsManager.saveImage(blob, media.filename);
+        const success = await fs.saveImage(blob, media.filename);
         
         if (success) {
           console.log(`  ✅ ${media.filename} guardada (${(blob.size / 1024).toFixed(1)}KB)`);
@@ -4747,7 +4749,9 @@ class InventarioCompleto {
 
   async saveData() {
     try {
-      //   MVIL: Actualizar EMBEDDED_DATA automticamente
+      const fs = window.fsManager || fsManager;
+      
+      //   MÓVIL: Actualizar EMBEDDED_DATA automáticamente
       if (this.isMobile && !this.hasFileSystemAPI && typeof EMBEDDED_DATA !== 'undefined') {
         console.log('  Actualizando EMBEDDED_DATA en memoria...');
         EMBEDDED_DATA.repuestos = this.repuestos.map(r => {
@@ -4755,20 +4759,20 @@ class InventarioCompleto {
           return sinMultimedia;
         });
         EMBEDDED_DATA.lastUpdate = new Date().toISOString();
-        console.log('- EMBEDDED_DATA actualizado:', EMBEDDED_DATA.repuestos.length, 'repuestos');
+        console.log('✅ EMBEDDED_DATA actualizado:', EMBEDDED_DATA.repuestos.length, 'repuestos');
       }
 
       // MODO FILESYSTEM: Guardar en archivo
-      if (fsManager.isFileSystemMode) {
-        console.log('Guardando en FileSystem...');
-        const success = await fsManager.saveJSON(this.repuestos);
+      if (fs && fs.isFileSystemMode) {
+        console.log('💾 Guardando en FileSystem...');
+        const success = await fs.saveJSON(this.repuestos);
         if (success !== false) {
-          this.showToast('Guardado en carpeta (sin lmites)', 'success', 2000);
-          console.log('- Datos guardados en FileSystem');
+          this.showToast('✅ Guardado en carpeta (sin límites)', 'success', 2000);
+          console.log('✅ Datos guardados en FileSystem');
           return true;
         }
         // Si falla FileSystem, continuar con localStorage como fallback
-        console.warn('  FileSystem fall, usando localStorage como fallback');
+        console.warn('⚠️ FileSystem falló, usando localStorage como fallback');
       }
       
       // MODO LOCALSTORAGE: Guardar en navegador
