@@ -5551,6 +5551,13 @@ class InventarioCompleto {
                   `}
                 </div>
                 
+                <!-- Indicador de excedente al final de la barra (cuando stock > óptimo) -->
+                ${cantidad > optimo ? `
+                  <div style="position: absolute; right: -50px; top: 0; background: ${stockColor}; color: white; padding: 2px 6px; border-radius: 2px; font-size: 9px; font-weight: 700; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                    +${cantidad - optimo}
+                  </div>
+                ` : ''}
+                
                 <!-- Etiquetas de los marcadores -->
                 <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 8px; color: #6e7681; font-weight: 600; font-family: var(--font-family);">
                   <span>0</span>
@@ -5562,22 +5569,33 @@ class InventarioCompleto {
                   `}
                   <span style="color: #6e7681; opacity: 0.5;">${Math.round(optimo * 1.2)}</span>
                 </div>
-              </div>
-              
-              <!-- Texto compacto -->
-              <div style="font-size: 10px; color: #969696; font-weight: 600; letter-spacing: 0.2px;">
-                ${textoStock}
-              </div>
-              
-              <!-- Alerta de faltantes (cuando stock < mínimo) -->
-              ${cantidad < minimo && cantidad >= 0 ? `
-                <div style="margin-top: 8px; padding: 6px 8px; background: rgba(138, 122, 90, 0.15); border: 1px solid rgba(138, 122, 90, 0.3); border-radius: var(--radius-sm);">
-                  <div style="font-size: 10px; color: var(--warning); font-weight: 600; line-height: 1.4; letter-spacing: 0.2px;">
-                    ⚠️ Tenemos ${cantidad} ${cantidad === 1 ? 'unid.' : 'unids.'} de ${minimo} mínimas requeridas.
-                    ${cantidad > 0 ? `Faltan ${minimo - cantidad} ${(minimo - cantidad) === 1 ? 'unid.' : 'unids.'}` : 'Stock agotado'}
+                
+                <!-- Indicador de excedente al final de la barra (cuando stock > óptimo) -->
+                ${cantidad > optimo ? `
+                  <div style="position: absolute; right: -50px; top: -2px; background: ${stockColor}; color: white; padding: 2px 6px; border-radius: 2px; font-size: 9px; font-weight: 700; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                    +${cantidad - optimo}
                   </div>
+                ` : ''}
+              </div>
+              
+              <!-- Texto descriptivo SIEMPRE enmarcado con color según estado -->
+              <div style="margin-top: 8px; padding: 6px 8px; background: ${
+                cantidad === 0 ? 'rgba(148, 90, 90, 0.15)' :        // Rojo para agotado
+                cantidad < minimo ? 'rgba(138, 122, 90, 0.15)' :    // Ámbar para bajo stock
+                cantidad < optimo ? 'rgba(107, 122, 122, 0.15)' :   // Gris verdoso para adecuado
+                cantidad <= optimo * 1.2 ? 'rgba(82, 122, 101, 0.15)' : // Verde para óptimo
+                'rgba(90, 122, 148, 0.15)'                          // Azul para excedente
+              }; border: 1px solid ${
+                cantidad === 0 ? 'rgba(148, 90, 90, 0.3)' :
+                cantidad < minimo ? 'rgba(138, 122, 90, 0.3)' :
+                cantidad < optimo ? 'rgba(107, 122, 122, 0.3)' :
+                cantidad <= optimo * 1.2 ? 'rgba(82, 122, 101, 0.3)' :
+                'rgba(90, 122, 148, 0.3)'
+              }; border-radius: var(--radius-sm);">
+                <div style="font-size: 10px; color: ${stockColor}; font-weight: 600; line-height: 1.4; letter-spacing: 0.2px;">
+                  ${textoStock}
                 </div>
-              ` : ''}
+              </div>
               
               <!-- Grid KPI con marco visual -->
               <div style="display: grid; grid-template-columns: repeat(${cantidadInstalada > 0 ? '4' : '3'}, 1fr); gap: 6px; margin-top: 10px; padding: 10px 8px 8px 8px; border-top: 2px solid var(--border-accent); background: rgba(0,0,0,0.2); border-radius: 0 0 2px 2px;">
