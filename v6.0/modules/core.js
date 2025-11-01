@@ -577,73 +577,45 @@ class InventarioCompleto {
   async getImageUrl(media) {
     if (!media) return null;
     
-    // ===================================================================
-    // MANEJO UNIVERSAL DE IMGENES (FileSystem, IndexedDB, base64)
-    // ===================================================================
+    const fs = window.fsManager || fsManager;
     
-    // Si es un string simple
+    // Si es objeto con tipo: 'image' y url
+    if ((media.tipo === 'image' || media.type === 'image') && media.url) {
+      // Cargar desde FileSystem
+      if (fs && fs.isConnected && (media.url.startsWith('./imagenes/') || media.url.startsWith('imagenes/'))) {
+        try {
+          const filename = media.url.replace('./imagenes/', '').replace('imagenes/', '');
+          const blobUrl = await fs.loadImage(filename);
+          if (blobUrl) return blobUrl;
+        } catch (error) {
+          console.warn(`⚠️ No se pudo cargar desde FileSystem: ${media.url}`);
+        }
+      }
+      
+      // Fallback a data si existe (base64)
+      if (media.data && media.data.startsWith('data:image')) {
+        return media.data;
+      }
+    }
+    
+    // Si es string simple
     if (typeof media === 'string') {
-      // Base64 inline - Retornar directamente
+      // Base64 inline
       if (media.startsWith('data:image')) {
         return media;
       }
-      // ID de IndexedDB (img_timestamp_filename)
-      if (media.startsWith('img_') && this.storageMode === 'indexeddb') {
-        try {
-          const result = await this.loadImageFromFileSystem(media);
-          return result; // Puede ser null si falla
-        } catch (error) {
-          console.log(`  Imagen IndexedDB no disponible: ${media}`);
-          return null;
-        }
-      }
-      // Ruta de FileSystem (./imagenes/...)
+      // Ruta FileSystem
       if (media.startsWith('./imagenes/') || media.startsWith('imagenes/')) {
-        try {
-          const result = await this.loadImageFromFileSystem(media);
-          return result; // Puede ser null si falla
-        } catch (error) {
-          console.log(`  Imagen FileSystem no disponible: ${media}`);
-          return null;
+        if (fs && fs.isConnected) {
+          try {
+            const filename = media.replace('./imagenes/', '').replace('imagenes/', '');
+            const blobUrl = await fs.loadImage(filename);
+            if (blobUrl) return blobUrl;
+          } catch (error) {
+            console.warn(`⚠️ No se pudo cargar: ${media}`);
+          }
         }
       }
-      // Ruta relativa o absoluta
-      return media;
-    }
-    
-    // Si es objeto con flag de IndexedDB
-    if (media.type === 'image' && media.url) {
-      if (media.isIndexedDB && media.url.startsWith('img_')) {
-        try {
-          const result = await this.loadImageFromFileSystem(media.url);
-          return result; // Puede ser null si falla
-        } catch (error) {
-          console.log(`  Imagen IndexedDB no disponible: ${media.url}`);
-          return null;
-        }
-      }
-      // Si es objeto con flag de FileSystem
-      if (media.isFileSystem && (media.url.startsWith('./imagenes/') || media.url.startsWith('imagenes/'))) {
-        try {
-          const result = await this.loadImageFromFileSystem(media.url);
-          return result; // Puede ser null si falla
-        } catch (error) {
-          console.log(`  Imagen FileSystem no disponible: ${media.url}`);
-          return null;
-        }
-      }
-      // Base64 u otro formato
-      return media.url;
-    }
-    
-    // Si es objeto con estructura {tipo: 'imagen', url: '...'}
-    if (media.tipo === 'imagen' && media.url) {
-      // - SOPORTE PARA ARCHIVOS EXTERNOS
-      if (media.esArchivoExterno) {
-        return media.url;
-      }
-      // Base64 o URL normal
-      return media.url;
     }
     
     return null;
@@ -756,9 +728,9 @@ class InventarioCompleto {
       return null;
     }
 
-    // Filtrar automticamente entradas invlidas (sin URL o con URLs vacas)
+    // Filtrar multimedia válida (con URL)
     const multimediaValido = multimedia.filter(media =>
-      media && media.type === 'image' && media.url && media.url.trim() !== ''
+      media && (media.tipo === 'image' || media.type === 'image') && media.url && media.url.trim() !== ''
     );
 
     for (let i = 0; i < multimediaValido.length; i++) {
@@ -767,14 +739,7 @@ class InventarioCompleto {
         const url = await this.getImageUrl(media);
         if (url) return url;
       } catch (error) {
-        console.log(`  Imagen invlida detectada y omitida: ${media.url}`);
-        // Remover la entrada invlida del array original
-        const index = multimedia.indexOf(media);
-        if (index > -1) {
-          multimedia.splice(index, 1);
-          console.log(`  Referencia invlida eliminada del array multimedia`);
-        }
-        i--; // Ajustar ndice despus de remover elemento
+        console.log(`⚠️ Imagen inválida detectada: ${media.url}`);
       }
     }
 
