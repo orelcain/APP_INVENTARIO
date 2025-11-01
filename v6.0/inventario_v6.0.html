@@ -335,14 +335,39 @@
       transition: transform 0.2s ease;
     }
 
+    /* ━━━━━━━━━━━━━━━ BOTONES DE TARJETA ━━━━━━━━━━━━━━━ */
+    .card-btn {
+      transition: all var(--transition-fast);
+    }
+
     .card-btn:hover {
-      opacity: 0.9;
       transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
     }
 
     .card-btn:active {
       transform: scale(0.98);
     }
+
+    /* Hover específico para botón Editar */
+    .card-btn[data-action="edit"]:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Hover específico para botón Contar */
+    .card-btn[data-action="contar"]:hover {
+      background: var(--success-light);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Hover específico para botón Eliminar */
+    .card-btn[data-action="delete"]:hover {
+      background: var(--danger);
+      color: white;
+    }
+
 
     /* ━━━━━━━━━━━━━━━ DATOS TÉCNICOS COLAPSABLES ━━━━━━━━━━━━━━━ */
     details[open] summary {
