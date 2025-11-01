@@ -27,21 +27,99 @@
     }
 
     :root {
-      /* PALETA CORPORATIVA GRISÁCEA - Todo mate y desaturado */
-      --primary: #5a6b7a;        /* Azul grisáceo corporativo */
-      --primary-light: #6a7b8a;  /* Azul grisáceo claro */
-      --primary-dark: #4a5b6a;   /* Azul grisáceo oscuro */
-      --secondary: #7a7a7a;      /* Gris neutro */
-      --success: #5a7a5a;        /* Verde grisáceo (mate) */
-      --success-dark: #4a6a4a;   /* Verde grisáceo oscuro */
-      --warning: #8a7a5a;        /* Naranja grisáceo (mate opaco) */
-      --warning-dark: #7a6a4a;   /* Naranja grisáceo oscuro */
-      --danger: #8a5a5a;         /* Rojo grisáceo (mate) */
-      --danger-dark: #7a4a4a;    /* Rojo grisáceo oscuro */
-      --info: #6a7a8a;           /* Azul-gris neutro */
-      --info-dark: #5a6a7a;      /* Azul-gris oscuro */
+      /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         🎨 OPCIÓN B: CORPORATIVO MODERNO (70% serio, 30% amigable)
+         Inspirado en: GitHub Enterprise, Stripe Dashboard, Figma
+         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
       
-      /* Escala de grises corporativa */
+      /* 🌑 FONDOS - Escala oscura equilibrada (del mockup Figma ajustado) */
+      --bg-app: #1c1f26;           /* Fondo aplicación (ligeramente más claro) */
+      --bg-primary: #222630;       /* Fondo principal contenido */
+      --bg-secondary: #2a2f3a;     /* Tarjetas (inspirado en Figma #363d47 pero -20% saturación) */
+      --bg-tertiary: #323844;      /* Hover states */
+      --bg-elevated: #3a404c;      /* Modales y dropdowns */
+      --bg-input: #262b36;         /* Inputs */
+      
+      /* 🎨 ACENTOS PRINCIPALES - Desaturados pero NO grises (Figma ajustado) */
+      --primary: #5a7a94;          /* Azul corporativo desaturado (Figma #5a8bb4 -15% sat) */
+      --primary-light: #6a8aa4;    /* Hover más claro */
+      --primary-dark: #4a6a84;     /* Estados activos */
+      
+      --success: #527a65;          /* Verde oliva corporativo (Figma #4a9d7a -20% sat) */
+      --success-light: #628a75;
+      --success-dark: #426a55;
+      
+      --warning: #9a8260;          /* Ámbar mate (Figma ajustado) */
+      --warning-light: #aa9270;
+      --warning-dark: #8a7250;
+      
+      --danger: #945a5a;           /* Rojo ladrillo (Figma ajustado) */
+      --danger-light: #a46a6a;
+      --danger-dark: #844a4a;
+      
+      --info: #5a7a8a;             /* Azul-gris info */
+      --info-light: #6a8a9a;
+      --info-dark: #4a6a7a;
+      
+      /* 🔲 BORDES - Un solo color sutil */
+      --border-primary: #3a404a;   /* Borde principal (sutil pero visible) */
+      --border-secondary: #2d333d; /* Borde muy sutil (separadores) */
+      --border-accent: #4a5565;    /* Borde con énfasis (focus, hover) */
+      
+      /* 📝 TEXTO - Jerarquía clara (del mockup Figma) */
+      --text-primary: #e8ebf0;     /* Títulos (contraste máximo) */
+      --text-secondary: #b5bac3;   /* Texto normal */
+      --text-tertiary: #868b96;    /* Subtítulos y metadata */
+      --text-disabled: #5a5f6a;    /* Deshabilitados */
+      
+      /* 🎭 SOMBRAS - Sutiles pero presentes (corporativo moderno) */
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.15);
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2),
+                   0 1px 2px rgba(0, 0, 0, 0.12);
+      --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.25),
+                   0 2px 4px rgba(0, 0, 0, 0.15);
+      --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.3),
+                   0 4px 8px rgba(0, 0, 0, 0.2);
+      --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.35),
+                   0 8px 16px rgba(0, 0, 0, 0.25);
+      
+      /* Sombras especiales */
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+      --shadow-glow: 0 0 0 3px rgba(90, 122, 148, 0.15);
+      
+      /* 📐 GEOMETRÍA - Border radius 6px (corporativo moderno) */
+      --radius-sm: 4px;            /* Badges pequeños */
+      --radius-md: 6px;            /* 🎯 DEFAULT - Botones, inputs, cards */
+      --radius-lg: 8px;            /* Modales */
+      --radius-xl: 12px;           /* Imágenes */
+      --radius-full: 9999px;       /* Avatares */
+      
+      /* 📏 ESPACIADO - Sistema de 8px */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      
+      /* 🔤 TIPOGRAFÍA */
+      --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+      --font-mono: 'SF Mono', 'Consolas', 'Monaco', monospace;
+      
+      /* 🎬 TRANSICIONES */
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         🔄 ALIASES PARA COMPATIBILIDAD (mantener código existente)
+         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+      --primary-light: var(--primary-light);
+      --primary-dark: var(--primary-dark);
+      --secondary: #7a7a7a;
+      --success-dark: var(--success-dark);
+      --warning-dark: var(--warning-dark);
+      --danger-dark: var(--danger-dark);
+      --info-dark: var(--info-dark);
+      
       --gray-50: #f9fafb;
       --gray-100: #f3f4f6;
       --gray-200: #e5e7eb;
@@ -53,39 +131,21 @@
       --gray-800: #1f2937;
       --gray-900: #111827;
       
-      /* Sombras sutiles corporativas */
-      --neomorph-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-      --neomorph-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-      --neomorph-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-      
-      /* Bordes corporativos */
-      --border-color: #3e3e42;
-      --border-color-light: #2d2d30;
-      
-      /* Fondos corporativos ESTILO VSCode - GRISES MUY OSCUROS (80% más oscuro) */
-      --bg-primary: #1e1e1e;        /* Fondo principal casi negro (igual VSCode) */
-      --bg-secondary: #252526;      /* Fondo secundario (paneles VSCode) */
-      --bg-tertiary: #2d2d30;       /* Fondo terciario (hover) */
-      --bg-elevated: #1a1a1c;       /* Elementos elevados más oscuro */
-      
-      /* Texto corporativo - Invertido para fondo oscuro */
-      --text-primary: #d4d4d4;      /* Texto principal (VSCode default) */
-      --text-secondary: #969696;    /* Texto secundario */
-      --text-muted: #6e7681;        /* Texto apagado */
-      --text-disabled: #555555;
-      
-      /* Cards y acentos - Colores GRISÁCEOS corporativos */
-      --card-bg: #252526;           /* Tarjetas oscuras (panel VSCode) */
-      --accent-color: #5a6b7a;      /* Azul grisáceo opaco */
-      --accent-hover: #6a7b8a;      /* Azul grisáceo hover */
-      --danger: #8a5a5a;            /* Rojo grisáceo */
-      --danger-dark: #7a4a4a;       /* Rojo grisáceo oscuro */
-      --warning: #8a7a5a;           /* Naranja grisáceo */
-      --success: #5a7a5a;           /* Verde grisáceo */
+      --neomorph-shadow: var(--shadow-sm);
+      --neomorph-shadow-sm: var(--shadow-xs);
+      --neomorph-shadow-inset: var(--shadow-inset);
+      --border-color: var(--border-primary);
+      --border-color-light: var(--border-secondary);
+      --bg-elevated: var(--bg-elevated);
+      --text-muted: var(--text-tertiary);
+      --text-disabled: var(--text-disabled);
+      --card-bg: var(--bg-secondary);
+      --accent-color: var(--primary);
+      --accent-hover: var(--primary-light);
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      font-family: var(--font-family);
       background: var(--bg-primary);
       color: var(--text-primary);
       line-height: 1.6;
@@ -94,42 +154,51 @@
       padding: 0;
     }
 
-    /* Botones corporativos planos */
+    /* ━━━━━━━━━━━━━━━ BOTONES CORPORATIVOS MODERNOS ━━━━━━━━━━━━━━━ */
     .btn {
-      padding: 8px 16px;
-      border: 1px solid var(--border-color);
-      border-radius: 2px;
-      font-weight: 700;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md); /* 🎯 6px consistente */
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.15s ease;
-      font-size: 11px;
+      transition: all var(--transition-base);
+      font-size: 13px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      gap: var(--spacing-xs);
+      text-transform: none; /* Menos "gritón" */
+      letter-spacing: 0.3px;
+      box-shadow: var(--shadow-xs);
+    }
+    
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-xs);
     }
 
     .btn-success {
-      background: var(--accent-color);
+      background: var(--success);
       color: white;
       border: none;
     }
 
     .btn-success:hover {
-      background: var(--accent-hover);
-      opacity: 0.95;
+      background: var(--success-light);
     }
 
     .btn-primary {
-      background: var(--accent-color);
+      background: var(--primary);
       color: white;
       border: none;
     }
 
     .btn-primary:hover {
-      background: var(--accent-hover);
-      opacity: 0.95;
+      background: var(--primary-light);
     }
 
     .btn-danger {
@@ -139,30 +208,29 @@
     }
 
     .btn-danger:hover {
-      background: var(--danger-dark);
-      opacity: 0.9;
+      background: var(--danger-light);
     }
 
     .btn-secondary {
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      border: 1px solid var(--border-color);
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-primary);
     }
 
     .btn-secondary:hover {
       background: var(--bg-tertiary);
-      opacity: 0.9;
+      color: var(--text-primary);
+      border-color: var(--border-accent);
     }
 
     .btn-info {
-      background: var(--gray-600);
+      background: var(--info);
       color: white;
       border: none;
     }
 
     .btn-info:hover {
-      background: var(--gray-700);
-      opacity: 0.9;
+      background: var(--info-light);
     }
 
     /* Utilities */
@@ -171,35 +239,36 @@
     .mt-10 { margin-top: 10px; }
     .mb-20 { margin-bottom: 20px; }
 
-    /* View buttons - Corporativos */
+    /* View buttons - Corporativo moderno */
     .view-btns {
       display: flex;
-      gap: 6px;
+      gap: var(--spacing-xs);
     }
 
     .view-btn {
-      padding: 6px 12px;
-      background: var(--bg-primary);
-      color: var(--text-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 2px;
+      padding: var(--spacing-xs) 12px;
+      background: transparent;
+      color: var(--text-tertiary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
       cursor: pointer;
-      transition: all 0.15s ease;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      transition: all var(--transition-fast);
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0.3px;
     }
 
     .view-btn:hover {
-      background: var(--bg-secondary);
+      background: var(--bg-tertiary);
       color: var(--text-primary);
+      border-color: var(--border-accent);
     }
 
     .view-btn.active {
-      background: var(--gray-700);
+      background: var(--primary);
       color: white;
-      border-color: var(--gray-700);
+      border-color: var(--primary);
     }
 
     /* Cards grid - 6 columnas ancho completo */

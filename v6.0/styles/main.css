@@ -192,7 +192,7 @@ body {
 }
 
 .repuesto-card {
-  background: #1e293b;
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   overflow: hidden;
@@ -200,13 +200,13 @@ body {
   scroll-snap-align: start;
   scroll-snap-stop: normal;
   contain: layout style paint;
-  box-shadow: var(--neomorph-shadow-sm);
+  box-shadow: var(--shadow-sm);
 }
 
 .repuesto-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--neomorph-shadow-hover);
-  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-accent);
 }
 
 .card-image {
@@ -343,7 +343,7 @@ body {
 }
 
 .modal-content {
-  background: #1e293b;
+  background: var(--bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
   width: 90%;
@@ -352,7 +352,7 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--neomorph-shadow-hover);
+  box-shadow: var(--shadow-xl);
   animation: slideUp var(--transition-base);
 }
 

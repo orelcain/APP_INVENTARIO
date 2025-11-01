@@ -1,102 +1,114 @@
 /* ========================================
-   VARIABLES CSS
-   Paleta de colores, tipografía y valores globales
+   VARIABLES CSS - CORPORATIVO MODERNO v6.0
+   Opción B: 70% serio, 30% amigable
+   Inspiración: GitHub Enterprise, Stripe Dashboard
    ======================================== */
 
 :root {
   /* ============================================================
-     PALETA NIEBLA Y BOSQUE - Inspirada en imagen minimalista
+     PALETA CORPORATIVA MODERNA - Desaturada pero con vida
      ============================================================ */
   
   /* Colores primarios */
-  --primary: #5B7C99;           /* Azul-gris brumoso */
-  --primary-light: #7A9AB8;     /* Azul-gris claro */
-  --primary-dark: #4A6278;      /* Azul-gris profundo */
-  --secondary: #718096;         /* Gris medio niebla */
+  --primary: #5a7a94;           /* Azul corporativo desaturado */
+  --primary-light: #6a8aa4;     /* Hover más claro */
+  --primary-dark: #4a6a84;      /* Estados activos */
+  --secondary: #7a7a7a;         /* Gris neutro */
   
   /* Colores de estado */
-  --success: #6B8E7F;           /* Verde bosque suave */
-  --success-dark: #557566;      /* Verde bosque oscuro */
-  --warning: #D4976C;           /* Naranja tierra cálido */
-  --warning-dark: #B8825A;      /* Naranja tierra oscuro */
-  --danger: #C76B6B;            /* Rojo suave */
-  --danger-dark: #A85555;       /* Rojo oscuro */
-  --info: #5B7C99;              /* Azul-gris info */
-  --info-dark: #476370;         /* Azul-gris oscuro */
+  --success: #527a65;           /* Verde oliva corporativo */
+  --success-light: #628a75;
+  --success-dark: #426a55;
+  
+  --warning: #9a8260;           /* Ámbar mate */
+  --warning-light: #aa9270;
+  --warning-dark: #8a7250;
+  
+  --danger: #945a5a;            /* Rojo ladrillo */
+  --danger-light: #a46a6a;
+  --danger-dark: #844a4a;
+  
+  --info: #5a7a8a;              /* Azul-gris info */
+  --info-light: #6a8a9a;
+  --info-dark: #4a6a7a;
   
   /* ============================================================
-     ESCALA DE GRISES - Niebla y Carbón
+     ESCALA DE GRISES - Fondos oscuros equilibrados
      ============================================================ */
   
-  --gray-50: #2D3748;           /* Carbón base */
-  --gray-100: #3A4556;          /* Carbón claro */
-  --gray-200: #4A5568;          /* Gris oscuro carbón */
-  --gray-300: #5A6778;          /* Gris medio */
-  --gray-400: #718096;          /* Gris medio niebla */
-  --gray-500: #A0AEC0;          /* Gris claro neblina */
-  --gray-600: #CBD5E0;          /* Gris muy claro */
-  --gray-700: #E2E8F0;          /* Casi blanco */
-  --gray-800: #EDF2F7;          /* Blanco suave */
-  --gray-900: #F7FAFC;          /* Blanco humo */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
   
   /* ============================================================
-     SOMBRAS NEUMORFISMO - Profundidad Dramática
+     SOMBRAS CORPORATIVAS - Sutiles pero presentes
      ============================================================ */
   
-  --neomorph-shadow: 
-    12px 12px 24px rgba(0, 0, 0, 0.5),
-    -12px -12px 24px rgba(255, 255, 255, 0.1);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.15);
   
-  --neomorph-shadow-sm: 
-    6px 6px 12px rgba(0, 0, 0, 0.4),
-    -6px -6px 12px rgba(255, 255, 255, 0.08);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2),
+               0 1px 2px rgba(0, 0, 0, 0.12);
   
-  --neomorph-shadow-inset: 
-    inset 8px 8px 16px rgba(0, 0, 0, 0.5),
-    inset -8px -8px 16px rgba(255, 255, 255, 0.08);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.25),
+               0 2px 4px rgba(0, 0, 0, 0.15);
   
-  --neomorph-shadow-hover:
-    16px 16px 32px rgba(0, 0, 0, 0.6),
-    -16px -16px 32px rgba(255, 255, 255, 0.12);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.3),
+               0 4px 8px rgba(0, 0, 0, 0.2);
   
-  /* Sombras legacy */
-  --card-shadow: var(--neomorph-shadow);
-  --card-shadow-hover: var(--neomorph-shadow-hover);
-  --shadow-sm: var(--neomorph-shadow-sm);
-  --shadow-md: 0 2px 6px 0 rgba(0, 0, 0, 0.15);
-  --shadow-lg: 0 4px 10px 0 rgba(0, 0, 0, 0.18);
-  --shadow-xl: 0 8px 16px 0 rgba(0, 0, 0, 0.22);
+  --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.35),
+               0 8px 16px rgba(0, 0, 0, 0.25);
+  
+  --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+  --shadow-glow: 0 0 0 3px rgba(90, 122, 148, 0.15);
+  
+  /* Legacy aliases */
+  --neomorph-shadow: var(--shadow-sm);
+  --neomorph-shadow-sm: var(--shadow-xs);
+  --neomorph-shadow-inset: var(--shadow-inset);
+  --neomorph-shadow-hover: var(--shadow-md);
+  --card-shadow: var(--shadow-sm);
+  --card-shadow-hover: var(--shadow-md);
   
   /* ============================================================
-     BORDES Y LÍNEAS
+     BORDES Y GEOMETRÍA - 6px consistente (corporativo)
      ============================================================ */
   
-  --border-color: #4A5568;
-  --border-color-light: #5A6778;
-  --border-accent: #718096;
-  --border-radius: 8px;
+  --border-color: #3a404a;
+  --border-color-light: #2d333d;
+  --border-accent: #4a5565;
+  --border-radius: 6px;         /* 🎯 6px default corporativo */
   --border-radius-sm: 4px;
-  --border-radius-lg: 12px;
-  --border-radius-xl: 16px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 12px;
   
   /* ============================================================
-     FONDOS CON PROFUNDIDAD
+     FONDOS - Inspirados en mockup Figma ajustado
      ============================================================ */
   
-  --bg-primary: #2D3748;        /* Carbón base */
-  --bg-secondary: #3A4556;      /* Carbón claro */
-  --bg-tertiary: #4A5568;       /* Gris oscuro carbón */
-  --bg-elevated: #5A6778;       /* Gris medio elevado */
+  --bg-app: #1c1f26;            /* Fondo aplicación */
+  --bg-primary: #222630;        /* Fondo principal */
+  --bg-secondary: #2a2f3a;      /* Tarjetas */
+  --bg-tertiary: #323844;       /* Hover states */
+  --bg-elevated: #3a404c;       /* Modales */
+  --bg-input: #262b36;          /* Inputs */
   --bg-overlay: rgba(15, 23, 42, 0.95);
   
   /* ============================================================
-     TEXTO CON ALTO CONTRASTE
+     TEXTO - Jerarquía clara
      ============================================================ */
   
-  --text-primary: #F7FAFC;      /* Blanco humo */
-  --text-secondary: #CBD5E0;    /* Gris muy claro */
-  --text-muted: #A0AEC0;        /* Gris claro neblina */
-  --text-disabled: #718096;     /* Gris medio niebla */
+  --text-primary: #e8ebf0;      /* Títulos */
+  --text-secondary: #b5bac3;    /* Texto normal */
+  --text-tertiary: #868b96;     /* Subtítulos */
+  --text-disabled: #5a5f6a;     /* Deshabilitados */
+
   
   /* ============================================================
      TIPOGRAFÍA
