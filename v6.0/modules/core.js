@@ -3278,9 +3278,32 @@ class InventarioCompleto {
       
       // Procesar multimedia
       if (this.currentMultimedia && this.currentMultimedia.length > 0) {
-        // Combinar multimedia existente con nuevo
-        const multimediaExistente = repuesto.multimedia || [];
-        repuesto.multimedia = [...multimediaExistente, ...this.currentMultimedia];
+        // Guardar imágenes en FileSystem si está disponible
+        const imagesSaved = await this.saveImagesToFileSystem(this.currentMultimedia, repuesto);
+        
+        if (imagesSaved) {
+          // Convertir a referencias de archivo en lugar de base64
+          const multimediaRefs = this.currentMultimedia.map(img => ({
+            tipo: 'image',
+            filename: img.filename,
+            originalName: img.originalName,
+            size: img.size,
+            mimeType: img.mimeType,
+            uploadDate: img.uploadDate,
+            compressed: img.compressed,
+            originalSize: img.originalSize,
+            // NO incluir data base64 - se carga desde FileSystem
+            url: `./imagenes/${img.filename}`
+          }));
+          
+          const multimediaExistente = repuesto.multimedia || [];
+          repuesto.multimedia = [...multimediaExistente, ...multimediaRefs];
+        } else {
+          // Fallback: guardar base64 en JSON (modo sin FileSystem)
+          const multimediaExistente = repuesto.multimedia || [];
+          repuesto.multimedia = [...multimediaExistente, ...this.currentMultimedia];
+        }
+        
         console.log(`📎 Agregadas ${this.currentMultimedia.length} nuevas imágenes (total: ${repuesto.multimedia.length})`);
       }
       
@@ -3326,12 +3349,38 @@ class InventarioCompleto {
         : 0;
       const nuevoId = maxId + 1;
       
+      // Preparar multimedia
+      let multimediaFinal = [];
+      if (this.currentMultimedia && this.currentMultimedia.length > 0) {
+        // Crear objeto temporal para guardar imágenes
+        const tempRepuesto = { id: nuevoId, ...formData, ubicaciones: [ubicacion] };
+        const imagesSaved = await this.saveImagesToFileSystem(this.currentMultimedia, tempRepuesto);
+        
+        if (imagesSaved) {
+          // Referencias de archivo
+          multimediaFinal = this.currentMultimedia.map(img => ({
+            tipo: 'image',
+            filename: img.filename,
+            originalName: img.originalName,
+            size: img.size,
+            mimeType: img.mimeType,
+            uploadDate: img.uploadDate,
+            compressed: img.compressed,
+            originalSize: img.originalSize,
+            url: `./imagenes/${img.filename}`
+          }));
+        } else {
+          // Fallback: base64
+          multimediaFinal = this.currentMultimedia || [];
+        }
+      }
+      
       // Crear nuevo repuesto
       const nuevoRepuesto = {
         id: nuevoId,
         ...formData,
         ubicaciones: [ubicacion],
-        multimedia: this.currentMultimedia || [],
+        multimedia: multimediaFinal,
         documentos: this.currentDocuments || [],
         fechaCreacion: new Date().toISOString(),
         fechaModificacion: new Date().toISOString()
@@ -3677,6 +3726,50 @@ class InventarioCompleto {
       });
       
       this.showToast('🗑️ Documento eliminado', 'info', 2000);
+    }
+  }
+
+  // ===============================================
+  // GUARDAR IMÁGENES EN FILESYSTEM
+  // ===============================================
+  
+  async saveImagesToFileSystem(multimedia, repuesto) {
+    // Verificar si FileSystem está disponible
+    if (!fsManager || !fsManager.isConnected) {
+      console.log('⚠️ FileSystem no disponible, guardando en JSON');
+      return false;
+    }
+    
+    try {
+      console.log(`💾 Guardando ${multimedia.length} imagen(es) en FileSystem...`);
+      
+      for (const media of multimedia) {
+        if (!media.data || !media.filename) continue;
+        
+        // Convertir base64 a Blob
+        const base64Data = media.data.split(',')[1];
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: media.mimeType });
+        
+        // Guardar en carpeta imagenes/
+        const success = await fsManager.saveImage(blob, media.filename);
+        
+        if (success) {
+          console.log(`  ✅ ${media.filename} guardada (${(blob.size / 1024).toFixed(1)}KB)`);
+        } else {
+          console.error(`  ❌ Error guardando ${media.filename}`);
+        }
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('❌ Error guardando imágenes en FileSystem:', error);
+      return false;
     }
   }
 
