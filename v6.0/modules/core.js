@@ -5326,30 +5326,39 @@ class InventarioCompleto {
       let stockColor = '';
       let porcentajeBarra = 0;
       let textoStock = '';
+      
+      // Calcular ancho de barra visual (stock actual en relación al óptimo, con extensión para excedentes)
+      const anchoMaximoBarra = optimo * 1.2; // Permitir mostrar hasta 120% del óptimo
+      const porcentajeBarraVisual = Math.min((cantidad / anchoMaximoBarra) * 100, 100);
 
       if (cantidad === 0) {
         stockStatus = 'AGOTADO';
-        stockColor = '#7a6b6b';  // Gris rojizo grisáceo
+        stockColor = '#945a5a';  // Rojo corporativo
         porcentajeBarra = 0;
-        textoStock = `0 de ${minimo}`;
+        textoStock = `Sin stock (mínimo requerido: ${minimo})`;
       } else if (cantidad < minimo) {
-        stockStatus = 'BAJO';
-        stockColor = '#8a7a5a';  // Naranja grisáceo
-        porcentajeBarra = Math.min((cantidad / minimo) * 100, 95);
-        textoStock = `${cantidad} de ${minimo}`;
+        stockStatus = 'BAJO STOCK';
+        stockColor = '#8a7a5a';  // Naranja/ámbar
+        porcentajeBarra = porcentajeBarraVisual;
+        textoStock = `${cantidad} unid. (faltan ${minimo - cantidad} para el mínimo)`;
       } else if (cantidad >= minimo && cantidad < optimo) {
         stockStatus = 'ADECUADO';
-        stockColor = '#6b7280';  // Gris neutro (ya estaba bien)
-        porcentajeBarra = 100;
-        textoStock = `${cantidad} de ${minimo}`;
-      } else {
+        stockColor = '#6b7a7a';  // Gris verdoso
+        porcentajeBarra = porcentajeBarraVisual;
+        textoStock = `${cantidad} unid. (entre mínimo y óptimo)`;
+      } else if (cantidad >= optimo && cantidad <= optimo * 1.2) {
         stockStatus = 'ÓPTIMO';
-        stockColor = '#5a7a5a';  // Verde grisáceo
+        stockColor = '#527a65';  // Verde corporativo
+        porcentajeBarra = porcentajeBarraVisual;
+        textoStock = `${cantidad} unid. (nivel óptimo alcanzado)`;
+      } else {
+        stockStatus = 'EXCEDENTE';
+        stockColor = '#5a7a94';  // Azul corporativo
         porcentajeBarra = 100;
-        textoStock = `${cantidad} de ${optimo}`;
+        textoStock = `${cantidad} unid. (${cantidad - optimo} sobre el óptimo)`;
       }
 
-      // Calcular porcentaje
+      // Calcular porcentaje para display (no usado actualmente)
       const porcentajeDisplay = minimo > 0 ? Math.round((cantidad / minimo) * 100) : 0;
 
       // Formatear fecha del último conteo - Tamaño ajustado
@@ -5518,26 +5527,27 @@ class InventarioCompleto {
             <!-- Sección Stock -->
             <div style="background: #1e1e1e; padding: 10px; border-radius: 2px; margin-bottom: 10px; border-left: 3px solid ${stockColor}; border: 1px solid #2d2d30;">
               
-              <!-- Header: Solo Estado -->
-              <div style="margin-bottom: 8px;">
+              <!-- Header: Estado con valor -->
+              <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 9px; color: #969696; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;">Estado</span>
+                <span style="font-size: 10px; color: ${stockColor}; font-weight: 700; letter-spacing: 0.3px;">${stockStatus}</span>
               </div>
               
               <!-- Barra de progreso visual con marcadores -->
               <div style="position: relative; margin-bottom: 12px;">
                 <!-- Barra de fondo -->
                 <div style="width: 100%; height: 8px; background: #0d0d0d; border-radius: 1px; position: relative; overflow: visible;">
-                  <!-- Barra de progreso actual -->
-                  <div style="height: 100%; width: ${Math.min(porcentajeBarra, 100)}%; background: ${stockColor}; opacity: 0.95; transition: width 0.3s ease; border-radius: 1px;"></div>
+                  <!-- Barra de progreso actual (stock en relación a 120% del óptimo) -->
+                  <div style="height: 100%; width: ${porcentajeBarra}%; background: ${stockColor}; opacity: 0.95; transition: width 0.3s ease; border-radius: 1px;"></div>
                   
                   ${minimo === optimo ? `
                     <!-- Marcador combinado cuando Min = Ópt -->
-                    <div style="position: absolute; right: 0; top: -2px; width: 2px; height: 12px; background: linear-gradient(to bottom, #e67e22 0%, #e67e22 50%, #27ae60 50%, #27ae60 100%); z-index: 2;" title="Min/Ópt: ${optimo}"></div>
+                    <div style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; top: -2px; width: 2px; height: 12px; background: linear-gradient(to bottom, #e67e22 0%, #e67e22 50%, #27ae60 50%, #27ae60 100%); z-index: 2;" title="Min/Ópt: ${optimo}"></div>
                   ` : `
-                    <!-- Marcador en Mínimo -->
-                    <div style="position: absolute; left: ${(minimo / optimo * 100)}%; top: -2px; width: 2px; height: 12px; background: #e67e22; z-index: 2;" title="Mínimo: ${minimo}"></div>
-                    <!-- Marcador en Óptimo (100%) -->
-                    <div style="position: absolute; right: 0; top: -2px; width: 2px; height: 12px; background: #27ae60; z-index: 2;" title="Óptimo: ${optimo}"></div>
+                    <!-- Marcador en Mínimo (posición relativa al rango 0-120% óptimo) -->
+                    <div style="position: absolute; left: ${(minimo / (optimo * 1.2)) * 100}%; top: -2px; width: 2px; height: 12px; background: #e67e22; z-index: 2;" title="Mínimo: ${minimo}"></div>
+                    <!-- Marcador en Óptimo (posición relativa al rango 0-120% óptimo) -->
+                    <div style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; top: -2px; width: 2px; height: 12px; background: #27ae60; z-index: 2;" title="Óptimo: ${optimo}"></div>
                   `}
                 </div>
                 
@@ -5545,11 +5555,12 @@ class InventarioCompleto {
                 <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 8px; color: #6e7681; font-weight: 600; font-family: var(--font-family);">
                   <span>0</span>
                   ${minimo === optimo ? `
-                    <span style="color: #e67e22;">Min/Ópt: ${optimo}</span>
+                    <span style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; transform: translateX(-50%); color: #e67e22;">Min/Ópt: ${optimo}</span>
                   ` : `
-                    <span style="position: absolute; left: ${(minimo / optimo * 100)}%; transform: translateX(-50%); color: #e67e22;">Min: ${minimo}</span>
-                    <span style="color: #27ae60;">Ópt: ${optimo}</span>
+                    <span style="position: absolute; left: ${(minimo / (optimo * 1.2)) * 100}%; transform: translateX(-50%); color: #e67e22;">Min: ${minimo}</span>
+                    <span style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; transform: translateX(-50%); color: #27ae60;">Ópt: ${optimo}</span>
                   `}
+                  <span style="color: #6e7681; opacity: 0.5;">${Math.round(optimo * 1.2)}</span>
                 </div>
               </div>
               
