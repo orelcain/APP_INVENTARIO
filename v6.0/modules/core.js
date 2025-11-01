@@ -2689,81 +2689,141 @@ class InventarioCompleto {
     const content = document.getElementById('lightboxContent');
     
     // Mostrar loading mientras se carga
-    content.innerHTML = '<div style="color: white; text-align: center; padding: 40px; font-size: 16px;">Cargando...</div>';
+    content.innerHTML = '<div style="color: white; text-align: center; padding: 40px; font-size: 16px;">Cargando imagen...</div>';
     
     if (media.type === 'video') {
       content.innerHTML = `<video src="${media.url}" controls autoplay style="max-width: 100%; max-height: 90vh; border-radius: 2px;"></video>`;
     } else {
+      // Resolver ruta correcta de imagen
       let imageUrl = media.url;
+      console.log('🖼️ URL original:', imageUrl);
       
-      content.innerHTML = `<img id="lightboxImage" src="${imageUrl}" style="max-width: 100%; max-height: 90vh; transition: transform 0.2s ease; cursor: grab; border-radius: 2px;" alt="Imagen ampliada">`;
-      
-      // 🔍 AGREGAR ZOOM CON SCROLL
-      setTimeout(() => {
-        const img = document.getElementById('lightboxImage');
-        if (img) {
-          let scale = 1;
-          let isDragging = false;
-          let startX = 0, startY = 0;
-          let translateX = 0, translateY = 0;
-          
-          // Zoom con scroll
-          content.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            const delta = e.deltaY > 0 ? -0.1 : 0.1;
-            scale = Math.max(1, Math.min(5, scale + delta));
-            
-            if (scale === 1) {
-              translateX = 0;
-              translateY = 0;
-              img.style.cursor = 'grab';
-            } else {
-              img.style.cursor = scale > 1 ? 'grab' : 'default';
-            }
-            
-            img.style.transform = `translate(${translateX / scale}px, ${translateY / scale}px) scale(${scale})`;
-          }, { passive: false });
-          
-          // Arrastre
-          img.addEventListener('mousedown', (e) => {
-            if (scale > 1) {
-              e.preventDefault();
-              isDragging = true;
-              startX = e.clientX - translateX;
-              startY = e.clientY - translateY;
-              img.style.cursor = 'grabbing';
-            }
-          });
-          
-          document.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-              translateX = e.clientX - startX;
-              translateY = e.clientY - startY;
-              img.style.transform = `translate(${translateX / scale}px, ${translateY / scale}px) scale(${scale})`;
-            }
-          });
-          
-          document.addEventListener('mouseup', () => {
-            if (isDragging) {
-              isDragging = false;
-              img.style.cursor = scale > 1 ? 'grab' : 'default';
-            }
-          });
-          
-          // Resetear con doble click
-          img.addEventListener('dblclick', (e) => {
-            e.preventDefault();
-            scale = 1;
-            translateX = 0;
-            translateY = 0;
-            img.style.cursor = 'grab';
-            img.style.transform = 'translate(0px, 0px) scale(1)';
-          });
+      // Si la URL es relativa, asegurar que apunte a INVENTARIO_STORAGE
+      if (!imageUrl.startsWith('http') && !imageUrl.startsWith('blob:') && !imageUrl.startsWith('data:')) {
+        if (imageUrl.startsWith('./')) {
+          imageUrl = 'INVENTARIO_STORAGE/' + imageUrl.substring(2);
+        } else if (!imageUrl.startsWith('INVENTARIO_STORAGE/')) {
+          imageUrl = 'INVENTARIO_STORAGE/' + imageUrl;
         }
-      }, 100);
+      }
+      
+      console.log('🖼️ URL resuelta:', imageUrl);
+      
+      // Crear imagen con manejo de errores
+      const img = new Image();
+      img.onload = () => {
+        console.log('✅ Imagen cargada correctamente');
+        content.innerHTML = `
+          <div id="imageContainer" style="position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 90vh; overflow: hidden;">
+            <img id="lightboxImage" 
+                 src="${imageUrl}" 
+                 style="max-width: 100%; max-height: 90vh; transition: transform 0.2s ease; cursor: grab; border-radius: 2px; object-fit: contain;" 
+                 alt="Imagen ampliada">
+          </div>
+        `;
+        
+        // Inicializar zoom con scroll
+        this.initLightboxZoom();
+      };
+      
+      img.onerror = () => {
+        console.error('❌ Error al cargar imagen:', imageUrl);
+        content.innerHTML = `
+          <div style="color: white; text-align: center; padding: 40px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+            <div style="font-size: 16px; margin-bottom: 8px;">No se pudo cargar la imagen</div>
+            <div style="font-size: 12px; opacity: 0.7;">${imageUrl}</div>
+          </div>
+        `;
+      };
+      
+      img.src = imageUrl;
     }
     
-    document.getElementById('lightboxCounter').textContent = `${this.lightboxIndex + 1} / ${this.lightboxMedias.length}`;
+    // Actualizar contador
+    const counter = document.getElementById('lightboxCounter');
+    if (counter) {
+      counter.textContent = `${this.lightboxIndex + 1} / ${this.lightboxMedias.length}`;
+    }
+  }
+  
+  initLightboxZoom() {
+    const container = document.getElementById('imageContainer');
+    const img = document.getElementById('lightboxImage');
+    
+    if (!img || !container) return;
+    
+    let scale = 1;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let translateX = 0, translateY = 0;
+    
+    // Zoom con rueda del mouse
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const delta = e.deltaY > 0 ? -0.15 : 0.15;
+      const newScale = Math.max(0.5, Math.min(5, scale + delta));
+      
+      // Calcular punto de zoom (donde está el cursor)
+      const rect = img.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // Ajustar traducción para hacer zoom en el punto del cursor
+      const scaleChange = newScale / scale;
+      translateX = e.clientX - (e.clientX - translateX) * scaleChange;
+      translateY = e.clientY - (e.clientY - translateY) * scaleChange;
+      
+      scale = newScale;
+      
+      // Resetear posición si zoom = 1
+      if (scale === 1) {
+        translateX = 0;
+        translateY = 0;
+        img.style.cursor = 'grab';
+      } else {
+        img.style.cursor = 'grab';
+      }
+      
+      img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    }, { passive: false });
+    
+    // Arrastre de imagen
+    img.addEventListener('mousedown', (e) => {
+      if (scale >= 1) {
+        e.preventDefault();
+        isDragging = true;
+        startX = e.clientX - translateX;
+        startY = e.clientY - translateY;
+        img.style.cursor = 'grabbing';
+      }
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        translateX = e.clientX - startX;
+        translateY = e.clientY - startY;
+        img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      }
+    });
+    
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        img.style.cursor = scale > 1 ? 'grab' : 'grab';
+      }
+    });
+    
+    // Doble click para resetear zoom
+    img.addEventListener('dblclick', () => {
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+      img.style.cursor = 'grab';
+      img.style.transform = `translate(0px, 0px) scale(1)`;
+    });
   }
 
   closeLightbox() {
@@ -5470,8 +5530,8 @@ class InventarioCompleto {
           <div class="card-image" style="width: 100%; height: 160px; background: #1e1e1e; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: pointer; border-bottom: 1px solid #3e3e42;" ${imageURL ? `data-action="lightbox" data-id="${rep.id}"` : ''}>
             ${imageURL ? `<img src="${imageURL}" alt="${rep.nombre || 'Imagen'}" style="width: 100%; height: 100%; object-fit: cover;">` : '<div style="font-size: 11px; color: #6e7681; font-weight: 600; letter-spacing: 0.5px;">SIN IMAGEN</div>'}
             ${(rep.multimedia && rep.multimedia.length > 1) ? `
-              <div style="position: absolute; bottom: 6px; right: 6px; background: rgba(0, 0, 0, 0.9); color: #d4d4d4; padding: 3px 7px; border-radius: 2px; font-size: 9px; font-weight: 600; letter-spacing: 0.3px; border: 1px solid #3e3e42;">
-                ${rep.multimedia.length} IMGS
+              <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0, 0, 0, 0.8); color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; backdrop-filter: blur(4px); box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                +${rep.multimedia.length - 1}
               </div>
             ` : ''}
             ${rep.tipo ? `
