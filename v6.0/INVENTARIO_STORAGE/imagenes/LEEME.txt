@@ -1,0 +1,103 @@
+================================================================================
+GUIA DE MANEJO DE IMAGENES - INVENTARIO PORTABLE
+================================================================================
+Version: 5.4.0
+Actualizado: 31 de octubre de 2025
+
+📋 ESTRUCTURA DEL PROYECTO:
+   📁 APP/                              (nombre fijo, nunca cambia)
+      📄 inventario_vX.X.X.html         (versión actual, ej: v5.4.0)
+      📁 INVENTARIO_STORAGE/imagenes/   (esta carpeta)
+
+   IMPORTANTE: La carpeta raíz se llama siempre "APP". 
+   Solo el archivo HTML cambia de nombre con cada versión.
+   Al actualizar: se renombra el HTML nuevo y se elimina el anterior.
+
+📋 FORMATO REQUERIDO: WebP (optimizado)
+   - Mejor compresion que JPG/PNG
+   - Mantiene calidad visual excelente
+   - Reduce significativamente el peso del repositorio
+
+Esta carpeta almacena las imágenes de tus repuestos.
+Cuando agregues imágenes desde el sistema, se guardarán aquí automáticamente.
+
+================================================================================
+PROCESO AL AGREGAR NUEVAS IMAGENES DE REPUESTOS:
+================================================================================
+
+1. AGREGAR IMAGENES
+   - Colocar las nuevas imagenes en esta carpeta
+   - Pueden ser JPG, PNG, o WebP sin optimizar
+   
+2. EJECUTAR OPTIMIZACION (OBLIGATORIO)
+   - Abrir PowerShell en la carpeta raiz del proyecto
+   - Ejecutar: .\optimize-images.ps1
+   - El script optimizara automaticamente a WebP calidad 80%
+   
+3. VERIFICAR RESULTADOS
+   - El script mostrara cuantas imagenes se optimizaron
+   - Verificar que la calidad sea aceptable
+   
+4. COMMIT A GIT
+   - git add .
+   - git commit -m "feat: Agregar imagenes de nuevos repuestos"
+   - git push
+
+================================================================================
+ESPECIFICACIONES TECNICAS:
+================================================================================
+
+IMAGENES DE REPUESTOS:
+- Formato: WebP (OBLIGATORIO)
+- Calidad: 80% (balance optimo calidad/peso)
+- Resolucion: Original (sin reducir)
+- Umbral optimizacion: Solo imagenes >200KB
+
+IMAGENES DE MAPAS (carpeta mapas/):
+- Formato: PNG (calidad maxima prioritaria)
+- NO se optimizan automaticamente
+- Mantener maxima resolucion y calidad
+
+================================================================================
+ESTRUCTURA:
+================================================================================
+
+Las imágenes se mantienen en cada dispositivo localmente.
+Solo los datos (textos, números, cantidades) se sincronizan via JSON.
+
+Estructura de archivos:
+- Nombre: producto-ID-timestamp.webp
+- Formato soportado: WebP (recomendado), JPG, PNG
+- Sin límite de cantidad
+- Almacenamiento local en el dispositivo
+
+================================================================================
+HERRAMIENTAS NECESARIAS:
+================================================================================
+
+ImageMagick (para optimizacion):
+  Instalar: winget install ImageMagick.ImageMagick
+  Uso: Optimizacion automatica de imagenes WebP
+
+================================================================================
+RESULTADO ESPERADO:
+================================================================================
+
+- Reduccion peso: ~22-30% por imagen
+- Calidad visual: Excelente (80% imperceptible)
+- Formato uniforme: Todas en WebP
+- Repositorio Git: Mas liviano y rapido
+
+================================================================================
+IMPORTANTE:
+================================================================================
+
+- NO eliminar esta carpeta
+- NO renombrar esta carpeta
+- Hacer backup regular de esta carpeta
+- SIEMPRE optimizar imagenes nuevas antes de commit
+- Mantener formato WebP para maxima eficiencia
+
+================================================================================
+ULTIMA ACTUALIZACION: 31 de Octubre 2025
+================================================================================

@@ -1,0 +1,70 @@
+{"scope":"maps","action":"create","mapId":1760411932641,"zoneId":null,"detail":"Planta Principal","timestamp":"2025-10-14T03:18:53.120Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1760412049995,"detail":"Baader 142 N1","timestamp":"2025-10-14T03:20:50.249Z"}
+{"scope":"zones","action":"create","mapId":1760309758603,"zoneId":1760989783388,"detail":"tunel 33","timestamp":"2025-10-20T19:49:43.989Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1760992946828,"detail":"Maniluvio / Pediluvio HG","timestamp":"2025-10-20T20:42:27.208Z"}
+{"scope":"zones","action":"delete-cascade","mapId":1760309758603,"zoneId":null,"detail":"1 zonas eliminadas","timestamp":"2025-10-20T21:30:38.729Z"}
+{"scope":"maps","action":"delete","mapId":1760309758603,"zoneId":null,"detail":"Planta Principal","timestamp":"2025-10-20T21:30:39.113Z"}
+{"scope":"zones","action":"save","mapId":null,"zoneId":null,"detail":null,"timestamp":"2025-10-20T21:40:24.328Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1760997092095,"detail":"Pocket Grader","timestamp":"2025-10-20T21:51:32.405Z"}
+{"scope":"zones","action":"save","mapId":null,"zoneId":null,"detail":null,"timestamp":"2025-10-20T21:52:05.309Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1760998127430,"detail":"]Pocket Grader","timestamp":"2025-10-20T22:08:47.726Z"}
+{"scope":"zones","action":"save","mapId":null,"zoneId":null,"detail":null,"timestamp":"2025-10-20T22:09:17.302Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1760998195902,"detail":"1","timestamp":"2025-10-20T22:09:56.155Z"}
+{"scope":"zones","action":"save","mapId":null,"zoneId":null,"detail":null,"timestamp":"2025-10-20T22:21:34.934Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1760999288686,"detail":"1","timestamp":"2025-10-20T22:28:08.996Z"}
+{"scope":"zones","action":"save","mapId":null,"zoneId":null,"detail":null,"timestamp":"2025-10-20T22:29:09.546Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1760999632839,"detail":"11","timestamp":"2025-10-20T22:33:53.471Z"}
+{"scope":"zones","action":"save","mapId":null,"zoneId":null,"detail":null,"timestamp":"2025-10-20T22:44:07.905Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1761001351938,"detail":"1","timestamp":"2025-10-20T23:02:32.781Z"}
+{"scope":"zones","action":"save","mapId":null,"zoneId":null,"detail":null,"timestamp":"2025-10-20T23:04:30.540Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1761002703272,"detail":"1","timestamp":"2025-10-20T23:25:04.435Z"}
+{"scope":"zones","action":"update","mapId":1760411932641,"zoneId":1761002703272,"detail":"Editados 4 puntos de \"1\"","timestamp":"2025-10-20T23:25:34.844Z"}
+{"scope":"zones","action":"update","mapId":1760411932641,"zoneId":1761002703272,"detail":"Editados 4 puntos de \"1\"","timestamp":"2025-10-20T23:26:00.195Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1761002883472,"detail":"Cinta Zeta","timestamp":"2025-10-20T23:28:04.393Z"}
+{"scope":"zones","action":"update","mapId":1760411932641,"zoneId":1761002883472,"detail":"Editados 4 puntos de \"Cinta Zeta\"","timestamp":"2025-10-20T23:28:15.688Z"}
+{"scope":"zones","action":"create","mapId":1760411932641,"zoneId":1761005109491,"detail":"Cinta Aceleracion 1 Grader","timestamp":"2025-10-21T00:05:11.434Z"}
+{"scope":"zones","action":"update","mapId":1760411932641,"zoneId":1761005109491,"detail":"Editados 4 puntos de \"Cinta Aceleracion 1 Grader\"","timestamp":"2025-10-21T00:06:33.327Z"}
+{"scope":"zones","action":"update","mapId":1760411932641,"zoneId":1761002703272,"detail":"Actualizada zona \"Pocket Grader\"","timestamp":"2025-10-21T00:14:39.836Z"}
+{"scope":"zones","action":"update","mapId":1760411932641,"zoneId":1761002703272,"detail":"Editados 4 puntos de \"Pocket Grader\"","timestamp":"2025-10-21T00:14:48.351Z"}
+{"scope":"zones","action":"update","mapId":1760411932641,"zoneId":1761002703272,"detail":"Actualizada zona \"Pocket Grader\"","timestamp":"2025-10-21T00:14:52.843Z"}
+{"scope":"zones","action":"update","mapId":1760411932641,"zoneId":1761002883472,"detail":"Actualizada zona \"Cinta Zeta\"","timestamp":"2025-10-21T00:15:23.997Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761002883472,"detail":"Editados 4 puntos de \"Cinta Zeta\"","timestamp":"2025-10-21T02:02:48.778Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761002703272,"detail":"Editados 4 puntos de \"Pocket Grader\"","timestamp":"2025-10-21T02:12:15.368Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761002703272,"detail":"Editados 4 puntos de \"Pocket Grader\"","timestamp":"2025-10-21T02:21:09.637Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761002703272,"detail":"Actualizada zona \"Pocket Grader\"","timestamp":"2025-10-21T02:21:19.725Z"}
+{"scope":"areas","action":"create","mapId":1760411932641,"areaId":1761081773840,"detail":"Cinta Aceleracion 2 Grader","timestamp":"2025-10-21T21:22:54.484Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761002703272,"detail":"Actualizada zona \"Pocket Grader\"","timestamp":"2025-10-21T21:23:12.889Z"}
+{"scope":"areas","action":"create","mapId":1760411932641,"areaId":1761084793013,"detail":"Cinta Larga Grader","timestamp":"2025-10-21T22:13:15.559Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761084793013,"detail":"Editados 4 puntos de \"Cinta Larga Grader\"","timestamp":"2025-10-21T22:15:14.597Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761002703272,"detail":"Actualizada zona \"Pocket Grader\"","timestamp":"2025-10-21T22:47:44.900Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761002883472,"detail":"Actualizada zona \"Cinta Zeta\"","timestamp":"2025-10-21T22:48:08.062Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761005109491,"detail":"Actualizada zona \"Cinta Aceleracion 1 Grader\"","timestamp":"2025-10-21T22:48:22.198Z"}
+{"scope":"maps","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-25T18:59:40.646Z"}
+{"scope":"areas","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-25T18:59:41.034Z"}
+{"scope":"areas","action":"delete-cascade","mapId":1760411932641,"areaId":null,"detail":"8 Ã¡reas eliminadas","timestamp":"2025-10-28T17:26:21.994Z"}
+{"scope":"maps","action":"delete","mapId":1760411932641,"areaId":null,"detail":"Planta Principal","timestamp":"2025-10-28T17:26:22.406Z"}
+{"scope":"maps","action":"create","mapId":1761672466361,"areaId":null,"detail":"Planta Principal","timestamp":"2025-10-28T17:27:46.734Z"}
+{"scope":"maps","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-28T17:49:07.293Z"}
+{"scope":"areas","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-28T17:49:07.702Z"}
+{"scope":"maps","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-28T18:08:55.250Z"}
+{"scope":"areas","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-28T18:08:55.793Z"}
+{"scope":"maps","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-28T18:12:35.207Z"}
+{"scope":"areas","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-28T18:12:35.628Z"}
+{"scope":"maps","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-28T18:13:15.664Z"}
+{"scope":"areas","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-28T18:13:16.015Z"}
+{"scope":"maps","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-28T18:18:09.740Z"}
+{"scope":"areas","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauración desde backup","timestamp":"2025-10-28T18:18:10.151Z"}
+{"scope":"areas","action":"create","mapId":1760411932641,"areaId":1761752088945,"detail":"Filete","timestamp":"2025-10-29T15:34:49.292Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761752088945,"detail":"Editados 8 puntos de \"Filete\"","timestamp":"2025-10-29T15:35:10.527Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761752088945,"detail":"Actualizada zona \"Filete\"","timestamp":"2025-10-29T17:42:58.853Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761752088945,"detail":"Actualizada zona \"Filete\"","timestamp":"2025-10-29T17:43:49.149Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761752088945,"detail":"Actualizada zona \"Filete\"","timestamp":"2025-10-29T18:21:02.450Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761752088945,"detail":"Actualizada zona \"Filete\"","timestamp":"2025-10-30T17:03:32.909Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761752088945,"detail":"Actualizada zona \"Filete\"","timestamp":"2025-10-30T17:03:46.812Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761370288328,"detail":"Actualizada zona \"Cinta Curva Filete\"","timestamp":"2025-10-30T17:46:47.254Z"}
+{"scope":"areas","action":"create","mapId":1760411932641,"areaId":1761862661720,"detail":"Eviscerado","timestamp":"2025-10-30T22:17:42.407Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761862661720,"detail":"Actualizada zona \"Eviscerado\"","timestamp":"2025-10-30T22:18:02.816Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761084793013,"detail":"Actualizada zona \"Cinta Larga Grader\"","timestamp":"2025-10-30T22:35:03.377Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761370288328,"detail":"Actualizada zona \"Cinta Curva Filete\"","timestamp":"2025-10-30T22:35:39.019Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761369700833,"detail":"Actualizada zona \"Cinta Transversal Salida Baader 142\"","timestamp":"2025-10-30T22:36:03.966Z"}
+{"scope":"areas","action":"update","mapId":1760411932641,"areaId":1761752088945,"detail":"Actualizada zona \"Filete\"","timestamp":"2025-10-30T22:36:42.708Z"}
