@@ -111,30 +111,51 @@ class FileSystemManager {
 
   updateStatusIndicator(connected, path = '') {
     const indicator = document.getElementById('connectionIndicator');
+    const btn = document.getElementById('connectionBtn');
     const icon = document.getElementById('connectionIcon');
     const text = document.getElementById('connectionText');
 
     if (connected) {
+      // Actualizar indicador del panel de configuración
       if (indicator) {
         indicator.classList.remove('disconnected');
         indicator.classList.add('connected');
       }
-      if (icon) {
-        icon.textContent = 'ON';
+      if (indicator?.querySelector('.connection-icon')) {
+        indicator.querySelector('.connection-icon').textContent = 'ON';
+      }
+      if (indicator?.querySelector('.connection-text')) {
+        indicator.querySelector('.connection-text').textContent = path ? `INVENTARIO_PORTABLE conectado (${path})` : 'INVENTARIO_PORTABLE conectado';
+      }
+      
+      // Actualizar botón de estado en toolbar (nuevo diseño corporativo)
+      if (btn) {
+        btn.classList.remove('disconnected');
+        btn.classList.add('connected');
       }
       if (text) {
-        text.textContent = path ? `INVENTARIO_PORTABLE conectado (${path})` : 'INVENTARIO_PORTABLE conectado';
+        text.textContent = 'Conectado';
       }
     } else {
+      // Actualizar indicador del panel de configuración
       if (indicator) {
         indicator.classList.remove('connected');
         indicator.classList.add('disconnected');
       }
-      if (icon) {
-        icon.textContent = 'OFF';
+      if (indicator?.querySelector('.connection-icon')) {
+        indicator.querySelector('.connection-icon').textContent = 'OFF';
+      }
+      if (indicator?.querySelector('.connection-text')) {
+        indicator.querySelector('.connection-text').textContent = 'INVENTARIO_STORAGE NO CONECTADO';
+      }
+      
+      // Actualizar botón de estado en toolbar (nuevo diseño corporativo)
+      if (btn) {
+        btn.classList.remove('connected');
+        btn.classList.add('disconnected');
       }
       if (text) {
-        text.textContent = 'INVENTARIO_PORTABLE no conectado';
+        text.textContent = 'Desconectado';
       }
     }
   }

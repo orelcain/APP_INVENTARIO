@@ -5495,14 +5495,14 @@ class InventarioCompleto {
           <!-- Footer: Botones de acción equilibrados -->
           <div class="card-footer" style="padding: 10px 12px; background: var(--bg-input); border-top: 1px solid var(--border-primary);">
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; width: 100%;">
-              <button class="card-btn" data-action="edit" data-id="${rep.id}" style="padding: 8px 12px; border: 1px solid var(--border-accent); background: transparent; color: var(--text-secondary); border-radius: var(--radius-md); font-weight: 600; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                ✏️ Editar
+              <button class="card-btn" data-action="edit" data-id="${rep.id}" style="padding: 8px 12px; border: 1px solid var(--border-accent); background: transparent; color: var(--text-secondary); border-radius: var(--radius-md); font-weight: 600; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center;">
+                Editar
               </button>
-              <button class="card-btn" data-action="contar" data-id="${rep.id}" style="padding: 8px 12px; border: none; background: var(--success); color: white; border-radius: var(--radius-md); font-weight: 600; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: var(--shadow-xs);">
-                📊 Contar
+              <button class="card-btn" data-action="contar" data-id="${rep.id}" style="padding: 8px 12px; border: none; background: var(--success); color: white; border-radius: var(--radius-md); font-weight: 600; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-xs);">
+                Contar
               </button>
-              <button class="card-btn" data-action="delete" data-id="${rep.id}" style="padding: 8px 12px; border: 1px solid var(--danger); background: transparent; color: var(--danger); border-radius: var(--radius-md); font-weight: 600; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                🗑️ Eliminar
+              <button class="card-btn" data-action="delete" data-id="${rep.id}" style="padding: 8px 12px; border: 1px solid var(--danger); background: transparent; color: var(--danger); border-radius: var(--radius-md); font-weight: 600; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center;">
+                Eliminar
               </button>
             </div>
           </div>
