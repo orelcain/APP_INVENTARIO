@@ -5335,18 +5335,18 @@ class InventarioCompleto {
         `;
       }
 
-      // Botones de mapa si tiene ubicaciones - GRISÁCEO
+      // Botones de mapa - SIEMPRE visibles
       let botonesMapaHTML = '';
       if (rep.ubicaciones && rep.ubicaciones.length > 0) {
         botonesMapaHTML = `
-          <button class="card-btn" onclick="window.app?.verRepuestoEnMapa('${rep.id}')" style="flex: 1; padding: 8px 12px; border: 1px solid #5a6b7a; background: #2d2d30; color: #d4d4d4; border-radius: 2px; cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;">
-            VER EN MAPA (${rep.ubicaciones.length})
+          <button class="card-btn" onclick="window.app?.verRepuestoEnMapa('${rep.id}')" style="width: 100%; padding: 6px 10px; border: 1px solid #5a7a94; background: var(--primary); color: white; border-radius: var(--radius-md); cursor: pointer; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            📍 Ver en Mapa (${rep.ubicaciones.length})
           </button>
         `;
       } else {
         botonesMapaHTML = `
-          <button class="card-btn" onclick="window.app?.agregarUbicacionMapa('${rep.id}')" style="flex: 1; padding: 8px 12px; border: 1px dashed #3e3e42; background: transparent; color: #6e7681; border-radius: 2px; cursor: pointer; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;">
-            AÑADIR UBICACIÓN
+          <button class="card-btn" onclick="window.app?.agregarUbicacionMapa('${rep.id}')" style="width: 100%; padding: 6px 10px; border: 1px dashed var(--border-primary); background: transparent; color: var(--text-tertiary); border-radius: var(--radius-md); cursor: pointer; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            📍 Añadir Ubicación
           </button>
         `;
       }
@@ -5392,6 +5392,11 @@ class InventarioCompleto {
                   SAP: ${rep.codSAP || rep.codigo_sap}
                 </div>
               ` : ''}
+              
+              <!-- Botones de mapa SIEMPRE visibles debajo del SAP -->
+              <div style="margin-top: 8px;">
+                ${botonesMapaHTML}
+              </div>
             </div>
 
             <!-- Sección Stock -->
@@ -5446,16 +5451,8 @@ class InventarioCompleto {
             ${datosTecnicosHTML}
           </div>
 
-          <!-- Footer: Botones compactos en dos filas -->
+          <!-- Footer: Botones de acción -->
           <div class="card-footer" style="padding: 8px 12px; background: #1e1e1e; border-top: 1px solid #3e3e42;">
-            <!-- Fila 1: Botones de mapa (si aplica) -->
-            ${botonesMapaHTML ? `
-              <div style="display: flex; gap: 4px; margin-bottom: 6px;">
-                ${botonesMapaHTML}
-              </div>
-            ` : ''}
-            
-            <!-- Fila 2: Botones de acción -->
             <div style="display: flex; justify-content: flex-end; gap: 4px;">
               <button class="card-btn" data-action="edit" data-id="${rep.id}" style="background: #2d2d30; border: 1px solid #555555; color: #d4d4d4; padding: 6px 10px; border-radius: 2px; font-weight: 700; font-size: 10px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.5px;">
                 Editar

@@ -281,7 +281,7 @@
     "nombre": "DESOXIDANTE WURTH ROST OFF 300 ML",
     "area": "GENERAL",
     "equipo": "GENERAL",
-    "cantidad": 10,
+    "cantidad": 11,
     "minimo": 5,
     "precio": 0,
     "multimedia": [
@@ -292,7 +292,8 @@
         "size": 677952,
         "isFileSystem": true
       }
-    ]
+    ],
+    "ultimoConteo": "2025-11-01T17:32:30.421Z"
   },
   {
     "id": "17592206005860.9394235640437687",
