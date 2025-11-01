@@ -335,6 +335,7 @@ body {
   justify-content: center;
   z-index: var(--z-modal);
   animation: fadeIn var(--transition-base);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
 
@@ -485,6 +486,7 @@ body {
   flex-direction: column;
   gap: var(--spacing-md);
   z-index: var(--z-toast);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
 
