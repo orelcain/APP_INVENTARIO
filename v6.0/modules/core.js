@@ -2858,6 +2858,8 @@ class InventarioCompleto {
     
     this.currentEditingId = id;
     this.currentMultimedia = [];
+    this.currentDocuments = [];
+    this.multimediaToRemove = []; // Limpiar lista de eliminaciones
     
     // Configurar título
     document.getElementById('modalTitle').textContent = mode === 'edit' ? 'Editar Repuesto' : 'Agregar Repuesto';
@@ -2866,6 +2868,14 @@ class InventarioCompleto {
     document.getElementById('repuestoForm').reset();
     document.getElementById('imagePreview').innerHTML = '';
     document.getElementById('documentsList').innerHTML = '';
+    
+    // Limpiar inputs de archivo
+    const imagenFile = document.getElementById('imagenFile');
+    const documentos = document.getElementById('documentos');
+    if (imagenFile) imagenFile.value = '';
+    if (documentos) documentos.value = '';
+    
+    console.log('🧹 Arrays y previews limpiados');
     
     // Poblar select de Tipo
     this.poblarSelectTipo();
@@ -3022,12 +3032,13 @@ class InventarioCompleto {
         const originalSizeKB = media.originalSize ? (media.originalSize / 1024).toFixed(1) : compressedSizeKB;
         const reduction = media.originalSize ? ((1 - media.size / media.originalSize) * 100).toFixed(0) : '0';
         
-        // Crear preview
+        // Crear preview con atributo especial para identificar imágenes existentes
         const previewItem = document.createElement('div');
         previewItem.className = 'multimedia-preview-item';
+        previewItem.setAttribute('data-existing-media', 'true'); // Marcar como existente
         previewItem.innerHTML = `
           <img src="${imageUrl}" alt="${media.originalName}">
-          <button type="button" class="multimedia-remove-btn" onclick="app.removeMultimedia('${media.filename}', 'image')" title="Eliminar imagen">
+          <button type="button" class="multimedia-remove-btn" onclick="app.removeMultimedia('${media.filename}', 'image', true)" title="Eliminar imagen">
             ×
           </button>
           <div class="multimedia-preview-info">
@@ -3341,8 +3352,18 @@ class InventarioCompleto {
         repuesto.ubicaciones.push(ubicacion);
       }
       
-      // Procesar multimedia
+      // 1. Aplicar eliminaciones de multimedia marcadas
+      if (this.multimediaToRemove && this.multimediaToRemove.length > 0) {
+        console.log(`🗑️ Eliminando ${this.multimediaToRemove.length} imagen(es) existente(s)`);
+        repuesto.multimedia = (repuesto.multimedia || []).filter(
+          m => !this.multimediaToRemove.includes(m.filename)
+        );
+      }
+      
+      // 2. Procesar SOLO multimedia NUEVA (currentMultimedia)
       if (this.currentMultimedia && this.currentMultimedia.length > 0) {
+        console.log(`📸 Procesando ${this.currentMultimedia.length} imagen(es) NUEVA(S)`);
+        
         // Guardar imágenes en FileSystem si está disponible
         const imagesSaved = await this.saveImagesToFileSystem(this.currentMultimedia, repuesto);
         
@@ -3361,6 +3382,7 @@ class InventarioCompleto {
             url: `./imagenes/${img.filename}`
           }));
           
+          // AGREGAR solo las nuevas a las existentes
           const multimediaExistente = repuesto.multimedia || [];
           repuesto.multimedia = [...multimediaExistente, ...multimediaRefs];
         } else {
@@ -3369,7 +3391,7 @@ class InventarioCompleto {
           repuesto.multimedia = [...multimediaExistente, ...this.currentMultimedia];
         }
         
-        console.log(`📎 Agregadas ${this.currentMultimedia.length} nuevas imágenes (total: ${repuesto.multimedia.length})`);
+        console.log(`✅ Total de imágenes después de agregar nuevas: ${repuesto.multimedia.length}`);
       }
       
       if (this.currentDocuments && this.currentDocuments.length > 0) {
@@ -3757,12 +3779,21 @@ class InventarioCompleto {
   }
   
   // Eliminar multimedia del preview
-  removeMultimedia(filename, type) {
-    console.log(`🗑️ Eliminando ${type}: ${filename}`);
+  removeMultimedia(filename, type, isExisting = false) {
+    console.log(`🗑️ Eliminando ${type}: ${filename} (existente: ${isExisting})`);
     
     if (type === 'image') {
-      // Eliminar de currentMultimedia
-      this.currentMultimedia = this.currentMultimedia.filter(m => m.filename !== filename);
+      // Solo eliminar de currentMultimedia si NO es una imagen existente
+      if (!isExisting) {
+        this.currentMultimedia = this.currentMultimedia.filter(m => m.filename !== filename);
+      } else {
+        // Si es existente, marcarla para eliminación del repuesto
+        if (!this.multimediaToRemove) {
+          this.multimediaToRemove = [];
+        }
+        this.multimediaToRemove.push(filename);
+        console.log(`📌 Marcada para eliminación: ${filename}`);
+      }
       
       // Eliminar del preview
       const previewContainer = document.getElementById('imagePreview');
@@ -7041,6 +7072,143 @@ class InventarioCompleto {
     datalist.innerHTML = sistemasDelEquipo
       .map(value => `<option value="${value}">`)
       .join('');
+  }
+  
+  // ===============================================
+  // OPTIMIZAR IMÁGENES EXISTENTES
+  // ===============================================
+  
+  async optimizarImagenesExistentes() {
+    if (!fsManager || !fsManager.isConnected) {
+      this.showToast('❌ Debes conectar el FileSystem primero', 'error');
+      return;
+    }
+    
+    console.log('\n🔧 ========== OPTIMIZANDO IMÁGENES EXISTENTES ==========');
+    
+    // Filtrar repuestos con imágenes
+    const repuestosConImagenes = this.repuestos.filter(r => 
+      r.multimedia && r.multimedia.length > 0
+    );
+    
+    if (repuestosConImagenes.length === 0) {
+      this.showToast('ℹ️ No hay repuestos con imágenes', 'info');
+      return;
+    }
+    
+    let totalImagenes = 0;
+    let imagenesOptimizadas = 0;
+    let errores = 0;
+    
+    this.showToast(`🔄 Iniciando optimización de imágenes...`, 'info', 3000);
+    
+    for (const repuesto of repuestosConImagenes) {
+      console.log(`\n📦 Procesando: ${repuesto.nombre}`);
+      
+      for (let i = 0; i < repuesto.multimedia.length; i++) {
+        const media = repuesto.multimedia[i];
+        totalImagenes++;
+        
+        try {
+          // Verificar si ya está optimizada (WebP y comprimida)
+          if (media.compressed && media.mimeType === 'image/webp') {
+            console.log(`  ✓ Ya optimizada: ${media.filename}`);
+            continue;
+          }
+          
+          console.log(`  🔄 Optimizando: ${media.filename || media.originalName}`);
+          
+          // Cargar imagen desde FileSystem
+          let imageUrl;
+          if (media.url) {
+            const filename = media.url.replace('./imagenes/', '');
+            imageUrl = await fsManager.loadImage(filename);
+          } else if (media.data) {
+            imageUrl = media.data;
+          }
+          
+          if (!imageUrl) {
+            console.warn(`  ⚠️ No se pudo cargar: ${media.filename}`);
+            errores++;
+            continue;
+          }
+          
+          // Convertir a Blob para procesar
+          const response = await fetch(imageUrl);
+          const blob = await response.blob();
+          const file = new File([blob], media.originalName || media.filename || 'imagen.jpg', {
+            type: media.mimeType || 'image/jpeg'
+          });
+          
+          // Comprimir a WebP
+          const compressedBase64 = await this.compressImageToWebP(file);
+          
+          if (!compressedBase64) {
+            console.error(`  ❌ Error comprimiendo: ${media.filename}`);
+            errores++;
+            continue;
+          }
+          
+          // Crear nuevo nombre de archivo WebP
+          const timestamp = Date.now();
+          const newFilename = `${timestamp}_optimized_${media.originalName || 'imagen'}.webp`;
+          
+          // Calcular tamaños
+          const compressedSize = Math.round((compressedBase64.length * 0.75));
+          const originalSize = media.size || file.size;
+          
+          // Guardar en FileSystem
+          const base64Data = compressedBase64.split(',')[1];
+          const byteCharacters = atob(base64Data);
+          const byteArray = new Uint8Array(byteCharacters.length);
+          for (let j = 0; j < byteCharacters.length; j++) {
+            byteArray[j] = byteCharacters.charCodeAt(j);
+          }
+          const newBlob = new Blob([byteArray], { type: 'image/webp' });
+          
+          await fsManager.saveImage(newBlob, newFilename);
+          
+          // Actualizar metadata del repuesto
+          repuesto.multimedia[i] = {
+            tipo: 'image',
+            filename: newFilename,
+            originalName: media.originalName || media.filename || 'imagen.jpg',
+            size: compressedSize,
+            mimeType: 'image/webp',
+            uploadDate: new Date().toISOString(),
+            compressed: true,
+            originalSize: originalSize,
+            url: `./imagenes/${newFilename}`
+          };
+          
+          imagenesOptimizadas++;
+          
+          const reduction = ((1 - compressedSize / originalSize) * 100).toFixed(0);
+          console.log(`  ✅ Optimizada: ${(originalSize / 1024).toFixed(1)}KB → ${(compressedSize / 1024).toFixed(1)}KB (-${reduction}%)`);
+          
+        } catch (error) {
+          console.error(`  ❌ Error procesando ${media.filename}:`, error);
+          errores++;
+        }
+      }
+    }
+    
+    // Guardar cambios
+    await fsManager.saveData('repuestos', this.repuestos);
+    
+    console.log(`\n✅ Optimización completa:`);
+    console.log(`   Total: ${totalImagenes} imágenes`);
+    console.log(`   Optimizadas: ${imagenesOptimizadas}`);
+    console.log(`   Errores: ${errores}`);
+    
+    this.showToast(
+      `✅ Optimización completa: ${imagenesOptimizadas}/${totalImagenes} imágenes procesadas`,
+      'success',
+      5000
+    );
+    
+    // Recargar vista
+    this.aplicarFiltros();
   }
 }
 
