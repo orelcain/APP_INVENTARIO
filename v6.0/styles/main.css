@@ -95,12 +95,11 @@ body {
   position: sticky;
   top: calc(var(--header-height));
   z-index: var(--z-sticky);
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  -ms-overflow-style: none;  /* IE y Edge antiguo */
 }
 
 .nav-tabs::-webkit-scrollbar {
-  display: none;
+  display: none;  /* Chrome, Safari, Opera */
 }
 
 .nav-tab {
