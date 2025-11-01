@@ -2920,7 +2920,10 @@ class InventarioCompleto {
           await this.cargarUbicacionEnFormulario(repuesto.ubicaciones[0]);
         }
         
-        // TODO: Cargar multimedia (próximo commit)
+        // Cargar multimedia existente
+        if (repuesto.multimedia && repuesto.multimedia.length > 0) {
+          await this.cargarMultimediaEnPreview(repuesto.multimedia);
+        }
         
       } else {
         console.error(`❌ Repuesto no encontrado con ID: "${id}"`);
@@ -2983,6 +2986,68 @@ class InventarioCompleto {
       opt.textContent = tipo;
       selectTipo.appendChild(opt);
     });
+  }
+  
+  // Cargar multimedia existente en preview (modo edición)
+  async cargarMultimediaEnPreview(multimedia) {
+    if (!multimedia || multimedia.length === 0) return;
+    
+    console.log(`📸 Cargando ${multimedia.length} imagen(es) existente(s)...`);
+    
+    const previewContainer = document.getElementById('imagePreview');
+    
+    for (const media of multimedia) {
+      try {
+        let imageUrl = null;
+        
+        // Intentar cargar desde FileSystem primero
+        if (media.url && fsManager && fsManager.isConnected) {
+          // Cargar desde FileSystem
+          const filename = media.url.replace('./imagenes/', '');
+          imageUrl = await fsManager.loadImage(filename);
+        }
+        
+        // Fallback a base64 si está disponible
+        if (!imageUrl && media.data) {
+          imageUrl = media.data;
+        }
+        
+        if (!imageUrl) {
+          console.warn(`⚠️ No se pudo cargar: ${media.filename}`);
+          continue;
+        }
+        
+        // Calcular tamaños
+        const compressedSizeKB = (media.size / 1024).toFixed(1);
+        const originalSizeKB = media.originalSize ? (media.originalSize / 1024).toFixed(1) : compressedSizeKB;
+        const reduction = media.originalSize ? ((1 - media.size / media.originalSize) * 100).toFixed(0) : '0';
+        
+        // Crear preview
+        const previewItem = document.createElement('div');
+        previewItem.className = 'multimedia-preview-item';
+        previewItem.innerHTML = `
+          <img src="${imageUrl}" alt="${media.originalName}">
+          <button type="button" class="multimedia-remove-btn" onclick="app.removeMultimedia('${media.filename}', 'image')" title="Eliminar imagen">
+            ×
+          </button>
+          <div class="multimedia-preview-info">
+            <div class="multimedia-preview-name" title="${media.originalName}">${media.filename}</div>
+            <div class="multimedia-preview-size">
+              <span class="size-original" style="text-decoration: line-through; opacity: 0.6;">${originalSizeKB}KB</span>
+              <span class="size-arrow" style="margin: 0 4px;">→</span>
+              <span class="size-compressed" style="color: #4ade80; font-weight: 600;">${compressedSizeKB}KB</span>
+              <span class="size-reduction" style="margin-left: 6px; background: rgba(74, 222, 128, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700;">-${reduction}%</span>
+            </div>
+          </div>
+        `;
+        
+        previewContainer.appendChild(previewItem);
+        console.log(`  ✅ Cargada: ${media.filename}`);
+        
+      } catch (error) {
+        console.error(`❌ Error cargando ${media.filename}:`, error);
+      }
+    }
   }
   
   // Cargar ubicación en formulario (cascada jerárquica)

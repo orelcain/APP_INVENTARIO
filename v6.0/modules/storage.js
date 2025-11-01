@@ -277,6 +277,23 @@ class FileSystemManager {
   }
 
   /**
+   * Carga una imagen desde FileSystem y retorna Blob URL
+   */
+  async loadImage(filename) {
+    if (!this.isFileSystemMode) return null;
+    try {
+      const fileHandle = await this.imagesFolder.getFileHandle(filename);
+      const file = await fileHandle.getFile();
+      const blobUrl = URL.createObjectURL(file);
+      console.log('✅ Imagen cargada desde FileSystem:', filename);
+      return blobUrl;
+    } catch (error) {
+      console.warn(`⚠️ No se pudo cargar imagen ${filename}:`, error.message);
+      return null;
+    }
+  }
+
+  /**
    * Guarda imagen en carpeta jerrquica segn ubicacin
    */
   async saveImageJerarquica(blob, filename, carpetaDestino) {
