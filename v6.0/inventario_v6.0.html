@@ -2027,18 +2027,33 @@
       transform: scale(1.1);
     }
 
-    .multimedia-preview-name {
+    /* Info debajo de la imagen con tamaños */
+    .multimedia-preview-info {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
+      background: rgba(0, 0, 0, 0.9);
       padding: 6px 8px;
-      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .multimedia-preview-name {
       color: white;
       font-size: 11px;
+      font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .multimedia-preview-size {
+      display: flex;
+      align-items: center;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.9);
     }
 
     /* Documentos */

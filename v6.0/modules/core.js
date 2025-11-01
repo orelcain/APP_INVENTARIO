@@ -3443,12 +3443,24 @@ class InventarioCompleto {
         // Crear preview
         const previewItem = document.createElement('div');
         previewItem.className = 'multimedia-preview-item';
+        
+        // Calcular tamaño original en formato legible
+        const originalSizeKB = (file.size / 1024).toFixed(1);
+        
         previewItem.innerHTML = `
           <img src="${compressedBase64}" alt="${file.name}">
           <button type="button" class="multimedia-remove-btn" onclick="app.removeMultimedia('${filename}', 'image')" title="Eliminar imagen">
             ×
           </button>
-          <div class="multimedia-preview-name" title="${file.name} → ${compressedSize.toFixed(1)}KB WebP">${baseName}.webp</div>
+          <div class="multimedia-preview-info">
+            <div class="multimedia-preview-name" title="${file.name}">${baseName}.webp</div>
+            <div class="multimedia-preview-size">
+              <span class="size-original" style="text-decoration: line-through; opacity: 0.6;">${originalSizeKB}KB</span>
+              <span class="size-arrow" style="margin: 0 4px;">→</span>
+              <span class="size-compressed" style="color: #4ade80; font-weight: 600;">${compressedSize.toFixed(1)}KB</span>
+              <span class="size-reduction" style="margin-left: 6px; background: rgba(74, 222, 128, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700;">-${reduction}%</span>
+            </div>
+          </div>
         `;
         
         previewContainer.appendChild(previewItem);
