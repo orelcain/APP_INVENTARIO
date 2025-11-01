@@ -9457,4 +9457,29 @@ console.log('Versin: 2.0');
   window.InventarioCompleto = InventarioCompleto;
   window.app = new InventarioCompleto();
   console.log('✅ Módulos portable cargados');
+  
+  // Inicializar la aplicación
+  (async function() {
+    try {
+      console.log('📦 Iniciando aplicación portable...');
+      
+      // 1. Intentar restaurar FileSystem si existe
+      const restored = await fsManager.restoreFromPreviousSession();
+      if (restored) {
+        console.log('✅ FileSystem restaurado');
+      }
+      
+      // 2. Inicializar mapController
+      if (mapController && typeof mapController.init === 'function') {
+        await mapController.init();
+      }
+      
+      // 3. Inicializar la app principal (carga datos)
+      await window.app.init();
+      
+      console.log('✅ Aplicación portable lista');
+    } catch (error) {
+      console.error('❌ Error al inicializar:', error);
+    }
+  })();
 })();
