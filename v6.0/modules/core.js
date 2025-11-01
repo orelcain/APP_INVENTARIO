@@ -3378,13 +3378,13 @@ class InventarioCompleto {
     console.log(`📎 Procesando ${files.length} archivo(s) de tipo: ${type}`);
     
     if (type === 'image') {
-      await this.handleImageUpload(files);
+      await this.handleImageUpload(files, event);
     } else if (type === 'document') {
-      await this.handleDocumentUpload(files);
+      await this.handleDocumentUpload(files, event);
     }
   }
   
-  async handleImageUpload(files) {
+  async handleImageUpload(files, event) {
     const previewContainer = document.getElementById('imagePreview');
     
     for (const file of files) {
@@ -3451,7 +3451,7 @@ class InventarioCompleto {
     this.showToast(`✅ ${files.length} imagen(es) agregada(s)`, 'success', 2000);
   }
   
-  async handleDocumentUpload(files) {
+  async handleDocumentUpload(files, event) {
     const documentsContainer = document.getElementById('documentsList');
     
     for (const file of files) {
