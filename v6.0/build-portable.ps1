@@ -38,25 +38,25 @@ $coreJs = $coreJs -replace 'export default InventarioCompleto;', 'window.Inventa
 # Crear el código JavaScript combinado
 $combinedJs = @"
 // ========================================
-// VERSIÓN PORTABLE v6.0
-// Generado automáticamente por build-portable.ps1
+// VERSION PORTABLE v6.0
+// Generado automaticamente por build-portable.ps1
 // ========================================
 
 (function() {
   'use strict';
 
   // ========================================
-  // MÓDULO STORAGE (storage.js)
+  // MODULO STORAGE (storage.js)
   // ========================================
   $storageJs
 
   // ========================================
-  // MÓDULO MAPA (mapa.js)
+  // MODULO MAPA (mapa.js)
   // ========================================
   $mapaJs
 
   // ========================================
-  // MÓDULO CORE (core.js)
+  // MODULO CORE (core.js)
   // ========================================
   $coreJs
 
@@ -68,10 +68,10 @@ $combinedJs = @"
   window.mapController = mapController;
   window.InventarioCompleto = InventarioCompleto;
   window.app = new InventarioCompleto();
-  console.log('✅ Módulos portable cargados');
+  console.log('Modulos portable cargados');
   
   // =========================================
-  // OBJETO CONFIGURACIÓN
+  // OBJETO CONFIGURACION
   // =========================================
   window.configuracion = {
     renderStorageUI() {
@@ -82,11 +82,11 @@ $combinedJs = @"
       const isConnected = fs && fs.isConnected;
       
       const statusBg = isConnected ? '#10b981' : '#ef4444';
-      const statusText = isConnected ? '🟢 Conectado' : '❌ No conectado';
+      const statusText = isConnected ? 'Conectado' : 'No conectado';
       const folderPath = fs && fs.folderPath ? fs.folderPath : 'No hay carpeta seleccionada';
-      const disconnectBtn = isConnected ? '<button onclick="window.app.desconectarFileSystem()" class="btn" style="width: 100%; padding: 14px; font-size: 1rem; background: var(--danger); color: white;">🔴 Desconectar</button>' : '';
+      const disconnectBtn = isConnected ? '<button onclick="window.app.desconectarFileSystem()" class="btn" style="width: 100%; padding: 14px; font-size: 1rem; background: var(--danger); color: white;">Desconectar</button>' : '';
       const btnClass = isConnected ? 'btn-secondary' : 'btn-primary';
-      const btnText = isConnected ? '📁 Cambiar Carpeta' : '📂 Seleccionar Carpeta INVENTARIO_STORAGE';
+      const btnText = isConnected ? 'Cambiar Carpeta' : 'Seleccionar Carpeta INVENTARIO_STORAGE';
       
       container.innerHTML = '<h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">💾 Almacenamiento FileSystem</h3>' +
         '<div style="display: grid; gap: 12px;">' +
@@ -104,7 +104,7 @@ $combinedJs = @"
   };
   
   // =========================================
-  // FUNCIONES DE ACORDEÓN
+  // FUNCIONES DE ACORDEON
   // =========================================
   window.toggleConfigSection = function(sectionId) {
     const content = document.getElementById(sectionId + '-content');
@@ -147,15 +147,15 @@ $combinedJs = @"
   };
   
   // =========================================
-  // INICIALIZACIÓN
+  // INICIALIZACION
   // =========================================
   (async function() {
     try {
-      console.log('📦 Iniciando aplicación portable...');
+      console.log('Iniciando aplicacion portable...');
       
       const restored = await fsManager.restoreFromPreviousSession();
       if (restored) {
-        console.log('✅ FileSystem restaurado');
+        console.log('FileSystem restaurado');
       }
       
       if (mapController && typeof mapController.init === 'function') {
@@ -183,9 +183,9 @@ $combinedJs = @"
         });
       }
       
-      console.log('✅ Aplicación portable lista');
+      console.log('Aplicacion portable lista');
     } catch (error) {
-      console.error('❌ Error al inicializar:', error);
+      console.error('Error al inicializar:', error);
     }
   })();
 })();
@@ -193,15 +193,15 @@ $combinedJs = @"
 
 # Guardar combined.js
 Write-Host 'Guardando combined.js...' -ForegroundColor Yellow
-[System.IO.File]::WriteAllLines("$PWD\combined.js", $combinedJs, (New-Object System.Text.UTF8Encoding $false))
+$combinedJs | Out-File -FilePath 'combined.js' -Encoding UTF8 -NoNewline
 
 # Eliminar declaraciones duplicadas si existen
-$jsContent = Get-Content 'combined.js' -Raw
+$jsContent = Get-Content 'combined.js' -Raw -Encoding UTF8
 $count = ([regex]::Matches($jsContent, 'const globalBlobCache')).Count
 if ($count -gt 1) {
   Write-Host "  Eliminando $count declaraciones duplicadas de globalBlobCache..." -ForegroundColor Yellow
   $jsContent = $jsContent -replace '// ===+\s*// CACHÉ GLOBAL DE BLOB URLs.*?\s*// ===+\s*const globalBlobCache = new Map\(\);', ''
-  [System.IO.File]::WriteAllText("$PWD\combined.js", $jsContent, (New-Object System.Text.UTF8Encoding $false))
+  $jsContent | Out-File -FilePath 'combined.js' -Encoding UTF8 -NoNewline
 }
 
 # Copiar HTML y reemplazar script

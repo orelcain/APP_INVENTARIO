@@ -1,16 +1,16 @@
-// ========================================
-// VERSIÃƒâ€œN PORTABLE v6.0
-// Generado automÃƒÂ¡ticamente por build-portable.ps1
+﻿// ========================================
+// VERSION PORTABLE v6.0
+// Generado automaticamente por build-portable.ps1
 // ========================================
 
 (function() {
   'use strict';
 
   // ========================================
-  // MÃƒâ€œDULO STORAGE (storage.js)
+  // MODULO STORAGE (storage.js)
   // ========================================
   // ========================================
-// MÃ“DULO DE ALMACENAMIENTO
+// MÓDULO DE ALMACENAMIENTO
 // FileSystemManager + MapStorageService
 // ========================================
 
@@ -127,7 +127,7 @@ class FileSystemManager {
     const text = document.getElementById('connectionText');
 
     if (connected) {
-      // Actualizar indicador del panel de configuraciÃ³n
+      // Actualizar indicador del panel de configuración
       if (indicator) {
         indicator.classList.remove('disconnected');
         indicator.classList.add('connected');
@@ -139,7 +139,7 @@ class FileSystemManager {
         indicator.querySelector('.connection-text').textContent = path ? `INVENTARIO_PORTABLE conectado (${path})` : 'INVENTARIO_PORTABLE conectado';
       }
       
-      // Actualizar botÃ³n de estado en toolbar (nuevo diseÃ±o corporativo)
+      // Actualizar botón de estado en toolbar (nuevo diseño corporativo)
       if (btn) {
         btn.classList.remove('disconnected');
         btn.classList.add('connected');
@@ -148,7 +148,7 @@ class FileSystemManager {
         text.textContent = 'Conectado';
       }
     } else {
-      // Actualizar indicador del panel de configuraciÃ³n
+      // Actualizar indicador del panel de configuración
       if (indicator) {
         indicator.classList.remove('connected');
         indicator.classList.add('disconnected');
@@ -160,7 +160,7 @@ class FileSystemManager {
         indicator.querySelector('.connection-text').textContent = 'INVENTARIO_STORAGE NO CONECTADO';
       }
       
-      // Actualizar botÃ³n de estado en toolbar (nuevo diseÃ±o corporativo)
+      // Actualizar botón de estado en toolbar (nuevo diseño corporativo)
       if (btn) {
         btn.classList.remove('connected');
         btn.classList.add('disconnected');
@@ -172,13 +172,13 @@ class FileSystemManager {
   }
 
   disconnect() {
-    console.log('ðŸ”Œ Desconectando FileSystem...');
+    console.log('🔌 Desconectando FileSystem...');
     this.directoryHandle = null;
     this.imagesFolder = null;
     this.isFileSystemMode = false;
     this.folderPath = '';
     this.updateStatusIndicator(false);
-    console.log('âœ… FileSystem desconectado');
+    console.log('✅ FileSystem desconectado');
   }
 
   async selectFolder() {
@@ -306,10 +306,10 @@ class FileSystemManager {
       const fileHandle = await this.imagesFolder.getFileHandle(filename);
       const file = await fileHandle.getFile();
       const blobUrl = URL.createObjectURL(file);
-      console.log('âœ… Imagen cargada desde FileSystem:', filename);
+      console.log('✅ Imagen cargada desde FileSystem:', filename);
       return blobUrl;
     } catch (error) {
-      console.warn(`âš ï¸ No se pudo cargar imagen ${filename}:`, error.message);
+      console.warn(`⚠️ No se pudo cargar imagen ${filename}:`, error.message);
       return null;
     }
   }
@@ -912,11 +912,11 @@ const mapStorage = new MapStorageService(fsManager);
 
 
   // ========================================
-  // MÃƒâ€œDULO MAPA (mapa.js)
+  // MODULO MAPA (mapa.js)
   // ========================================
   // ========================================
-// MÃ“DULO DE MAPA
-// mapController - GestiÃ³n de mapas y zonas
+// MÓDULO DE MAPA
+// mapController - Gestión de mapas y zonas
 // ========================================
 
 // [REMOVED IMPORT]
@@ -1102,7 +1102,7 @@ const mapController = {
     if (!mapList) return;
 
     if (!Array.isArray(maps) || !maps.length) {
-      mapList.innerHTML = `<div style="padding: 16px; border: 1px dashed var(--border-color); border-radius: 10px; color: var(--text-secondary); font-size: 0.85rem;">AÃºn no hay mapas registrados.</div>`;
+      mapList.innerHTML = `<div style="padding: 16px; border: 1px dashed var(--border-color); border-radius: 10px; color: var(--text-secondary); font-size: 0.85rem;">Aún no hay mapas registrados.</div>`;
       return;
     }
 
@@ -1110,7 +1110,7 @@ const mapController = {
     mapList.innerHTML = maps.map(map => {
       const isActive = activeId === map.id;
       const createdAt = map.createdAt ? new Date(map.createdAt).toLocaleDateString('es-CL') : '';
-      const dimensions = map.width && map.height ? `${map.width} Ã— ${map.height}px` : 'Dimensiones pendientes';
+      const dimensions = map.width && map.height ? `${map.width} × ${map.height}px` : 'Dimensiones pendientes';
       const zonesCount = (mapStorage.zones || []).filter(z => z.mapId === map.id).length;
       return `
         <article class="map-card ${isActive ? 'map-card--active' : ''}" data-map-id="${map.id}">
@@ -1851,8 +1851,8 @@ const mapController = {
     }
     const map = this.state.currentMap;
     const zonesCount = this.state.zones.length;
-    const dimensions = map.width && map.height ? `${map.width} Ã— ${map.height}px` : 'Dimensiones pendientes';
-    badge.textContent = `${map.name} Ã— ${dimensions}  ${zonesCount} zona(s)`;
+    const dimensions = map.width && map.height ? `${map.width} × ${map.height}px` : 'Dimensiones pendientes';
+    badge.textContent = `${map.name} × ${dimensions}  ${zonesCount} zona(s)`;
   },
 
   updateZoomBadge() {
@@ -2008,7 +2008,7 @@ const mapController = {
       const scope = event.scope || 'maps';
       const action = event.action || 'update';
       const detail = event.detail ? `  ${this.escapeHtml(event.detail)}` : '';
-      return `<div class="map-log-entry"><time>${timestamp}</time><span>${scope} Ã— ${action}${detail}</span></div>`;
+      return `<div class="map-log-entry"><time>${timestamp}</time><span>${scope} × ${action}${detail}</span></div>`;
     }).join('');
   },
 
@@ -2164,23 +2164,26 @@ window.mapController = mapController;
 
 
   // ========================================
-  // MÃƒâ€œDULO CORE (core.js)
+  // MODULO CORE (core.js)
   // ========================================
   // ========================================
-// MÃ“DULO CORE
+// MÓDULO CORE
 // Clase principal InventarioCompleto
 // ========================================
 
 // [REMOVED IMPORT]
 // [REMOVED IMPORT]
 
+// ===================================================================
+// CACHÉ GLOBAL DE BLOB URLs (Prevenir Garbage Collection)
+// ===================================================================
+const globalBlobCache = new Map();
 
-
-// FunciÃ³n para obtener o crear Blob URL con cachÃ© global
+// Función para obtener o crear Blob URL con caché global
 async function getCachedBlobUrl(filename, loadFunction) {
   if (globalBlobCache.has(filename)) {
     const cached = globalBlobCache.get(filename);
-    console.log(`  [CACHÃ‰ GLOBAL] Reutilizando: ${filename}`);
+    console.log(`  [CACHÉ GLOBAL] Reutilizando: ${filename}`);
     return cached.url;
   }
   
@@ -2192,7 +2195,7 @@ async function getCachedBlobUrl(filename, loadFunction) {
       timestamp: Date.now(),
       filename: filename
     });
-    console.log(`âœ… [CACHÃ‰ GLOBAL] Guardado: ${filename} (Total: ${globalBlobCache.size})`);
+    console.log(`✅ [CACHÉ GLOBAL] Guardado: ${filename} (Total: ${globalBlobCache.size})`);
   }
   return url;
 }
@@ -2753,7 +2756,7 @@ class InventarioCompleto {
           const blobUrl = await fs.loadImage(filename);
           if (blobUrl) return blobUrl;
         } catch (error) {
-          console.warn(`âš ï¸ No se pudo cargar desde FileSystem: ${media.url}`);
+          console.warn(`⚠️ No se pudo cargar desde FileSystem: ${media.url}`);
         }
       }
       
@@ -2777,7 +2780,7 @@ class InventarioCompleto {
             const blobUrl = await fs.loadImage(filename);
             if (blobUrl) return blobUrl;
           } catch (error) {
-            console.warn(`âš ï¸ No se pudo cargar: ${media}`);
+            console.warn(`⚠️ No se pudo cargar: ${media}`);
           }
         }
       }
@@ -2893,7 +2896,7 @@ class InventarioCompleto {
       return null;
     }
 
-    // Filtrar multimedia vÃ¡lida (con URL)
+    // Filtrar multimedia válida (con URL)
     const multimediaValido = multimedia.filter(media =>
       media && (media.tipo === 'image' || media.type === 'image') && media.url && media.url.trim() !== ''
     );
@@ -2904,7 +2907,7 @@ class InventarioCompleto {
         const url = await this.getImageUrl(media);
         if (url) return url;
       } catch (error) {
-        console.log(`âš ï¸ Imagen invÃ¡lida detectada: ${media.url}`);
+        console.log(`⚠️ Imagen inválida detectada: ${media.url}`);
       }
     }
 
@@ -4573,7 +4576,7 @@ class InventarioCompleto {
   abrirModalConteoIndividual(id) {
     const repuesto = this.repuestos.find(r => r.id === id);
     if (!repuesto) {
-      this.showToast('âš ï¸ Repuesto no encontrado', 'error');
+      this.showToast('⚠️ Repuesto no encontrado', 'error');
       return;
     }
 
@@ -4582,7 +4585,7 @@ class InventarioCompleto {
     const cantidadActual = repuesto.cantidad || 0;
     const estadoStock = cantidadActual === 0 ? 'AGOTADO' : cantidadActual <= minimo ? 'BAJO' : 'OK';
     const colorEstado = cantidadActual === 0 ? '#7a6b6b' : cantidadActual <= minimo ? '#8a7a5a' : '#6b7280';
-    const iconoEstado = cantidadActual === 0 ? 'âŒ' : cantidadActual <= minimo ? 'âš ï¸' : 'âœ…';
+    const iconoEstado = cantidadActual === 0 ? '❌' : cantidadActual <= minimo ? '⚠️' : '✅';
     
     const ultimoConteo = repuesto.ultimoConteo ? new Date(repuesto.ultimoConteo) : null;
     const fechaFormateada = ultimoConteo ? ultimoConteo.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' }) : '';
@@ -4598,28 +4601,28 @@ class InventarioCompleto {
               <div style="display: flex; align-items: center; justify-content: space-between;">
                 <div>
                   <h3 style="margin: 0; font-size: 16px; font-weight: 700; color: #d4d4d4; text-transform: uppercase; letter-spacing: 0.5px;">Conteo de Stock</h3>
-                  <p style="margin: 4px 0 0 0; font-size: 11px; color: #969696; font-weight: 500;">Actualizar cantidad fÃ­sica</p>
+                  <p style="margin: 4px 0 0 0; font-size: 11px; color: #969696; font-weight: 500;">Actualizar cantidad física</p>
                 </div>
-                <button onclick="window.app.cerrarModalConteoIndividual()" style="background: transparent; border: none; color: #969696; font-size: 24px; cursor: pointer; padding: 0; line-height: 1; transition: color 0.15s; font-weight: 300;" onmouseover="this.style.color='#d4d4d4'" onmouseout="this.style.color='#969696'">Ã—</button>
+                <button onclick="window.app.cerrarModalConteoIndividual()" style="background: transparent; border: none; color: #969696; font-size: 24px; cursor: pointer; padding: 0; line-height: 1; transition: color 0.15s; font-weight: 300;" onmouseover="this.style.color='#d4d4d4'" onmouseout="this.style.color='#969696'">×</button>
               </div>
             </div>
             
             <div class="modal-body-custom" style="padding: 20px;">
               
-              <!-- INFORMACIÃ“N DEL PRODUCTO -->
+              <!-- INFORMACIÓN DEL PRODUCTO -->
               <div style="background: #1e1e1e; border: 1px solid #3e3e42; padding: 14px; border-radius: 2px; margin-bottom: 16px;">
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                   <h4 style="margin: 0; font-size: 14px; color: #d4d4d4; font-weight: 600; line-height: 1.4;">${repuesto.nombre}</h4>
                   <span style="background: ${colorEstado}; opacity: 0.95; color: #ffffff; padding: 3px 8px; border-radius: 2px; font-size: 10px; font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.3px;">${estadoStock}</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 11px; color: #969696;">
-                  <div><strong style="color: #d4d4d4; font-weight: 600;">Ãrea:</strong> ${repuesto.area || repuesto.areaGeneral || 'N/A'}</div>
+                  <div><strong style="color: #d4d4d4; font-weight: 600;">Área:</strong> ${repuesto.area || repuesto.areaGeneral || 'N/A'}</div>
                   <div><strong style="color: #d4d4d4; font-weight: 600;">Equipo:</strong> ${repuesto.equipo || repuesto.sistemaEquipo || 'N/A'}</div>
                   ${repuesto.codSAP ? `<div style="grid-column: 1 / -1;"><strong style="color: #d4d4d4; font-weight: 600;">SAP:</strong> <span style="font-family: var(--font-mono);">${repuesto.codSAP}</span></div>` : ''}
                 </div>
               </div>
 
-              <!-- CANTIDAD ACTUAL Y MÃNIMO -->
+              <!-- CANTIDAD ACTUAL Y MÍNIMO -->
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
                 <div style="background: #1e1e1e; border: 2px solid #3e3e42; padding: 14px; border-radius: 2px; text-align: center;">
                   <div style="font-size: 9px; color: #969696; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Stock Actual</div>
@@ -4628,17 +4631,17 @@ class InventarioCompleto {
                 </div>
                 
                 <div style="background: #1e1e1e; border: 2px solid #3e3e42; padding: 14px; border-radius: 2px; text-align: center;">
-                  <div style="font-size: 9px; color: #969696; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">MÃ­nimo</div>
+                  <div style="font-size: 9px; color: #969696; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Mínimo</div>
                   <div style="font-size: 28px; color: #969696; opacity: 0.95; font-weight: 700; line-height: 1;">${minimo}</div>
                   <div style="font-size: 9px; color: #6e7681; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px;">requerido</div>
                 </div>
               </div>
 
-              <!-- INFORMACIÃ“N DE ÃšLTIMO CONTEO -->
+              <!-- INFORMACIÓN DE ÚLTIMO CONTEO -->
               ${ultimoConteo ? `
                 <div style="background: #1e1e1e; border-left: 3px solid #969696; padding: 10px; border-radius: 0; margin-bottom: 16px;">
-                  <div style="font-size: 9px; color: #969696; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Ãšltimo conteo</div>
-                  <div style="font-size: 11px; color: #d4d4d4; font-weight: 600;">${fechaFormateada} â€¢ ${horaFormateada}</div>
+                  <div style="font-size: 9px; color: #969696; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Último conteo</div>
+                  <div style="font-size: 11px; color: #d4d4d4; font-weight: 600;">${fechaFormateada} • ${horaFormateada}</div>
                 </div>
               ` : `
                 <div style="background: #332b00; border-left: 3px solid #f59e0b; padding: 10px; border-radius: 0; margin-bottom: 16px;">
@@ -4649,10 +4652,10 @@ class InventarioCompleto {
               <!-- INPUT NUEVA CANTIDAD -->
               <div style="background: #1e1e1e; padding: 16px; border-radius: 2px; border: 1px solid #3e3e42;">
                 <label for="cantidadConteoInput" style="display: block; font-size: 10px; font-weight: 700; color: #d4d4d4; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">
-                  Nueva cantidad fÃ­sica
+                  Nueva cantidad física
                 </label>
                 <div style="display: flex; gap: 8px; align-items: center;">
-                  <button onclick="document.getElementById('cantidadConteoInput').value = Math.max(0, parseInt(document.getElementById('cantidadConteoInput').value || 0) - 1)" style="background: #2d2d30; border: 1px solid #555555; color: #d4d4d4; width: 40px; height: 40px; border-radius: 2px; cursor: pointer; font-size: 18px; font-weight: 700; transition: all 0.15s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='#3e3e42'" onmouseout="this.style.background='#2d2d30'">âˆ’</button>
+                  <button onclick="document.getElementById('cantidadConteoInput').value = Math.max(0, parseInt(document.getElementById('cantidadConteoInput').value || 0) - 1)" style="background: #2d2d30; border: 1px solid #555555; color: #d4d4d4; width: 40px; height: 40px; border-radius: 2px; cursor: pointer; font-size: 18px; font-weight: 700; transition: all 0.15s; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='#3e3e42'" onmouseout="this.style.background='#2d2d30'">−</button>
                   <input type="number" 
                          id="cantidadConteoInput" 
                          value="${cantidadActual}" 
@@ -4666,7 +4669,7 @@ class InventarioCompleto {
                 </div>
               </div>
 
-              <!-- BOTONES DE ACCIÃ“N -->
+              <!-- BOTONES DE ACCIÓN -->
               <div style="display: flex; gap: 8px; margin-top: 20px;">
                 <button onclick="window.app.cerrarModalConteoIndividual()" style="flex: 1; background: #2d2d30; border: 1px solid #555555; color: #d4d4d4; padding: 11px; border-radius: 2px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.3px;" onmouseover="this.style.background='#3e3e42'" onmouseout="this.style.background='#2d2d30'">
                   Cancelar
@@ -4706,7 +4709,7 @@ class InventarioCompleto {
     const repuesto = this.repuestos.find(r => r.id === id);
     
     if (!repuesto) {
-      this.showToast('âš ï¸ Error: Repuesto no encontrado', 'error');
+      this.showToast('⚠️ Error: Repuesto no encontrado', 'error');
       return;
     }
 
@@ -4727,9 +4730,9 @@ class InventarioCompleto {
     // Actualizar vista
     await this.renderInventario();
 
-    // Mostrar toast con informaciÃ³n
+    // Mostrar toast con información
     this.showToast(
-      `âœ… Conteo guardado: ${nuevaCantidad} unid. (${signo}${diferencia})`,
+      `✅ Conteo guardado: ${nuevaCantidad} unid. (${signo}${diferencia})`,
       'success',
       4000
     );
@@ -4739,21 +4742,21 @@ class InventarioCompleto {
     if (!this.escapeHandler) {
       this.escapeHandler = (e) => {
         if (e.key === 'Escape') {
-          // Cerrar lightbox si estÃ¡ activo
+          // Cerrar lightbox si está activo
           const lightbox = document.getElementById('lightbox');
           if (lightbox && lightbox.classList.contains('active')) {
             this.closeLightbox();
             return;
           }
           
-          // Cerrar modal personalizado si estÃ¡ abierto
+          // Cerrar modal personalizado si está abierto
           const customModal = document.getElementById('customModalOverlay');
           if (customModal && customModal.style.display === 'flex') {
             this.closeCustomModal();
             return;
           }
           
-          // Cerrar modal principal si estÃ¡ abierto
+          // Cerrar modal principal si está abierto
           const mainModal = document.getElementById('modal');
           if (mainModal && mainModal.classList.contains('active')) {
             this.closeModal();
@@ -4772,35 +4775,35 @@ class InventarioCompleto {
   }
 
   // ========================================
-  // LIGHTBOX COMPLETO - Con zoom y navegaciÃ³n
+  // LIGHTBOX COMPLETO - Con zoom y navegación
   // ========================================
   
   async openLightbox(id) {
-    console.log('ðŸ–¼ï¸ openLightbox llamado con ID:', id);
+    console.log('🖼️ openLightbox llamado con ID:', id);
     
     const repuesto = this.repuestos.find(r => r.id === id);
-    console.log('ðŸ“¦ Repuesto encontrado:', repuesto ? repuesto.nombre : 'NO ENCONTRADO');
+    console.log('📦 Repuesto encontrado:', repuesto ? repuesto.nombre : 'NO ENCONTRADO');
     
     if (!repuesto) {
-      console.error('âŒ No se encontrÃ³ el repuesto con ID:', id);
+      console.error('❌ No se encontró el repuesto con ID:', id);
       return;
     }
     
     if (!repuesto.multimedia || repuesto.multimedia.length === 0) {
-      console.warn('âš ï¸ El repuesto no tiene multimedia');
-      this.showToast('âš ï¸ Este repuesto no tiene imÃ¡genes', 'warning');
+      console.warn('⚠️ El repuesto no tiene multimedia');
+      this.showToast('⚠️ Este repuesto no tiene imágenes', 'warning');
       return;
     }
     
-    // Filtrar imÃ¡genes (tanto tipo como type por compatibilidad)
+    // Filtrar imágenes (tanto tipo como type por compatibilidad)
     this.lightboxMedias = repuesto.multimedia.filter(m => 
       m.tipo === 'image' || m.type === 'image' || m.tipo === 'video' || m.type === 'video'
     );
-    console.log('ðŸ–¼ï¸ Medios encontrados:', this.lightboxMedias.length);
+    console.log('🖼️ Medios encontrados:', this.lightboxMedias.length);
     
     if (this.lightboxMedias.length === 0) {
-      console.warn('âš ï¸ No hay imÃ¡genes o videos para mostrar');
-      this.showToast('âš ï¸ No hay imÃ¡genes disponibles', 'warning');
+      console.warn('⚠️ No hay imágenes o videos para mostrar');
+      this.showToast('⚠️ No hay imágenes disponibles', 'warning');
       return;
     }
     
@@ -4808,13 +4811,13 @@ class InventarioCompleto {
     
     // Mostrar lightbox primero
     const lightbox = document.getElementById('lightbox');
-    console.log('ðŸŽ¬ Activando lightbox...');
+    console.log('🎬 Activando lightbox...');
     lightbox.classList.add('active');
     
     // Luego cargar la imagen
-    console.log('â³ Cargando imagen...');
+    console.log('⏳ Cargando imagen...');
     await this.showLightbox();
-    console.log('âœ… Lightbox mostrado');
+    console.log('✅ Lightbox mostrado');
   }
 
   async showLightbox() {
@@ -4831,10 +4834,10 @@ class InventarioCompleto {
       const imageUrl = await this.getImageUrl(media);
       
       if (!imageUrl) {
-        console.error('âŒ No se pudo obtener URL de imagen');
+        console.error('❌ No se pudo obtener URL de imagen');
         content.innerHTML = `
           <div style="color: white; text-align: center; padding: 40px;">
-            <div style="font-size: 48px; margin-bottom: 16px;">âš ï¸</div>
+            <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
             <div style="font-size: 16px; margin-bottom: 8px;">No se pudo cargar la imagen</div>
             <div style="font-size: 12px; opacity: 0.7;">${media.filename || 'Sin nombre'}</div>
           </div>
@@ -4842,12 +4845,12 @@ class InventarioCompleto {
         return;
       }
       
-      console.log('ðŸ–¼ï¸ URL de imagen:', imageUrl);
+      console.log('🖼️ URL de imagen:', imageUrl);
       
       // Crear imagen con manejo de errores
       const img = new Image();
       img.onload = () => {
-        console.log('âœ… Imagen cargada correctamente');
+        console.log('✅ Imagen cargada correctamente');
         content.innerHTML = `
           <div id="imageContainer" style="position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 90vh; overflow: hidden;">
             <img id="lightboxImage" 
@@ -4862,10 +4865,10 @@ class InventarioCompleto {
       };
       
       img.onerror = () => {
-        console.error('âŒ Error al cargar imagen:', imageUrl);
+        console.error('❌ Error al cargar imagen:', imageUrl);
         content.innerHTML = `
           <div style="color: white; text-align: center; padding: 40px;">
-            <div style="font-size: 48px; margin-bottom: 16px;">âš ï¸</div>
+            <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
             <div style="font-size: 16px; margin-bottom: 8px;">No se pudo cargar la imagen</div>
             <div style="font-size: 12px; opacity: 0.7;">${imageUrl}</div>
           </div>
@@ -4898,11 +4901,11 @@ class InventarioCompleto {
       e.preventDefault();
       e.stopPropagation();
       
-      // Incremento mÃ¡s suave
+      // Incremento más suave
       const delta = e.deltaY > 0 ? -0.2 : 0.2;
       const newScale = Math.max(0.5, Math.min(5, scale + delta));
       
-      if (newScale === scale) return; // No cambiÃ³, salir
+      if (newScale === scale) return; // No cambió, salir
       
       // Obtener el centro del contenedor
       const containerRect = container.getBoundingClientRect();
@@ -4930,7 +4933,7 @@ class InventarioCompleto {
       }
     }, { passive: false });
     
-    // Arrastre de imagen (solo si estÃ¡ con zoom)
+    // Arrastre de imagen (solo si está con zoom)
     img.addEventListener('mousedown', (e) => {
       if (scale > 1) {
         e.preventDefault();
@@ -5027,7 +5030,7 @@ class InventarioCompleto {
   // ===============================================
   
   async openModal(mode, id = null) {
-    console.log(`\nðŸ“ ========== ABRIENDO MODAL ==========`);
+    console.log(`\n📝 ========== ABRIENDO MODAL ==========`);
     console.log(`Modo: ${mode}`);
     console.log(`ID: ${id}`);
     
@@ -5036,7 +5039,7 @@ class InventarioCompleto {
     this.currentDocuments = [];
     this.multimediaToRemove = []; // Limpiar lista de eliminaciones
     
-    // Configurar tÃ­tulo
+    // Configurar título
     document.getElementById('modalTitle').textContent = mode === 'edit' ? 'Editar Repuesto' : 'Agregar Repuesto';
     
     // Resetear formulario
@@ -5050,7 +5053,7 @@ class InventarioCompleto {
     if (imagenFile) imagenFile.value = '';
     if (documentos) documentos.value = '';
     
-    console.log('ðŸ§¹ Arrays y previews limpiados');
+    console.log('🧹 Arrays y previews limpiados');
     
     // Poblar select de Tipo
     this.poblarSelectTipo();
@@ -5080,9 +5083,9 @@ class InventarioCompleto {
       const repuesto = this.repuestos.find(r => r.id === id || String(r.id) === String(id));
       
       if (repuesto) {
-        console.log(`âœ… Repuesto encontrado: ${repuesto.nombre}`);
+        console.log(`✅ Repuesto encontrado: ${repuesto.nombre}`);
         
-        // Llenar campos bÃ¡sicos
+        // Llenar campos básicos
         document.getElementById('repuestoId').value = repuesto.id;
         document.getElementById('codSAP').value = repuesto.codSAP || repuesto.codigo_sap || '';
         document.getElementById('codProv').value = repuesto.codProv || repuesto.codigo_prov || '';
@@ -5097,10 +5100,10 @@ class InventarioCompleto {
         document.getElementById('optimo').value = repuesto.optimo || 10;
         document.getElementById('precio').value = repuesto.precio || 0;
         
-        // Datos tÃ©cnicos
+        // Datos técnicos
         document.getElementById('datosTecnicos').value = repuesto.datosTecnicos || '';
         
-        // Cargar ubicaciones (primera ubicaciÃ³n si existe)
+        // Cargar ubicaciones (primera ubicación si existe)
         if (repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
           await this.cargarUbicacionEnFormulario(repuesto.ubicaciones[0]);
         }
@@ -5111,12 +5114,12 @@ class InventarioCompleto {
         }
         
       } else {
-        console.error(`âŒ Repuesto no encontrado con ID: "${id}"`);
-        this.showToast('âŒ Error: Repuesto no encontrado', 'error');
+        console.error(`❌ Repuesto no encontrado con ID: "${id}"`);
+        this.showToast('❌ Error: Repuesto no encontrado', 'error');
         return;
       }
     } else {
-      console.log('ðŸ†• Modo AGREGAR nuevo repuesto');
+      console.log('🆕 Modo AGREGAR nuevo repuesto');
       // Seleccionar valores por defecto
       document.getElementById('categoria').value = 'Repuesto';
       document.getElementById('minimo').value = 5;
@@ -5136,17 +5139,17 @@ class InventarioCompleto {
     
     // Opciones predefinidas
     const tiposPredefinidos = [
-      'MecÃ¡nico',
-      'ElÃ©ctrico',
-      'ElectrÃ³nico',
-      'NeumÃ¡tico',
-      'HidrÃ¡ulico',
+      'Mecánico',
+      'Eléctrico',
+      'Electrónico',
+      'Neumático',
+      'Hidráulico',
       'Estructural',
       'Consumible',
       'Filtro',
       'Rodamiento',
       'Sello',
-      'VÃ¡lvula',
+      'Válvula',
       'Sensor',
       'Motor',
       'Correa',
@@ -5154,7 +5157,7 @@ class InventarioCompleto {
       'Engranaje'
     ];
     
-    // Obtener tipos Ãºnicos de repuestos existentes
+    // Obtener tipos únicos de repuestos existentes
     const tiposExistentes = [...new Set(this.repuestos
       .map(r => r.tipo)
       .filter(t => t && t.trim())
@@ -5173,11 +5176,11 @@ class InventarioCompleto {
     });
   }
   
-  // Cargar multimedia existente en preview (modo ediciÃ³n)
+  // Cargar multimedia existente en preview (modo edición)
   async cargarMultimediaEnPreview(multimedia) {
     if (!multimedia || multimedia.length === 0) return;
     
-    console.log(`ðŸ“¸ Cargando ${multimedia.length} imagen(es) existente(s)...`);
+    console.log(`📸 Cargando ${multimedia.length} imagen(es) existente(s)...`);
     
     const previewContainer = document.getElementById('imagePreview');
     const fs = window.fsManager || fsManager;
@@ -5193,29 +5196,29 @@ class InventarioCompleto {
         }
         
         if (!imageUrl) {
-          console.warn(`âš ï¸ No se pudo cargar: ${media.filename}`);
+          console.warn(`⚠️ No se pudo cargar: ${media.filename}`);
           continue;
         }
         
-        // Calcular tamaÃ±os
+        // Calcular tamaños
         const compressedSizeKB = (media.size / 1024).toFixed(1);
         const originalSizeKB = media.originalSize ? (media.originalSize / 1024).toFixed(1) : compressedSizeKB;
         const reduction = media.originalSize ? ((1 - media.size / media.originalSize) * 100).toFixed(0) : '0';
         
-        // Crear preview con atributo especial para identificar imÃ¡genes existentes
+        // Crear preview con atributo especial para identificar imágenes existentes
         const previewItem = document.createElement('div');
         previewItem.className = 'multimedia-preview-item';
         previewItem.setAttribute('data-existing-media', 'true'); // Marcar como existente
         previewItem.innerHTML = `
           <img src="${imageUrl}" alt="${media.originalName}">
           <button type="button" class="multimedia-remove-btn" onclick="app.removeMultimedia('${media.filename}', 'image', true)" title="Eliminar imagen">
-            Ã—
+            ×
           </button>
           <div class="multimedia-preview-info">
             <div class="multimedia-preview-name" title="${media.originalName}">${media.filename}</div>
             <div class="multimedia-preview-size">
               <span class="size-original" style="text-decoration: line-through; opacity: 0.6;">${originalSizeKB}KB</span>
-              <span class="size-arrow" style="margin: 0 4px;">â†’</span>
+              <span class="size-arrow" style="margin: 0 4px;">→</span>
               <span class="size-compressed" style="color: #4ade80; font-weight: 600;">${compressedSizeKB}KB</span>
               <span class="size-reduction" style="margin-left: 6px; background: rgba(74, 222, 128, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700;">-${reduction}%</span>
             </div>
@@ -5223,19 +5226,19 @@ class InventarioCompleto {
         `;
         
         previewContainer.appendChild(previewItem);
-        console.log(`  âœ… Cargada: ${media.filename}`);
+        console.log(`  ✅ Cargada: ${media.filename}`);
         
       } catch (error) {
-        console.error(`âŒ Error cargando ${media.filename}:`, error);
+        console.error(`❌ Error cargando ${media.filename}:`, error);
       }
     }
   }
   
-  // Cargar ubicaciÃ³n en formulario (cascada jerÃ¡rquica)
+  // Cargar ubicación en formulario (cascada jerárquica)
   async cargarUbicacionEnFormulario(ubicacion) {
     if (!ubicacion) return;
     
-    console.log('ðŸ“ Cargando ubicaciÃ³n en formulario:', ubicacion);
+    console.log('📍 Cargando ubicación en formulario:', ubicacion);
     
     // Cargar nivel 1 (Planta)
     const nivel1Select = document.getElementById('nivel1');
@@ -5243,7 +5246,7 @@ class InventarioCompleto {
       nivel1Select.value = ubicacion.planta;
     }
     
-    // Cargar nivel 2 (Ãrea General) si existe
+    // Cargar nivel 2 (Área General) si existe
     if (ubicacion.areaGeneral) {
       await this.cargarNivel(2);
       const nivel2Select = document.getElementById('nivel2');
@@ -5252,7 +5255,7 @@ class InventarioCompleto {
         setTimeout(() => {
           nivel2Select.value = ubicacion.areaGeneral;
           
-          // Cargar nivel 3 (Sub-Ã¡rea) si existe
+          // Cargar nivel 3 (Sub-área) si existe
           if (ubicacion.subArea) {
             this.cargarNivel(3);
             setTimeout(() => {
@@ -5260,7 +5263,7 @@ class InventarioCompleto {
               if (nivel3Select) {
                 nivel3Select.value = ubicacion.subArea;
                 
-                // Continuar con los demÃ¡s niveles...
+                // Continuar con los demás niveles...
                 if (ubicacion.sistemaEquipo) {
                   this.cargarNivel(4);
                   setTimeout(() => {
@@ -5309,11 +5312,11 @@ class InventarioCompleto {
 
   // Cargar opciones del siguiente nivel (cascada)
   cargarNivel(nivel) {
-    console.log(`ðŸ”„ Cargando nivel ${nivel}...`);
+    console.log(`🔄 Cargando nivel ${nivel}...`);
     
     const selectActual = document.getElementById(`nivel${nivel}`);
     if (!selectActual) {
-      console.warn(`âš ï¸ No se encontrÃ³ select para nivel ${nivel}`);
+      console.warn(`⚠️ No se encontró select para nivel ${nivel}`);
       return;
     }
     
@@ -5324,12 +5327,12 @@ class InventarioCompleto {
       valorNivelAnterior = selectAnterior?.value;
       
       if (!valorNivelAnterior) {
-        console.warn(`âš ï¸ Nivel anterior (${nivel - 1}) no tiene valor seleccionado`);
+        console.warn(`⚠️ Nivel anterior (${nivel - 1}) no tiene valor seleccionado`);
         return;
       }
     }
     
-    // Cargar opciones segÃºn el nivel
+    // Cargar opciones según el nivel
     const opciones = this.getOpcionesNivel(nivel, valorNivelAnterior);
     
     // Poblar el select
@@ -5362,25 +5365,25 @@ class InventarioCompleto {
       }
     }
     
-    console.log(`âœ… Nivel ${nivel} cargado con ${opciones.length} opciones`);
+    console.log(`✅ Nivel ${nivel} cargado con ${opciones.length} opciones`);
   }
   
-  // Obtener opciones para un nivel especÃ­fico (con filtrado por nivel anterior)
+  // Obtener opciones para un nivel específico (con filtrado por nivel anterior)
   getOpcionesNivel(nivel, valorNivelAnterior = null) {
-    // Mapeo de niveles a keys de configuraciÃ³n
+    // Mapeo de niveles a keys de configuración
     const nivelMap = {
       1: 'planta',        // N1: Empresa/Planta
-      2: 'areaGeneral',   // N2: Ãrea
-      3: 'subArea',       // N3: Sub-Ã¡rea
+      2: 'areaGeneral',   // N2: Área
+      3: 'subArea',       // N3: Sub-área
       4: 'sistemaEquipo', // N4: Sistema/Equipo
       5: 'subSistema',    // N5: Sub-sistema
-      6: 'seccion',       // N6: SecciÃ³n
-      7: 'subSeccion'     // N7: Sub-secciÃ³n
+      6: 'seccion',       // N6: Sección
+      7: 'subSeccion'     // N7: Sub-sección
     };
     
     const key = nivelMap[nivel];
     if (!key) {
-      console.warn(`âš ï¸ Nivel ${nivel} no tiene mapeo de configuraciÃ³n`);
+      console.warn(`⚠️ Nivel ${nivel} no tiene mapeo de configuración`);
       return [];
     }
     
@@ -5389,21 +5392,21 @@ class InventarioCompleto {
       return [this.plantaBase];
     }
     
-    // Obtener opciones desde la configuraciÃ³n predefinida
+    // Obtener opciones desde la configuración predefinida
     let opciones = this.opcionesJerarquiaPredefinidas[key] || [];
     
-    // TODO: En el futuro, aquÃ­ se puede implementar filtrado basado en valorNivelAnterior
+    // TODO: En el futuro, aquí se puede implementar filtrado basado en valorNivelAnterior
     // Por ejemplo: si nivel=5 (subSistema) y valorNivelAnterior='Grader Marel',
     // solo mostrar subsistemas relevantes a Grader
     
-    // Agregar opciones Ãºnicas de repuestos existentes
+    // Agregar opciones únicas de repuestos existentes
     const opcionesExistentes = this.getOpcionesExistentes(key);
     opciones = [...new Set([...opciones, ...opcionesExistentes])].sort();
     
     return opciones;
   }
   
-  // Obtener opciones Ãºnicas de repuestos existentes
+  // Obtener opciones únicas de repuestos existentes
   getOpcionesExistentes(campo) {
     const valores = new Set();
     
@@ -5420,11 +5423,11 @@ class InventarioCompleto {
     return Array.from(valores);
   }
 
-  // Vincular con Ã¡rea del mapa
+  // Vincular con área del mapa
   vincularConMapa() {
-    console.log('ðŸ—ºï¸ Vincular con mapa...');
-    // TODO: Implementar vinculaciÃ³n con Ã¡reas del mapa
-    this.showToast('ðŸš§ FunciÃ³n en desarrollo', 'info');
+    console.log('🗺️ Vincular con mapa...');
+    // TODO: Implementar vinculación con áreas del mapa
+    this.showToast('🚧 Función en desarrollo', 'info');
   }
 
   // ===============================================
@@ -5434,7 +5437,7 @@ class InventarioCompleto {
   async saveRepuesto(event) {
     event.preventDefault();
     
-    console.log('\nðŸ’¾ ========== GUARDANDO REPUESTO ==========');
+    console.log('\n💾 ========== GUARDANDO REPUESTO ==========');
     
     // Obtener valores del formulario
     const formData = {
@@ -5451,34 +5454,34 @@ class InventarioCompleto {
       datosTecnicos: document.getElementById('datosTecnicos').value.trim()
     };
     
-    // Validaciones bÃ¡sicas
+    // Validaciones básicas
     if (!formData.nombre) {
-      this.showToast('âŒ El nombre es obligatorio', 'error');
+      this.showToast('❌ El nombre es obligatorio', 'error');
       document.getElementById('nombre').focus();
       return;
     }
     
     if (!formData.categoria) {
-      this.showToast('âŒ La categorÃ­a es obligatoria', 'error');
+      this.showToast('❌ La categoría es obligatoria', 'error');
       document.getElementById('categoria').focus();
       return;
     }
     
-    // Validar que al menos nivel 1 y 2 estÃ©n seleccionados
+    // Validar que al menos nivel 1 y 2 estén seleccionados
     const nivel1 = document.getElementById('nivel1').value.trim();
     const nivel2 = document.getElementById('nivel2').value.trim();
     
     if (!nivel1) {
-      this.showToast('âŒ Debes seleccionar N1: Empresa/Planta', 'error');
+      this.showToast('❌ Debes seleccionar N1: Empresa/Planta', 'error');
       return;
     }
     
     if (!nivel2) {
-      this.showToast('âŒ Debes seleccionar N2: Ãrea', 'error');
+      this.showToast('❌ Debes seleccionar N2: Área', 'error');
       return;
     }
     
-    // Construir objeto de ubicaciÃ³n jerÃ¡rquica
+    // Construir objeto de ubicación jerárquica
     const ubicacion = {
       planta: nivel1,
       areaGeneral: nivel2,
@@ -5490,21 +5493,21 @@ class InventarioCompleto {
       detalles: document.getElementById('nivel8').value.trim() || ''
     };
     
-    console.log('ðŸ“‹ Datos del formulario:', formData);
-    console.log('ðŸ“ UbicaciÃ³n jerÃ¡rquica:', ubicacion);
+    console.log('📋 Datos del formulario:', formData);
+    console.log('📍 Ubicación jerárquica:', ubicacion);
     
-    // Determinar si es ediciÃ³n o nuevo repuesto
+    // Determinar si es edición o nuevo repuesto
     const repuestoId = document.getElementById('repuestoId').value;
     const isEdit = !!repuestoId;
     
     if (isEdit) {
-      // MODO EDICIÃ“N
-      console.log(`âœï¸ Editando repuesto ID: ${repuestoId}`);
+      // MODO EDICIÓN
+      console.log(`✏️ Editando repuesto ID: ${repuestoId}`);
       
       const repuesto = this.repuestos.find(r => String(r.id) === String(repuestoId));
       
       if (!repuesto) {
-        this.showToast('âŒ Error: Repuesto no encontrado', 'error');
+        this.showToast('❌ Error: Repuesto no encontrado', 'error');
         return;
       }
       
@@ -5524,7 +5527,7 @@ class InventarioCompleto {
       
       // 1. Aplicar eliminaciones de multimedia marcadas
       if (this.multimediaToRemove && this.multimediaToRemove.length > 0) {
-        console.log(`ðŸ—‘ï¸ Eliminando ${this.multimediaToRemove.length} imagen(es) existente(s)`);
+        console.log(`🗑️ Eliminando ${this.multimediaToRemove.length} imagen(es) existente(s)`);
         repuesto.multimedia = (repuesto.multimedia || []).filter(
           m => !this.multimediaToRemove.includes(m.filename)
         );
@@ -5532,14 +5535,14 @@ class InventarioCompleto {
       
       // 2. Procesar SOLO multimedia NUEVA (currentMultimedia)
       if (this.currentMultimedia && this.currentMultimedia.length > 0) {
-        console.log(`ðŸ“¸ Procesando ${this.currentMultimedia.length} imagen(es) NUEVA(S)`);
+        console.log(`📸 Procesando ${this.currentMultimedia.length} imagen(es) NUEVA(S)`);
         
         const fs = window.fsManager || fsManager;
         
         // VERIFICAR FileSystem conectado
         if (!fs || !fs.isConnected) {
-          this.showToast('âŒ Debes conectar FileSystem para guardar imÃ¡genes', 'error', 5000);
-          console.error('âŒ FileSystem NO conectado - imÃ¡genes NO guardadas');
+          this.showToast('❌ Debes conectar FileSystem para guardar imágenes', 'error', 5000);
+          console.error('❌ FileSystem NO conectado - imágenes NO guardadas');
           return; // NO guardar sin FileSystem
         }
         
@@ -5563,9 +5566,9 @@ class InventarioCompleto {
           
           const multimediaExistente = repuesto.multimedia || [];
           repuesto.multimedia = [...multimediaExistente, ...multimediaRefs];
-          console.log(`âœ… ImÃ¡genes guardadas en FileSystem: ${repuesto.multimedia.length} total`);
+          console.log(`✅ Imágenes guardadas en FileSystem: ${repuesto.multimedia.length} total`);
         } else {
-          this.showToast('âŒ Error guardando imÃ¡genes en FileSystem', 'error');
+          this.showToast('❌ Error guardando imágenes en FileSystem', 'error');
           return; // NO continuar si falla
         }
       }
@@ -5574,19 +5577,19 @@ class InventarioCompleto {
         // Combinar documentos existentes con nuevos
         const documentosExistentes = repuesto.documentos || [];
         repuesto.documentos = [...documentosExistentes, ...this.currentDocuments];
-        console.log(`ðŸ“Ž Agregados ${this.currentDocuments.length} nuevos documentos (total: ${repuesto.documentos.length})`);
+        console.log(`📎 Agregados ${this.currentDocuments.length} nuevos documentos (total: ${repuesto.documentos.length})`);
       }
       
-      // Actualizar fecha de modificaciÃ³n
+      // Actualizar fecha de modificación
       repuesto.fechaModificacion = new Date().toISOString();
       
-      console.log('âœ… Repuesto actualizado:', repuesto.nombre);
+      console.log('✅ Repuesto actualizado:', repuesto.nombre);
       
     } else {
       // MODO AGREGAR NUEVO
-      console.log('ðŸ†• Creando nuevo repuesto');
+      console.log('🆕 Creando nuevo repuesto');
       
-      // Verificar cÃ³digo SAP duplicado (si se proporciona)
+      // Verificar código SAP duplicado (si se proporciona)
       if (formData.codSAP) {
         const duplicado = this.repuestos.find(r => 
           r.codSAP === formData.codSAP || r.codigo_sap === formData.codSAP
@@ -5594,10 +5597,10 @@ class InventarioCompleto {
         
         if (duplicado) {
           const confirmar = confirm(
-            `âš ï¸ CÃ“DIGO SAP DUPLICADO\n\n` +
-            `Ya existe un repuesto con cÃ³digo SAP "${formData.codSAP}":\n` +
+            `⚠️ CÓDIGO SAP DUPLICADO\n\n` +
+            `Ya existe un repuesto con código SAP "${formData.codSAP}":\n` +
             `"${duplicado.nombre}"\n\n` +
-            `Â¿Deseas crear el repuesto de todas formas?`
+            `¿Deseas crear el repuesto de todas formas?`
           );
           
           if (!confirmar) {
@@ -5618,8 +5621,8 @@ class InventarioCompleto {
         const fs = window.fsManager || fsManager;
         
         if (!fs || !fs.isConnected) {
-          this.showToast('âŒ Debes conectar FileSystem para guardar imÃ¡genes', 'error', 5000);
-          return; // NO crear repuesto sin FileSystem para imÃ¡genes
+          this.showToast('❌ Debes conectar FileSystem para guardar imágenes', 'error', 5000);
+          return; // NO crear repuesto sin FileSystem para imágenes
         }
         
         const tempRepuesto = { id: nuevoId, ...formData, ubicaciones: [ubicacion] };
@@ -5639,7 +5642,7 @@ class InventarioCompleto {
             url: `./imagenes/${img.filename}`
           }));
         } else {
-          this.showToast('âŒ Error guardando imÃ¡genes', 'error');
+          this.showToast('❌ Error guardando imágenes', 'error');
           return;
         }
       }
@@ -5658,7 +5661,7 @@ class InventarioCompleto {
       // Agregar a la lista
       this.repuestos.push(nuevoRepuesto);
       
-      console.log('âœ… Nuevo repuesto creado:', nuevoRepuesto.nombre, '- ID:', nuevoId);
+      console.log('✅ Nuevo repuesto creado:', nuevoRepuesto.nombre, '- ID:', nuevoId);
     }
     
     // Guardar datos
@@ -5666,7 +5669,7 @@ class InventarioCompleto {
       const saveSuccess = await this.saveData();
       
       if (saveSuccess !== false) {
-        this.showToast(`âœ… Repuesto ${isEdit ? 'actualizado' : 'creado'} exitosamente`, 'success');
+        this.showToast(`✅ Repuesto ${isEdit ? 'actualizado' : 'creado'} exitosamente`, 'success');
         
         // Cerrar modal
         this.closeModal();
@@ -5676,16 +5679,16 @@ class InventarioCompleto {
         
         console.log('========== GUARDADO COMPLETO ==========\n');
       } else {
-        this.showToast('âš ï¸ Repuesto creado pero no guardado (excede lÃ­mite)', 'warning', 5000);
+        this.showToast('⚠️ Repuesto creado pero no guardado (excede límite)', 'warning', 5000);
       }
     } catch (error) {
-      console.error('âŒ Error al guardar:', error);
-      this.showToast('âŒ Error al guardar: ' + error.message, 'error');
+      console.error('❌ Error al guardar:', error);
+      this.showToast('❌ Error al guardar: ' + error.message, 'error');
     }
   }
 
   // ===============================================
-  // MANEJO DE MULTIMEDIA (IMÃGENES Y DOCUMENTOS)
+  // MANEJO DE MULTIMEDIA (IMÁGENES Y DOCUMENTOS)
   // ===============================================
   
   async handleMultimedia(event, type) {
@@ -5693,7 +5696,7 @@ class InventarioCompleto {
     
     if (files.length === 0) return;
     
-    console.log(`ðŸ“Ž Procesando ${files.length} archivo(s) de tipo: ${type}`);
+    console.log(`📎 Procesando ${files.length} archivo(s) de tipo: ${type}`);
     
     if (type === 'image') {
       await this.handleImageUpload(files, event);
@@ -5706,7 +5709,7 @@ class InventarioCompleto {
     const previewContainer = document.getElementById('imagePreview');
     
     // =========================================
-    // LEER OPCIONES DE OPTIMIZACIÃ“N DEL USUARIO
+    // LEER OPCIONES DE OPTIMIZACIÓN DEL USUARIO
     // =========================================
     const optimizarCheckbox = document.getElementById('optimizarImagenes');
     const calidadSelect = document.getElementById('calidadOptimizacion');
@@ -5716,46 +5719,46 @@ class InventarioCompleto {
     const calidadUsuario = calidadSelect ? parseFloat(calidadSelect.value) : 0.85;
     const anchoMaximoUsuario = anchoMaximoSelect ? parseInt(anchoMaximoSelect.value) : 800;
     
-    console.log(`ðŸ”§ Opciones de optimizaciÃ³n: ${debeOptimizar ? 'SÃ' : 'NO'} | Calidad: ${(calidadUsuario * 100).toFixed(0)}% | Ancho mÃ¡x: ${anchoMaximoUsuario}px`);
+    console.log(`🔧 Opciones de optimización: ${debeOptimizar ? 'SÍ' : 'NO'} | Calidad: ${(calidadUsuario * 100).toFixed(0)}% | Ancho máx: ${anchoMaximoUsuario}px`);
     
     for (const file of files) {
       // Validar que sea imagen
       if (!file.type.startsWith('image/')) {
-        this.showToast(`âŒ ${file.name} no es una imagen vÃ¡lida`, 'error');
+        this.showToast(`❌ ${file.name} no es una imagen válida`, 'error');
         continue;
       }
       
-      // Validar tamaÃ±o original (mÃ¡ximo 10MB antes de comprimir)
+      // Validar tamaño original (máximo 10MB antes de comprimir)
       const maxSize = 10 * 1024 * 1024; // 10MB
       if (file.size > maxSize) {
-        this.showToast(`âŒ ${file.name} excede 10MB (${(file.size / (1024 * 1024)).toFixed(1)}MB)`, 'error');
+        this.showToast(`❌ ${file.name} excede 10MB (${(file.size / (1024 * 1024)).toFixed(1)}MB)`, 'error');
         continue;
       }
       
       try {
-        console.log(`ðŸ“¸ Procesando: ${file.name} (${(file.size / 1024).toFixed(1)}KB)`);
+        console.log(`📸 Procesando: ${file.name} (${(file.size / 1024).toFixed(1)}KB)`);
         
-        // Comprimir imagen a WebP (o no, segÃºn configuraciÃ³n)
+        // Comprimir imagen a WebP (o no, según configuración)
         const compressedBase64 = debeOptimizar 
           ? await this.compressImageToWebP(file, anchoMaximoUsuario, calidadUsuario)
           : await this.fileToBase64(file); // Guardar original sin optimizar
         
         if (!compressedBase64) {
-          this.showToast(`âŒ Error al procesar ${file.name}`, 'error');
+          this.showToast(`❌ Error al procesar ${file.name}`, 'error');
           continue;
         }
         
-        // Calcular tamaÃ±o final
+        // Calcular tamaño final
         const finalSize = (compressedBase64.length * 0.75) / 1024; // Aproximado en KB
         const reduction = ((1 - finalSize / (file.size / 1024)) * 100).toFixed(0);
         
         if (debeOptimizar) {
-          console.log(`âœ… Optimizada: ${file.name} â†’ ${finalSize.toFixed(1)}KB (${reduction}% reducciÃ³n)`);
+          console.log(`✅ Optimizada: ${file.name} → ${finalSize.toFixed(1)}KB (${reduction}% reducción)`);
         } else {
-          console.log(`âœ… Original: ${file.name} â†’ ${finalSize.toFixed(1)}KB (sin optimizar)`);
+          console.log(`✅ Original: ${file.name} → ${finalSize.toFixed(1)}KB (sin optimizar)`);
         }
         
-        // Generar nombre Ãºnico con extensiÃ³n .webp
+        // Generar nombre único con extensión .webp
         const timestamp = Date.now();
         const baseName = file.name.replace(/\.(jpg|jpeg|png|gif|webp)$/i, '');
         const filename = `${timestamp}_${baseName}.webp`;
@@ -5770,7 +5773,7 @@ class InventarioCompleto {
           filename: filename,
           originalName: file.name,
           data: compressedBase64,
-          size: Math.round(finalSize * 1024), // TamaÃ±o en bytes
+          size: Math.round(finalSize * 1024), // Tamaño en bytes
           mimeType: 'image/webp',
           uploadDate: new Date().toISOString(),
           compressed: debeOptimizar,
@@ -5781,20 +5784,20 @@ class InventarioCompleto {
         const previewItem = document.createElement('div');
         previewItem.className = 'multimedia-preview-item';
         
-        // Calcular tamaÃ±o original en formato legible
+        // Calcular tamaño original en formato legible
         const originalSizeKB = (file.size / 1024).toFixed(1);
         
         previewItem.innerHTML = `
           <img src="${compressedBase64}" alt="${file.name}">
           <button type="button" class="multimedia-remove-btn" onclick="app.removeMultimedia('${filename}', 'image')" title="Eliminar imagen">
-            Ã—
+            ×
           </button>
           <div class="multimedia-preview-info">
             <div class="multimedia-preview-name" title="${file.name}">${baseName}.webp</div>
             <div class="multimedia-preview-size">
               ${debeOptimizar 
                 ? `<span class="size-original" style="text-decoration: line-through; opacity: 0.6;">${originalSizeKB}KB</span>
-                   <span class="size-arrow" style="margin: 0 4px;">â†’</span>
+                   <span class="size-arrow" style="margin: 0 4px;">→</span>
                    <span class="size-compressed" style="color: #4ade80; font-weight: 600;">${finalSize.toFixed(1)}KB</span>
                    <span class="size-reduction" style="margin-left: 6px; background: rgba(74, 222, 128, 0.2); padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700;">-${reduction}%</span>`
                 : `<span class="size-compressed" style="color: #60a5fa; font-weight: 600;">${finalSize.toFixed(1)}KB</span>
@@ -5807,8 +5810,8 @@ class InventarioCompleto {
         previewContainer.appendChild(previewItem);
         
       } catch (error) {
-        console.error(`âŒ Error procesando ${file.name}:`, error);
-        this.showToast(`âŒ Error al procesar ${file.name}`, 'error');
+        console.error(`❌ Error procesando ${file.name}:`, error);
+        this.showToast(`❌ Error al procesar ${file.name}`, 'error');
       }
     }
     
@@ -5816,12 +5819,12 @@ class InventarioCompleto {
     event.target.value = '';
     
     const mensajeToast = debeOptimizar 
-      ? `âœ… ${files.length} imagen(es) optimizada(s) a WebP`
-      : `âœ… ${files.length} imagen(es) cargada(s) sin optimizar`;
+      ? `✅ ${files.length} imagen(es) optimizada(s) a WebP`
+      : `✅ ${files.length} imagen(es) cargada(s) sin optimizar`;
     this.showToast(mensajeToast, 'success', 2000);
   }
   
-  // Comprimir imagen a WebP con optimizaciÃ³n adaptativa
+  // Comprimir imagen a WebP con optimización adaptativa
   async compressImageToWebP(file, maxWidth = 800, quality = 0.85) {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -5848,7 +5851,7 @@ class InventarioCompleto {
 
           const ctx = canvas.getContext('2d');
           
-          // OptimizaciÃ³n de renderizado
+          // Optimización de renderizado
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
           
@@ -5859,7 +5862,7 @@ class InventarioCompleto {
           // Dibujar imagen con suavizado
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Intentar WebP primero (mejor compresiÃ³n)
+          // Intentar WebP primero (mejor compresión)
           let compressedUrl = null;
           let format = 'webp';
           
@@ -5872,20 +5875,20 @@ class InventarioCompleto {
               compressedUrl = canvas.toDataURL('image/jpeg', quality);
             }
           } catch (e) {
-            // Fallback a JPEG si WebP no estÃ¡ soportado
+            // Fallback a JPEG si WebP no está soportado
             format = 'jpeg';
             compressedUrl = canvas.toDataURL('image/jpeg', quality);
           }
 
-          // OptimizaciÃ³n adaptativa de calidad
+          // Optimización adaptativa de calidad
           let currentQuality = quality;
           let iterations = 0;
           
-          // TamaÃ±o objetivo basado en la calidad inicial del usuario
-          // Calidad alta (>0.8) â†’ ~150KB, Media (0.7-0.8) â†’ ~100KB, Baja (<0.7) â†’ ~70KB
+          // Tamaño objetivo basado en la calidad inicial del usuario
+          // Calidad alta (>0.8) → ~150KB, Media (0.7-0.8) → ~100KB, Baja (<0.7) → ~70KB
           let targetSize = 150000; // Por defecto ~150KB
           if (quality >= 0.80) {
-            targetSize = 200000; // ~200KB para calidad mÃ¡xima
+            targetSize = 200000; // ~200KB para calidad máxima
           } else if (quality >= 0.70) {
             targetSize = 150000; // ~150KB para calidad alta/media
           } else if (quality >= 0.60) {
@@ -5894,7 +5897,7 @@ class InventarioCompleto {
             targetSize = 70000;  // ~70KB para calidad baja
           }
           
-          // Intentar reducir tamaÃ±o sin bajar demasiado la calidad
+          // Intentar reducir tamaño sin bajar demasiado la calidad
           while (compressedUrl.length > targetSize && currentQuality > 0.5 && iterations < 5) {
             currentQuality -= 0.08;
             compressedUrl = canvas.toDataURL(`image/${format}`, currentQuality);
@@ -5902,18 +5905,18 @@ class InventarioCompleto {
           }
           
           const finalSizeKB = (compressedUrl.length * 0.75 / 1024).toFixed(1);
-          console.log(`  â†’ Formato: ${format.toUpperCase()}, ${finalSizeKB}KB, calidad: ${(currentQuality * 100).toFixed(0)}%`);
+          console.log(`  → Formato: ${format.toUpperCase()}, ${finalSizeKB}KB, calidad: ${(currentQuality * 100).toFixed(0)}%`);
 
           resolve(compressedUrl);
         };
         img.onerror = () => {
-          console.error('âŒ Error cargando imagen para comprimir');
+          console.error('❌ Error cargando imagen para comprimir');
           resolve(null);
         };
         img.src = e.target.result;
       };
       reader.onerror = () => {
-        console.error('âŒ Error leyendo archivo');
+        console.error('❌ Error leyendo archivo');
         resolve(null);
       };
       reader.readAsDataURL(file);
@@ -5924,10 +5927,10 @@ class InventarioCompleto {
     const documentsContainer = document.getElementById('documentsList');
     
     for (const file of files) {
-      // Validar tamaÃ±o (mÃ¡ximo 10MB por documento)
+      // Validar tamaño (máximo 10MB por documento)
       const maxSize = 10 * 1024 * 1024; // 10MB
       if (file.size > maxSize) {
-        this.showToast(`âŒ ${file.name} excede 10MB (${(file.size / (1024 * 1024)).toFixed(1)}MB)`, 'error');
+        this.showToast(`❌ ${file.name} excede 10MB (${(file.size / (1024 * 1024)).toFixed(1)}MB)`, 'error');
         continue;
       }
       
@@ -5935,7 +5938,7 @@ class InventarioCompleto {
         // Leer archivo como base64
         const base64 = await this.fileToBase64(file);
         
-        // Generar nombre Ãºnico
+        // Generar nombre único
         const timestamp = Date.now();
         const filename = `${timestamp}_${file.name}`;
         
@@ -5954,12 +5957,12 @@ class InventarioCompleto {
           uploadDate: new Date().toISOString()
         });
         
-        // Determinar icono segÃºn tipo
-        let icon = 'ðŸ“„';
-        if (file.type.includes('pdf')) icon = 'ðŸ“•';
-        else if (file.type.includes('excel') || file.type.includes('spreadsheet')) icon = 'ðŸ“Š';
-        else if (file.type.includes('word') || file.type.includes('document')) icon = 'ðŸ“';
-        else if (file.type.includes('video')) icon = 'ðŸŽ¥';
+        // Determinar icono según tipo
+        let icon = '📄';
+        if (file.type.includes('pdf')) icon = '📕';
+        else if (file.type.includes('excel') || file.type.includes('spreadsheet')) icon = '📊';
+        else if (file.type.includes('word') || file.type.includes('document')) icon = '📝';
+        else if (file.type.includes('video')) icon = '🎥';
         
         // Crear item en lista
         const documentItem = document.createElement('div');
@@ -5969,24 +5972,24 @@ class InventarioCompleto {
           <span class="document-name">${file.name}</span>
           <span class="document-size">(${(file.size / 1024).toFixed(1)}KB)</span>
           <button type="button" class="document-remove-btn" onclick="app.removeMultimedia('${filename}', 'document')" title="Eliminar documento">
-            Ã—
+            ×
           </button>
         `;
         
         documentsContainer.appendChild(documentItem);
         
-        console.log(`âœ… Documento agregado: ${file.name} (${(file.size / 1024).toFixed(1)}KB)`);
+        console.log(`✅ Documento agregado: ${file.name} (${(file.size / 1024).toFixed(1)}KB)`);
         
       } catch (error) {
-        console.error(`âŒ Error procesando ${file.name}:`, error);
-        this.showToast(`âŒ Error al procesar ${file.name}`, 'error');
+        console.error(`❌ Error procesando ${file.name}:`, error);
+        this.showToast(`❌ Error al procesar ${file.name}`, 'error');
       }
     }
     
     // Limpiar input
     event.target.value = '';
     
-    this.showToast(`âœ… ${files.length} documento(s) agregado(s)`, 'success', 2000);
+    this.showToast(`✅ ${files.length} documento(s) agregado(s)`, 'success', 2000);
   }
   
   // Convertir archivo a base64
@@ -6001,19 +6004,19 @@ class InventarioCompleto {
   
   // Eliminar multimedia del preview
   removeMultimedia(filename, type, isExisting = false) {
-    console.log(`ðŸ—‘ï¸ Eliminando ${type}: ${filename} (existente: ${isExisting})`);
+    console.log(`🗑️ Eliminando ${type}: ${filename} (existente: ${isExisting})`);
     
     if (type === 'image') {
       // Solo eliminar de currentMultimedia si NO es una imagen existente
       if (!isExisting) {
         this.currentMultimedia = this.currentMultimedia.filter(m => m.filename !== filename);
       } else {
-        // Si es existente, marcarla para eliminaciÃ³n del repuesto
+        // Si es existente, marcarla para eliminación del repuesto
         if (!this.multimediaToRemove) {
           this.multimediaToRemove = [];
         }
         this.multimediaToRemove.push(filename);
-        console.log(`ðŸ“Œ Marcada para eliminaciÃ³n: ${filename}`);
+        console.log(`📌 Marcada para eliminación: ${filename}`);
       }
       
       // Eliminar del preview
@@ -6026,7 +6029,7 @@ class InventarioCompleto {
         }
       });
       
-      this.showToast('ðŸ—‘ï¸ Imagen eliminada', 'info', 2000);
+      this.showToast('🗑️ Imagen eliminada', 'info', 2000);
       
     } else if (type === 'document') {
       // Eliminar de currentDocuments
@@ -6042,24 +6045,24 @@ class InventarioCompleto {
         }
       });
       
-      this.showToast('ðŸ—‘ï¸ Documento eliminado', 'info', 2000);
+      this.showToast('🗑️ Documento eliminado', 'info', 2000);
     }
   }
 
   // ===============================================
-  // GUARDAR IMÃGENES EN FILESYSTEM
+  // GUARDAR IMÁGENES EN FILESYSTEM
   // ===============================================
   
   async saveImagesToFileSystem(multimedia, repuesto) {
-    // Verificar si FileSystem estÃ¡ disponible
+    // Verificar si FileSystem está disponible
     const fs = window.fsManager || fsManager;
     if (!fs || !fs.isConnected) {
-      console.log('âš ï¸ FileSystem no disponible, guardando en JSON');
+      console.log('⚠️ FileSystem no disponible, guardando en JSON');
       return false;
     }
     
     try {
-      console.log(`ðŸ’¾ Guardando ${multimedia.length} imagen(es) en FileSystem...`);
+      console.log(`💾 Guardando ${multimedia.length} imagen(es) en FileSystem...`);
       
       for (const media of multimedia) {
         if (!media.data || !media.filename) continue;
@@ -6078,21 +6081,21 @@ class InventarioCompleto {
         const success = await fs.saveImage(blob, media.filename);
         
         if (success) {
-          console.log(`  âœ… ${media.filename} guardada (${(blob.size / 1024).toFixed(1)}KB)`);
+          console.log(`  ✅ ${media.filename} guardada (${(blob.size / 1024).toFixed(1)}KB)`);
         } else {
-          console.error(`  âŒ Error guardando ${media.filename}`);
+          console.error(`  ❌ Error guardando ${media.filename}`);
         }
       }
       
       return true;
     } catch (error) {
-      console.error('âŒ Error guardando imÃ¡genes en FileSystem:', error);
+      console.error('❌ Error guardando imágenes en FileSystem:', error);
       return false;
     }
   }
 
   // ===============================================
-  // SINCRONIZACIÃ“N DE UBICACIONES DESDE EL DOM
+  // SINCRONIZACIÓN DE UBICACIONES DESDE EL DOM
   // ===============================================
   
   /**
@@ -6527,8 +6530,8 @@ class InventarioCompleto {
   async init() {
     this.showBrowserWarning();
     
-    // Renderizar UI de almacenamiento segÃºn plataforma (PC o mÃ³vil)
-    // TODO: Implementar mÃ³dulo de configuraciÃ³n en v6.0
+    // Renderizar UI de almacenamiento según plataforma (PC o móvil)
+    // TODO: Implementar módulo de configuración en v6.0
     /*
     if (typeof configuracion !== 'undefined') {
       setTimeout(() => {
@@ -6541,8 +6544,8 @@ class InventarioCompleto {
     await this.loadData();
     this.setupEvents();
     this.setupDelegatedEvents(); // Event delegation para botones con data-attributes
-    this.setupPhotoInputs(); // NUEVO: Configurar inputs de foto segÃºn plataforma
-    this.applyViewModeStyles(); // Aplicar modo de visualizaciÃ³n guardado
+    this.setupPhotoInputs(); // NUEVO: Configurar inputs de foto según plataforma
+    this.applyViewModeStyles(); // Aplicar modo de visualización guardado
     this.updateViewModeInfo(); // Actualizar info del modo
     await this.render();
     this.renderFilters();
@@ -6942,54 +6945,54 @@ class InventarioCompleto {
   // ===================================================================
   async activarFileSystem() {
     try {
-      console.log('ðŸ—‚ï¸ Activando FileSystem Access API...');
+      console.log('🗂️ Activando FileSystem Access API...');
       this.showToast('Selecciona la carpeta INVENTARIO_STORAGE', 'info');
       
-      // Llamar al mÃ©todo selectFolder de fsManager
+      // Llamar al método selectFolder de fsManager
       const success = await fsManager.selectFolder();
       
       if (success) {
-        this.showToast('âœ… FileSystem activado correctamente', 'success');
-        console.log('âœ… FileSystem conectado:', fsManager.folderPath);
+        this.showToast('✅ FileSystem activado correctamente', 'success');
+        console.log('✅ FileSystem conectado:', fsManager.folderPath);
         
-        // Actualizar UI de configuraciÃ³n si estÃ¡ visible
+        // Actualizar UI de configuración si está visible
         if (window.configuracion && window.configuracion.renderStorageUI) {
           configuracion.renderStorageUI();
         }
         
         // Recargar datos desde FileSystem
-        console.log('ðŸ”„ Recargando datos desde FileSystem...');
+        console.log('🔄 Recargando datos desde FileSystem...');
         await this.loadData();
         await this.render();
         
-        this.showToast('âœ… Datos recargados desde carpeta', 'success');
+        this.showToast('✅ Datos recargados desde carpeta', 'success');
       } else {
-        this.showToast('âŒ No se pudo activar FileSystem', 'error');
+        this.showToast('❌ No se pudo activar FileSystem', 'error');
       }
     } catch (error) {
-      console.error('âŒ Error activando FileSystem:', error);
+      console.error('❌ Error activando FileSystem:', error);
       this.showToast('Error: ' + error.message, 'error');
     }
   }
 
   desconectarFileSystem() {
     try {
-      console.log('ðŸ”Œ Desconectando FileSystem...');
+      console.log('🔌 Desconectando FileSystem...');
       
       const fs = window.fsManager || fsManager;
       if (fs && fs.disconnect) {
         fs.disconnect();
       }
       
-      // Actualizar UI de configuraciÃ³n si estÃ¡ visible
+      // Actualizar UI de configuración si está visible
       if (window.configuracion && window.configuracion.renderStorageUI) {
         configuracion.renderStorageUI();
       }
       
-      this.showToast('âœ… FileSystem desconectado. Los datos quedan en la carpeta.', 'info', 4000);
-      console.log('âœ… FileSystem desconectado');
+      this.showToast('✅ FileSystem desconectado. Los datos quedan en la carpeta.', 'info', 4000);
+      console.log('✅ FileSystem desconectado');
     } catch (error) {
-      console.error('âŒ Error desconectando FileSystem:', error);
+      console.error('❌ Error desconectando FileSystem:', error);
       this.showToast('Error: ' + error.message, 'error');
     }
   }
@@ -6998,7 +7001,7 @@ class InventarioCompleto {
     try {
       const fs = window.fsManager || fsManager;
       
-      //   MÃ“VIL: Actualizar EMBEDDED_DATA automÃ¡ticamente
+      //   MÓVIL: Actualizar EMBEDDED_DATA automáticamente
       if (this.isMobile && !this.hasFileSystemAPI && typeof EMBEDDED_DATA !== 'undefined') {
         console.log('  Actualizando EMBEDDED_DATA en memoria...');
         EMBEDDED_DATA.repuestos = this.repuestos.map(r => {
@@ -7006,20 +7009,20 @@ class InventarioCompleto {
           return sinMultimedia;
         });
         EMBEDDED_DATA.lastUpdate = new Date().toISOString();
-        console.log('âœ… EMBEDDED_DATA actualizado:', EMBEDDED_DATA.repuestos.length, 'repuestos');
+        console.log('✅ EMBEDDED_DATA actualizado:', EMBEDDED_DATA.repuestos.length, 'repuestos');
       }
 
       // MODO FILESYSTEM: Guardar en archivo
       if (fs && fs.isFileSystemMode) {
-        console.log('ðŸ’¾ Guardando en FileSystem...');
+        console.log('💾 Guardando en FileSystem...');
         const success = await fs.saveJSON(this.repuestos);
         if (success !== false) {
-          this.showToast('âœ… Guardado en carpeta (sin lÃ­mites)', 'success', 2000);
-          console.log('âœ… Datos guardados en FileSystem');
+          this.showToast('✅ Guardado en carpeta (sin límites)', 'success', 2000);
+          console.log('✅ Datos guardados en FileSystem');
           return true;
         }
         // Si falla FileSystem, continuar con localStorage como fallback
-        console.warn('âš ï¸ FileSystem fallÃ³, usando localStorage como fallback');
+        console.warn('⚠️ FileSystem falló, usando localStorage como fallback');
       }
       
       // MODO LOCALSTORAGE: Guardar en navegador
@@ -7152,11 +7155,11 @@ class InventarioCompleto {
     } else if (tabName === 'valores') {
       this.renderValores();
     } else if (tabName === 'configuracion') {
-      // TODO: Implementar mÃ³dulo configuracion completo
+      // TODO: Implementar módulo configuracion completo
       // if (typeof configuracion !== 'undefined') {
       //   configuracion.renderStorageUI();
       // }
-      console.log('ðŸ“‹ TAB ConfiguraciÃ³n cargado (modo bÃ¡sico)');
+      console.log('📋 TAB Configuración cargado (modo básico)');
     }
   }
 
@@ -7376,21 +7379,21 @@ class InventarioCompleto {
         title: 'Stock saludable',
         value: stockOk,
         percent: total > 0 ? (stockOk / total) * 100 : 0,
-        color: '#5a7a5a',  // Verde grisÃ¡ceo
+        color: '#5a7a5a',  // Verde grisáceo
         detail: `Valor en stock: ${formatCurrency(valorHealthy)}`
       },
       {
         title: 'Stock bajo',
         value: bajoStock,
         percent: total > 0 ? (bajoStock / total) * 100 : 0,
-        color: '#8a7a5a',  // Naranja grisÃ¡ceo
+        color: '#8a7a5a',  // Naranja grisáceo
         detail: `Cobertura media: ${avgCoveragePercent.toFixed(0)}% | Deficit medio: ${formatNumber(avgDeficit.toFixed(1))}`
       },
       {
         title: 'Sin stock',
         value: sinStock,
         percent: total > 0 ? (sinStock / total) * 100 : 0,
-        color: '#8a5a5a',  // Rojo grisÃ¡ceo
+        color: '#8a5a5a',  // Rojo grisáceo
         detail: `Areas afectadas: ${formatNumber(sinStockAreas)}`
       }
     ];
@@ -8418,7 +8421,7 @@ class InventarioCompleto {
     });
   }
 
-  // MÃ©todo principal de renderizado
+  // Método principal de renderizado
   async render() {
     if (this.currentTab === 'inventario') {
       await this.renderInventario();
@@ -8451,7 +8454,7 @@ class InventarioCompleto {
     const filterStock = document.getElementById('filterStock')?.value || '';
 
     let filtered = this.repuestos.filter(r => {
-      // Filtro de bÃºsqueda
+      // Filtro de búsqueda
       const matchSearch = !searchTerm || 
         (r.nombre && r.nombre.toLowerCase().includes(searchTerm)) ||
         (r.codSAP && r.codSAP.toLowerCase().includes(searchTerm)) ||
@@ -8459,7 +8462,7 @@ class InventarioCompleto {
         (r.area && r.area.toLowerCase().includes(searchTerm)) ||
         (r.equipo && r.equipo.toLowerCase().includes(searchTerm));
 
-      // Filtro de Ã¡rea
+      // Filtro de área
       const matchArea = !filterArea || (r.area || r.areaGeneral) === filterArea;
       
       // Filtro de equipo
@@ -8491,15 +8494,15 @@ class InventarioCompleto {
 
     this.filteredRepuestos = filtered;
 
-    // Resetear a pÃ¡gina 1 cuando cambian filtros
+    // Resetear a página 1 cuando cambian filtros
     if (!this.currentPage) this.currentPage = 1;
 
-    // Renderizar segÃºn la vista activa
+    // Renderizar según la vista activa
     if (this.currentView === 'cards') {
       cardsContainer.style.display = 'grid';
       listContainer.style.display = 'none';
       
-      // PAGINACIÃ“N: 18 items por pÃ¡gina (6 columnas x 3 filas)
+      // PAGINACIÓN: 18 items por página (6 columnas x 3 filas)
       const itemsPerPage = 18;
       const startIndex = (this.currentPage - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
@@ -8514,7 +8517,7 @@ class InventarioCompleto {
     }
   }
 
-  // Renderizar paginaciÃ³n
+  // Renderizar paginación
   renderPagination(totalItems) {
     const paginationTop = document.getElementById('paginationTop');
     const paginationBottom = document.getElementById('paginationBottom');
@@ -8524,11 +8527,11 @@ class InventarioCompleto {
     const itemsPerPage = 18; // 6 columnas x 3 filas
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-    // Generar HTML de paginaciÃ³n con layout de 3 columnas
+    // Generar HTML de paginación con layout de 3 columnas
     let html = '';
     
     if (totalPages <= 1 && totalItems > 0) {
-      // Mostrar solo contador y vista cuando hay 1 pÃ¡gina o menos
+      // Mostrar solo contador y vista cuando hay 1 página o menos
       html = `
         <div class="pagination-left">
           <span class="pagination-info">${totalItems} items</span>
@@ -8561,13 +8564,13 @@ class InventarioCompleto {
     }
 
     if (totalPages > 1) {
-      // Layout completo: contador | botones paginaciÃ³n | vista
+      // Layout completo: contador | botones paginación | vista
       let paginationButtons = `
-        <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.goToPage(1)">â€¹â€¹</button>
-        <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.goToPage(${this.currentPage - 1})">â€¹</button>
+        <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.goToPage(1)">‹‹</button>
+        <button class="pagination-btn" ${this.currentPage === 1 ? 'disabled' : ''} onclick="app.goToPage(${this.currentPage - 1})">‹</button>
       `;
 
-      // Botones de pÃ¡ginas
+      // Botones de páginas
       const maxButtons = 5;
       let startPage = Math.max(1, this.currentPage - Math.floor(maxButtons / 2));
       let endPage = Math.min(totalPages, startPage + maxButtons - 1);
@@ -8581,8 +8584,8 @@ class InventarioCompleto {
       }
 
       paginationButtons += `
-        <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.goToPage(${this.currentPage + 1})">â€º</button>
-        <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.goToPage(${totalPages})">â€ºâ€º</button>
+        <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.goToPage(${this.currentPage + 1})">›</button>
+        <button class="pagination-btn" ${this.currentPage === totalPages ? 'disabled' : ''} onclick="app.goToPage(${totalPages})">››</button>
       `;
 
       html = `
@@ -8605,7 +8608,7 @@ class InventarioCompleto {
         </div>
       `;
 
-      // Mostrar paginaciÃ³n
+      // Mostrar paginación
       if (paginationTop) {
         paginationTop.style.display = 'grid';
         paginationTop.className = 'pagination-container';
@@ -8629,14 +8632,14 @@ class InventarioCompleto {
     this.renderInventario();
   }
 
-  // Renderizar tarjetas con diseÃ±o mejorado y limpio
+  // Renderizar tarjetas con diseño mejorado y limpio
   async renderCards(container, repuestos) {
     if (!container) return;
 
     if (repuestos.length === 0) {
       container.innerHTML = `
         <div style="text-align: center; padding: 60px 20px; color: var(--text-secondary); grid-column: 1 / -1;">
-          <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.3;">ðŸ“¦</div>
+          <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.3;">📦</div>
           <p style="font-size: 18px; margin: 0;">No se encontraron repuestos</p>
           <p style="font-size: 14px; margin: 10px 0 0 0; opacity: 0.7;">Intenta ajustar los filtros</p>
         </div>
@@ -8649,7 +8652,7 @@ class InventarioCompleto {
       // Cargar imagen
       const imageURL = await this.getFirstImage(rep.multimedia || rep.imagenes);
       
-      // Calcular estado de stock con lÃ³gica completa
+      // Calcular estado de stock con lógica completa
       const cantidad = rep.cantidad || 0;
       const minimo = rep.minimo || 5;
       const optimo = rep.optimo || minimo * 2;
@@ -8660,41 +8663,41 @@ class InventarioCompleto {
       let porcentajeBarra = 0;
       let textoStock = '';
       
-      // Calcular ancho de barra visual (stock actual en relaciÃ³n al Ã³ptimo, con extensiÃ³n para excedentes)
-      const anchoMaximoBarra = optimo * 1.2; // Permitir mostrar hasta 120% del Ã³ptimo
+      // Calcular ancho de barra visual (stock actual en relación al óptimo, con extensión para excedentes)
+      const anchoMaximoBarra = optimo * 1.2; // Permitir mostrar hasta 120% del óptimo
       const porcentajeBarraVisual = Math.min((cantidad / anchoMaximoBarra) * 100, 100);
 
       if (cantidad === 0) {
         stockStatus = 'AGOTADO';
         stockColor = '#945a5a';  // Rojo corporativo
         porcentajeBarra = 0;
-        textoStock = `Sin stock (mÃ­nimo requerido: ${minimo})`;
+        textoStock = `Sin stock (mínimo requerido: ${minimo})`;
       } else if (cantidad < minimo) {
         stockStatus = 'BAJO STOCK';
-        stockColor = '#8a7a5a';  // Naranja/Ã¡mbar
+        stockColor = '#8a7a5a';  // Naranja/ámbar
         porcentajeBarra = porcentajeBarraVisual;
-        textoStock = `${cantidad} unid. (faltan ${minimo - cantidad} para el mÃ­nimo)`;
+        textoStock = `${cantidad} unid. (faltan ${minimo - cantidad} para el mínimo)`;
       } else if (cantidad >= minimo && cantidad < optimo) {
         stockStatus = 'ADECUADO';
         stockColor = '#6b7a7a';  // Gris verdoso
         porcentajeBarra = porcentajeBarraVisual;
-        textoStock = `${cantidad} unid. (entre mÃ­nimo y Ã³ptimo)`;
+        textoStock = `${cantidad} unid. (entre mínimo y óptimo)`;
       } else if (cantidad >= optimo && cantidad <= optimo * 1.2) {
-        stockStatus = 'Ã“PTIMO';
+        stockStatus = 'ÓPTIMO';
         stockColor = '#527a65';  // Verde corporativo
         porcentajeBarra = porcentajeBarraVisual;
-        textoStock = `${cantidad} unid. (nivel Ã³ptimo alcanzado)`;
+        textoStock = `${cantidad} unid. (nivel óptimo alcanzado)`;
       } else {
         stockStatus = 'EXCEDENTE';
         stockColor = '#5a7a94';  // Azul corporativo
         porcentajeBarra = 100;
-        textoStock = `${cantidad} unid. (${cantidad - optimo} sobre el Ã³ptimo)`;
+        textoStock = `${cantidad} unid. (${cantidad - optimo} sobre el óptimo)`;
       }
 
       // Calcular porcentaje para display (no usado actualmente)
       const porcentajeDisplay = minimo > 0 ? Math.round((cantidad / minimo) * 100) : 0;
 
-      // Formatear fecha del Ãºltimo conteo - TamaÃ±o ajustado
+      // Formatear fecha del último conteo - Tamaño ajustado
       let ultimoConteoHTML = '';
       if (rep.ultimoConteo) {
         const fecha = new Date(rep.ultimoConteo);
@@ -8710,27 +8713,27 @@ class InventarioCompleto {
         });
         ultimoConteoHTML = `
           <div style="font-size: 10px; color: var(--text-tertiary); padding: 8px 0 4px 0; text-align: right; font-weight: 500; letter-spacing: 0.3px; line-height: 1.4;">
-            <span style="color: var(--text-secondary); font-weight: 600;">Ãšltimo conteo:</span>
-            <span style="font-family: var(--font-mono); font-size: 11px; margin-left: 6px;">${fechaFormateada} Â· ${horaFormateada}</span>
+            <span style="color: var(--text-secondary); font-weight: 600;">Último conteo:</span>
+            <span style="font-family: var(--font-mono); font-size: 11px; margin-left: 6px;">${fechaFormateada} · ${horaFormateada}</span>
           </div>
         `;
       }
 
-      // Datos tÃ©cnicos - DiseÃ±o moderno colapsable
+      // Datos técnicos - Diseño moderno colapsable
       let datosTecnicosHTML = '';
       if (rep.datosTecnicos && rep.datosTecnicos.trim() !== '') {
-        // Detectar si tiene mÃºltiples lÃ­neas o bullets
+        // Detectar si tiene múltiples líneas o bullets
         const lineas = rep.datosTecnicos.split('\n').filter(l => l.trim());
-        const esLista = lineas.some(l => l.trim().startsWith('-') || l.trim().startsWith('â€¢'));
+        const esLista = lineas.some(l => l.trim().startsWith('-') || l.trim().startsWith('•'));
         
         let contenidoHTML = '';
         if (esLista) {
           // Renderizar como lista con bullets
           contenidoHTML = lineas.map(linea => {
-            const textoLimpio = linea.replace(/^[-â€¢]\s*/, '').trim();
+            const textoLimpio = linea.replace(/^[-•]\s*/, '').trim();
             if (!textoLimpio) return '';
             return `<div style="display: flex; gap: 6px; margin-bottom: 4px;">
-              <span style="color: var(--primary); font-weight: 700; flex-shrink: 0;">â–ª</span>
+              <span style="color: var(--primary); font-weight: 700; flex-shrink: 0;">▪</span>
               <span style="flex: 1; line-height: 1.5;">${textoLimpio}</span>
             </div>`;
           }).filter(Boolean).join('');
@@ -8743,10 +8746,10 @@ class InventarioCompleto {
           <details style="margin-top: 10px; border: 1px solid var(--border-primary); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-tertiary);">
             <summary style="padding: 8px 12px; cursor: pointer; user-select: none; font-size: 10px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: space-between; background: var(--bg-input); transition: all 0.2s;">
               <span style="display: flex; align-items: center; gap: 6px;">
-                <span style="font-size: 12px;">âš™ï¸</span>
-                Datos TÃ©cnicos
+                <span style="font-size: 12px;">⚙️</span>
+                Datos Técnicos
               </span>
-              <span style="font-size: 10px; opacity: 0.6;">â–¼</span>
+              <span style="font-size: 10px; opacity: 0.6;">▼</span>
             </summary>
             <div style="padding: 10px 12px; font-size: 11px; color: var(--text-secondary); font-family: var(--font-family);">
               ${contenidoHTML}
@@ -8775,7 +8778,7 @@ class InventarioCompleto {
       
       botonAnadirUbicacionHTML = `
         <button class="card-btn" onclick="window.app?.agregarUbicacionMapa('${rep.id}')" style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-accent); background: transparent; color: var(--text-secondary); border-radius: var(--radius-md); cursor: pointer; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
-          AÃ±adir UbicaciÃ³n
+          Añadir Ubicación
         </button>
       `;
       
@@ -8786,12 +8789,12 @@ class InventarioCompleto {
         </div>
       `;
 
-      // Indicador de galerÃ­a de imÃ¡genes
+      // Indicador de galería de imágenes
       let galeriaIndicador = '';
       if (rep.imagenes && rep.imagenes.length > 1) {
         galeriaIndicador = `
           <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; backdrop-filter: blur(4px);">
-            ðŸ“¸ ${rep.imagenes.length} fotos
+            📸 ${rep.imagenes.length} fotos
           </div>
         `;
       }
@@ -8817,19 +8820,19 @@ class InventarioCompleto {
           <!-- Contenido -->
           <div class="card-content" style="padding: 12px;">
             
-            <!-- Header: TÃ­tulo + CÃ³digos -->
+            <!-- Header: Título + Códigos -->
             <div style="margin-bottom: 10px; border-bottom: 1px solid #3e3e42; padding-bottom: 8px;">
               <h3 style="margin: 0 0 6px 0; font-size: 13px; color: #d4d4d4; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-transform: uppercase; letter-spacing: 0.3px;">
                 ${rep.nombre || 'SIN NOMBRE'}
               </h3>
               
-              <!-- CÃ³digos SAP y Proveedor con botones copiar -->
+              <!-- Códigos SAP y Proveedor con botones copiar -->
               <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 6px;">
                 ${rep.codSAP || rep.codigo_sap ? `
                   <div style="display: flex; align-items: center; gap: 6px; background: var(--bg-input); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-secondary);">
                     <span style="font-size: 13px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;">SAP:</span>
                     <span style="font-size: 13px; color: var(--text-primary); font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codSAP || rep.codigo_sap}</span>
-                    <button onclick="navigator.clipboard.writeText('${(rep.codSAP || rep.codigo_sap).replace(/'/g, "\\'")}').then(() => { const btn = event.target; const original = btn.innerHTML; btn.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--success)\\' stroke-width=\\'2\\'><polyline points=\\'20 6 9 17 4 12\\'></polyline></svg>'; setTimeout(() => { btn.innerHTML = original; }, 1000); })" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 2px 4px; transition: all 0.15s; display: flex; align-items: center; line-height: 0;" title="Copiar cÃ³digo SAP">
+                    <button onclick="navigator.clipboard.writeText('${(rep.codSAP || rep.codigo_sap).replace(/'/g, "\\'")}').then(() => { const btn = event.target; const original = btn.innerHTML; btn.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--success)\\' stroke-width=\\'2\\'><polyline points=\\'20 6 9 17 4 12\\'></polyline></svg>'; setTimeout(() => { btn.innerHTML = original; }, 1000); })" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 2px 4px; transition: all 0.15s; display: flex; align-items: center; line-height: 0;" title="Copiar código SAP">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -8841,7 +8844,7 @@ class InventarioCompleto {
                   <div style="display: flex; align-items: center; gap: 6px; background: var(--bg-input); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-secondary);">
                     <span style="font-size: 13px; color: var(--text-tertiary); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0;">Prov:</span>
                     <span style="font-size: 13px; color: var(--text-primary); font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.3px; flex: 1;">${rep.codProv || rep.codigo_prov}</span>
-                    <button onclick="navigator.clipboard.writeText('${(rep.codProv || rep.codigo_prov).replace(/'/g, "\\'")}').then(() => { const btn = event.target; const original = btn.innerHTML; btn.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--success)\\' stroke-width=\\'2\\'><polyline points=\\'20 6 9 17 4 12\\'></polyline></svg>'; setTimeout(() => { btn.innerHTML = original; }, 1000); })" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 2px 4px; transition: all 0.15s; display: flex; align-items: center; line-height: 0;" title="Copiar cÃ³digo proveedor">
+                    <button onclick="navigator.clipboard.writeText('${(rep.codProv || rep.codigo_prov).replace(/'/g, "\\'")}').then(() => { const btn = event.target; const original = btn.innerHTML; btn.innerHTML = '<svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'var(--success)\\' stroke-width=\\'2\\'><polyline points=\\'20 6 9 17 4 12\\'></polyline></svg>'; setTimeout(() => { btn.innerHTML = original; }, 1000); })" style="background: transparent; border: none; color: var(--text-secondary); cursor: pointer; padding: 2px 4px; transition: all 0.15s; display: flex; align-items: center; line-height: 0;" title="Copiar código proveedor">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -8851,13 +8854,13 @@ class InventarioCompleto {
                 ` : ''}
               </div>
               
-              <!-- Botones de mapa SIEMPRE visibles debajo de los cÃ³digos -->
+              <!-- Botones de mapa SIEMPRE visibles debajo de los códigos -->
               <div style="margin-top: 8px;">
                 ${botonesMapaHTML}
               </div>
             </div>
 
-            <!-- SecciÃ³n Stock -->
+            <!-- Sección Stock -->
             <div style="background: #1e1e1e; padding: 10px; border-radius: 2px; margin-bottom: 10px; border-left: 3px solid ${stockColor}; border: 1px solid #2d2d30;">
               
               <!-- Header: Estado con valor -->
@@ -8870,21 +8873,21 @@ class InventarioCompleto {
               <div style="position: relative; margin-bottom: 12px;">
                 <!-- Barra de fondo -->
                 <div style="width: 100%; height: 8px; background: #0d0d0d; border-radius: 1px; position: relative; overflow: visible;">
-                  <!-- Barra de progreso actual (stock en relaciÃ³n a 120% del Ã³ptimo) -->
+                  <!-- Barra de progreso actual (stock en relación a 120% del óptimo) -->
                   <div style="height: 100%; width: ${porcentajeBarra}%; background: ${stockColor}; opacity: 0.95; transition: width 0.3s ease; border-radius: 1px;"></div>
                   
                   ${minimo === optimo ? `
-                    <!-- Marcador combinado cuando Min = Ã“pt -->
-                    <div style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; top: -2px; width: 2px; height: 12px; background: linear-gradient(to bottom, #e67e22 0%, #e67e22 50%, #27ae60 50%, #27ae60 100%); z-index: 2;" title="Min/Ã“pt: ${optimo}"></div>
+                    <!-- Marcador combinado cuando Min = Ópt -->
+                    <div style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; top: -2px; width: 2px; height: 12px; background: linear-gradient(to bottom, #e67e22 0%, #e67e22 50%, #27ae60 50%, #27ae60 100%); z-index: 2;" title="Min/Ópt: ${optimo}"></div>
                   ` : `
-                    <!-- Marcador en MÃ­nimo (posiciÃ³n relativa al rango 0-120% Ã³ptimo) -->
-                    <div style="position: absolute; left: ${(minimo / (optimo * 1.2)) * 100}%; top: -2px; width: 2px; height: 12px; background: #e67e22; z-index: 2;" title="MÃ­nimo: ${minimo}"></div>
-                    <!-- Marcador en Ã“ptimo (posiciÃ³n relativa al rango 0-120% Ã³ptimo) -->
-                    <div style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; top: -2px; width: 2px; height: 12px; background: #27ae60; z-index: 2;" title="Ã“ptimo: ${optimo}"></div>
+                    <!-- Marcador en Mínimo (posición relativa al rango 0-120% óptimo) -->
+                    <div style="position: absolute; left: ${(minimo / (optimo * 1.2)) * 100}%; top: -2px; width: 2px; height: 12px; background: #e67e22; z-index: 2;" title="Mínimo: ${minimo}"></div>
+                    <!-- Marcador en Óptimo (posición relativa al rango 0-120% óptimo) -->
+                    <div style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; top: -2px; width: 2px; height: 12px; background: #27ae60; z-index: 2;" title="Óptimo: ${optimo}"></div>
                   `}
                 </div>
                 
-                <!-- Indicador de excedente al final de la barra (cuando stock > Ã³ptimo) -->
+                <!-- Indicador de excedente al final de la barra (cuando stock > óptimo) -->
                 ${cantidad > optimo ? `
                   <div style="position: absolute; right: -50px; top: 0; background: ${stockColor}; color: white; padding: 2px 6px; border-radius: 2px; font-size: 9px; font-weight: 700; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
                     +${cantidad - optimo}
@@ -8895,15 +8898,15 @@ class InventarioCompleto {
                 <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 8px; color: #6e7681; font-weight: 600; font-family: var(--font-family);">
                   <span>0</span>
                   ${minimo === optimo ? `
-                    <span style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; transform: translateX(-50%); color: #e67e22;">Min/Ã“pt: ${optimo}</span>
+                    <span style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; transform: translateX(-50%); color: #e67e22;">Min/Ópt: ${optimo}</span>
                   ` : `
                     <span style="position: absolute; left: ${(minimo / (optimo * 1.2)) * 100}%; transform: translateX(-50%); color: #e67e22;">Min: ${minimo}</span>
-                    <span style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; transform: translateX(-50%); color: #27ae60;">Ã“pt: ${optimo}</span>
+                    <span style="position: absolute; left: ${(optimo / (optimo * 1.2)) * 100}%; transform: translateX(-50%); color: #27ae60;">Ópt: ${optimo}</span>
                   `}
                   <span style="color: #6e7681; opacity: 0.5;">${Math.round(optimo * 1.2)}</span>
                 </div>
                 
-                <!-- Indicador de excedente al final de la barra (cuando stock > Ã³ptimo) -->
+                <!-- Indicador de excedente al final de la barra (cuando stock > óptimo) -->
                 ${cantidad > optimo ? `
                   <div style="position: absolute; right: -50px; top: -2px; background: ${stockColor}; color: white; padding: 2px 6px; border-radius: 2px; font-size: 9px; font-weight: 700; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
                     +${cantidad - optimo}
@@ -8911,12 +8914,12 @@ class InventarioCompleto {
                 ` : ''}
               </div>
               
-              <!-- Texto descriptivo SIEMPRE enmarcado con color segÃºn estado -->
+              <!-- Texto descriptivo SIEMPRE enmarcado con color según estado -->
               <div style="margin-top: 8px; padding: 6px 8px; background: ${
                 cantidad === 0 ? 'rgba(148, 90, 90, 0.15)' :        // Rojo para agotado
-                cantidad < minimo ? 'rgba(138, 122, 90, 0.15)' :    // Ãmbar para bajo stock
+                cantidad < minimo ? 'rgba(138, 122, 90, 0.15)' :    // Ámbar para bajo stock
                 cantidad < optimo ? 'rgba(107, 122, 122, 0.15)' :   // Gris verdoso para adecuado
-                cantidad <= optimo * 1.2 ? 'rgba(82, 122, 101, 0.15)' : // Verde para Ã³ptimo
+                cantidad <= optimo * 1.2 ? 'rgba(82, 122, 101, 0.15)' : // Verde para óptimo
                 'rgba(90, 122, 148, 0.15)'                          // Azul para excedente
               }; border: 1px solid ${
                 cantidad === 0 ? 'rgba(148, 90, 90, 0.3)' :
@@ -8947,20 +8950,20 @@ class InventarioCompleto {
                   <div style="font-size: 19px; font-weight: 800; color: ${stockColor}; opacity: 0.95;">${cantidad}</div>
                 </div>
                 <div style="text-align: center;">
-                  <div style="font-size: 8px; color: #6e7681; text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.5px; font-weight: 600;">Ã“pt</div>
+                  <div style="font-size: 8px; color: #6e7681; text-transform: uppercase; margin-bottom: 2px; letter-spacing: 0.5px; font-weight: 600;">Ópt</div>
                   <div style="font-size: 19px; font-weight: 800; color: #d4d4d4;">${optimo}</div>
                 </div>
               </div>
               
-              <!-- Ãšltimo conteo inline -->
+              <!-- Último conteo inline -->
               ${ultimoConteoHTML}
             </div>
 
-            <!-- Datos tÃ©cnicos -->
+            <!-- Datos técnicos -->
             ${datosTecnicosHTML}
           </div>
 
-          <!-- Footer: Botones de acciÃ³n equilibrados -->
+          <!-- Footer: Botones de acción equilibrados -->
           <div class="card-footer" style="padding: 10px 12px; background: var(--bg-input); border-top: 1px solid var(--border-primary);">
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; width: 100%;">
               <button class="card-btn" data-action="edit" data-id="${rep.id}" style="padding: 8px 12px; border: 1px solid var(--border-accent); background: transparent; color: var(--text-secondary); border-radius: var(--radius-md); font-weight: 600; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); letter-spacing: 0.3px; display: flex; align-items: center; justify-content: center;">
@@ -8988,7 +8991,7 @@ class InventarioCompleto {
     if (repuestos.length === 0) {
       container.innerHTML = `
         <div style="text-align: center; padding: 60px 20px; color: var(--text-secondary);">
-          <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.3;">ðŸ“‹</div>
+          <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.3;">📋</div>
           <div style="font-size: 1.2rem; font-weight: 600; margin-bottom: 8px;">No hay repuestos</div>
         </div>
       `;
@@ -9004,9 +9007,9 @@ class InventarioCompleto {
         <td style="padding: 12px; text-align: center;">${r.minimo || 5}</td>
         <td style="padding: 12px;">
           <div style="display: flex; gap: 6px;">
-            <button class="btn btn-sm btn-primary" data-action="edit" data-id="${r.id}">âœï¸</button>
-            <button class="btn btn-sm btn-info" data-action="contar" data-id="${r.id}">ðŸ”¢</button>
-            <button class="btn btn-sm btn-danger" data-action="delete" data-id="${r.id}">ðŸ—‘ï¸</button>
+            <button class="btn btn-sm btn-primary" data-action="edit" data-id="${r.id}">✏️</button>
+            <button class="btn btn-sm btn-info" data-action="contar" data-id="${r.id}">🔢</button>
+            <button class="btn btn-sm btn-danger" data-action="delete" data-id="${r.id}">🗑️</button>
           </div>
         </td>
       </tr>
@@ -9017,11 +9020,11 @@ class InventarioCompleto {
         <table style="width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 12px; overflow: hidden;">
           <thead style="background: var(--bg-secondary);">
             <tr>
-              <th style="padding: 14px; text-align: left;">CÃ³digo SAP</th>
+              <th style="padding: 14px; text-align: left;">Código SAP</th>
               <th style="padding: 14px; text-align: left;">Nombre</th>
               <th style="padding: 14px; text-align: left;">Tipo</th>
               <th style="padding: 14px; text-align: center;">Stock</th>
-              <th style="padding: 14px; text-align: center;">MÃ­nimo</th>
+              <th style="padding: 14px; text-align: center;">Mínimo</th>
               <th style="padding: 14px; text-align: center;">Acciones</th>
             </tr>
           </thead>
@@ -9033,25 +9036,25 @@ class InventarioCompleto {
     `;
   }
 
-  // Aplicar estilos segÃºn modo de vista
+  // Aplicar estilos según modo de vista
   applyViewModeStyles() {
-    // MÃ©todo placeholder - puedes implementar estilos personalizados aquÃ­
+    // Método placeholder - puedes implementar estilos personalizados aquí
     console.log('Modo de vista:', this.viewMode || 'auto');
   }
 
-  // Actualizar informaciÃ³n del modo de vista
+  // Actualizar información del modo de vista
   updateViewModeInfo() {
     const viewModeInfo = document.getElementById('viewModeInfo');
     if (viewModeInfo) {
       const mode = this.viewMode || 'auto';
-      const isMobile = this.isMobile ? 'MÃ³vil' : 'PC';
+      const isMobile = this.isMobile ? 'Móvil' : 'PC';
       viewModeInfo.textContent = `Modo: ${mode} (${isMobile})`;
     }
   }
 
   // Renderizar filtros
   renderFilters() {
-    // Poblar dropdowns de filtros con datos Ãºnicos de los repuestos
+    // Poblar dropdowns de filtros con datos únicos de los repuestos
     const filterArea = document.getElementById('filterArea');
     const filterEquipo = document.getElementById('filterEquipo');
     const filterTipo = document.getElementById('filterTipo');
@@ -9059,14 +9062,14 @@ class InventarioCompleto {
     
     if (!filterArea || !filterEquipo || !filterTipo) return;
 
-    // Obtener valores Ãºnicos
+    // Obtener valores únicos
     const areas = [...new Set(this.repuestos.map(r => r.area || r.areaGeneral).filter(Boolean))].sort();
     const equipos = [...new Set(this.repuestos.map(r => r.equipo || r.sistemaEquipo).filter(Boolean))].sort();
     const tipos = [...new Set(this.repuestos.map(r => r.tipo).filter(Boolean))].sort();
 
-    // Poblar dropdown de Ãreas
+    // Poblar dropdown de Áreas
     filterArea.innerHTML = `
-      <option value="">Todas las Ãreas (${this.repuestos.length})</option>
+      <option value="">Todas las Áreas (${this.repuestos.length})</option>
       ${areas.map(area => {
         const count = this.repuestos.filter(r => (r.area || r.areaGeneral) === area).length;
         return `<option value="${area}">${area} (${count})</option>`;
@@ -9110,7 +9113,7 @@ class InventarioCompleto {
     if (!this.conteoActivo) {
       container.innerHTML = `
         <div style="text-align: center; padding: 60px 20px;">
-          <div style="font-size: 3rem; margin-bottom: 16px;">ðŸ“‹</div>
+          <div style="font-size: 3rem; margin-bottom: 16px;">📋</div>
           <h3 style="margin-bottom: 16px;">Conteo de Inventario</h3>
           <button id="btnIniciarConteo" class="btn btn-primary" style="padding: 14px 32px; font-size: 1rem;">
             Iniciar Conteo
@@ -9143,7 +9146,7 @@ class InventarioCompleto {
           <table style="width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 12px;">
             <thead style="background: var(--bg-secondary);">
               <tr>
-                <th style="padding: 14px;">CÃ³digo SAP</th>
+                <th style="padding: 14px;">Código SAP</th>
                 <th style="padding: 14px;">Nombre</th>
                 <th style="padding: 14px; text-align: center;">Stock Sistema</th>
                 <th style="padding: 14px; text-align: center;">Conteo Real</th>
@@ -9165,7 +9168,7 @@ class InventarioCompleto {
 
   // Finalizar conteo
   finalizarConteo() {
-    if (!confirm('Â¿Actualizar el stock con los valores del conteo?')) return;
+    if (!confirm('¿Actualizar el stock con los valores del conteo?')) return;
 
     let actualizados = 0;
     Object.entries(this.conteoData).forEach(([id, cantidad]) => {
@@ -9180,7 +9183,7 @@ class InventarioCompleto {
     this.conteoData = {};
     this.saveData();
     this.renderConteo();
-    this.showToast(`âœ… ${actualizados} repuestos actualizados`, 'success');
+    this.showToast(`✅ ${actualizados} repuestos actualizados`, 'success');
   }
 
   // Actualizar conteo
@@ -9188,15 +9191,15 @@ class InventarioCompleto {
     this.conteoData[id] = parseInt(value) || 0;
   }
 
-  // Renderizar jerarquÃ­a
+  // Renderizar jerarquía
   renderJerarquia() {
     const container = document.getElementById('jerarquia');
     if (!container) return;
 
     container.innerHTML = `
       <div style="padding: 20px; text-align: center;">
-        <div style="font-size: 3rem; margin-bottom: 16px;">ðŸ—ï¸</div>
-        <h3>Vista de JerarquÃ­a</h3>
+        <div style="font-size: 3rem; margin-bottom: 16px;">🏗️</div>
+        <h3>Vista de Jerarquía</h3>
         <p style="color: var(--text-secondary);">Funcionalidad en desarrollo</p>
       </div>
     `;
@@ -9243,7 +9246,7 @@ class InventarioCompleto {
   }
 
   // ============================================
-  // MÃ‰TODOS DE AUTOCOMPLETADO
+  // MÉTODOS DE AUTOCOMPLETADO
   // ============================================
   
   updateAutocompleteData() {
@@ -9299,7 +9302,7 @@ class InventarioCompleto {
   }
 
   cargarSistemasPorEquipo(equipo) {
-    // Filtra sistemas segÃºn el equipo seleccionado
+    // Filtra sistemas según el equipo seleccionado
     if (!equipo || !this.repuestos) return;
 
     const sistemasDelEquipo = [...new Set(
@@ -9326,24 +9329,24 @@ class InventarioCompleto {
   }
   
   // ===============================================
-  // OPTIMIZAR IMÃGENES EXISTENTES
+  // OPTIMIZAR IMÁGENES EXISTENTES
   // ===============================================
   
   async optimizarImagenesExistentes() {
     if (!fsManager || !fsManager.isConnected) {
-      this.showToast('âŒ Debes conectar el FileSystem primero', 'error');
+      this.showToast('❌ Debes conectar el FileSystem primero', 'error');
       return;
     }
     
-    console.log('\nðŸ”§ ========== OPTIMIZANDO IMÃGENES EXISTENTES ==========');
+    console.log('\n🔧 ========== OPTIMIZANDO IMÁGENES EXISTENTES ==========');
     
-    // Filtrar repuestos con imÃ¡genes
+    // Filtrar repuestos con imágenes
     const repuestosConImagenes = this.repuestos.filter(r => 
       r.multimedia && r.multimedia.length > 0
     );
     
     if (repuestosConImagenes.length === 0) {
-      this.showToast('â„¹ï¸ No hay repuestos con imÃ¡genes', 'info');
+      this.showToast('ℹ️ No hay repuestos con imágenes', 'info');
       return;
     }
     
@@ -9351,23 +9354,23 @@ class InventarioCompleto {
     let imagenesOptimizadas = 0;
     let errores = 0;
     
-    this.showToast(`ðŸ”„ Iniciando optimizaciÃ³n de imÃ¡genes...`, 'info', 3000);
+    this.showToast(`🔄 Iniciando optimización de imágenes...`, 'info', 3000);
     
     for (const repuesto of repuestosConImagenes) {
-      console.log(`\nðŸ“¦ Procesando: ${repuesto.nombre}`);
+      console.log(`\n📦 Procesando: ${repuesto.nombre}`);
       
       for (let i = 0; i < repuesto.multimedia.length; i++) {
         const media = repuesto.multimedia[i];
         totalImagenes++;
         
         try {
-          // Verificar si ya estÃ¡ optimizada (WebP y comprimida)
+          // Verificar si ya está optimizada (WebP y comprimida)
           if (media.compressed && media.mimeType === 'image/webp') {
-            console.log(`  âœ“ Ya optimizada: ${media.filename}`);
+            console.log(`  ✓ Ya optimizada: ${media.filename}`);
             continue;
           }
           
-          console.log(`  ðŸ”„ Optimizando: ${media.filename || media.originalName}`);
+          console.log(`  🔄 Optimizando: ${media.filename || media.originalName}`);
           
           // Cargar imagen desde FileSystem
           let imageUrl;
@@ -9379,7 +9382,7 @@ class InventarioCompleto {
           }
           
           if (!imageUrl) {
-            console.warn(`  âš ï¸ No se pudo cargar: ${media.filename}`);
+            console.warn(`  ⚠️ No se pudo cargar: ${media.filename}`);
             errores++;
             continue;
           }
@@ -9395,7 +9398,7 @@ class InventarioCompleto {
           const compressedBase64 = await this.compressImageToWebP(file);
           
           if (!compressedBase64) {
-            console.error(`  âŒ Error comprimiendo: ${media.filename}`);
+            console.error(`  ❌ Error comprimiendo: ${media.filename}`);
             errores++;
             continue;
           }
@@ -9404,7 +9407,7 @@ class InventarioCompleto {
           const timestamp = Date.now();
           const newFilename = `${timestamp}_optimized_${media.originalName || 'imagen'}.webp`;
           
-          // Calcular tamaÃ±os
+          // Calcular tamaños
           const compressedSize = Math.round((compressedBase64.length * 0.75));
           const originalSize = media.size || file.size;
           
@@ -9435,10 +9438,10 @@ class InventarioCompleto {
           imagenesOptimizadas++;
           
           const reduction = ((1 - compressedSize / originalSize) * 100).toFixed(0);
-          console.log(`  âœ… Optimizada: ${(originalSize / 1024).toFixed(1)}KB â†’ ${(compressedSize / 1024).toFixed(1)}KB (-${reduction}%)`);
+          console.log(`  ✅ Optimizada: ${(originalSize / 1024).toFixed(1)}KB → ${(compressedSize / 1024).toFixed(1)}KB (-${reduction}%)`);
           
         } catch (error) {
-          console.error(`  âŒ Error procesando ${media.filename}:`, error);
+          console.error(`  ❌ Error procesando ${media.filename}:`, error);
           errores++;
         }
       }
@@ -9447,13 +9450,13 @@ class InventarioCompleto {
     // Guardar cambios
     await fsManager.saveData('repuestos', this.repuestos);
     
-    console.log(`\nâœ… OptimizaciÃ³n completa:`);
-    console.log(`   Total: ${totalImagenes} imÃ¡genes`);
+    console.log(`\n✅ Optimización completa:`);
+    console.log(`   Total: ${totalImagenes} imágenes`);
     console.log(`   Optimizadas: ${imagenesOptimizadas}`);
     console.log(`   Errores: ${errores}`);
     
     this.showToast(
-      `âœ… OptimizaciÃ³n completa: ${imagenesOptimizadas}/${totalImagenes} imÃ¡genes procesadas`,
+      `✅ Optimización completa: ${imagenesOptimizadas}/${totalImagenes} imágenes procesadas`,
       'success',
       5000
     );
@@ -9478,10 +9481,10 @@ window.InventarioCompleto = InventarioCompleto;
   window.mapController = mapController;
   window.InventarioCompleto = InventarioCompleto;
   window.app = new InventarioCompleto();
-  console.log('Ã¢Å“â€¦ MÃƒÂ³dulos portable cargados');
+  console.log('Modulos portable cargados');
   
   // =========================================
-  // OBJETO CONFIGURACIÃƒâ€œN
+  // OBJETO CONFIGURACION
   // =========================================
   window.configuracion = {
     renderStorageUI() {
@@ -9492,13 +9495,13 @@ window.InventarioCompleto = InventarioCompleto;
       const isConnected = fs && fs.isConnected;
       
       const statusBg = isConnected ? '#10b981' : '#ef4444';
-      const statusText = isConnected ? 'Ã°Å¸Å¸Â¢ Conectado' : 'Ã¢ÂÅ’ No conectado';
+      const statusText = isConnected ? 'Conectado' : 'No conectado';
       const folderPath = fs && fs.folderPath ? fs.folderPath : 'No hay carpeta seleccionada';
-      const disconnectBtn = isConnected ? '<button onclick="window.app.desconectarFileSystem()" class="btn" style="width: 100%; padding: 14px; font-size: 1rem; background: var(--danger); color: white;">Ã°Å¸â€Â´ Desconectar</button>' : '';
+      const disconnectBtn = isConnected ? '<button onclick="window.app.desconectarFileSystem()" class="btn" style="width: 100%; padding: 14px; font-size: 1rem; background: var(--danger); color: white;">Desconectar</button>' : '';
       const btnClass = isConnected ? 'btn-secondary' : 'btn-primary';
-      const btnText = isConnected ? 'Ã°Å¸â€œÂ Cambiar Carpeta' : 'Ã°Å¸â€œâ€š Seleccionar Carpeta INVENTARIO_STORAGE';
+      const btnText = isConnected ? 'Cambiar Carpeta' : 'Seleccionar Carpeta INVENTARIO_STORAGE';
       
-      container.innerHTML = '<h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">Ã°Å¸â€™Â¾ Almacenamiento FileSystem</h3>' +
+      container.innerHTML = '<h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">ðŸ’¾ Almacenamiento FileSystem</h3>' +
         '<div style="display: grid; gap: 12px;">' +
           '<div style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">' +
             '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">' +
@@ -9514,7 +9517,7 @@ window.InventarioCompleto = InventarioCompleto;
   };
   
   // =========================================
-  // FUNCIONES DE ACORDEÃƒâ€œN
+  // FUNCIONES DE ACORDEON
   // =========================================
   window.toggleConfigSection = function(sectionId) {
     const content = document.getElementById(sectionId + '-content');
@@ -9526,10 +9529,10 @@ window.InventarioCompleto = InventarioCompleto;
     
     if (isCollapsed) {
       content.style.display = 'block';
-      icon.textContent = 'Ã¢â€“Â¼';
+      icon.textContent = 'â–¼';
     } else {
       content.style.display = 'none';
-      icon.textContent = 'Ã¢â€“Â¶';
+      icon.textContent = 'â–¶';
     }
     
     localStorage.setItem('config-' + sectionId, isCollapsed ? 'open' : 'closed');
@@ -9548,24 +9551,24 @@ window.InventarioCompleto = InventarioCompleto;
       
       if (savedState === 'open') {
         content.style.display = 'block';
-        icon.textContent = 'Ã¢â€“Â¼';
+        icon.textContent = 'â–¼';
       } else {
         content.style.display = 'none';
-        icon.textContent = 'Ã¢â€“Â¶';
+        icon.textContent = 'â–¶';
       }
     });
   };
   
   // =========================================
-  // INICIALIZACIÃƒâ€œN
+  // INICIALIZACION
   // =========================================
   (async function() {
     try {
-      console.log('Ã°Å¸â€œÂ¦ Iniciando aplicaciÃƒÂ³n portable...');
+      console.log('Iniciando aplicacion portable...');
       
       const restored = await fsManager.restoreFromPreviousSession();
       if (restored) {
-        console.log('Ã¢Å“â€¦ FileSystem restaurado');
+        console.log('FileSystem restaurado');
       }
       
       if (mapController && typeof mapController.init === 'function') {
@@ -9593,9 +9596,9 @@ window.InventarioCompleto = InventarioCompleto;
         });
       }
       
-      console.log('Ã¢Å“â€¦ AplicaciÃƒÂ³n portable lista');
+      console.log('Aplicacion portable lista');
     } catch (error) {
-      console.error('Ã¢ÂÅ’ Error al inicializar:', error);
+      console.error('Error al inicializar:', error);
     }
   })();
 })();
