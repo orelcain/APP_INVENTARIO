@@ -5195,7 +5195,7 @@ window.mapController = mapController;
 // ===================================================================
 // CACHÉ GLOBAL DE BLOB URLs (Prevenir Garbage Collection)
 // ===================================================================
-const globalBlobCache = new Map();
+// NOTA: globalBlobCache ya está declarado anteriormente en línea 5088
 
 // Función para obtener o crear Blob URL con caché global
 async function getCachedBlobUrl(filename, loadFunction) {
@@ -10204,7 +10204,76 @@ class InventarioCompleto {
       return Number.isFinite(number) ? number.toLocaleString('es-ES', options) : '0';
     };
 
-    const formatCurrency = (value) => '
+    const formatCurrency = (value) => {
+      const amount = Number(value) || 0;
+      return formatNumber(amount, { 
+        style: 'currency', 
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    };
+
+    const stats = this.calcularEstadisticas();
+    
+    // Renderizar tarjetas principales
+    statsGridEl.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-value">${formatNumber(stats.total)}</div>
+        <div class="stat-label">Total Repuestos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">${formatCurrency(stats.valorTotal)}</div>
+        <div class="stat-label">Valor Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-value">${formatNumber(stats.bajoStock)}</div>
+        <div class="stat-label">Bajo Stock</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📍</div>
+        <div class="stat-value">${formatNumber(stats.ubicaciones)}</div>
+        <div class="stat-label">Ubicaciones</div>
+      </div>
+    `;
+  }
+
+  calcularEstadisticas() {
+    const total = this.inventario.length;
+    const valorTotal = this.inventario.reduce((sum, item) => 
+      sum + ((Number(item.precio) || 0) * (Number(item.stock) || 0)), 0
+    );
+    const bajoStock = this.inventario.filter(item => 
+      (Number(item.stock) || 0) < (Number(item.stockMinimo) || 0)
+    ).length;
+    const ubicaciones = new Set(
+      this.inventario.map(item => item.ubicacion).filter(Boolean)
+    ).size;
+    
+    return { total, valorTotal, bajoStock, ubicaciones };
+  }
+}
+
+// Inicialización
+(async function() {
+  try {
+    if (typeof window === 'undefined') {
+      throw new Error('Debe ejecutarse en un navegador');
+    }
+    
+    window.app = new InventarioCompleto();
+    await window.app.init();
+    
+    console.log('Aplicacion portable lista');
+  } catch (error) {
+    console.error('Error al inicializar:', error);
+  }
+})();
+})();
+  </script>
 
   <!-- LIGHTBOX -->
   <div class="lightbox" id="lightbox">
