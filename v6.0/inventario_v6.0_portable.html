@@ -4162,8 +4162,12 @@ const mapController = {
       const color = zone.color || '#5a6b7a';
       const jerarquia = zone.jerarquia ? Object.values(zone.jerarquia).filter(Boolean).join(' > ') : '';
       const equipos = Array.isArray(zone.equipos) ? zone.equipos.length : 0;
+      
+      const activeClass = zone.id === this.state.highlightZoneId ? 'map-zone-item--active' : '';
+      const borderStyle = 'border-left-color:' + color + ';';
+      
       return `
-        <div class="map-zone-item ${zone.id === this.state.highlightZoneId ? 'map-zone-item--active' : ''}" data-zone-id="${zone.id}" style="border-left-color:${color};">
+        <div class="map-zone-item ${activeClass}" data-zone-id="${zone.id}" style="${borderStyle}">
           <div class="map-zone-title">${this.escapeHtml(zone.name || 'Zona sin nombre')}</div>
           ${jerarquia ? `<div class="map-zone-subtitle">${this.escapeHtml(jerarquia)}</div>` : ''}
           <div class="map-zone-subtitle">${equipos} equipos asociados</div>
@@ -6697,8 +6701,11 @@ class InventarioCompleto {
     this.jerarquiaNiveles.forEach((nivel, index) => {
       if (nivel.id === 'planta' || nivel.id === 'areaGeneral') return;
       
+      const borderColor = nivel.visible ? 'var(--success)' : 'var(--border-color)';
+      const borderStyle = 'display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--bg-primary); border-radius: 6px; cursor: pointer; border: 2px solid ' + borderColor + ';';
+      
       html += `
-        <label style="display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--bg-primary); border-radius: 6px; cursor: pointer; border: 2px solid ${nivel.visible ? 'var(--success)' : 'var(--border-color)'};">
+        <label style="${borderStyle}">
           <input type="checkbox" 
                  ${nivel.visible ? 'checked' : ''}
                  onchange="app.toggleNivelVisibilidad('${nivel.id}', this.checked)"
@@ -6730,8 +6737,11 @@ class InventarioCompleto {
     this.jerarquiaNiveles.forEach(nivel => {
       if (nivel.id === 'planta' || nivel.id === 'areaGeneral') return;
       
+      const opacityValue = nivel.visible ? '1' : '0.5';
+      const opacityStyle = 'opacity: ' + opacityValue + ';';
+      
       html += `
-        <div class="form-group" style="opacity: ${nivel.visible ? '1' : '0.5'};">
+        <div class="form-group" style="${opacityStyle}">
           <label style="display: flex; align-items: center; gap: 8px;">
             <input type="checkbox" 
                    ${nivel.visible ? 'checked' : ''}
