@@ -2099,6 +2099,54 @@
       color: #60a5fa;
     }
 
+    /* Clases para estilos dinámicos */
+    .stock-badge {
+      background: var(--bg-color, #666);
+      opacity: 0.95;
+      color: #ffffff;
+      padding: 3px 8px;
+      border-radius: 2px;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .stock-cantidad {
+      font-size: 28px;
+      color: var(--text-color, #fff);
+      opacity: 0.95;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .dynamic-border {
+      border-left: 3px solid var(--border-color, #666);
+    }
+
+    .dynamic-bg {
+      background: var(--bg-color, transparent);
+    }
+
+    .dynamic-color {
+      color: var(--text-color, inherit);
+    }
+
+    .progress-bar-segment {
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .marker-line {
+      position: absolute;
+      top: -2px;
+      width: 2px;
+      height: 12px;
+      z-index: 2;
+    }
+
+
     .backup-file-hint {
       color: #94a3b8;
       font-size: 11px;
@@ -7641,7 +7689,7 @@ class InventarioCompleto {
               <div style="background: #1e1e1e; border: 1px solid #3e3e42; padding: 14px; border-radius: 2px; margin-bottom: 16px;">
                 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                   <h4 style="margin: 0; font-size: 14px; color: #d4d4d4; font-weight: 600; line-height: 1.4;">${repuesto.nombre}</h4>
-                  <span style="background: ${colorEstado}; opacity: 0.95; color: #ffffff; padding: 3px 8px; border-radius: 2px; font-size: 10px; font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.3px;">${estadoStock}</span>
+                  <span class="stock-badge" data-color="${colorEstado}">${estadoStock}</span>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 11px; color: #969696;">
                   <div><strong style="color: #d4d4d4; font-weight: 600;">Área:</strong> ${repuesto.area || repuesto.areaGeneral || 'N/A'}</div>
@@ -7654,7 +7702,7 @@ class InventarioCompleto {
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
                 <div style="background: #1e1e1e; border: 2px solid #3e3e42; padding: 14px; border-radius: 2px; text-align: center;">
                   <div style="font-size: 9px; color: #969696; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Stock Actual</div>
-                  <div style="font-size: 28px; color: ${colorEstado}; opacity: 0.95; font-weight: 700; line-height: 1;">${cantidadActual}</div>
+                  <div class="stock-cantidad" data-color="${colorEstado}">${cantidadActual}</div>
                   <div style="font-size: 9px; color: #6e7681; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.3px;">unidades</div>
                 </div>
                 
@@ -7714,6 +7762,12 @@ class InventarioCompleto {
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     
+    // Aplicar estilos dinámicos
+    this.applyDynamicStyles({
+      '.stock-badge': { '--bg-color': colorEstado },
+      '.stock-cantidad': { '--text-color': colorEstado }
+    });
+    
     // Focus en el input
     setTimeout(() => {
       const input = document.getElementById('cantidadConteoInput');
@@ -7722,6 +7776,18 @@ class InventarioCompleto {
         input.select();
       }
     }, 100);
+  }
+
+  // Helper para aplicar estilos dinámicos a elementos con data-attributes
+  applyDynamicStyles(styles) {
+    Object.entries(styles).forEach(([selector, cssVars]) => {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach(el => {
+        Object.entries(cssVars).forEach(([varName, value]) => {
+          el.style.setProperty(varName, value);
+        });
+      });
+    });
   }
 
   cerrarModalConteoIndividual() {
