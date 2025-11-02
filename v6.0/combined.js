@@ -9491,31 +9491,25 @@ window.InventarioCompleto = InventarioCompleto;
       const fs = window.fsManager || window.app.fsManager;
       const isConnected = fs && fs.isConnected;
       
-      container.innerHTML = \
-        <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">
-          Ã°Å¸â€™Â¾ Almacenamiento FileSystem
-        </h3>
-        
-        <div style="display: grid; gap: 12px;">
-          <div style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <strong style="color: var(--text-primary); font-size: 0.95rem;">Estado:</strong>
-              <span style="padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background: \; color: white;">
-                \
-              </span>
-            </div>
-            <div style="color: var(--text-secondary); font-size: 0.85rem; font-family: monospace; padding: 10px; background: rgba(0,0,0,0.15); border-radius: 6px; min-height: 40px;">
-              \
-            </div>
-          </div>
-          
-          \
-          
-          <button onclick="window.app.activarFileSystem()" class="btn \" style="width: 100%; padding: 14px; font-size: 1rem;">
-            \
-          </button>
-        </div>
-      \;
+      const statusBg = isConnected ? '#10b981' : '#ef4444';
+      const statusText = isConnected ? 'Ã°Å¸Å¸Â¢ Conectado' : 'Ã¢ÂÅ’ No conectado';
+      const folderPath = fs && fs.folderPath ? fs.folderPath : 'No hay carpeta seleccionada';
+      const disconnectBtn = isConnected ? '<button onclick="window.app.desconectarFileSystem()" class="btn" style="width: 100%; padding: 14px; font-size: 1rem; background: var(--danger); color: white;">Ã°Å¸â€Â´ Desconectar</button>' : '';
+      const btnClass = isConnected ? 'btn-secondary' : 'btn-primary';
+      const btnText = isConnected ? 'Ã°Å¸â€œÂ Cambiar Carpeta' : 'Ã°Å¸â€œâ€š Seleccionar Carpeta INVENTARIO_STORAGE';
+      
+      container.innerHTML = '<h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">Ã°Å¸â€™Â¾ Almacenamiento FileSystem</h3>' +
+        '<div style="display: grid; gap: 12px;">' +
+          '<div style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">' +
+              '<strong style="color: var(--text-primary); font-size: 0.95rem;">Estado:</strong>' +
+              '<span style="padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background: ' + statusBg + '; color: white;">' + statusText + '</span>' +
+            '</div>' +
+            '<div style="color: var(--text-secondary); font-size: 0.85rem; font-family: monospace; padding: 10px; background: rgba(0,0,0,0.15); border-radius: 6px; min-height: 40px;">' + folderPath + '</div>' +
+          '</div>' +
+          disconnectBtn +
+          '<button onclick="window.app.activarFileSystem()" class="btn ' + btnClass + '" style="width: 100%; padding: 14px; font-size: 1rem;">' + btnText + '</button>' +
+        '</div>';
     }
   };
   
