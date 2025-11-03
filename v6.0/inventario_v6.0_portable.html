@@ -1883,9 +1883,8 @@
     }
 
     .repuesto-card:hover {
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
-      border-color: var(--border-color-light);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+      border-color: rgba(91, 139, 180, 0.3);
     }
 
     .card-image {
@@ -1945,12 +1944,12 @@
     }
 
     .card-content {
-      padding: 12px 14px;
+      padding: 10px 12px;
     }
 
     .card-content h3 {
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--text-primary);
       background: transparent;
       padding: 0;
@@ -1975,8 +1974,8 @@
 
     .card-info {
       display: grid;
-      gap: 5px;
-      margin-bottom: 8px;
+      gap: 3px;
+      margin-bottom: 6px;
     }
 
     .info-row {
@@ -1986,9 +1985,9 @@
       font-size: 0.7rem;
       line-height: 1.3;
       margin-bottom: 2px;
-      padding: 4px 6px;
+      padding: 3px 4px;
       background: transparent;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid rgba(91, 139, 180, 0.1);
     }
 
     .info-row:last-child {
@@ -2003,14 +2002,14 @@
 
     .info-value {
       color: var(--text-primary);
-      font-weight: 600;
+      font-weight: 500;
       font-size: 0.7rem;
     }
 
     .card-footer {
       display: flex;
       gap: 6px;
-      padding: 0 14px 12px;
+      padding: 0 12px 10px;
     }
 
     .card-btn {
@@ -2021,10 +2020,10 @@
       border-radius: var(--radius-sm);
       cursor: pointer;
       font-weight: 500;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       transition: all 0.2s ease;
       color: var(--text-secondary);
-      min-height: 36px;
+      min-height: 32px;
     }
 
     .card-btn:hover {
@@ -2051,6 +2050,88 @@
     .btn-delete:hover {
       background: var(--danger);
       color: white;
+    }
+
+    /* Datos Técnicos - Estilo Corporativo */
+    .datos-tecnicos-box {
+      background: rgba(91, 139, 180, 0.08);
+      border-left: 3px solid var(--primary);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      margin: 8px 0;
+    }
+
+    .datos-tecnicos-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .datos-tecnicos-content {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      font-family: 'Courier New', monospace;
+      white-space: pre-line;
+      word-break: break-word;
+    }
+
+    /* Contador de Stock - Estilo Corporativo */
+    .stock-counter-box {
+      background: var(--bg-tertiary);
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      margin-top: 6px;
+      border-left: 3px solid currentColor;
+    }
+
+    /* Botones de Ubicación/Mapa - Estilo Corporativo */
+    .btn-add-location,
+    .btn-view-map {
+      flex: 1;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .btn-add-location {
+      background: rgba(91, 155, 122, 0.85);
+      border: 1px solid rgba(91, 155, 122, 0.3);
+      font-weight: 500;
+      font-size: 0.7rem;
+    }
+
+    .btn-add-location:hover {
+      background: rgba(91, 155, 122, 1);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-view-map {
+      background: rgba(91, 139, 180, 0.85);
+      border: 1px solid rgba(91, 139, 180, 0.3);
+      font-weight: 500;
+      font-size: 0.7rem;
+    }
+
+    .btn-view-map:hover {
+      background: rgba(91, 139, 180, 1);
+      box-shadow: var(--shadow-sm);
     }
 
     /* VISTA LISTA - Compactada con Estilo Corporativo */
@@ -2733,30 +2814,32 @@
 
     /* Botón icono de jerarquía en tarjetas */
     .btn-hierarchy {
-      background: linear-gradient(135deg, var(--primary), var(--info));
+      background: var(--primary);
       color: white;
       border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 4px;
       cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.3s ease;
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
       box-shadow: var(--shadow-sm);
       flex-shrink: 0;
     }
 
     .btn-hierarchy:hover {
-      transform: translateY(-2px) scale(1.05);
+      background: var(--primary-dark);
       box-shadow: var(--shadow-md);
-      background: linear-gradient(135deg, var(--primary-light), var(--info));
+      transform: translateY(-1px);
     }
 
     .btn-hierarchy:active {
-      transform: translateY(0) scale(0.95);
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
     }
 
     /* Modal Estadísticas - Responsive */
@@ -8014,7 +8097,7 @@
     <div class="loading backup-progress-loading"></div>
     <div class="backup-progress-content">
       <div class="backup-progress-header">
-        <span class="backup-progress-text">🔄 Creando backup automático...</span>
+        <span class="backup-progress-text">Creando backup automático...</span>
         <span id="backupProgressPercent" class="backup-progress-percent">0%</span>
       </div>
       <div class="backup-progress-bar-bg">
@@ -8106,11 +8189,11 @@
       </select>
       
       <select class="filter-select" id="filterStock" onchange="app.applyFilters()" aria-label="Filtrar por stock">
-        <option value="">🔍 Ver Todos</option>
-        <option value="agotado">🔴 Agotados (0 unid.)</option>
-        <option value="critico">⚠️ Críticos (bajo mínimo)</option>
-        <option value="adecuado">✓ Adecuados (entre mín-ópt)</option>
-        <option value="optimo">✓✓ Óptimos (sobre óptimo)</option>
+        <option value="">Ver Todos</option>
+        <option value="agotado">Agotados (0 unid.)</option>
+        <option value="critico">Críticos (bajo mínimo)</option>
+        <option value="adecuado">Adecuados (entre mín-ópt)</option>
+        <option value="optimo">Óptimos (sobre óptimo)</option>
       </select>
     </div>
 
@@ -8147,13 +8230,13 @@
       <div class="tree-header tree-header-custom">
         <strong class="tree-header-title">Estructura Jerárquica:</strong><br>
         🏭 <strong>Planta</strong> (Ej: Aquachile) → 
-        📁 <strong>Área</strong> (Ej: Producción) → 
-        📁 <strong>Sub-Área</strong> (Ej: Sistema Agua) → 
-        📁 <strong>Sistema</strong> (Ej: Bomba BP-01) → 
-        📁 <strong>Sub-Sistema</strong> (Ej: Hidráulico) → 
-        📁 <strong>Sección</strong> (Ej: Sellado) → 
-        📁 <strong>Detalle</strong> (Ej: Fijación) → 
-        🔍 <strong>Repuesto</strong>
+        <strong>Área</strong> (Ej: Producción) → 
+        <strong>Sub-Área</strong> (Ej: Sistema Agua) → 
+        <strong>Sistema</strong> (Ej: Bomba BP-01) → 
+        <strong>Sub-Sistema</strong> (Ej: Hidráulico) → 
+        <strong>Sección</strong> (Ej: Sellado) → 
+        <strong>Detalle</strong> (Ej: Fijación) → 
+        <strong>Repuesto</strong>
       </div>
       
       <!-- BUSCADOR RÁPIDO -->
@@ -8162,7 +8245,7 @@
           <input 
             type="text" 
             id="searchJerarquia" 
-            placeholder="🔍 Buscar niveles o repuestos..." 
+            placeholder="Buscar niveles o repuestos..." 
             oninput="app.buscarEnJerarquia(this.value)"
             class="form-control jerarquia-search-input"
           />
@@ -8187,12 +8270,12 @@
         <!-- Filtros Escalonados -->
         <div class="filtros-wrapper">
           <label class="filtros-label">
-            🔍 Filtrar:
+            Filtrar:
           </label>
           
           <!-- Nivel 1: Planta -->
           <select id="filtro_planta" onchange="app.filtrarEscalonado(1, this.value)" class="form-control filtro-select" aria-label="Filtrar por planta">
-            <option value="">🏭 Todas las plantas</option>
+            <option value="">Todas las plantas</option>
           </select>
           
           <!-- Nivel 2: Área -->
@@ -8239,7 +8322,7 @@
       
       <!-- Breadcrumb de Filtros Activos -->
       <div id="filtrosBreadcrumb" class="filtros-breadcrumb">
-        <span class="breadcrumb-label">📍 Filtro activo:</span>
+        <span class="breadcrumb-label">Filtro activo:</span>
         <span id="breadcrumbPath" class="breadcrumb-path"></span>
       </div>
       
@@ -8316,12 +8399,12 @@
             <div class='map-section-header map-section-header-custom' onclick='app.toggleMapSection(this)'>
               <h3><span class='map-section-collapse-icon'>▼</span> Áreas del mapa</h3>
               <div class='map-controls-wrapper'>
-                <button id='mapDrawAreaBtn' class='map-btn map-btn--ghost' onclick='event.stopPropagation()'>✏️ Dibujar área</button>
+                <button id='mapDrawAreaBtn' class='map-btn map-btn--ghost' onclick='event.stopPropagation()'>Dibujar área</button>
                 <button id='mapAddMarkerBtn' class='map-btn map-btn--success' onclick='event.stopPropagation()'>
-                  📍 Agregar Marcador
+                  Agregar Marcador
                 </button>
                 <button id='btnVerCascadaModal' class='map-btn map-btn--primary' onclick='mapController.openCascadaModal(); event.stopPropagation();' title='Ver cascada completa en pantalla grande'>
-                  🔍 Ver Cascada
+                  Ver Cascada
                 </button>
               </div>
             </div>
@@ -8330,7 +8413,7 @@
               <input 
                 type='text' 
                 id='mapAreaSearch' 
-                placeholder='🔍 Buscar área por nombre...'
+                placeholder='Buscar área por nombre...'
                 class='map-search-input'
               />
             </div>
@@ -8341,13 +8424,13 @@
                 Todas
               </button>
               <button class='map-category-filter-btn' data-category='area'>
-                🏭 Área
+                Área
               </button>
               <button class='map-category-filter-btn' data-category='maquina'>
-                ⚙️ Máquina
+                Máquina
               </button>
               <button class='map-category-filter-btn' data-category='estructura'>
-                🔧 Estructura
+                Estructura
               </button>
               <button class='map-category-filter-btn' data-category='cinta'>
                 📦 Cinta
@@ -8381,13 +8464,13 @@
           </div>
           <div class='map-toolbar-right'>
             <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-nombres-areas' data-tooltip='Nombres de Áreas: Muestra u oculta los nombres de las áreas en el mapa.'>
-              👁️ Nombres
+              Nombres
             </button>
             <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-puntos-repuestos' data-tooltip='Puntos de Repuestos: Muestra u oculta los marcadores de repuestos en el mapa.'>
-              📍 Puntos
+              Puntos
             </button>
             <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-grid' data-tooltip='Rejilla: Activa/desactiva la cuadrícula de referencia en el mapa. Útil para alinear áreas con precisión.'>
-              Rejilla <span class='info-icon'>ℹ️</span>
+              Rejilla <span class='info-icon'>i</span>
             </button>
             <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-minimap' data-tooltip='Minimap: Muestra un minimapa en la esquina para navegación rápida. Click en el minimap para saltar a esa ubicación.'>
               🗺️ Minimap <span class='info-icon'>ℹ️</span>
@@ -8944,12 +9027,12 @@
       <!-- Datos Técnicos Específicos -->
       <div class="form-group">
         <label class="form-label-row">
-          <span>⚙️ Datos Técnicos Específicos:</span>
+          <span>Datos Técnicos Específicos:</span>
           <small class="form-label-optional">(Opcional - Para motores, cintas, etc.)</small>
         </label>
         <textarea class="form-control form-textarea-tech" id="datosTecnicos" rows="3" placeholder="Ej: Motor 0.75 kW, 380V, 1400 RPM, IP55&#10;Marca: WEG, Modelo: W22&#10;Rodamientos: 6204 y 6205"></textarea>
         <small class="form-textarea-hint">
-          📝 Puedes incluir: potencia, voltaje, RPM, marca, modelo, dimensiones, especificaciones técnicas, etc.
+          Puedes incluir: potencia, voltaje, RPM, marca, modelo, dimensiones, especificaciones técnicas, etc.
         </small>
       </div>
       
@@ -24131,86 +24214,59 @@ class InventarioCompleto {
           ${multimedia.length > 1 ? `<div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">+${multimedia.length - 1}</div>` : ''}
         </div>
         <div class="card-content">
-          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px;">
-            <h3 style="margin: 0;">${r.nombre}</h3>
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px;">
+            <h3 style="margin: 0; font-weight: 500; color: var(--text-primary); font-size: 1rem;">${r.nombre}</h3>
             <div style="display: flex; gap: 6px; width: 100%;">
-              <button class="btn-hierarchy" onclick="app.agregarUbicacionMapa('${r.id}')" title="Añadir nueva ubicación en el mapa" style="
-                flex: 1; 
-                padding: 8px 10px; 
-                font-size: 0.75rem; 
-                font-weight: 600;
-                background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-                color: white;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
-              " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(16, 185, 129, 0.4)';" 
-                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(16, 185, 129, 0.3)';">
-                📍 Añadir Ubicación
+              <button class="btn-add-location" onclick="app.agregarUbicacionMapa('${r.id}')" title="Añadir nueva ubicación en el mapa">
+                Añadir Ubicación
               </button>
-              <button class="btn-hierarchy" onclick="app.verRepuestoEnMapa('${r.id}')" title="Ver ubicaciones en el mapa" style="
-                flex: 1; 
-                padding: 8px 10px; 
-                font-size: 0.75rem; 
-                font-weight: 600;
-                background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
-                color: white;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
-              " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(99, 102, 241, 0.4)';" 
-                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(99, 102, 241, 0.3)';">
-                🗺️ Ver en Mapa
+              <button class="btn-view-map" onclick="app.verRepuestoEnMapa('${r.id}')" title="Ver ubicaciones en el mapa">
+                Ver en Mapa
               </button>
             </div>
           </div>
           <div class="card-info">
-            ${r.codSAP ? `<div class="info-row"><span class="info-label">Cód. SAP:</span><span class="info-value" style="font-weight: 600; color: var(--primary);">${r.codSAP}</span></div>` : ''}
-            ${r.codProv ? `<div class="info-row"><span class="info-label">Cód. Proveedor:</span><span class="info-value" style="font-weight: 600; color: var(--info);">${r.codProv}</span></div>` : ''}
+            ${r.codSAP ? `<div class="info-row"><span class="info-label">Cód. SAP:</span><span class="info-value" style="font-weight: 500; color: var(--primary);">${r.codSAP}</span></div>` : ''}
+            ${r.codProv ? `<div class="info-row"><span class="info-label">Cód. Proveedor:</span><span class="info-value" style="font-weight: 500; color: var(--text-secondary);">${r.codProv}</span></div>` : ''}
           </div>
           ${r.tipo ? `<div class="info-row"><span class="info-label">Tipo:</span><span class="info-value">${r.tipo}</span></div>` : ''}
-          ${r.categoria ? `<div class="info-row"><span class="info-label">Categoría:</span><span class="info-value" style="font-weight: 700; font-size: 0.95rem; padding: 3px 10px; border-radius: 4px; display: inline-block; background: rgba(91, 124, 153, 0.2); color: #5B7C99;">${r.categoria}</span></div>` : ''}
+          ${r.categoria ? `<div class="info-row"><span class="info-label">Categoría:</span><span class="info-value" style="font-weight: 500; font-size: 0.85rem; padding: 2px 8px; border-radius: 4px; display: inline-block; background: rgba(91, 139, 180, 0.15); color: var(--primary); border: 1px solid rgba(91, 139, 180, 0.3);">${r.categoria}</span></div>` : ''}
           
           <!-- Datos Técnicos (si existen) -->
           ${r.datosTecnicos ? `
-            <div style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 8px 10px; border-radius: 6px; margin: 8px 0; max-height: none; overflow: visible;">
-              <div style="font-size: 0.7rem; font-weight: 700; color: #3b82f6; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                <span>⚙️</span>
-                <span>DATOS TÉCNICOS</span>
+            <div style="background: rgba(91, 139, 180, 0.08); border-left: 2px solid var(--primary); padding: 8px 10px; border-radius: 4px; margin: 8px 0;">
+              <div style="font-size: 0.7rem; font-weight: 600; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+                Datos Técnicos
               </div>
-              <div style="font-size: 0.8rem; color: var(--text-primary); line-height: 1.6; font-family: 'Courier New', monospace; white-space: pre-line; word-break: break-word; max-height: none; overflow: visible;">${r.datosTecnicos}</div>
+              <div style="font-size: 0.78rem; color: var(--text-primary); line-height: 1.5; font-family: 'Segoe UI', Arial, sans-serif; white-space: pre-line; word-break: break-word;">${r.datosTecnicos}</div>
             </div>
           ` : ''}
           
           <div class="card-info">
             ${this.showPrecio && r.precio > 0 ? `<div class="info-row precio-info"><span class="info-label">Precio:</span><span class="info-value">$${r.precio.toFixed(2)}</span></div>` : ''}
             
-            <div style="background: #334155; padding: 5px; border-radius: 4px; margin-top: 4px; border-left: 3px solid ${stockColor};">
+            <div style="background: rgba(51, 65, 85, 0.6); padding: 6px; border-radius: 4px; margin-top: 6px; border-left: 2px solid ${stockColor};">
               
               <!-- Texto descriptivo del estado -->
               <div style="
-                font-size: 0.7rem;
+                font-size: 0.68rem;
                 color: ${stockColor};
-                font-weight: 600;
-                margin-bottom: 4px;
+                font-weight: 500;
+                margin-bottom: 5px;
                 line-height: 1.3;
               ">
                 ${(() => {
                   if (cantidad === 0) {
-                    return `⚠️ Stock agotado. Necesita reposición urgente.`;
+                    return `Stock agotado. Requiere reposición urgente.`;
                   } else if (cantidad < minimo) {
                     const faltante = minimo - cantidad;
-                    return `⚠️ Tenemos ${cantidad} unid. de ${minimo} mínimas requeridas. Faltan ${faltante} unid.`;
+                    return `Stock insuficiente: ${cantidad} de ${minimo} unid. mínimas. Faltan ${faltante} unid.`;
                   } else if (cantidad >= minimo && cantidad < optimo) {
                     const exceso = cantidad - minimo;
-                    return `✓ Tenemos ${cantidad} unid. de ${minimo} mínimas. Stock adecuado (+${exceso} sobre mínimo).`;
+                    return `Stock adecuado: ${cantidad} unid. disponibles (+${exceso} sobre mínimo).`;
                   } else {
                     const exceso = cantidad - optimo;
-                    return `✓ Tenemos ${cantidad} unid. Stock óptimo alcanzado (+${exceso} sobre óptimo).`;
+                    return `Stock óptimo: ${cantidad} unid. disponibles (+${exceso} sobre óptimo).`;
                   }
                 })()}
               </div>
@@ -24219,23 +24275,22 @@ class InventarioCompleto {
               <div style="
                 position: relative;
                 width: 100%;
-                height: 22px;
+                height: 20px;
                 background: rgba(15, 23, 42, 0.8);
-                border-radius: 5px;
+                border-radius: 4px;
                 overflow: hidden;
                 margin-bottom: 4px;
-                border: 2px solid ${stockColor}40;
+                border: 1px solid ${stockColor}40;
               ">
-                <!-- Barra de progreso con gradiente -->
+                <!-- Barra de progreso sin gradiente -->
                 <div style="
                   position: absolute;
                   left: 0;
                   top: 0;
                   height: 100%;
                   width: ${porcentajeBarra}%;
-                  background: linear-gradient(90deg, ${stockColor}dd, ${stockColor});
-                  transition: width 0.4s ease;
-                  box-shadow: 0 0 10px ${stockColor}50;
+                  background: ${stockColor};
+                  transition: width 0.3s ease;
                 "></div>
                 
                 <!-- Contenido superpuesto -->
@@ -24253,32 +24308,32 @@ class InventarioCompleto {
                 ">
                   <!-- Centro: Unidades -->
                   <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="font-size: 0.85rem; font-weight: 700; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">${cantidad}</span>
-                    <span style="font-size: 0.65rem; color: rgba(255,255,255,0.7);">/</span>
-                    <span style="font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.85);">${minimo}</span>
-                    <span style="font-size: 0.65rem; color: rgba(255,255,255,0.8); font-weight: 500;">unid.</span>
+                    <span style="font-size: 0.85rem; font-weight: 600; color: white;">${cantidad}</span>
+                    <span style="font-size: 0.65rem; color: rgba(255,255,255,0.65);">/</span>
+                    <span style="font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.85);">${minimo}</span>
+                    <span style="font-size: 0.65rem; color: rgba(255,255,255,0.75); font-weight: 400;">unid.</span>
                   </div>
                 </div>
               </div>
               
               <div style="display: grid; grid-template-columns: repeat(${r.cantidadInstalada > 0 ? '4' : '3'}, 1fr); gap: 4px; margin-bottom: 4px;">
                 ${r.cantidadInstalada > 0 ? `
-                <div style="text-align: center; background: rgba(107, 148, 136, 0.15); padding: 2px; border-radius: 3px; border: 1px solid rgba(107, 148, 136, 0.3);">
+                <div style="text-align: center; background: rgba(91, 155, 122, 0.12); padding: 2px; border-radius: 3px; border: 1px solid rgba(91, 155, 122, 0.25);">
                   <div style="font-size: 0.5rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 1px;">En Uso</div>
-                  <div style="font-size: 0.7rem; font-weight: 700; color: #6D9488;">⚙️ ${r.cantidadInstalada}</div>
+                  <div style="font-size: 0.7rem; font-weight: 600; color: var(--success);">${r.cantidadInstalada}</div>
                 </div>
                 ` : ''}
                 <div style="text-align: center;">
                   <div style="font-size: 0.5rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 1px;">Mínimo</div>
-                  <div style="font-size: 0.7rem; font-weight: 700; color: #C75300;">${minimo}</div>
+                  <div style="font-size: 0.7rem; font-weight: 600; color: var(--warning);">${minimo}</div>
                 </div>
-                <div style="text-align: center; background: rgba(91, 124, 153, 0.2); padding: 2px; border-radius: 3px;">
+                <div style="text-align: center; background: rgba(91, 139, 180, 0.15); padding: 2px; border-radius: 3px; border: 1px solid rgba(91, 139, 180, 0.25);">
                   <div style="font-size: 0.5rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 1px;">Stock</div>
                   <div style="font-size: 0.75rem; font-weight: 700; color: ${stockColor};">${cantidad}</div>
                 </div>
                 <div style="text-align: center;">
                   <div style="font-size: 0.5rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 1px;">Óptimo</div>
-                  <div style="font-size: 0.7rem; font-weight: 700; color: #527853;">${optimo}</div>
+                  <div style="font-size: 0.7rem; font-weight: 600; color: var(--success);">${optimo}</div>
                 </div>
               </div>
               
@@ -24293,9 +24348,9 @@ class InventarioCompleto {
                 text-align: center;
               ">
                 ${r.ultimoConteo ? `
-                  <span style="color: rgba(255,255,255,0.85); font-size: 0.91rem;">📋 Contadas el ${new Date(r.ultimoConteo).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' })} a las ${new Date(r.ultimoConteo).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span style="color: rgba(255,255,255,0.75); font-size: 0.65rem;">Última verificación: ${new Date(r.ultimoConteo).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' })} - ${new Date(r.ultimoConteo).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</span>
                 ` : `
-                  <span style="color: #C75300; font-size: 0.91rem;">⚠️ Sin conteo previo</span>
+                  <span style="color: var(--warning); font-size: 0.65rem;">Pendiente de verificación</span>
                 `}
               </div>
             </div>
@@ -24303,56 +24358,56 @@ class InventarioCompleto {
         </div>
         <div class="card-footer" style="display: flex; justify-content: center; align-items: center; gap: 8px; padding: 8px 12px;">
           <button class="card-btn" style="
-            background: #4A6278;
-            color: #F7FAFC;
-            border: 1px solid #5B7C99;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.8rem;
+            background: var(--primary);
+            color: white;
+            border: 1px solid rgba(91, 139, 180, 0.3);
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s ease;
             flex: 1;
-            max-width: 100px;
+            max-width: 90px;
           " data-action="edit" data-id="${r.id}" 
-          onmouseover="this.style.background='#5B7C99'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.2)';"
-          onmouseout="this.style.background='#4A6278'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+          onmouseover="this.style.background='#6a9dc4'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
+          onmouseout="this.style.background='var(--primary)'; this.style.boxShadow='none';">
             Editar
           </button>
           
           <button class="card-btn" style="
-            background: #557566;
-            color: #F7FAFC;
-            border: 1px solid #6B8E7F;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.8rem;
+            background: var(--success);
+            color: white;
+            border: 1px solid rgba(91, 155, 122, 0.3);
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s ease;
             flex: 1;
-            max-width: 100px;
+            max-width: 90px;
           " data-action="contar" data-id="${r.id}"
-          onmouseover="this.style.background='#6B8E7F'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.2)';"
-          onmouseout="this.style.background='#557566'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+          onmouseover="this.style.background='#6bae89'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
+          onmouseout="this.style.background='var(--success)'; this.style.boxShadow='none';">
             Contar
           </button>
           
           <button class="card-btn" style="
-            background: #A85555;
-            color: #F7FAFC;
-            border: 1px solid #C76B6B;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.8rem;
+            background: var(--danger);
+            color: white;
+            border: 1px solid rgba(184, 107, 107, 0.3);
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s ease;
             flex: 1;
-            max-width: 100px;
+            max-width: 90px;
           " data-action="delete" data-id="${r.id}"
-          onmouseover="this.style.background='#C76B6B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.2)';"
-          onmouseout="this.style.background='#A85555'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+          onmouseover="this.style.background='#c88080'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
+          onmouseout="this.style.background='var(--danger)'; this.style.boxShadow='none';">
             Eliminar
           </button>
         </div>
@@ -26627,8 +26682,8 @@ class InventarioCompleto {
         <div class="tree-node-hover" style="display: flex; align-items: center; gap: 8px; padding: 6px; background: var(--bg-secondary); border-radius: 4px;">
           <span style="flex: 1; color: var(--text-primary); font-weight: 500; cursor: pointer;" onclick="app.toggleTreeChildren('${childrenId}')">${escapeHtml(area.nombre)}</span>
           <div class="tree-actions" style="gap: 4px;">
-            <button onclick="app.editarNodoJerarquia('area', ${aIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 0.7rem;">✏️</button>
-            <button onclick="app.eliminarNodoJerarquia('area', ${aIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 0.7rem;">🗑️</button>
+            <button onclick="app.editarNodoJerarquia('area', ${aIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 0.7rem;">Editar</button>
+            <button onclick="app.eliminarNodoJerarquia('area', ${aIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 0.7rem;">Eliminar</button>
             <button onclick="app.agregarNodoJerarquia('subArea', ${aIdx})" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 0.7rem;">+ Sub-Área</button>
           </div>
         </div>
@@ -26655,8 +26710,8 @@ class InventarioCompleto {
         <div class="tree-node-hover" style="display: flex; align-items: center; gap: 6px; padding: 4px; background: var(--bg-tertiary); border-radius: 3px;">
           <span style="flex: 1; color: var(--text-primary); font-size: 0.85rem; cursor: pointer;" onclick="app.toggleTreeChildren('${childrenId}')">${escapeHtml(subArea.nombre)}</span>
           <div class="tree-actions" style="gap: 3px;">
-            <button onclick="app.editarNodoJerarquia('subArea', ${aIdx}, ${saIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 5px; border-radius: 2px; cursor: pointer; font-size: 0.65rem;">✏️</button>
-            <button onclick="app.eliminarNodoJerarquia('subArea', ${aIdx}, ${saIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 5px; border-radius: 2px; cursor: pointer; font-size: 0.65rem;">🗑️</button>
+            <button onclick="app.editarNodoJerarquia('subArea', ${aIdx}, ${saIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 5px; border-radius: 2px; cursor: pointer; font-size: 0.65rem;">Editar</button>
+            <button onclick="app.eliminarNodoJerarquia('subArea', ${aIdx}, ${saIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 5px; border-radius: 2px; cursor: pointer; font-size: 0.65rem;">Eliminar</button>
             <button onclick="app.agregarNodoJerarquia('sistema', ${aIdx}, ${saIdx})" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 1px 5px; border-radius: 2px; cursor: pointer; font-size: 0.65rem;">+ Sistema</button>
           </div>
         </div>
@@ -26683,8 +26738,8 @@ class InventarioCompleto {
         <div class="tree-node-hover" style="display: flex; align-items: center; gap: 4px; padding: 3px 6px; background: var(--bg-secondary); border-radius: 3px;">
           <span style="flex: 1; color: var(--text-primary); font-size: 0.75rem; cursor: pointer;" onclick="app.toggleTreeChildren('${childrenId}')">• ${escapeHtml(sistema.nombre)}</span>
           <div class="tree-actions" style="gap: 2px;">
-            <button onclick="app.editarNodoJerarquia('sistema', ${aIdx}, ${saIdx}, ${sIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 4px; border-radius: 2px; cursor: pointer; font-size: 0.6rem;">✏️</button>
-            <button onclick="app.eliminarNodoJerarquia('sistema', ${aIdx}, ${saIdx}, ${sIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 4px; border-radius: 2px; cursor: pointer; font-size: 0.6rem;">🗑️</button>
+            <button onclick="app.editarNodoJerarquia('sistema', ${aIdx}, ${saIdx}, ${sIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 4px; border-radius: 2px; cursor: pointer; font-size: 0.6rem;">Editar</button>
+            <button onclick="app.eliminarNodoJerarquia('sistema', ${aIdx}, ${saIdx}, ${sIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 4px; border-radius: 2px; cursor: pointer; font-size: 0.6rem;">Eliminar</button>
             <button onclick="app.agregarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx})" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 1px 4px; border-radius: 2px; cursor: pointer; font-size: 0.6rem;">+ Sub-Sistema</button>
           </div>
         </div>
@@ -26711,8 +26766,8 @@ class InventarioCompleto {
         <div class="tree-node-hover" style="display: flex; align-items: center; gap: 4px; padding: 2px 5px; background: var(--bg-tertiary); border-radius: 2px;">
           <span style="flex: 1; color: var(--text-primary); font-size: 0.7rem; cursor: pointer;" onclick="app.toggleTreeChildren('${childrenId}')">◦ ${escapeHtml(subSistema.nombre)}</span>
           <div class="tree-actions" style="gap: 2px;">
-            <button onclick="app.editarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.55rem;">✏️</button>
-            <button onclick="app.eliminarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.55rem;">🗑️</button>
+            <button onclick="app.editarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.55rem;">Editar</button>
+            <button onclick="app.eliminarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.55rem;">Eliminar</button>
             <button onclick="app.agregarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.55rem;">+ Sección</button>
           </div>
         </div>
@@ -26739,8 +26794,8 @@ class InventarioCompleto {
         <div class="tree-node-hover" style="display: flex; align-items: center; gap: 3px; padding: 2px 4px; background: var(--bg-secondary); border-radius: 2px;">
           <span style="flex: 1; color: var(--text-primary); font-size: 0.65rem; cursor: pointer;" onclick="app.toggleTreeChildren('${childrenId}')">▪ ${escapeHtml(seccion.nombre)}</span>
           <div class="tree-actions" style="gap: 1px;">
-            <button onclick="app.editarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.5rem;">✏️</button>
-            <button onclick="app.eliminarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.5rem;">🗑️</button>
+            <button onclick="app.editarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.5rem;">Editar</button>
+            <button onclick="app.eliminarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.5rem;">Eliminar</button>
             <button onclick="app.agregarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.5rem;">+ Sub-Sección</button>
           </div>
         </div>
@@ -26759,8 +26814,8 @@ class InventarioCompleto {
       <div class="tree-node-hover" style="margin-bottom: 1px; padding: 1px 3px; background: var(--bg-tertiary); border-radius: 2px; display: flex; align-items: center; gap: 2px;">
         <span style="flex: 1; color: var(--text-primary); font-size: 0.6rem;">- ${escapeHtml(subSeccion.nombre)}</span>
         <div class="tree-actions" style="gap: 1px;">
-          <button onclick="app.editarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 2px; border-radius: 1px; cursor: pointer; font-size: 0.5rem;">✏️</button>
-          <button onclick="app.eliminarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 2px; border-radius: 1px; cursor: pointer; font-size: 0.5rem;">🗑️</button>
+          <button onclick="app.editarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 2px; border-radius: 1px; cursor: pointer; font-size: 0.5rem;">Editar</button>
+          <button onclick="app.eliminarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 2px; border-radius: 1px; cursor: pointer; font-size: 0.5rem;">Eliminar</button>
         </div>
       </div>
     `;
