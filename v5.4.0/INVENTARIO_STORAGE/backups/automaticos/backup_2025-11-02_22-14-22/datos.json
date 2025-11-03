@@ -1,13 +1,13 @@
 {
-  "timestamp": "2025-10-31T04:28:20.473Z",
+  "timestamp": "2025-11-03T01:14:22.295Z",
   "version": "5.3.2",
   "tipo": "BACKUP_COMPLETO",
   "estadisticas": {
     "totalRepuestos": 57,
     "totalMapas": 1,
     "totalAreas": 10,
-    "totalUbicacionesEnMapas": 18,
-    "totalImagenes": 44
+    "totalUbicacionesEnMapas": 15,
+    "totalImagenes": 46
   },
   "repuestos": [
     {
@@ -17,48 +17,6 @@
       "tipo": "",
       "categoria": "Repuesto",
       "nombre": "Chumacera Ovalada de 2 pernos FL206",
-      "ubicaciones": [
-        {
-          "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cinta Curva Filete",
-          "subSistema": "Chumacera Ovalada"
-        },
-        {
-          "mapId": 1760411932641,
-          "areaId": 1761370288328,
-          "markerX": 611.2870547608816,
-          "markerY": 3351.429622890285
-        }
-      ],
-      "planta": "Aquachile Antarfood Chonchi",
-      "areaGeneral": "Planta Principal",
-      "subArea": "Filete",
-      "sistemaEquipo": "Cinta Curva Filete",
-      "subSistema": "Chumacera Ovalada",
-      "seccion": "",
-      "detalle": "",
-      "area": "Planta Principal",
-      "equipo": "Cinta Curva Filete",
-      "sistema": "Chumacera Ovalada",
-      "detalleUbicacion": "",
-      "cantidad": 0,
-      "cantidadInstalada": 4,
-      "minimo": 5,
-      "optimo": 10,
-      "precio": 0,
-      "datosTecnicos": "- Rodamiento SUC 206\n- Chumacera ovalada FL206\n- Eje 30 mm",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-26T05:19:21.661Z",
-      "ultimoConteo": null
-    },
-    {
-      "id": "17613839439910.7621910459836108",
-      "codSAP": "Pendiente",
-      "codProv": "",
-      "tipo": "",
-      "categoria": "Repuesto",
-      "nombre": "Cinta Curva ",
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
@@ -79,13 +37,55 @@
       "sistema": "Cinta Curva",
       "detalleUbicacion": "",
       "cantidad": 0,
+      "cantidadInstalada": 4,
+      "minimo": 5,
+      "optimo": 10,
+      "precio": 0,
+      "datosTecnicos": "- Rodamiento SUC 206\n- Chumacera ovalada FL206\n- Eje 30 mm",
+      "multimedia": [],
+      "ultimaModificacion": "2025-10-31T06:22:00.415Z",
+      "ultimoConteo": null
+    },
+    {
+      "id": "17613839439910.7621910459836108",
+      "codSAP": "Pendiente",
+      "codProv": "",
+      "tipo": "",
+      "categoria": "Repuesto",
+      "nombre": "Cinta Curva ",
+      "ubicaciones": [
+        {
+          "areaGeneral": "Planta Principal",
+          "subArea": "Filete"
+        }
+      ],
+      "planta": "Aquachile Antarfood Chonchi",
+      "areaGeneral": "Planta Principal",
+      "subArea": "Filete",
+      "sistemaEquipo": "",
+      "subSistema": "",
+      "seccion": "",
+      "detalle": "",
+      "area": "Planta Principal",
+      "equipo": "",
+      "sistema": "",
+      "detalleUbicacion": "",
+      "cantidad": 0,
       "cantidadInstalada": 1,
       "minimo": 1,
       "optimo": 1,
       "precio": 0,
       "datosTecnicos": "",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-31T04:25:33.058Z",
+      "multimedia": [
+        {
+          "type": "image",
+          "url": "./imagenes/1762131543014_Pendiente_Cinta_Curva__foto1.webp",
+          "name": "cinta curva.jpg",
+          "size": 174458,
+          "isFileSystem": true
+        }
+      ],
+      "ultimaModificacion": "2025-11-03T00:59:07.389Z",
       "ultimoConteo": null
     },
     {
@@ -98,27 +98,19 @@
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cinta Curva Filete",
-          "subSistema": "Sprocket"
-        },
-        {
-          "mapId": 1760411932641,
-          "areaId": 1761370288328,
-          "markerX": 870.5085732539088,
-          "markerY": 3928.0723492336297
+          "subArea": "Filete"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cinta Curva Filete",
-      "subSistema": "Sprocket",
+      "sistemaEquipo": "",
+      "subSistema": "",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cinta Curva Filete",
-      "sistema": "Sprocket",
+      "equipo": "",
+      "sistema": "",
       "detalleUbicacion": "",
       "cantidad": 0,
       "cantidadInstalada": 8,
@@ -127,7 +119,7 @@
       "precio": 0,
       "datosTecnicos": "",
       "multimedia": [],
-      "ultimaModificacion": "2025-10-26T05:19:11.542Z",
+      "ultimaModificacion": "2025-11-03T01:12:20.384Z",
       "ultimoConteo": null
     },
     {
@@ -140,25 +132,18 @@
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cinta Curva Filete"
-        },
-        {
-          "mapId": 1760411932641,
-          "areaId": 1761370288328,
-          "markerX": 828.4344681513398,
-          "markerY": 3913.175901943701
+          "subArea": "Filete"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cinta Curva Filete",
+      "sistemaEquipo": "",
       "subSistema": "",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cinta Curva Filete",
+      "equipo": "",
       "sistema": "",
       "detalleUbicacion": "",
       "cantidad": 0,
@@ -167,8 +152,16 @@
       "optimo": 1,
       "precio": 0,
       "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-26T05:43:43.323Z",
+      "multimedia": [
+        {
+          "type": "image",
+          "url": "./imagenes/1762132374661_Pendiente_Motor_Cinta_Curva_Filete_foto1.webp",
+          "name": "motor cinta curva.jpg",
+          "size": 89676,
+          "isFileSystem": true
+        }
+      ],
+      "ultimaModificacion": "2025-11-03T01:12:59.818Z",
       "ultimoConteo": null
     },
     {

@@ -1,49 +1,15 @@
 {
-  "timestamp": "2025-10-29T14:45:47.990Z",
+  "timestamp": "2025-11-03T01:21:28.417Z",
   "version": "5.3.2",
   "tipo": "BACKUP_COMPLETO",
   "estadisticas": {
-    "totalRepuestos": 58,
+    "totalRepuestos": 57,
     "totalMapas": 1,
-    "totalAreas": 8,
-    "totalUbicacionesEnMapas": 20,
-    "totalImagenes": 44
+    "totalAreas": 10,
+    "totalUbicacionesEnMapas": 15,
+    "totalImagenes": 46
   },
   "repuestos": [
-    {
-      "id": "17614208477980.4197255682677875",
-      "codSAP": "Pendiente",
-      "codProv": "",
-      "tipo": "",
-      "categoria": "Repuesto",
-      "nombre": "test",
-      "ubicaciones": [
-        {
-          "areaGeneral": "Planta Principal",
-          "subArea": "Empaque"
-        }
-      ],
-      "planta": "Aquachile Antarfood Chonchi",
-      "areaGeneral": "Planta Principal",
-      "subArea": "Empaque",
-      "sistemaEquipo": "",
-      "subSistema": "",
-      "seccion": "",
-      "detalle": "",
-      "area": "Planta Principal",
-      "equipo": "",
-      "sistema": "",
-      "detalleUbicacion": "",
-      "cantidad": 7,
-      "cantidadInstalada": 0,
-      "minimo": 5,
-      "optimo": 10,
-      "precio": 0,
-      "datosTecnicos": "",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-26T05:04:07.429Z",
-      "ultimoConteo": "2025-10-26T01:24:28.277Z"
-    },
     {
       "id": "17613843384470.6770781112528935",
       "codSAP": "Pendiente",
@@ -55,26 +21,20 @@
         {
           "areaGeneral": "Planta Principal",
           "subArea": "Filete",
-          "sistemaEquipo": "Cinta Curva Filete",
-          "subSistema": "Chumacera Ovalada"
-        },
-        {
-          "mapId": 1760411932641,
-          "areaId": 1761370288328,
-          "markerX": 611.2870547608816,
-          "markerY": 3351.429622890285
+          "sistemaEquipo": "Cintas Filete",
+          "subSistema": "Cinta Curva"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cinta Curva Filete",
-      "subSistema": "Chumacera Ovalada",
+      "sistemaEquipo": "Cintas Filete",
+      "subSistema": "Cinta Curva",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cinta Curva Filete",
-      "sistema": "Chumacera Ovalada",
+      "equipo": "Cintas Filete",
+      "sistema": "Cinta Curva",
       "detalleUbicacion": "",
       "cantidad": 0,
       "cantidadInstalada": 4,
@@ -83,7 +43,7 @@
       "precio": 0,
       "datosTecnicos": "- Rodamiento SUC 206\n- Chumacera ovalada FL206\n- Eje 30 mm",
       "multimedia": [],
-      "ultimaModificacion": "2025-10-26T05:19:21.661Z",
+      "ultimaModificacion": "2025-10-31T06:22:00.415Z",
       "ultimoConteo": null
     },
     {
@@ -96,25 +56,18 @@
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cinta Curva Filete"
-        },
-        {
-          "mapId": 1760411932641,
-          "areaId": 1761370288328,
-          "markerX": 654.6672251392314,
-          "markerY": 3917.2374984778376
+          "subArea": "Filete"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cinta Curva Filete",
+      "sistemaEquipo": "",
       "subSistema": "",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cinta Curva Filete",
+      "equipo": "",
       "sistema": "",
       "detalleUbicacion": "",
       "cantidad": 0,
@@ -123,8 +76,16 @@
       "optimo": 1,
       "precio": 0,
       "datosTecnicos": "",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-26T05:18:59.468Z",
+      "multimedia": [
+        {
+          "type": "image",
+          "url": "./imagenes/1762132805812_Pendiente_Cinta_Curva__foto1.webp",
+          "name": "cinta curva.jpg",
+          "size": 217624,
+          "isFileSystem": true
+        }
+      ],
+      "ultimaModificacion": "2025-11-03T01:20:08.672Z",
       "ultimoConteo": null
     },
     {
@@ -137,27 +98,19 @@
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cinta Curva Filete",
-          "subSistema": "Sprocket"
-        },
-        {
-          "mapId": 1760411932641,
-          "areaId": 1761370288328,
-          "markerX": 870.5085732539088,
-          "markerY": 3928.0723492336297
+          "subArea": "Filete"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cinta Curva Filete",
-      "subSistema": "Sprocket",
+      "sistemaEquipo": "",
+      "subSistema": "",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cinta Curva Filete",
-      "sistema": "Sprocket",
+      "equipo": "",
+      "sistema": "",
       "detalleUbicacion": "",
       "cantidad": 0,
       "cantidadInstalada": 8,
@@ -166,7 +119,7 @@
       "precio": 0,
       "datosTecnicos": "",
       "multimedia": [],
-      "ultimaModificacion": "2025-10-26T05:19:11.542Z",
+      "ultimaModificacion": "2025-11-03T01:20:15.094Z",
       "ultimoConteo": null
     },
     {
@@ -179,25 +132,18 @@
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cinta Curva Filete"
-        },
-        {
-          "mapId": 1760411932641,
-          "areaId": 1761370288328,
-          "markerX": 828.4344681513398,
-          "markerY": 3913.175901943701
+          "subArea": "Filete"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cinta Curva Filete",
+      "sistemaEquipo": "",
       "subSistema": "",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cinta Curva Filete",
+      "equipo": "",
       "sistema": "",
       "detalleUbicacion": "",
       "cantidad": 0,
@@ -206,8 +152,16 @@
       "optimo": 1,
       "precio": 0,
       "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-26T05:43:43.323Z",
+      "multimedia": [
+        {
+          "type": "image",
+          "url": "./imagenes/1762132374661_Pendiente_Motor_Cinta_Curva_Filete_foto1.webp",
+          "name": "motor cinta curva.jpg",
+          "size": 89676,
+          "isFileSystem": true
+        }
+      ],
+      "ultimaModificacion": "2025-11-03T01:12:59.818Z",
       "ultimoConteo": null
     },
     {
@@ -1609,15 +1563,14 @@
         }
       ],
       "jerarquia": {
-        "nivel1": "Planta Principal",
-        "nivel2": "Emparillado",
-        "nivel3": "Grader",
-        "nivel4": "Cinta Larga Grader",
-        "nivel5": null
+        "areaGeneral": "Planta Principal",
+        "subArea": "Eviscerado",
+        "sistemaEquipo": "Grader",
+        "subSistema": "Cinta Larga Grader"
       },
       "equipos": [],
       "createdAt": "2025-10-21T22:13:13.014Z",
-      "updatedAt": "2025-10-21T22:15:12.983Z"
+      "updatedAt": "2025-10-30T22:35:03.084Z"
     },
     {
       "id": 1761364821364,
@@ -1689,15 +1642,12 @@
         }
       ],
       "jerarquia": {
-        "nivel1": "Planta Principal",
-        "nivel2": "EVISCERADO",
-        "nivel3": "Cinta Transversal Salida Baader 142",
-        "nivel4": null,
-        "nivel5": null
+        "areaGeneral": "Planta Principal",
+        "subArea": "Eviscerado"
       },
       "equipos": [],
       "createdAt": "2025-10-25T05:21:40.833Z",
-      "updatedAt": "2025-10-25T05:21:40.833Z"
+      "updatedAt": "2025-10-30T22:36:03.713Z"
     },
     {
       "id": 1761370288328,
@@ -1769,15 +1719,133 @@
         }
       ],
       "jerarquia": {
-        "nivel1": "Planta Principal",
-        "nivel2": "Filete",
-        "nivel3": "Cinta Curva Filete",
-        "nivel4": null,
-        "nivel5": null
+        "areaGeneral": "Planta Principal",
+        "subArea": "Filete",
+        "sistemaEquipo": "Cinta Curva Filete"
       },
       "equipos": [],
       "createdAt": "2025-10-25T05:31:28.328Z",
-      "updatedAt": "2025-10-25T05:31:28.328Z"
+      "updatedAt": "2025-10-30T22:35:38.755Z"
+    },
+    {
+      "id": 1761752088945,
+      "mapId": 1760411932641,
+      "name": "Filete",
+      "color": "#4589f7",
+      "opacity": 0.11,
+      "category": "area",
+      "labelOffsetX": 0,
+      "labelOffsetY": 0,
+      "parentId": null,
+      "children": [],
+      "points": [
+        {
+          "x": 494.28410528420574,
+          "y": 4183.22390817257
+        },
+        {
+          "x": 489.22985184500976,
+          "y": 3180.138643246442
+        },
+        {
+          "x": 1560.2726345894419,
+          "y": 3178.058948522666
+        },
+        {
+          "x": 1561.3828660685879,
+          "y": 2194.1262336991467
+        },
+        {
+          "x": 2009.5138943754757,
+          "y": 2193.3524555534527
+        },
+        {
+          "x": 2009.1100096464681,
+          "y": 2432.04833039692
+        },
+        {
+          "x": 2171.0677859784987,
+          "y": 2433.2599845839422
+        },
+        {
+          "x": 2170.2160716632634,
+          "y": 4187.631950259447
+        }
+      ],
+      "jerarquia": {
+        "planta": "Antarfood Aquachile Chonchi",
+        "areaGeneral": "Planta Principal",
+        "subArea": "Filete"
+      },
+      "equipos": [],
+      "createdAt": "2025-10-29T15:34:48.945Z",
+      "updatedAt": "2025-10-30T22:36:42.421Z"
+    },
+    {
+      "id": 1761862661720,
+      "mapId": 1760411932641,
+      "name": "Eviscerado",
+      "color": "#f73b3b",
+      "opacity": 0.11,
+      "category": "area",
+      "labelOffsetX": 0,
+      "labelOffsetY": 0,
+      "parentId": null,
+      "children": [],
+      "points": [
+        {
+          "x": 1555.0766456464694,
+          "y": 2181.7460804942257
+        },
+        {
+          "x": 1556.6522331719189,
+          "y": 1727.9768731647773
+        },
+        {
+          "x": 1952.1247020597368,
+          "y": 1727.9768731647773
+        },
+        {
+          "x": 1952.1247020597368,
+          "y": 1627.1392715360112
+        },
+        {
+          "x": 3816.761021034607,
+          "y": 1625.088209350335
+        },
+        {
+          "x": 3818.4867614474692,
+          "y": 2220.4686517877835
+        },
+        {
+          "x": 3404.3090623605485,
+          "y": 2218.7429113749213
+        },
+        {
+          "x": 3081.595605155323,
+          "y": 2651.903755003326
+        },
+        {
+          "x": 2179.0333692284084,
+          "y": 2655.3552358290503
+        },
+        {
+          "x": 2179.0333692284084,
+          "y": 2424.1060205055196
+        },
+        {
+          "x": 2025.4424724836751,
+          "y": 2425.831760918382
+        },
+        {
+          "x": 2025.0527762546076,
+          "y": 2184.134838816987
+        }
+      ],
+      "jerarquia": {},
+      "equipos": [],
+      "createdAt": "2025-10-30T22:17:41.720Z",
+      "updatedAt": "2025-10-30T22:18:02.548Z"
     }
   ],
   "metadata": {

@@ -45,21 +45,19 @@
     "ubicaciones": [
       {
         "areaGeneral": "Planta Principal",
-        "subArea": "Filete",
-        "sistemaEquipo": "Cintas Filete",
-        "subSistema": "Cinta Curva"
+        "subArea": "Filete"
       }
     ],
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Filete",
-    "sistemaEquipo": "Cintas Filete",
-    "subSistema": "Cinta Curva",
+    "sistemaEquipo": "",
+    "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Cintas Filete",
-    "sistema": "Cinta Curva",
+    "equipo": "",
+    "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 0,
     "cantidadInstalada": 1,
@@ -67,8 +65,16 @@
     "optimo": 1,
     "precio": 0,
     "datosTecnicos": "",
-    "multimedia": [],
-    "ultimaModificacion": "2025-10-31T06:21:32.453Z",
+    "multimedia": [
+      {
+        "type": "image",
+        "url": "./imagenes/1762132805812_Pendiente_Cinta_Curva__foto1.webp",
+        "name": "cinta curva.jpg",
+        "size": 217624,
+        "isFileSystem": true
+      }
+    ],
+    "ultimaModificacion": "2025-11-03T01:35:06.920Z",
     "ultimoConteo": null
   },
   {
@@ -81,21 +87,19 @@
     "ubicaciones": [
       {
         "areaGeneral": "Planta Principal",
-        "subArea": "Filete",
-        "sistemaEquipo": "Cintas Filete",
-        "subSistema": "Cinta Curva"
+        "subArea": "Filete"
       }
     ],
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Filete",
-    "sistemaEquipo": "Cintas Filete",
-    "subSistema": "Cinta Curva",
+    "sistemaEquipo": "",
+    "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Cintas Filete",
-    "sistema": "Cinta Curva",
+    "equipo": "",
+    "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 0,
     "cantidadInstalada": 8,
@@ -104,7 +108,7 @@
     "precio": 0,
     "datosTecnicos": "",
     "multimedia": [],
-    "ultimaModificacion": "2025-10-31T06:21:06.323Z",
+    "ultimaModificacion": "2025-11-03T01:34:12.004Z",
     "ultimoConteo": null
   },
   {
@@ -117,21 +121,19 @@
     "ubicaciones": [
       {
         "areaGeneral": "Planta Principal",
-        "subArea": "Filete",
-        "sistemaEquipo": "Cintas Filete",
-        "subSistema": "Cinta Curva"
+        "subArea": "Filete"
       }
     ],
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Filete",
-    "sistemaEquipo": "Cintas Filete",
-    "subSistema": "Cinta Curva",
+    "sistemaEquipo": "",
+    "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Cintas Filete",
-    "sistema": "Cinta Curva",
+    "equipo": "",
+    "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 0,
     "cantidadInstalada": 1,
@@ -139,8 +141,16 @@
     "optimo": 1,
     "precio": 0,
     "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
-    "multimedia": [],
-    "ultimaModificacion": "2025-10-31T06:34:17.781Z",
+    "multimedia": [
+      {
+        "type": "image",
+        "url": "./imagenes/1762132805812_Pendiente_Cinta_Curva__foto1.webp",
+        "name": "1762132805812_Pendiente_Cinta_Curva__foto1.webp",
+        "size": 217624,
+        "isFileSystem": true
+      }
+    ],
+    "ultimaModificacion": "2025-11-03T01:12:59.818Z",
     "ultimoConteo": null
   },
   {

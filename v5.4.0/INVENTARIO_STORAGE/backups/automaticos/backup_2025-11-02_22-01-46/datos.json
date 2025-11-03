@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-31T06:23:13.332Z",
+  "timestamp": "2025-11-03T01:01:46.319Z",
   "version": "5.3.2",
   "tipo": "BACKUP_COMPLETO",
   "estadisticas": {
@@ -7,7 +7,7 @@
     "totalMapas": 1,
     "totalAreas": 10,
     "totalUbicacionesEnMapas": 15,
-    "totalImagenes": 44
+    "totalImagenes": 45
   },
   "repuestos": [
     {
@@ -56,21 +56,19 @@
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cintas Filete",
-          "subSistema": "Cinta Curva"
+          "subArea": "Filete"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cintas Filete",
-      "subSistema": "Cinta Curva",
+      "sistemaEquipo": "",
+      "subSistema": "",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cintas Filete",
-      "sistema": "Cinta Curva",
+      "equipo": "",
+      "sistema": "",
       "detalleUbicacion": "",
       "cantidad": 0,
       "cantidadInstalada": 1,
@@ -78,8 +76,16 @@
       "optimo": 1,
       "precio": 0,
       "datosTecnicos": "",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-31T06:21:32.453Z",
+      "multimedia": [
+        {
+          "type": "image",
+          "url": "./imagenes/1762131543014_Pendiente_Cinta_Curva__foto1.webp",
+          "name": "cinta curva.jpg",
+          "size": 174458,
+          "isFileSystem": true
+        }
+      ],
+      "ultimaModificacion": "2025-11-03T00:59:07.389Z",
       "ultimoConteo": null
     },
     {
@@ -151,7 +157,7 @@
       "precio": 0,
       "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
       "multimedia": [],
-      "ultimaModificacion": "2025-10-31T06:20:08.306Z",
+      "ultimaModificacion": "2025-10-31T06:34:17.781Z",
       "ultimoConteo": null
     },
     {
