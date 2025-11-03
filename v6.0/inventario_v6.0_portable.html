@@ -2421,8 +2421,8 @@
 
     .modal-content {
       background: var(--bg-secondary);
-      border-radius: var(--radius-lg);
-      padding: 24px;
+      border-radius: 8px;
+      padding: 20px;
       max-width: calc(100vw - 20px);
       width: 800px;
       max-height: 95vh;
@@ -2430,7 +2430,7 @@
       box-shadow: var(--shadow-lg);
       position: relative;
       border: 1px solid var(--border-color);
-      animation: slideUp 0.3s ease;
+      animation: slideUp 0.25s ease;
       display: flex;
       flex-direction: column;
       margin: auto;
@@ -2469,35 +2469,37 @@
 
     .modal-close {
       position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 40px;
-      height: 40px;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
       border: none;
-      background: var(--danger);
+      background: rgba(184, 107, 107, 0.9);
       color: white;
-      border-radius: 50%;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 24px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 500;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s;
+      transition: all 0.2s ease;
       z-index: 10;
     }
 
     .modal-close:hover {
-      background: #b91c1c;
-      transform: rotate(90deg);
+      background: var(--danger);
+      box-shadow: var(--shadow-sm);
     }
 
     .modal-title {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 24px;
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 20px;
       padding-right: 50px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 12px;
     }
 
     .form-group {
@@ -2508,7 +2510,7 @@
 
     .form-group label {
       display: block;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--text-primary);
       margin-bottom: 4px;
       font-size: 0.85rem;
@@ -2517,10 +2519,10 @@
     .form-control {
       width: 100%;
       padding: 8px 12px;
-      border: 2px solid var(--border-color);
+      border: 1px solid var(--border-color);
       border-radius: 6px;
       font-size: 0.9rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
       font-family: inherit;
       background: var(--bg-primary);
       color: var(--text-primary);
@@ -2529,13 +2531,13 @@
     .form-control:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(91, 124, 153, 0.2);
+      box-shadow: 0 0 0 3px rgba(91, 139, 180, 0.1);
       background: var(--bg-secondary);
-      transform: translateY(-1px);
     }
 
     .form-control::placeholder {
-      color: rgba(100, 116, 139, 0.2);
+      color: var(--text-secondary);
+      opacity: 0.6;
     }
 
     .form-row {
@@ -2574,12 +2576,63 @@
     }
     
     .multimedia-preview {
-      max-height: 140px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      max-height: 300px;
       overflow-y: auto;
-      padding: 6px;
+      padding: 10px;
       background: var(--bg-primary);
       border-radius: 6px;
       border: 1px solid var(--border-color);
+    }
+    
+    .preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .preview-delete {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .preview-delete:hover {
+      background: #d63031;
+    }
+    
+    .preview-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      font-size: 0.7rem;
+      padding: 4px;
+      text-align: center;
     }
     
     .multimedia-preview::-webkit-scrollbar {
@@ -7133,13 +7186,17 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  margin-bottom: 12px;
 }
 
 .form-label-space-between {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-primary);
 }
 
 .form-upload-mode {
@@ -7185,6 +7242,269 @@
   margin-top: 6px;
   font-size: 0.8rem;
   color: var(--text-secondary);
+}
+
+/* Zona de carga de imágenes mejorada */
+.image-upload-zone {
+  border: 2px dashed var(--primary);
+  border-radius: 6px;
+  padding: 24px 16px;
+  text-align: center;
+  background: rgba(91, 139, 180, 0.04);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.image-upload-zone:hover {
+  background: rgba(91, 139, 180, 0.08);
+  border-color: rgba(91, 139, 180, 0.8);
+}
+
+.upload-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  opacity: 0.6;
+}
+
+.upload-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.upload-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Modal Optimizador de Imágenes */
+.optimizer-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.optimizer-modal.active {
+  display: flex;
+}
+
+.optimizer-content {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.optimizer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.optimizer-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+}
+
+.optimizer-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  line-height: 1;
+}
+
+.optimizer-close:hover {
+  color: var(--danger);
+}
+
+.optimizer-body {
+  padding: 20px;
+}
+
+.optimizer-preview {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+  align-items: center;
+}
+
+.preview-original,
+.preview-optimized {
+  text-align: center;
+}
+
+.preview-original h4,
+.preview-optimized h4 {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.preview-original img,
+.preview-optimized img {
+  max-width: 100%;
+  max-height: 250px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+}
+
+.preview-info {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.preview-arrow {
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+.savings-badge {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--success);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+.savings-badge strong {
+  font-size: 1.1rem;
+}
+
+.optimizer-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.control-group label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.size-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.size-btn {
+  padding: 12px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.size-btn span {
+  display: block;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.size-btn small {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.size-btn:hover {
+  border-color: var(--primary);
+  background: rgba(91, 139, 180, 0.1);
+}
+
+.size-btn.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.size-btn.active span,
+.size-btn.active small {
+  color: white;
+}
+
+#qualitySlider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border-color);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#qualitySlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+}
+
+#qualitySlider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: none;
+}
+
+.control-group small {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.optimizer-footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  justify-content: flex-end;
+}
+
+.optimizer-footer .btn {
+  min-width: 150px;
 }
 
 .form-actions {
@@ -9040,26 +9360,110 @@
       <div class="form-multimedia-grid">
         <div class="form-group">
           <label class="form-label-space-between">
-            <span>📸 Imágenes</span>
-            <small id="image-upload-mode" class="form-upload-mode" title="Compresión automática WebP">Auto</small>
+            <span>Imágenes</span>
+            <small id="image-upload-mode" class="form-upload-mode" title="Optimización automática WebP">WebP Auto</small>
           </label>
           
-          <!-- Input de Imágenes (PC) -->
+          <!-- Botón de selección de imágenes mejorado -->
+          <div class="image-upload-zone" onclick="document.getElementById('imagenFile').click()">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text">Click para seleccionar imágenes</div>
+            <div class="upload-hint">Formatos: JPG, PNG, WebP (máx. 10MB)</div>
+          </div>
+          
+          <!-- Input de Imágenes (oculto) -->
           <input type="file" 
-                 class="form-control form-input-file" 
+                 class="form-input-hidden" 
                  id="imagenFile"
                  accept="image/*" 
                  multiple 
-                 onchange="app.handleMultimedia(event, 'image')"
+                 onchange="app.handleImageWithOptimizer(event)"
                  aria-label="Seleccionar imágenes">
           
           <div id="imagePreview" class="multimedia-preview multimedia-preview-margin"></div>
         </div>
         
         <div class="form-group">
-          <label class="form-label-margin">📎 Documentos</label>
+          <label class="form-label-margin">Documentos</label>
           <input type="file" class="form-control form-input-file" id="documentos" accept=".pdf,.doc,.docx,.xls,.xlsx,video/*" multiple onchange="app.handleMultimedia(event, 'document')" aria-label="Seleccionar documentos">
           <div id="documentsList" class="documents-list"></div>
+        </div>
+      </div>
+      
+      <!-- Modal Optimizador de Imágenes -->
+      <div id="optimizerModal" class="optimizer-modal">
+        <div class="optimizer-content">
+          <div class="optimizer-header">
+            <h3>Optimizador de Imágenes</h3>
+            <button type="button" class="optimizer-close" onclick="app.closeOptimizer()">×</button>
+          </div>
+          
+          <div class="optimizer-body">
+            <div class="optimizer-preview">
+              <div class="preview-original">
+                <h4>Original</h4>
+                <img id="optimizerOriginal" src="" alt="Original">
+                <div class="preview-info">
+                  <span id="originalSize">-</span>
+                  <span id="originalDimensions">-</span>
+                </div>
+              </div>
+              
+              <div class="preview-arrow">→</div>
+              
+              <div class="preview-optimized">
+                <h4>Optimizada</h4>
+                <img id="optimizerOptimized" src="" alt="Optimizada">
+                <div class="preview-info">
+                  <span id="optimizedSize">-</span>
+                  <span id="optimizedDimensions">-</span>
+                </div>
+                <div class="savings-badge" id="savingsBadge">
+                  Ahorro: <strong>0%</strong>
+                </div>
+              </div>
+            </div>
+            
+            <div class="optimizer-controls">
+              <div class="control-group">
+                <label>Tamaño de optimización:</label>
+                <div class="size-options">
+                  <button type="button" class="size-btn" data-size="800" onclick="app.setOptimizeSize(800)">
+                    <span>Pequeño</span>
+                    <small>800px</small>
+                  </button>
+                  <button type="button" class="size-btn active" data-size="1200" onclick="app.setOptimizeSize(1200)">
+                    <span>Mediano</span>
+                    <small>1200px</small>
+                  </button>
+                  <button type="button" class="size-btn" data-size="1600" onclick="app.setOptimizeSize(1600)">
+                    <span>Grande</span>
+                    <small>1600px</small>
+                  </button>
+                  <button type="button" class="size-btn" data-size="original" onclick="app.setOptimizeSize('original')">
+                    <span>Original</span>
+                    <small>Sin redimensionar</small>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="control-group">
+                <label>Calidad WebP: <span id="qualityValue">85%</span></label>
+                <input type="range" id="qualitySlider" min="60" max="95" value="85" 
+                       oninput="app.updateQuality(this.value)">
+                <small>60% (máxima compresión) - 95% (máxima calidad)</small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="optimizer-footer">
+            <button type="button" class="btn btn-secondary" onclick="app.skipOptimization()">
+              Usar Original
+            </button>
+            <button type="button" class="btn btn-success" onclick="app.applyOptimization()">
+              Aplicar Optimización
+            </button>
+          </div>
         </div>
       </div>
       
@@ -22635,27 +23039,12 @@ class InventarioCompleto {
       console.log(`📸 Disponibles: ${imagenesDisponibles.length} imágenes en carpeta`);
       
       let reparadas = 0;
-      let nuevasVinculadas = 0;
+      let eliminadas = 0;
       
+      // SOLO VERIFICAR Y REPARAR REPUESTOS QUE YA TIENEN IMÁGENES
       for (const repuesto of this.repuestos) {
         if (!repuesto.multimedia || repuesto.multimedia.length === 0) {
-          // No tiene imágenes, intentar vincular
-          const imagenCoincidente = await this.buscarImagenPorNombre(repuesto.nombre, imagenesDisponibles);
-          if (imagenCoincidente) {
-            const fileHandle = await fsManager.imagesFolder.getFileHandle(imagenCoincidente);
-            const file = await fileHandle.getFile();
-            
-            repuesto.multimedia = [{
-              type: 'image',
-              url: `./imagenes/${imagenCoincidente}`,
-              name: imagenCoincidente,
-              size: file.size,
-              isFileSystem: true
-            }];
-            
-            nuevasVinculadas++;
-            console.log(`  🆕 ${repuesto.nombre} → ${imagenCoincidente}`);
-          }
+          // No tiene imágenes, NO hacer nada (no vincular automáticamente)
           continue;
         }
         
@@ -22703,7 +23092,9 @@ class InventarioCompleto {
               reparadas++;
               console.log(`  🔧 Reparada: ${nombreArchivo} → ${imagenReemplazo}`);
             } else {
-              console.log(`  ⚠️ No se encontró reemplazo para: ${nombreArchivo}`);
+              // NO se encontró reemplazo, eliminar referencia rota
+              console.log(`  🗑️ Eliminando referencia rota: ${nombreArchivo}`);
+              eliminadas++;
             }
           }
         }
@@ -22713,12 +23104,12 @@ class InventarioCompleto {
       
       console.log(`✅ Reparación completada:`);
       console.log(`   🔧 Imágenes reparadas: ${reparadas}`);
-      console.log(`   🆕 Imágenes vinculadas: ${nuevasVinculadas}`);
+      console.log(`   🗑️ Referencias rotas eliminadas: ${eliminadas}`);
       
       // Guardar cambios si hubo modificaciones
-      if (reparadas > 0 || nuevasVinculadas > 0) {
+      if (reparadas > 0 || eliminadas > 0) {
         await this.saveData();
-        this.showToast(`✅ ${reparadas} imágenes reparadas, ${nuevasVinculadas} vinculadas`, 'success');
+        this.showToast(`✅ ${reparadas} reparadas, ${eliminadas} referencias rotas eliminadas`, 'success');
         this.actualizarVistaActual();
       } else {
         this.showToast('✅ No se encontraron imágenes rotas', 'info');
@@ -22775,8 +23166,14 @@ class InventarioCompleto {
 
   // Vincular imágenes automáticamente SIN confirmación (versión silenciosa)
   async vincularImagenesSilencioso() {
-    // Usar la nueva función de reparación que es más completa
-    await this.repararImagenesRotas();
+    // Esta función ahora solo repara referencias rotas, NO vincula nuevas imágenes
+    // Para vincular nuevas imágenes, usar el botón manual desde CONFIGURACIÓN
+    try {
+      await this.repararImagenesRotas();
+    } catch (error) {
+      console.error('Error en reparación silenciosa:', error);
+      // NO mostrar toast para no molestar al usuario
+    }
   }
 
   async loadData() {
@@ -22811,11 +23208,9 @@ class InventarioCompleto {
         console.log(`📊 [DIAGNÓSTICO] Repuestos CON imágenes: ${conImagenes}`);
         console.log(`📊 [DIAGNÓSTICO] Repuestos SIN imágenes: ${sinImagenes}`);
         
-        // 🔗 VINCULAR IMÁGENES AUTOMÁTICAMENTE si hay repuestos sin imágenes
-        if (sinImagenes > 0 && fsManager.isFileSystemMode && fsManager.imagesFolder) {
-          console.log('🔗 Vinculando imágenes automáticamente (silencioso)...');
-          await this.vincularImagenesSilencioso();
-        }
+        // ⚠️ VINCULACIÓN AUTOMÁTICA DESACTIVADA
+        // Se ha desactivado la vinculación automática de imágenes al cargar
+        // para evitar duplicaciones y errores. Usar el botón manual si es necesario.
         
         this.loadMapData();
         return; // Salir, ya cargamos desde FileSystem
@@ -25683,6 +26078,296 @@ class InventarioCompleto {
       };
       reader.readAsDataURL(file);
     });
+  }
+
+  // ========================================
+  // OPTIMIZADOR DE IMÁGENES INTERACTIVO
+  // ========================================
+  currentImageFile = null;
+  currentOptimizeSize = 1200;
+  currentQuality = 0.85;
+  
+  async handleImageWithOptimizer(event) {
+    const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+    
+    // Si hay múltiples archivos, procesarlos uno por uno
+    for (const file of files) {
+      await this.showOptimizerModal(file);
+    }
+    
+    // Limpiar el input para permitir seleccionar las mismas imágenes
+    event.target.value = '';
+  }
+  
+  async showOptimizerModal(file) {
+    this.currentImageFile = file;
+    
+    return new Promise((resolve) => {
+      const modal = document.getElementById('optimizerModal');
+      const originalImg = document.getElementById('optimizerOriginal');
+      const optimizedImg = document.getElementById('optimizerOptimized');
+      const originalSize = document.getElementById('originalSize');
+      const originalDimensions = document.getElementById('originalDimensions');
+      
+      modal.classList.add('active');
+      
+      // Cargar imagen original
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const img = new Image();
+        img.onload = async () => {
+          originalImg.src = e.target.result;
+          originalSize.textContent = `Tamaño: ${(file.size / 1024).toFixed(1)} KB`;
+          originalDimensions.textContent = `${img.width} × ${img.height} px`;
+          
+          // Generar preview optimizada inicial
+          await this.updateOptimizedPreview(e.target.result, img.width, img.height);
+          
+          this.optimizerResolve = resolve;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  
+  async updateOptimizedPreview(originalDataUrl, originalWidth, originalHeight) {
+    const optimizedImg = document.getElementById('optimizerOptimized');
+    const optimizedSize = document.getElementById('optimizedSize');
+    const optimizedDimensions = document.getElementById('optimizedDimensions');
+    const savingsBadge = document.getElementById('savingsBadge');
+    
+    // Crear canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    img.onload = () => {
+      // Calcular nuevas dimensiones
+      let width = originalWidth;
+      let height = originalHeight;
+      
+      if (this.currentOptimizeSize !== 'original') {
+        const maxSize = this.currentOptimizeSize;
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = (height / width) * maxSize;
+            width = maxSize;
+          } else {
+            width = (width / height) * maxSize;
+            height = maxSize;
+          }
+        }
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // Convertir a WebP con calidad especificada
+      const optimizedDataUrl = canvas.toDataURL('image/webp', this.currentQuality);
+      optimizedImg.src = optimizedDataUrl;
+      
+      // Calcular tamaños
+      const optimizedSizeBytes = optimizedDataUrl.length * 0.75; // Aproximado
+      const originalSizeBytes = this.currentImageFile.size;
+      const savings = ((originalSizeBytes - optimizedSizeBytes) / originalSizeBytes * 100).toFixed(1);
+      
+      optimizedSize.textContent = `Tamaño: ${(optimizedSizeBytes / 1024).toFixed(1)} KB`;
+      optimizedDimensions.textContent = `${Math.round(width)} × ${Math.round(height)} px`;
+      savingsBadge.innerHTML = `Ahorro: <strong>${savings}%</strong>`;
+      savingsBadge.style.background = savings > 50 ? 'var(--success)' : savings > 30 ? 'var(--warning)' : 'var(--danger)';
+      
+      // Guardar para uso posterior
+      this.currentOptimizedDataUrl = optimizedDataUrl;
+    };
+    
+    img.src = originalDataUrl;
+  }
+  
+  setOptimizeSize(size) {
+    this.currentOptimizeSize = size;
+    
+    // Actualizar botones activos
+    document.querySelectorAll('.size-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.size == size) {
+        btn.classList.add('active');
+      }
+    });
+    
+    // Regenerar preview
+    const originalImg = document.getElementById('optimizerOriginal');
+    if (originalImg.src) {
+      const img = new Image();
+      img.onload = () => {
+        this.updateOptimizedPreview(originalImg.src, img.width, img.height);
+      };
+      img.src = originalImg.src;
+    }
+  }
+  
+  updateQuality(value) {
+    this.currentQuality = value / 100;
+    document.getElementById('qualityValue').textContent = value + '%';
+    
+    // Regenerar preview
+    const originalImg = document.getElementById('optimizerOriginal');
+    if (originalImg.src) {
+      const img = new Image();
+      img.onload = () => {
+        this.updateOptimizedPreview(originalImg.src, img.width, img.height);
+      };
+      img.src = originalImg.src;
+    }
+  }
+  
+  async applyOptimization() {
+    const modal = document.getElementById('optimizerModal');
+    modal.style.display = 'none';
+    
+    // Convertir dataURL a Blob
+    const blob = await this.dataURLtoBlob(this.currentOptimizedDataUrl);
+    
+    // Agregar a multimedia
+    if (!this.currentMultimedia) this.currentMultimedia = [];
+    
+    const isFileSystemMode = fsManager && fsManager.isFileSystemMode;
+    
+    if (isFileSystemMode) {
+      // Guardar en FileSystem
+      const timestamp = Date.now();
+      const codSAP = document.getElementById('codSAP')?.value || 'SAP';
+      const nombreRepuesto = document.getElementById('nombre')?.value || 'REPUESTO';
+      const imageIndex = this.currentMultimedia.length + 1;
+      
+      const cleanCodSAP = codSAP.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+      const cleanNombre = nombreRepuesto.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
+      const filename = `${timestamp}_${cleanCodSAP}_${cleanNombre}_foto${imageIndex}.webp`;
+      
+      const imagePath = await this.fsManager.saveImage(blob, filename);
+      
+      if (imagePath) {
+        this.currentMultimedia.push({
+          type: 'image',
+          url: imagePath,
+          name: this.currentImageFile.name,
+          size: blob.size,
+          isFileSystem: true
+        });
+      }
+    } else {
+      // Guardar en IndexedDB
+      const blobUrl = URL.createObjectURL(blob);
+      this.currentMultimedia.push({
+        type: 'image',
+        url: this.currentOptimizedDataUrl,
+        name: this.currentImageFile.name,
+        size: blob.size,
+        blob: blob
+      });
+    }
+    
+    this.updateImagePreview();
+    this.showToast(`Imagen optimizada agregada (${(blob.size / 1024).toFixed(1)} KB)`, 'success');
+    
+    if (this.optimizerResolve) {
+      this.optimizerResolve();
+    }
+  }
+  
+  skipOptimization() {
+    const modal = document.getElementById('optimizerModal');
+    modal.style.display = 'none';
+    
+    // Usar imagen original sin optimizar
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      if (!this.currentMultimedia) this.currentMultimedia = [];
+      
+      const isFileSystemMode = fsManager && fsManager.isFileSystemMode;
+      
+      if (isFileSystemMode) {
+        const timestamp = Date.now();
+        const codSAP = document.getElementById('codSAP')?.value || 'SAP';
+        const nombreRepuesto = document.getElementById('nombre')?.value || 'REPUESTO';
+        const imageIndex = this.currentMultimedia.length + 1;
+        
+        const cleanCodSAP = codSAP.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+        const cleanNombre = nombreRepuesto.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
+        const ext = this.currentImageFile.name.split('.').pop();
+        const filename = `${timestamp}_${cleanCodSAP}_${cleanNombre}_foto${imageIndex}.${ext}`;
+        
+        const imagePath = await this.fsManager.saveImage(this.currentImageFile, filename);
+        
+        if (imagePath) {
+          this.currentMultimedia.push({
+            type: 'image',
+            url: imagePath,
+            name: this.currentImageFile.name,
+            size: this.currentImageFile.size,
+            isFileSystem: true
+          });
+        }
+      } else {
+        this.currentMultimedia.push({
+          type: 'image',
+          url: e.target.result,
+          name: this.currentImageFile.name,
+          size: this.currentImageFile.size,
+          blob: this.currentImageFile
+        });
+      }
+      
+      this.updateImagePreview();
+      this.showToast('Imagen original agregada', 'info');
+      
+      if (this.optimizerResolve) {
+        this.optimizerResolve();
+      }
+    };
+    reader.readAsDataURL(this.currentImageFile);
+  }
+  
+  closeOptimizer() {
+    const modal = document.getElementById('optimizerModal');
+    modal.classList.remove('active');
+    
+    if (this.optimizerResolve) {
+      this.optimizerResolve();
+    }
+  }
+  
+  dataURLtoBlob(dataURL) {
+    return new Promise((resolve) => {
+      const arr = dataURL.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      resolve(new Blob([u8arr], { type: mime }));
+    });
+  }
+  
+  updateImagePreview() {
+    const preview = document.getElementById('imagePreview');
+    if (!this.currentMultimedia || this.currentMultimedia.filter(m => m.type === 'image').length === 0) {
+      preview.innerHTML = '';
+      return;
+    }
+    
+    const images = this.currentMultimedia.filter(m => m.type === 'image');
+    preview.innerHTML = images.map((media, index) => `
+      <div class="preview-item">
+        <img src="${media.url}" alt="Preview ${index + 1}">
+        <button type="button" class="preview-delete" onclick="app.removeMultimedia(${index})">×</button>
+        <div class="preview-info">${(media.size / 1024).toFixed(1)} KB</div>
+      </div>
+    `).join('');
   }
 
   async handleMultimedia(event, type) {
