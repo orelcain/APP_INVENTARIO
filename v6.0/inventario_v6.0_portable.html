@@ -2986,41 +2986,787 @@
       z-index: 3001;
     }
 
-    /* TOAST NOTIFICATIONS */
+    /* TOAST NOTIFICATIONS - VERSIÓN CORPORATIVA MEJORADA */
     .toast {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      padding: 16px 24px;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 20px rgba(59, 130, 246, 0.3);
-      border: 1px solid var(--border-color);
-      animation: slideInLeft 0.3s ease;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: #334155;
+      padding: 18px 24px;
+      border-radius: 16px;
+      box-shadow: 
+        0 20px 60px rgba(0,0,0,0.15),
+        0 8px 32px rgba(0,0,0,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      animation: slideInLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 4000;
       font-weight: 600;
-      border-left: 4px solid var(--primary);
-      max-width: 400px;
-      min-width: 250px;
+      max-width: 420px;
+      min-width: 280px;
       word-wrap: break-word;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      backdrop-filter: blur(20px) saturate(180%);
+      cursor: pointer;
+      overflow: hidden;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Indicador de tipo con línea lateral */
+    .toast::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--toast-accent, #64748b);
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Icono del tipo de notificación */
+    .toast::after {
+      content: var(--toast-icon, 'ℹ️');
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      opacity: 0.7;
+    }
+
+    /* Efectos hover - mantener fijo */
+    .toast:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 
+        0 25px 80px rgba(0,0,0,0.2),
+        0 12px 40px rgba(0,0,0,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+      background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+
+    /* Estados por tipo - COLORES CORPORATIVOS SUTILES */
+    .toast.toast-success {
+      --toast-accent: #059669;
+      --toast-icon: '✅';
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      color: #065f46;
+      border-color: rgba(5, 150, 105, 0.2);
+    }
+
+    .toast.toast-success:hover {
+      background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+    }
+
+    .toast.toast-error {
+      --toast-accent: #dc2626;
+      --toast-icon: '❌';
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      color: #7f1d1d;
+      border-color: rgba(220, 38, 38, 0.2);
+    }
+
+    .toast.toast-error:hover {
+      background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+    }
+
+    .toast.toast-warning {
+      --toast-accent: #d97706;
+      --toast-icon: '⚠️';
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      color: #92400e;
+      border-color: rgba(217, 119, 6, 0.2);
+    }
+
+    .toast.toast-warning:hover {
+      background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+    }
+
+    .toast.toast-info {
+      --toast-accent: #2563eb;
+      --toast-icon: 'ℹ️';
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      color: #1e40af;
+      border-color: rgba(37, 99, 235, 0.2);
+    }
+
+    .toast.toast-info:hover {
+      background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+    }
+
+    /* TOAST HUB - Ventana emergente consolidada */
+    .toast-hub {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border-radius: 20px;
+      box-shadow: 
+        0 25px 80px rgba(0,0,0,0.25),
+        0 15px 50px rgba(0,0,0,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      width: 90vw;
+      max-width: 500px;
+      max-height: 80vh;
+      z-index: 5000;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      backdrop-filter: blur(20px) saturate(180%);
+      overflow: hidden;
+    }
+
+    .toast-hub.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .toast-hub-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toast-hub-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast-hub-counter {
+      background: #64748b;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .toast-hub-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #64748b;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .toast-hub-close:hover {
+      background: rgba(148, 163, 184, 0.1);
+      color: #334155;
+    }
+
+    .toast-hub-content {
+      padding: 12px;
+      max-height: calc(80vh - 80px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast-hub-item {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .toast-hub-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border-color: rgba(148, 163, 184, 0.3);
+    }
+
+    .toast-hub-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--toast-accent, #64748b);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .toast-hub-item-content {
+      padding-left: 16px;
+      padding-right: 32px;
+    }
+
+    .toast-hub-item-icon {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      font-size: 1.1rem;
+      opacity: 0.7;
+    }
+
+    .toast-hub-item-time {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      font-size: 0.75rem;
+      color: #64748b;
+      opacity: 0.8;
+    }
+
+    .toast-hub-item-delete {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(220, 38, 38, 0.1);
+      color: #dc2626;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: all 0.2s;
+    }
+
+    .toast-hub-item:hover .toast-hub-item-delete {
+      opacity: 1;
+    }
+
+    .toast-hub-item-delete:hover {
+      background: rgba(220, 38, 38, 0.2);
+    }
+
+    /* Overlay para el toast hub */
+    .toast-hub-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 4999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .toast-hub-overlay.active {
+      opacity: 1;
+    }
+
+    /* Botón flotante para abrir el hub - DESACTIVADO (ahora usamos campana) */
+    .toast-hub-trigger {
+      display: none !important; /* Ocultar completamente el botón flotante */
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      cursor: pointer;
+      font-size: 1.5rem;
+      box-shadow: 
+        0 10px 30px rgba(59, 130, 246, 0.3),
+        0 4px 15px rgba(59, 130, 246, 0.2);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 4001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toast-hub-trigger.active {
+      display: flex;
+    }
+
+    .toast-hub-trigger:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 
+        0 15px 40px rgba(59, 130, 246, 0.4),
+        0 8px 20px rgba(59, 130, 246, 0.3);
+    }
+
+    /* 🔔 CAMPANA DE NOTIFICACIONES PERSISTENTE - TEMA CORPORATIVO OSCURO */
+    .notification-bell {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+      border: 1px solid #6b7280;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #d1d5db;
+      box-shadow: 
+        0 10px 25px rgba(0,0,0,0.3),
+        0 5px 15px rgba(0,0,0,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 4002;
+    }
+
+    .notification-bell:hover {
+      transform: scale(1.1) rotate(15deg);
+      border-color: #9ca3af;
+      color: #f3f4f6;
+      background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+      box-shadow: 
+        0 15px 35px rgba(0,0,0,0.4),
+        0 8px 20px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    /* Indicador de notificaciones sin leer (punto rojo más sutil) */
+    .notification-bell::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 10px;
+      height: 10px;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      border-radius: 50%;
+      border: 2px solid #374151;
+      transform: scale(0);
+      transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    .notification-bell.has-unread::after {
+      transform: scale(1);
+      animation: pulse-notification 2s infinite;
+    }
+
+    /* Contador de notificaciones - estilo corporativo */
+    .notification-counter {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+      color: #f9fafb;
+      border-radius: 12px;
+      min-width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 2px solid #374151;
+      transform: scale(0);
+      transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+    }
+
+    .notification-counter.active {
+      transform: scale(1);
+    }
+
+    /* Panel de notificaciones - tema corporativo oscuro */
+    .notification-panel {
+      position: fixed;
+      top: 90px;
+      right: 20px;
+      background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+      border-radius: 16px;
+      box-shadow: 
+        0 25px 80px rgba(0,0,0,0.6),
+        0 15px 50px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      border: 1px solid #4b5563;
+      width: 380px;
+      max-height: 500px;
+      z-index: 4001;
+      opacity: 0;
+      transform: translateY(-10px) scale(0.95);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: none;
+    }
+
+    .notification-panel.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      display: block;
+    }
+
+    /* Encabezado del panel - corporativo mejorado */
+    .notification-panel-header {
+      padding: 24px 24px 18px;
+      border-bottom: 2px solid #4b5563;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, 
+        rgba(31, 41, 55, 0.9) 0%, 
+        rgba(55, 65, 81, 0.8) 100%);
+      border-radius: 16px 16px 0 0;
+    }
+
+    .notification-panel-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      letter-spacing: -0.02em;
+    }
+
+    .notification-panel-title span:first-child {
+      font-size: 1.4rem;
+      filter: drop-shadow(0 1px 2px rgba(59, 130, 246, 0.3));
+    }
+
+    .notification-panel-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .notification-panel-action {
+      background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+      border: 1px solid #6b7280;
+      border-radius: 10px;
+      padding: 8px 16px;
+      color: #e2e8f0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      letter-spacing: 0.01em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .notification-panel-action::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .notification-panel-action:hover {
+      background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
+      color: #f8fafc;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      border-color: #9ca3af;
+    }
+
+    .notification-panel-action:hover::before {
+      left: 100%;
+    }
+
+    .notification-panel-action:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Lista de notificaciones - Diseño corporativo mejorado */
+    .notification-list {
+      max-height: 350px;
+      overflow-y: auto;
+      padding: 8px 0;
+      /* Scrollbar corporativo - Solo usando -webkit para compatibilidad total */
+    }
+
+    .notification-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .notification-list::-webkit-scrollbar-track {
+      background: #374151;
+      border-radius: 3px;
+    }
+
+    .notification-list::-webkit-scrollbar-thumb {
+      background: #6b7280;
+      border-radius: 3px;
+    }
+
+    .notification-list::-webkit-scrollbar-thumb:hover {
+      background: #9ca3af;
+    }
+
+    /* Notificación individual - Estados diferenciados */
+    .notification-item {
+      padding: 16px 20px;
+      margin: 4px 12px;
+      border-radius: 8px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      border: 1px solid transparent;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* NOTIFICACIÓN NO LEÍDA - Destacada */
+    .notification-item.unread {
+      background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.08) 0%, 
+        rgba(79, 70, 229, 0.05) 100%);
+      border-left: 4px solid #3b82f6;
+      border-color: rgba(59, 130, 246, 0.2);
+      box-shadow: 
+        0 2px 8px rgba(59, 130, 246, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .notification-item.unread:hover {
+      background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.12) 0%, 
+        rgba(79, 70, 229, 0.08) 100%);
+      border-color: rgba(59, 130, 246, 0.3);
+      transform: translateX(2px);
+      box-shadow: 
+        0 4px 16px rgba(59, 130, 246, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /* NOTIFICACIÓN LEÍDA - Discreta */
+    .notification-item:not(.unread) {
+      background: linear-gradient(135deg, 
+        rgba(75, 85, 99, 0.3) 0%, 
+        rgba(55, 65, 81, 0.2) 100%);
+      border-color: rgba(107, 114, 128, 0.1);
+      opacity: 0.7;
+    }
+
+    .notification-item:not(.unread):hover {
+      background: linear-gradient(135deg, 
+        rgba(75, 85, 99, 0.4) 0%, 
+        rgba(55, 65, 81, 0.3) 100%);
+      opacity: 0.85;
+      transform: translateX(1px);
+    }
+
+    /* Indicador de estado - Punto visual */
+    .notification-item::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 20px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
       transition: all 0.3s ease;
     }
 
-    .toast {
-      background: #1e293b;
-      color: #f8fafc;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-      border: 1px solid #334155;
+    .notification-item.unread::before {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      box-shadow: 0 0 6px rgba(59, 130, 246, 0.4);
+      animation: pulse-indicator 2s infinite;
     }
 
+    .notification-item:not(.unread)::before {
+      background: #6b7280;
+      opacity: 0.4;
+    }
+
+    @keyframes pulse-indicator {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.7; }
+    }
+
+    /* Icono de notificación mejorado */
+    .notification-item-icon {
+      font-size: 1.3rem;
+      margin-top: 2px;
+      min-width: 24px;
+      text-align: center;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+    }
+
+    .notification-item.unread .notification-item-icon {
+      filter: drop-shadow(0 1px 3px rgba(59, 130, 246, 0.3));
+    }
+
+    /* Contenido de notificación */
+    .notification-item-content {
+      flex: 1;
+      min-width: 0; /* Para text-overflow */
+    }
+
+    .notification-item-message {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 6px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      word-break: break-word;
+    }
+
+    .notification-item.unread .notification-item-message {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+
+    .notification-item:not(.unread) .notification-item-message {
+      color: #cbd5e1;
+    }
+
+    /* Timestamp corporativo */
+    .notification-item-time {
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 400;
+      margin-top: 2px;
+    }
+
+    .notification-item.unread .notification-item-time {
+      color: #94a3b8;
+    }
+
+    .notification-item:not(.unread) .notification-item-time {
+      color: #64748b;
+    }
+
+    /* Badge de estado */
+    .notification-status-badge {
+      position: absolute;
+      top: 12px;
+      right: 45px;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .notification-item.unread .notification-status-badge {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      box-shadow: 0 1px 3px rgba(59, 130, 246, 0.4);
+    }
+
+    .notification-item:not(.unread) .notification-status-badge {
+      background: #4b5563;
+      color: #9ca3af;
+    }
+
+    /* Botón eliminar mejorado */
+    .notification-item-delete {
+      opacity: 0;
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+      border: 1px solid #6b7280;
+      border-radius: 6px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d1d5db;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .notification-item:hover .notification-item-delete {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    .notification-item-delete:hover {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      border-color: #ef4444;
+      color: #ffffff;
+      transform: scale(1.1);
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    .notification-item-delete:active {
+      transform: scale(0.95);
+    }
+
+    /* Estado vacío */
+    .notification-empty {
+      padding: 40px 20px;
+      text-align: center;
+      color: #9ca3af;
+    }
+
+    .notification-empty-icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+
+    /* Animación de pulso para notificaciones - versión sutil */
+    @keyframes pulse-notification {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+      }
+    }
+
+    .toast-hub-trigger-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #dc2626;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white;
+    }
+
+    /* Animaciones mejoradas */
     @keyframes slideInLeft {
       from {
-        transform: translateX(-400px);
+        transform: translateX(-100%) scale(0.8);
         opacity: 0;
       }
       to {
-        transform: translateX(0);
+        transform: translateX(0) scale(1);
         opacity: 1;
       }
     }
@@ -3028,16 +3774,77 @@
     @keyframes fadeOut {
       from {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateX(0) scale(1);
       }
       to {
         opacity: 0;
-        transform: translateX(-100px);
+        transform: translateX(-50%) scale(0.95);
       }
     }
 
     .toast.fade-out {
-      animation: fadeOut 0.3s ease forwards;
+      animation: fadeOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Progreso de tiempo restante */
+    .toast-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: var(--toast-accent, #3b82f6);
+      border-radius: 0 0 16px 16px;
+      transition: width linear;
+      opacity: 0.6;
+    }
+
+    /* Contador de toasts cuando hay muchos */
+    .toast-counter {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: var(--toast-accent, #3b82f6);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 2px solid #1e293b;
+      opacity: 0.9;
+    }
+
+    /* Responsive - móvil */
+    @media (max-width: 768px) {
+      .toast {
+        left: 12px;
+        right: 12px;
+        max-width: none;
+        min-width: auto;
+        border-radius: 12px;
+        padding: 16px 20px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Animación de pulso para indicador de hover */
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+
+    /* Efecto de resplandor sutil en hover prolongado */
+    .toast:hover::before {
+      box-shadow: 0 0 20px var(--toast-accent);
     }
 
     /* STATS */
@@ -8411,7 +9218,47 @@
 </head>
 <body>
 
-<!-- 🔄 BARRA DE PROGRESO DE BACKUP AUTOMÁTICO -->
+<!-- � CAMPANA DE NOTIFICACIONES PERSISTENTE -->
+<div id="notificationBell" class="notification-bell" title="Notificaciones" onclick="
+  console.log('🔔 CLICK DIRECTO EN ONCLICK!');
+  const panel = document.getElementById('notificationPanel');
+  if (panel.classList.contains('active')) {
+    panel.classList.remove('active');
+    console.log('✅ Panel CERRADO');
+  } else {
+    panel.classList.add('active');
+    console.log('✅ Panel ABIERTO');
+  }
+">
+  🔔
+  <span id="notificationCounter" class="notification-counter">0</span>
+</div>
+
+<!-- 📋 PANEL DE NOTIFICACIONES -->
+<div id="notificationPanel" class="notification-panel">
+  <!-- Encabezado -->
+  <div class="notification-panel-header">
+    <div class="notification-panel-title">
+      <span>🔔</span>
+      <span>Notificaciones</span>
+    </div>
+    <div class="notification-panel-actions">
+      <button class="notification-panel-action" onclick="window.markAllNotificationsAsRead()">
+        Marcar leídas
+      </button>
+      <button class="notification-panel-action" onclick="window.clearAllNotifications()">
+        Limpiar todo
+      </button>
+    </div>
+  </div>
+  
+  <!-- Lista de notificaciones -->
+  <div id="notificationList" class="notification-list">
+    <!-- Se llena dinámicamente -->
+  </div>
+</div>
+
+<!-- �🔄 BARRA DE PROGRESO DE BACKUP AUTOMÁTICO -->
 <div id="backupProgressBar">
   <div class="backup-progress-container">
     <div class="loading backup-progress-loading"></div>
@@ -9448,7 +10295,7 @@
               </div>
               
               <div class="control-group">
-                <label>Calidad WebP: <span id="qualityValue">85%</span></label>
+                <label for="qualitySlider">Calidad WebP: <span id="qualityValue">85%</span></label>
                 <input type="range" id="qualitySlider" min="60" max="95" value="85" 
                        oninput="app.updateQuality(this.value)">
                 <small>60% (máxima compresión) - 95% (máxima calidad)</small>
@@ -19853,6 +20700,23 @@ class InventarioCompleto {
     this.listSortOrder = 'asc';
     this.columnWidths = ['50px', '0.9fr', '1.5fr', '160px', '220px'];
     
+    // 🔔 SISTEMA DE NOTIFICACIONES PERSISTENTE
+    this.notifications = [];
+    this.unreadNotifications = 0;
+    this.notificationPanel = null;
+    this.notificationBell = null;
+    
+    // Cargar notificaciones desde localStorage (con fallback seguro)
+    try {
+      const saved = localStorage.getItem('notifications');
+      if (saved) {
+        this.notifications = JSON.parse(saved);
+      }
+    } catch (error) {
+      console.warn('⚠️ Error cargando notificaciones guardadas:', error);
+      this.notifications = [];
+    }
+    
     // 🔄 CONTROL DE VERSIÓN DE UBICACIONES
     // true = usa renderUbicacionesCascada() (NUEVA versión con selects en cascada)
     // false = usa renderUbicaciones() (versión ORIGINAL con inputs + datalist)
@@ -22666,10 +23530,12 @@ class InventarioCompleto {
         console.log('🔄 Cargando datos desde carpeta...');
         await this.loadData();
         await this.render();
-        this.showToast('✅ Carpeta conectada y datos cargados', 'success');
+        // Solo campana, no toast
+        window.addNotificationToCampana('✅ Carpeta conectada y datos cargados', 'success');
       } else {
         console.log('✅ Reconexión - Datos preservados en memoria');
-        this.showToast('✅ Carpeta reconectada - Datos preservados', 'success');
+        // Solo campana, no toast
+        window.addNotificationToCampana('✅ Carpeta reconectada - Datos preservados', 'success');
       }
       
       console.log(`\n${'═'.repeat(60)}`);
@@ -22813,6 +23679,11 @@ class InventarioCompleto {
       console.log(`⚠️ NAVEGADOR: ${this.getBrowserName()} (No optimizado)`);
     }
     console.log(`${'='.repeat(60)}\n`);
+    
+    // 🔔 Inicializar sistema de notificaciones (al final para asegurar DOM cargado)
+    setTimeout(() => {
+      this.initNotificationSystem();
+    }, 100);
   }
 
   // NUEVO: Configurar inputs de fotos según plataforma (móvil o PC)
@@ -25665,8 +26536,21 @@ class InventarioCompleto {
     
     document.getElementById('modalTitle').textContent = mode === 'edit' ? 'Editar Repuesto' : 'Agregar Repuesto';
     document.getElementById('repuestoForm').reset();
-    document.getElementById('imagePreview').innerHTML = '';
-    document.getElementById('documentsList').innerHTML = '';
+    
+    // 🧹 LIMPIEZA PROFUNDA: Asegurar que no queden vistas previas residuales
+    const imagePreview = document.getElementById('imagePreview');
+    const documentsList = document.getElementById('documentsList');
+    
+    if (imagePreview) {
+      imagePreview.innerHTML = '';
+      // Forzar un pequeño delay para asegurar que el DOM se actualice
+      setTimeout(() => { imagePreview.innerHTML = ''; }, 10);
+    }
+    
+    if (documentsList) {
+      documentsList.innerHTML = '';
+      setTimeout(() => { documentsList.innerHTML = ''; }, 10);
+    }
     
     // 🔧 RESETEAR BOTÓN DE GUARDAR (evitar que quede en estado "Guardando...")
     const btnGuardar = document.getElementById('btnGuardarRepuesto');
@@ -26233,6 +27117,27 @@ class InventarioCompleto {
     // Agregar a multimedia
     if (!this.currentMultimedia) this.currentMultimedia = [];
     
+    // 🔧 VERIFICAR DUPLICADOS antes de agregar
+    const yaExiste = this.currentMultimedia.some(img => {
+      if (img.name === this.currentImageFile.name) return true;
+      
+      const sameSize = Math.abs(img.size - blob.size) < 1000; // tolerancia 1KB
+      const sameName = img.name && this.currentImageFile.name && 
+        img.name.toLowerCase().replace(/\.[^/.]+$/, "") === this.currentImageFile.name.toLowerCase().replace(/\.[^/.]+$/, "");
+      
+      return sameSize && sameName;
+    });
+    
+    if (yaExiste) {
+      console.log(`⚠️ Imagen ya existe, ignorando: ${this.currentImageFile.name}`);
+      this.showToast('⚠️ Esta imagen ya existe en la vista previa', 'warning');
+      
+      if (this.optimizerResolve) {
+        this.optimizerResolve();
+      }
+      return;
+    }
+    
     const isFileSystemMode = fsManager && fsManager.isFileSystemMode;
     
     if (isFileSystemMode) {
@@ -26269,7 +27174,7 @@ class InventarioCompleto {
       });
     }
     
-    this.updateImagePreview();
+    await this.updateMultimediaPreview();
     this.showToast(`Imagen optimizada agregada (${(blob.size / 1024).toFixed(1)} KB)`, 'success');
     
     if (this.optimizerResolve) {
@@ -26432,8 +27337,21 @@ class InventarioCompleto {
               let fullPath = imagePath;
               
               if (imagePath) {
-                // 🔧 EVITAR DUPLICADOS: Verificar si la imagen ya existe
-                const yaExiste = this.currentMultimedia.some(img => img.url === imagePath);
+                // 🔧 EVITAR DUPLICADOS: Verificar si la imagen ya existe de forma más robusta
+                const yaExiste = this.currentMultimedia.some(img => {
+                  // Comparar por nombre de archivo (principal)
+                  if (img.name === file.name) return true;
+                  
+                  // Comparar por ruta para FileSystem
+                  if (img.url === imagePath) return true;
+                  
+                  // Comparar por tamaño y nombre base (backup)
+                  const sameSize = Math.abs(img.size - compressedBlob.size) < 1000; // tolerancia 1KB
+                  const sameName = img.name && file.name && 
+                    img.name.toLowerCase().replace(/\.[^/.]+$/, "") === file.name.toLowerCase().replace(/\.[^/.]+$/, "");
+                  
+                  return sameSize && sameName;
+                });
                 
                 if (!yaExiste) {
                   this.currentMultimedia.push({
@@ -26466,8 +27384,21 @@ class InventarioCompleto {
               // Guardar en IndexedDB
               await indexedDBManager.saveImage(imageId, repuestoId, compressedBlob);
               
-              // 🔧 EVITAR DUPLICADOS: Verificar si la imagen ya existe
-              const yaExiste = this.currentMultimedia.some(img => img.url === imageId);
+              // 🔧 EVITAR DUPLICADOS: Verificar si la imagen ya existe de forma más robusta
+              const yaExiste = this.currentMultimedia.some(img => {
+                // Comparar por ID de IndexedDB
+                if (img.url === imageId) return true;
+                
+                // Comparar por nombre de archivo
+                if (img.name === file.name) return true;
+                
+                // Comparar por tamaño y nombre base (backup)
+                const sameSize = Math.abs(img.size - compressedBlob.size) < 1000; // tolerancia 1KB
+                const sameName = img.name && file.name && 
+                  img.name.toLowerCase().replace(/\.[^/.]+$/, "") === file.name.toLowerCase().replace(/\.[^/.]+$/, "");
+                
+                return sameSize && sameName;
+              });
               
               if (!yaExiste) {
                 this.currentMultimedia.push({
@@ -26492,8 +27423,18 @@ class InventarioCompleto {
             const compressedUrl = await this.compressImage(file);
             
             if (compressedUrl) {
-              // 🔧 EVITAR DUPLICADOS: Verificar si la imagen ya existe (comparar por nombre ya que URL es base64)
-              const yaExiste = this.currentMultimedia.some(img => img.name === file.name && img.type === 'image');
+              // 🔧 EVITAR DUPLICADOS: Verificar si la imagen ya existe de forma más robusta
+              const yaExiste = this.currentMultimedia.some(img => {
+                // Comparar por nombre de archivo (principal para localStorage)
+                if (img.name === file.name) return true;
+                
+                // Comparar por tamaño similar (para detectar misma imagen comprimida)
+                const sameSize = Math.abs((img.size || 0) - compressedUrl.length) < 5000; // tolerancia 5KB
+                const sameName = img.name && file.name && 
+                  img.name.toLowerCase().replace(/\.[^/.]+$/, "") === file.name.toLowerCase().replace(/\.[^/.]+$/, "");
+                
+                return sameSize && sameName;
+              });
               
               if (!yaExiste) {
                 totalCompressedSize += compressedUrl.length;
@@ -26594,6 +27535,28 @@ class InventarioCompleto {
     }
 
     console.log(`🖼️ Mostrando ${this.currentMultimedia.length} imágenes en preview`);
+
+    // 🧹 DEDUPLICAR: Eliminar cualquier posible duplicado antes de renderizar
+    const multimediaUnica = [];
+    const urlsVistas = new Set();
+    const nombresVistos = new Set();
+    
+    this.currentMultimedia.forEach(media => {
+      const key = media.url || media.name || Math.random();
+      const nameKey = media.name || '';
+      
+      // Verificar si ya existe esta imagen
+      if (!urlsVistas.has(key) && !nombresVistos.has(nameKey)) {
+        urlsVistas.add(key);
+        if (nameKey) nombresVistos.add(nameKey);
+        multimediaUnica.push(media);
+      } else {
+        console.log(`🗑️ Eliminando duplicado: ${media.name || 'sin nombre'}`);
+      }
+    });
+    
+    // Actualizar el array principal con los elementos únicos
+    this.currentMultimedia = multimediaUnica;
 
     // 🔥 CARGAR IMÁGENES ASÍNCRONAMENTE DESDE FILESYSTEM
     const imagePromises = this.currentMultimedia.map(async (media, idx) => {
@@ -32932,54 +33895,760 @@ class InventarioCompleto {
   }
 
   showToast(msg, type = 'info', customDuration = null) {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = msg;
+    // 🔔 INTERCEPTAR Y REDIRIGIR A CAMPANA SEGÚN IMPORTANCIA
     
-    // Color del borde según tipo
-    const borderColor = type === 'success' ? '#10b981' : 
-                        type === 'warning' ? '#f59e0b' : 
-                        type === 'error' ? '#ef4444' : 
-                        '#3b82f6';
+    // Lista de mensajes que van SOLO a la campana (sin toast emergente)
+    const campanaOnly = [
+      'Carpeta conectada',
+      'Carpeta reconectada', 
+      'Modo Carpeta DESACTIVADO',
+      'Repuesto actualizado',
+      'Jerarquía actualizada',
+      'Modo edición',
+      'Posición actualizada',
+      'Filtro limpiado',
+      'datos cargados'
+    ];
     
-    toast.style.borderLeftColor = borderColor;
+    const shouldGoToCampana = campanaOnly.some(keyword => msg.includes(keyword));
     
-    // 🔥 APILAMIENTO: Calcular posición según toasts existentes
-    const existingToasts = document.querySelectorAll('.toast');
-    let totalOffset = 20; // Offset inicial desde abajo
+    if (shouldGoToCampana) {
+      // Solo a la campana, sin toast emergente
+      console.log('🔔 Redirigiendo a campana (sin toast):', msg);
+      if (typeof window.addNotificationToCampana === 'function') {
+        window.addNotificationToCampana(msg, type);
+      }
+      return null; // No crear toast visual
+    } else {
+      // Mensajes menos importantes: Pueden seguir siendo toasts normales
+      console.log(`🔔 Toast normal permitido: [${type.toUpperCase()}] ${msg}`);
+      // Aquí puedes decidir si permitir algunos toasts o enviar todo a campana
+      
+      // Por ahora, enviar todo a campana para limpieza total
+      if (typeof window.addNotificationToCampana === 'function') {
+        window.addNotificationToCampana(msg, type);
+      }
+      return null; // No crear elementos visuales
+    }
+  }
+
+  // 🔔 SISTEMA DE NOTIFICACIONES PERSISTENTE - IMPLEMENTACION ROTA (DESHABILITADA)
+  initNotificationSystem_ROTO() {
+    // Esta función se llama desde el constructor
+    // La implementación real está más abajo en el código
+    return;
+  }
+
+  // 🔔 FORZAR INICIALIZACIÓN CORRECTA DEL SISTEMA
+  initNotificationSystem() {
+    console.log('🔔 FORZANDO INICIALIZACIÓN...');
     
-    existingToasts.forEach(existingToast => {
-      const height = existingToast.offsetHeight || 60; // altura estimada
-      totalOffset += height + 12; // 12px de separación entre toasts
+    // CREAR FUNCIÓN GLOBAL SIMPLE QUE FUNCIONE SÍ O SÍ
+    window.toggleCampana = function() {
+      console.log('🔔 FUNCIÓN GLOBAL EJECUTADA!');
+      
+      const panel = document.getElementById('notificationPanel');
+      if (!panel) {
+        console.error('❌ Panel no encontrado');
+        return;
+      }
+      
+      if (panel.classList.contains('active')) {
+        panel.classList.remove('active');
+        console.log('✅ Panel CERRADO');
+      } else {
+        panel.classList.add('active');
+        console.log('✅ Panel ABIERTO');
+      }
+    };
+    
+    // También configurar click fuera
+    document.addEventListener('click', function(e) {
+      const panel = document.getElementById('notificationPanel');
+      const bell = document.getElementById('notificationBell');
+      
+      if (panel && bell && !panel.contains(e.target) && !bell.contains(e.target)) {
+        if (panel.classList.contains('active')) {
+          panel.classList.remove('active');
+          console.log('✅ Panel cerrado por click fuera');
+        }
+      }
     });
     
-    toast.style.bottom = `${totalOffset}px`;
+    console.log('✅ Función global window.toggleCampana() creada');
+    console.log('✅ Sistema súper simple listo');
+  }
+
+  // 🔍 DIAGNÓSTICO COMPLETO DEL SISTEMA DE CAMPANA
+  diagnosticoCampana() {
+    console.log('🔍 === DIAGNÓSTICO COMPLETO DE CAMPANA ===');
     
-    document.body.appendChild(toast);
+    // 1. Verificar elementos HTML
+    const bell = document.getElementById('notificationBell');
+    const panel = document.getElementById('notificationPanel');
     
-    // Duración: usar customDuration si se proporciona, sino según tipo
-    const duration = customDuration || (type === 'error' ? 5000 : 3000);
+    console.log('📍 1. ELEMENTOS HTML:');
+    console.log('Bell encontrada:', !!bell, bell);
+    console.log('Panel encontrado:', !!panel, panel);
     
-    // Remover con animación
+    if (!bell || !panel) {
+      console.error('❌ ELEMENTOS NO ENCONTRADOS - Sistema no puede funcionar');
+      return;
+    }
+    
+    // 2. Verificar propiedades de la app
+    console.log('📍 2. PROPIEDADES APP:');
+    console.log('this.notificationBell:', !!this.notificationBell, this.notificationBell);
+    console.log('this.notificationPanel:', !!this.notificationPanel, this.notificationPanel);
+    console.log('this.notifications:', this.notifications);
+    
+    // 3. Verificar event listeners
+    console.log('📍 3. EVENT LISTENERS:');
+    const events = getEventListeners ? getEventListeners(bell) : 'No disponible en esta consola';
+    console.log('Event listeners en campana:', events);
+    
+    // 4. Verificar CSS
+    console.log('📍 4. CSS STYLES:');
+    const bellStyle = window.getComputedStyle(bell);
+    const panelStyle = window.getComputedStyle(panel);
+    console.log('Bell display:', bellStyle.display);
+    console.log('Bell visibility:', bellStyle.visibility);
+    console.log('Panel display:', panelStyle.display);
+    console.log('Panel opacity:', panelStyle.opacity);
+    
+    // 5. Test manual de toggle
+    console.log('📍 5. TEST MANUAL:');
+    console.log('Intentando toggle manual...');
+    
+    try {
+      if (panel.classList.contains('active')) {
+        panel.classList.remove('active');
+        console.log('✅ Panel cerrado manualmente');
+      } else {
+        panel.classList.add('active');
+        console.log('✅ Panel abierto manualmente');
+      }
+    } catch (error) {
+      console.error('❌ Error en toggle manual:', error);
+    }
+    
+    // 6. Añadir listener temporal
+    console.log('📍 6. LISTENER TEMPORAL:');
+    bell.addEventListener('click', function tempListener(e) {
+      console.log('🔔 CLICK TEMPORAL DETECTADO!', e);
+      bell.removeEventListener('click', tempListener);
+    });
+    
+    console.log('🔍 === FIN DIAGNÓSTICO ===');
+    console.log('💡 Ahora haz click en la campana para ver si el listener temporal funciona');
+  }
+
+  // 🆕 TOAST HUB - Sistema de gestión centralizada
+  initializeToastHub() {
+    if (this.toastHubHistory) return; // Ya inicializado
+    
+    this.toastHubHistory = [];
+    this.createToastHubElements();
+  }
+
+  createToastHubElements() {
+    // Crear overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'toast-hub-overlay';
+    overlay.addEventListener('click', () => this.closeToastHub());
+    document.body.appendChild(overlay);
+    
+    // Crear hub principal
+    const hub = document.createElement('div');
+    hub.className = 'toast-hub';
+    hub.innerHTML = `
+      <div class="toast-hub-header">
+        <h3 class="toast-hub-title">
+          📋 Notificaciones
+          <span class="toast-hub-counter">0</span>
+        </h3>
+        <button class="toast-hub-close" onclick="app.closeToastHub()">×</button>
+      </div>
+      <div class="toast-hub-content" id="toastHubContent">
+        <div style="text-align: center; padding: 40px 20px; color: #64748b;">
+          No hay notificaciones
+        </div>
+      </div>
+    `;
+    document.body.appendChild(hub);
+    
+    // Crear botón flotante
+    const trigger = document.createElement('button');
+    trigger.className = 'toast-hub-trigger';
+    trigger.innerHTML = `
+      🔔
+      <span class="toast-hub-trigger-badge">0</span>
+    `;
+    trigger.addEventListener('click', () => this.openToastHub());
+    document.body.appendChild(trigger);
+    
+    this.toastHubElements = {
+      overlay,
+      hub,
+      trigger,
+      content: hub.querySelector('#toastHubContent'),
+      counter: hub.querySelector('.toast-hub-counter'),
+      badge: trigger.querySelector('.toast-hub-trigger-badge')
+    };
+  }
+
+  addToToastHub(msg, type) {
+    this.initializeToastHub();
+    
+    const timestamp = new Date();
+    const toastItem = {
+      id: Date.now() + Math.random(),
+      message: msg,
+      type: type,
+      timestamp: timestamp,
+      timeString: timestamp.toLocaleTimeString('es-ES', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      })
+    };
+    
+    this.toastHubHistory.unshift(toastItem); // Agregar al inicio
+    
+    // Limitar historial a 20 elementos
+    if (this.toastHubHistory.length > 20) {
+      this.toastHubHistory = this.toastHubHistory.slice(0, 20);
+    }
+    
+    this.updateToastHubTrigger();
+  }
+
+  updateToastHubTrigger() {
+    if (!this.toastHubElements) return;
+    
+    const count = this.toastHubHistory.length;
+    const activeToasts = document.querySelectorAll('.toast').length;
+    
+    if (count > 0 || activeToasts >= 3) {
+      this.toastHubElements.trigger.classList.add('active');
+      this.toastHubElements.badge.textContent = count;
+      this.toastHubElements.counter.textContent = count;
+    } else {
+      this.toastHubElements.trigger.classList.remove('active');
+    }
+  }
+
+  openToastHub() {
+    this.initializeToastHub();
+    
+    // Pausar todos los toasts activos
+    document.querySelectorAll('.toast').forEach(toast => {
+      toast.style.animationPlayState = 'paused';
+    });
+    
+    this.renderToastHubContent();
+    this.toastHubElements.overlay.classList.add('active');
+    this.toastHubElements.hub.classList.add('active');
+  }
+
+  closeToastHub() {
+    if (!this.toastHubElements) return;
+    
+    // Reanudar todos los toasts activos
+    document.querySelectorAll('.toast').forEach(toast => {
+      toast.style.animationPlayState = 'running';
+    });
+    
+    this.toastHubElements.overlay.classList.remove('active');
+    this.toastHubElements.hub.classList.remove('active');
+  }
+
+  renderToastHubContent() {
+    if (!this.toastHubElements || !this.toastHubHistory.length) {
+      if (this.toastHubElements) {
+        this.toastHubElements.content.innerHTML = `
+          <div style="text-align: center; padding: 40px 20px; color: #64748b;">
+            No hay notificaciones
+          </div>
+        `;
+      }
+      return;
+    }
+    
+    const content = this.toastHubHistory.map(item => {
+      const typeConfig = {
+        success: { accent: '#059669', icon: '✅' },
+        error: { accent: '#dc2626', icon: '❌' },
+        warning: { accent: '#d97706', icon: '⚠️' },
+        info: { accent: '#2563eb', icon: 'ℹ️' }
+      };
+      
+      const config = typeConfig[item.type] || typeConfig.info;
+      
+      return `
+        <div class="toast-hub-item toast-hub-item-${item.type}" 
+             style="--toast-accent: ${config.accent}">
+          <div class="toast-hub-item-content">
+            ${item.message}
+          </div>
+          <div class="toast-hub-item-icon">${config.icon}</div>
+          <div class="toast-hub-item-time">${item.timeString}</div>
+          <button class="toast-hub-item-delete" 
+                  onclick="app.removeFromToastHub('${item.id}')"
+                  title="Eliminar notificación">×</button>
+        </div>
+      `;
+    }).join('');
+    
+    this.toastHubElements.content.innerHTML = content;
+  }
+
+  removeFromToastHub(itemId) {
+    this.toastHubHistory = this.toastHubHistory.filter(item => item.id != itemId);
+    this.renderToastHubContent();
+    this.updateToastHubTrigger();
+  }
+
+  clearToastHub() {
+    this.toastHubHistory = [];
+    this.renderToastHubContent();
+    this.updateToastHubTrigger();
+  }
+
+  // 🆕 Toast avanzado con botones de acción
+  showActionToast(msg, type = 'info', actions = [], duration = null) {
+    const toast = this.showToast(msg, type, duration || 8000);
+    
+    if (actions.length > 0) {
+      const actionsContainer = document.createElement('div');
+      actionsContainer.style.cssText = `
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      `;
+      
+      actions.forEach(action => {
+        const button = document.createElement('button');
+        button.textContent = action.label;
+        button.style.cssText = `
+          background: ${action.primary ? 'rgba(255,255,255,0.2)' : 'transparent'};
+          color: white;
+          border: 1px solid rgba(255,255,255,0.3);
+          border-radius: 6px;
+          padding: 6px 12px;
+          font-size: 0.8rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s;
+        `;
+        
+        button.addEventListener('mouseenter', () => {
+          button.style.background = action.primary ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)';
+          button.style.borderColor = 'rgba(255,255,255,0.5)';
+        });
+        
+        button.addEventListener('mouseleave', () => {
+          button.style.background = action.primary ? 'rgba(255,255,255,0.2)' : 'transparent';
+          button.style.borderColor = 'rgba(255,255,255,0.3)';
+        });
+        
+        button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (typeof action.onClick === 'function') {
+            action.onClick();
+          }
+          // Cerrar toast después de la acción
+          setTimeout(() => {
+            toast.classList.add('fade-out');
+            setTimeout(() => toast.remove(), 400);
+          }, 100);
+        });
+        
+        actionsContainer.appendChild(button);
+      });
+      
+      toast.querySelector('div').appendChild(actionsContainer);
+    }
+    
+    return toast;
+  }
+
+  // 🎨 DEMO: Función para probar los nuevos toasts (solo para testing)
+  demoToasts() {
+    console.log('🎨 Demostrando sistema Toast Hub corporativo...');
+    
+    // Limpiar historial previo
+    this.clearToastHub();
+    
+    // Secuencia de demos
     setTimeout(() => {
-      toast.classList.add('fade-out');
+      this.showToast('📋 Sistema Toast Hub activado - Colores corporativos sutiles', 'info');
+    }, 500);
+    
+    setTimeout(() => {
+      this.showToast('✅ Hover sobre cualquier toast pausará TODOS automáticamente', 'success');
+    }, 1500);
+    
+    setTimeout(() => {
+      this.showToast('⚠️ Cuando hay más de 3 toasts, aparece botón flotante 🔔', 'warning');
+    }, 2500);
+    
+    setTimeout(() => {
+      this.showToast('📊 Toast #4 - Ahora debe aparecer el botón flotante', 'info');
+    }, 3500);
+    
+    setTimeout(() => {
+      this.showToast('❌ Toast #5 - Shift+Click abre Toast Hub centralizado', 'error');
+    }, 4500);
+    
+    setTimeout(() => {
+      this.showToast('🎯 Toast #6 - Click normal cierra, Shift+Click abre hub', 'info');
+    }, 5500);
+    
+    setTimeout(() => {
+      console.log('💡 INSTRUCCIONES:');
+      console.log('• Hover en cualquier toast → Pausa TODOS');
+      console.log('• Click → Cerrar individual');
+      console.log('• Shift+Click → Abrir Toast Hub');
+      console.log('• Botón flotante 🔔 → Gestión centralizada');
+    }, 6500);
+  }
+
+  // 🎨 DEMO: Función para probar toasts con acciones usando colores sutiles
+  demoActionToasts() {
+    this.showActionToast(
+      '� ¿Quieres activar el modo Toast Hub como predeterminado?',
+      'info',
+      [
+        { label: 'Más tarde', onClick: () => this.showToast('⏰ Configuración pospuesta', 'info') },
+        { label: 'Activar', primary: true, onClick: () => this.showToast('✅ Toast Hub activado por defecto', 'success') }
+      ]
+    );
+  }
+
+  // � DEMO: Función para testing específico del Toast Hub
+  demoToastHub() {
+    console.log('🔔 Testing del Toast Hub...');
+    
+    // Crear múltiples toasts para activar el botón flotante
+    for (let i = 1; i <= 6; i++) {
       setTimeout(() => {
-        toast.remove();
-        // Reajustar posiciones de toasts restantes
-        this.repositionToasts();
-      }, 300);
-    }, duration);
+        this.showToast(`🎯 Toast de prueba ${i}/6 - Diseño corporativo`, 
+                       i % 2 === 0 ? 'success' : 'info');
+      }, i * 800);
+    }
+    
+    // Mostrar instrucciones después
+    setTimeout(() => {
+      console.log('💡 PRUEBA ESTAS FUNCIONES:');
+      console.log('• Botón flotante 🔔 → Abrir Toast Hub');
+      console.log('• Shift+Click en toast → Abrir hub también');
+      console.log('• Hover en cualquier toast → Pausa todos');
+      console.log('• En el hub: Ver historial y gestionar');
+    }, 5000);
+  }
+
+  // �🆕 Toast de confirmación rápida
+  showConfirmToast(msg, onConfirm, onCancel = null) {
+    return this.showActionToast(msg, 'warning', [
+      {
+        label: 'Cancelar',
+        onClick: onCancel || (() => {})
+      },
+      {
+        label: 'Confirmar',
+        primary: true,
+        onClick: onConfirm
+      }
+    ], 10000);
   }
 
   repositionToasts() {
     const toasts = document.querySelectorAll('.toast');
     let offset = 20;
     
-    toasts.forEach(toast => {
+    toasts.forEach((toast, index) => {
+      // Animación suave de reposicionamiento
+      toast.style.transition = 'bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
       toast.style.bottom = `${offset}px`;
-      const height = toast.offsetHeight || 60;
-      offset += height + 12;
+      
+      const height = toast.offsetHeight || 70;
+      offset += height + 16;
+      
+      // Actualizar contador si es necesario
+      const counter = toast.querySelector('.toast-counter');
+      if (counter) {
+        counter.textContent = index + 1;
+        // Ocultar contador si ya no hay muchos toasts
+        counter.style.display = toasts.length >= 3 ? 'flex' : 'none';
+      }
+      
+      // Remover transición después de la animación
+      setTimeout(() => {
+        toast.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+      }, 300);
     });
+  }
+
+  // 🔔 SISTEMA DE NOTIFICACIONES PERSISTENTE - IMPLEMENTACIÓN CORRECTA
+  
+  initNotificationSystemCORRECTO() {
+    try {
+      console.log('🔔 Iniciando sistema de notificaciones...');
+      
+      this.notificationBell = document.getElementById('notificationBell');
+      this.notificationPanel = document.getElementById('notificationPanel');
+      
+      console.log('🔔 Elementos encontrados:', {
+        bell: !!this.notificationBell,
+        panel: !!this.notificationPanel
+      });
+      
+      if (!this.notificationBell || !this.notificationPanel) {
+        console.error('❌ Elementos de notificación no encontrados');
+        console.error('Bell:', this.notificationBell);
+        console.error('Panel:', this.notificationPanel);
+        return;
+      }
+      
+      // Event listeners
+      this.notificationBell.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🔔 Click en campana detectado');
+        this.toggleNotificationPanel();
+      });
+      
+      // Cerrar panel al hacer click fuera
+      document.addEventListener('click', (e) => {
+        if (!this.notificationPanel.contains(e.target) && 
+            !this.notificationBell.contains(e.target)) {
+          this.closeNotificationPanel();
+        }
+      });
+      
+      // Cargar notificaciones existentes
+      this.updateUnreadCount();
+      this.renderNotifications();
+      
+      console.log('🔔 Sistema de notificaciones inicializado correctamente');
+    } catch (error) {
+      console.error('❌ Error inicializando notificaciones:', error);
+    }
+  }
+  
+  addNotification(message, type = 'info') {
+    const notification = {
+      id: Date.now() + Math.random(),
+      message: message,
+      type: type,
+      timestamp: new Date().toISOString(),
+      read: false,
+      icon: this.getNotificationIcon(type)
+    };
+    
+    // Agregar al principio del array
+    this.notifications.unshift(notification);
+    
+    // Limitar a 50 notificaciones máximo
+    if (this.notifications.length > 50) {
+      this.notifications = this.notifications.slice(0, 50);
+    }
+    
+    // Guardar en localStorage
+    this.saveNotifications();
+    
+    // Actualizar UI
+    this.updateUnreadCount();
+    this.renderNotifications();
+    
+    return notification;
+  }
+  
+  getNotificationIcon(type) {
+    const icons = {
+      'info': 'ℹ️',
+      'success': '✅', 
+      'warning': '⚠️',
+      'error': '❌'
+    };
+    return icons[type] || 'ℹ️';
+  }
+  
+  updateUnreadCount() {
+    try {
+      this.unreadNotifications = this.notifications ? this.notifications.filter(n => !n.read).length : 0;
+      
+      const counter = document.getElementById('notificationCounter');
+      const bell = this.notificationBell;
+      
+      if (!counter || !bell) {
+        console.warn('⚠️ Elementos de UI no encontrados para updateUnreadCount');
+        return;
+      }
+      
+      if (this.unreadNotifications > 0) {
+        // Mostrar contador y activar indicador
+        counter.textContent = this.unreadNotifications;
+        counter.classList.add('active');
+        bell.classList.add('has-unread');
+      } else {
+        // Ocultar contador y desactivar indicador
+        counter.classList.remove('active');
+        bell.classList.remove('has-unread');
+      }
+    } catch (error) {
+      console.error('❌ Error en updateUnreadCount:', error);
+    }
+  }
+  
+  toggleNotificationPanel() {
+    try {
+      console.log('🔔 Toggling notification panel...');
+      
+      if (!this.notificationPanel) {
+        console.error('❌ Panel de notificaciones no disponible');
+        return;
+      }
+      
+      const isActive = this.notificationPanel.classList.contains('active');
+      console.log('🔔 Panel state:', isActive ? 'abierto' : 'cerrado');
+      
+      if (isActive) {
+        this.closeNotificationPanel();
+      } else {
+        this.openNotificationPanel();
+      }
+    } catch (error) {
+      console.error('❌ Error en toggleNotificationPanel:', error);
+    }
+  }
+  
+  openNotificationPanel() {
+    try {
+      console.log('🔔 Abriendo panel de notificaciones...');
+      
+      if (!this.notificationPanel) {
+        console.error('❌ Panel no disponible');
+        return;
+      }
+      
+      this.notificationPanel.classList.add('active');
+      
+      // Marcar todas las notificaciones como leídas al abrir
+      if (this.notifications && Array.isArray(this.notifications)) {
+        this.notifications.forEach(n => n.read = true);
+        this.saveNotifications();
+        this.updateUnreadCount();
+        this.renderNotifications();
+      }
+      
+      console.log('✅ Panel abierto correctamente');
+    } catch (error) {
+      console.error('❌ Error abriendo panel:', error);
+    }
+  }
+  
+  closeNotificationPanel() {
+    try {
+      if (!this.notificationPanel) {
+        return;
+      }
+      
+      this.notificationPanel.classList.remove('active');
+      console.log('🔔 Panel cerrado');
+    } catch (error) {
+      console.error('❌ Error cerrando panel:', error);
+    }
+  }
+  
+  renderNotifications() {
+    const listContainer = document.getElementById('notificationList');
+    
+    if (this.notifications.length === 0) {
+      listContainer.innerHTML = `
+        <div class="notification-empty">
+          <div class="notification-empty-icon">🔔</div>
+          <div class="notification-empty-text">No hay notificaciones</div>
+        </div>
+      `;
+      return;
+    }
+    
+    listContainer.innerHTML = this.notifications.map(notification => `
+      <div class="notification-item ${!notification.read ? 'unread' : ''}" data-id="${notification.id}">
+        <div class="notification-item-icon">${notification.icon}</div>
+        <div class="notification-item-content">
+          <div class="notification-item-message">${notification.message}</div>
+          <div class="notification-item-time">
+            <span>🕐</span>
+            <span>${this.formatNotificationTime(notification.timestamp)}</span>
+          </div>
+        </div>
+        <button class="notification-item-delete" onclick="app.deleteNotification('${notification.id}')" title="Eliminar">
+          ✕
+        </button>
+      </div>
+    `).join('');
+  }
+  
+  formatNotificationTime(timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    
+    if (diffMins < 1) return 'Ahora';
+    if (diffMins < 60) return `${diffMins}m`;
+    if (diffHours < 24) return `${diffHours}h`;
+    if (diffDays < 7) return `${diffDays}d`;
+    
+    return date.toLocaleDateString('es-ES', { 
+      day: '2-digit', 
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+  
+  deleteNotification(id) {
+    this.notifications = this.notifications.filter(n => n.id != id);
+    this.saveNotifications();
+    this.updateUnreadCount();
+    this.renderNotifications();
+  }
+  
+  markAllNotificationsAsRead() {
+    this.notifications.forEach(n => n.read = true);
+    this.saveNotifications();
+    this.updateUnreadCount();
+    this.renderNotifications();
+    this.showToast('✅ Todas las notificaciones marcadas como leídas', 'success');
+  }
+  
+  clearAllNotifications() {
+    if (this.notifications.length === 0) {
+      this.showToast('ℹ️ No hay notificaciones para limpiar', 'info');
+      return;
+    }
+    
+    this.notifications = [];
+    this.saveNotifications();
+    this.updateUnreadCount();
+    this.renderNotifications();
+    this.showToast('🧹 Todas las notificaciones eliminadas', 'success');
+  }
+  
+  saveNotifications() {
+    try {
+      localStorage.setItem('notifications', JSON.stringify(this.notifications));
+    } catch (error) {
+      console.error('Error guardando notificaciones:', error);
+    }
   }
 
   // 🆕 Modal personalizado para input (reemplazo de prompt)
@@ -38750,6 +40419,133 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// 🔔 FUNCIONES DEMO PARA NOTIFICACIONES PERSISTENTE
+// Agregar estas funciones al objeto app para fácil acceso desde consola
+
+// 🔔 FUNCIÓN DE PRUEBA DIRECTA
+app.testCampana = function() {
+  console.log('🔔 Probando campana directamente...');
+  
+  const bell = document.getElementById('notificationBell');
+  const panel = document.getElementById('notificationPanel');
+  
+  console.log('Elementos:', { bell: !!bell, panel: !!panel });
+  
+  if (bell && panel) {
+    console.log('✅ Elementos encontrados');
+    
+    // Prueba directa del toggle
+    bell.addEventListener('click', function() {
+      console.log('🔔 CLICK DIRECTO DETECTADO!');
+      const isActive = panel.classList.contains('active');
+      console.log('Estado actual:', isActive ? 'abierto' : 'cerrado');
+      
+      if (isActive) {
+        panel.classList.remove('active');
+        console.log('Panel cerrado');
+      } else {
+        panel.classList.add('active');
+        console.log('Panel abierto');
+      }
+    });
+    
+    console.log('✅ Event listener agregado - Haz click en la campana');
+  } else {
+    console.error('❌ Elementos no encontrados');
+  }
+};
+
+// FUNCIÓN DE PRUEBA SIMPLE
+app.testNotificationBell = function() {
+  console.log('🔔 Probando sistema básico...');
+  
+  // Verificar elementos
+  const bell = document.getElementById('notificationBell');
+  const panel = document.getElementById('notificationPanel');
+  
+  console.log('Elementos encontrados:', {
+    bell: !!bell,
+    panel: !!panel
+  });
+  
+  if (bell) {
+    console.log('✅ Campana encontrada, agregando click listener...');
+    bell.addEventListener('click', () => {
+      console.log('🔔 CLICK DETECTADO EN CAMPANA!');
+      if (panel) {
+        panel.classList.toggle('active');
+        console.log('Panel toggled:', panel.classList.contains('active'));
+      }
+    });
+  }
+  
+  // Crear una notificación de prueba directamente
+  if (this.addNotification) {
+    this.addNotification('🔔 Prueba de notificación', 'info');
+    console.log('✅ Notificación de prueba agregada');
+  }
+};
+
+app.demoNotifications = function() {
+  console.log('🔔 Demostrando sistema de notificaciones persistente...');
+  
+  // Secuencia de notificaciones de prueba
+  setTimeout(() => {
+    this.showToast('📋 Sistema de notificaciones activado - Revisa la campana 🔔', 'info');
+  }, 500);
+  
+  setTimeout(() => {
+    this.showToast('✅ Notificaciones ahora se guardan permanentemente', 'success');
+  }, 1500);
+  
+  setTimeout(() => {
+    this.showToast('⚠️ Indicador rojo aparece con notificaciones sin leer', 'warning');
+  }, 2500);
+  
+  setTimeout(() => {
+    this.showToast('❌ Click en la campana abre el panel completo', 'error');
+  }, 3500);
+  
+  setTimeout(() => {
+    this.showToast('🎯 Historial persistente con fecha y hora', 'info');
+  }, 4500);
+  
+  setTimeout(() => {
+    console.log('💡 INSTRUCCIONES DEL SISTEMA:');
+    console.log('• 🔔 Campana arriba a la derecha');
+    console.log('• 🔴 Punto rojo = notificaciones sin leer');
+    console.log('• 📊 Contador numérico de pendientes');
+    console.log('• 📅 Panel con historial completo');
+    console.log('• ✅ Marcar como leídas automáticamente');
+  }, 6000);
+};
+
+app.demoNotificationTypes = function() {
+  console.log('🧪 Probando diferentes tipos de notificaciones...');
+  
+  const messages = [
+    { msg: '📝 Información general del sistema', type: 'info' },
+    { msg: '✅ Operación completada exitosamente', type: 'success' },
+    { msg: '⚠️ Advertencia importante para el usuario', type: 'warning' },
+    { msg: '❌ Error crítico que necesita atención', type: 'error' },
+    { msg: '🔧 Mantenimiento programado próximamente', type: 'info' },
+    { msg: '💾 Backup automático completado', type: 'success' }
+  ];
+  
+  messages.forEach((item, index) => {
+    setTimeout(() => {
+      this.showToast(item.msg, item.type);
+    }, index * 800);
+  });
+  
+  setTimeout(() => {
+    console.log('🎯 Observa la campana:');
+    console.log(`• Contador debería mostrar: ${messages.length}`);
+    console.log('• Punto rojo pulsando');
+    console.log('• Click para ver el historial completo');
+  }, messages.length * 800 + 1000);
+};
+
 // Hacer la app accesible globalmente para debugging
 window.app = app;
 window.okrModule = okrModule;
@@ -38792,6 +40588,229 @@ console.log('=== SISTEMA LISTO ===');
     }
   }
 </style>
+
+<!-- 🔔 SCRIPT DIRECTO PARA CAMPANA - GARANTIZADO -->
+<script>
+console.log('🔔 Creando función global toggleCampana...');
+
+// 🔔 SISTEMA DE NOTIFICACIONES CAMPANA CON PERSISTENCIA
+window.notifications = [];
+
+// 🔄 CARGAR NOTIFICACIONES PERSISTENTES
+window.loadNotifications = function() {
+  try {
+    const saved = localStorage.getItem('app_notifications');
+    if (saved) {
+      window.notifications = JSON.parse(saved);
+      console.log('📱 Notificaciones cargadas:', window.notifications.length);
+    }
+  } catch (error) {
+    console.error('❌ Error cargando notificaciones:', error);
+    window.notifications = [];
+  }
+};
+
+// 💾 GUARDAR NOTIFICACIONES
+window.saveNotifications = function() {
+  try {
+    localStorage.setItem('app_notifications', JSON.stringify(window.notifications));
+    console.log('💾 Notificaciones guardadas');
+  } catch (error) {
+    console.error('❌ Error guardando notificaciones:', error);
+  }
+};
+
+window.addNotificationToCampana = function(message, type = 'info') {
+  console.log('📬 Agregando notificación a campana:', message);
+  
+  const notification = {
+    id: Date.now() + Math.random(),
+    message: message,
+    type: type,
+    timestamp: new Date().toLocaleString('es-ES'),
+    read: false
+  };
+  
+  // Agregar al principio del array
+  window.notifications.unshift(notification);
+  
+  // Limitar a 20 notificaciones máximo
+  if (window.notifications.length > 20) {
+    window.notifications = window.notifications.slice(0, 20);
+  }
+  
+  // Guardar persistentemente
+  window.saveNotifications();
+  
+  // Actualizar contador
+  window.updateNotificationCounter();
+  
+  // Agregar al panel
+  window.renderNotifications();
+};
+
+// 🎯 FUNCIÓN PARA INTERCEPTAR TOASTS Y REDIRIGIR A CAMPANA
+window.interceptToast = function(message, type = 'info') {
+  // Lista de mensajes que van SOLO a la campana
+  const campanaOnly = [
+    'Carpeta conectada',
+    'Carpeta reconectada', 
+    'Modo Carpeta DESACTIVADO',
+    'Repuesto actualizado',
+    'Jerarquía actualizada',
+    'Modo edición',
+    'Posición actualizada',
+    'Filtro limpiado'
+  ];
+  
+  const shouldGoToCampana = campanaOnly.some(keyword => message.includes(keyword));
+  
+  if (shouldGoToCampana) {
+    // Solo a la campana
+    console.log('🔔 Interceptado para campana:', message);
+    window.addNotificationToCampana(message, type);
+    return true; // Interceptado
+  }
+  
+  return false; // Dejar que el toast normal se ejecute
+};
+
+window.updateNotificationCounter = function() {
+  const counter = document.getElementById('notificationCounter');
+  const unreadCount = window.notifications.filter(n => !n.read).length;
+  
+  if (counter) {
+    counter.textContent = unreadCount;
+    counter.style.display = unreadCount > 0 ? 'flex' : 'none';
+    
+    // Agregar clase para mostrar indicador rojo
+    const bell = document.getElementById('notificationBell');
+    if (bell) {
+      if (unreadCount > 0) {
+        bell.classList.add('has-unread');
+      } else {
+        bell.classList.remove('has-unread');
+      }
+    }
+  }
+  
+  console.log('🔔 Contador actualizado:', unreadCount);
+};
+
+window.renderNotifications = function() {
+  const panel = document.getElementById('notificationPanel');
+  const listContainer = panel ? panel.querySelector('.notification-list') : null;
+  
+  if (!listContainer) {
+    console.warn('⚠️ Lista de notificaciones no encontrada');
+    return;
+  }
+  
+  if (window.notifications.length === 0) {
+    listContainer.innerHTML = `
+      <div class="notification-empty">
+        <div class="notification-empty-icon">🔔</div>
+        <div class="notification-empty-text">No hay notificaciones</div>
+      </div>
+    `;
+    return;
+  }
+  
+  const html = window.notifications.map(notification => {
+    const iconMap = {
+      success: '✅',
+      error: '❌', 
+      warning: '⚠️',
+      info: 'ℹ️'
+    };
+    
+    return `
+      <div class="notification-item ${notification.read ? '' : 'unread'}" data-id="${notification.id}">
+        <div class="notification-item-icon">${iconMap[notification.type] || 'ℹ️'}</div>
+        <div class="notification-item-content">
+          <div class="notification-item-message">${notification.message}</div>
+          <div class="notification-item-time">
+            <span>�</span>
+            <span>${notification.timestamp}</span>
+          </div>
+        </div>
+        <span class="notification-status-badge">${notification.read ? 'Leído' : 'Nuevo'}</span>
+        <button class="notification-item-delete" onclick="window.removeNotification('${notification.id}')" title="Eliminar notificación">
+          ×
+        </button>
+      </div>
+    `;
+  }).join('');
+  
+  listContainer.innerHTML = html;
+};
+
+window.clearAllNotifications = function() {
+  window.notifications = [];
+  window.saveNotifications(); // Persistir el limpiado
+  window.updateNotificationCounter();
+  window.renderNotifications();
+};
+
+window.removeNotification = function(id) {
+  window.notifications = window.notifications.filter(n => n.id != id);
+  window.saveNotifications(); // Persistir la eliminación
+  window.updateNotificationCounter();
+  window.renderNotifications();
+};
+
+window.markAllNotificationsAsRead = function() {
+  window.notifications.forEach(n => n.read = true);
+  window.saveNotifications(); // Persistir el estado leído
+  window.updateNotificationCounter();
+  window.renderNotifications();
+};
+
+window.toggleCampana = function() {
+  console.log('�🔔 FUNCIÓN GLOBAL TOGGLECAMPANA EJECUTADA!');
+  
+  const panel = document.getElementById('notificationPanel');
+  if (!panel) {
+    console.error('❌ Panel no encontrado');
+    return;
+  }
+  
+  if (panel.classList.contains('active')) {
+    panel.classList.remove('active');
+    console.log('✅ Panel CERRADO por función global');
+  } else {
+    panel.classList.add('active');
+    console.log('✅ Panel ABIERTO por función global');
+    
+    // Marcar todas como leídas al abrir el panel
+    window.markAllNotificationsAsRead();
+  }
+};
+
+// Verificar que la función se creó
+console.log('✅ window.toggleCampana creada:', typeof window.toggleCampana);
+
+// 🔄 INICIALIZAR SISTEMA DE NOTIFICACIONES PERSISTENTES
+window.loadNotifications();
+window.updateNotificationCounter();
+window.renderNotifications();
+
+// También crear click fuera
+document.addEventListener('click', function(e) {
+  const panel = document.getElementById('notificationPanel');
+  const bell = document.getElementById('notificationBell');
+  
+  if (panel && bell && !panel.contains(e.target) && !bell.contains(e.target)) {
+    if (panel.classList.contains('active')) {
+      panel.classList.remove('active');
+      console.log('✅ Panel cerrado por click fuera');
+    }
+  }
+});
+
+console.log('🎯 Sistema de campana súper simple listo');
+console.log('📱 Notificaciones cargadas:', window.notifications.length);
+</script>
 
 </body>
 </html>
