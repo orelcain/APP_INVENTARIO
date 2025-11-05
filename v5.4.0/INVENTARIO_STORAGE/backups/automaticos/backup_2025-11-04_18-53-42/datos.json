@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-31T06:36:53.413Z",
+  "timestamp": "2025-11-04T21:53:42.611Z",
   "version": "5.3.2",
   "tipo": "BACKUP_COMPLETO",
   "estadisticas": {
@@ -7,7 +7,7 @@
     "totalMapas": 1,
     "totalAreas": 10,
     "totalUbicacionesEnMapas": 15,
-    "totalImagenes": 44
+    "totalImagenes": 48
   },
   "repuestos": [
     {
@@ -20,21 +20,19 @@
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cintas Filete",
-          "subSistema": "Cinta Curva"
+          "subArea": "Filete"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cintas Filete",
-      "subSistema": "Cinta Curva",
+      "sistemaEquipo": "",
+      "subSistema": "",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cintas Filete",
-      "sistema": "Cinta Curva",
+      "equipo": "",
+      "sistema": "",
       "detalleUbicacion": "",
       "cantidad": 0,
       "cantidadInstalada": 4,
@@ -42,8 +40,16 @@
       "optimo": 10,
       "precio": 0,
       "datosTecnicos": "- Rodamiento SUC 206\n- Chumacera ovalada FL206\n- Eje 30 mm",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-31T06:22:00.415Z",
+      "multimedia": [
+        {
+          "type": "image",
+          "url": "./imagenes/1762292096910_Pendiente_Chumacera_Ovalada_de_2_pernos__foto1.webp",
+          "name": "chumacera ovalada de 2 pernos FL 206.jpg",
+          "size": 109742,
+          "isFileSystem": true
+        }
+      ],
+      "ultimaModificacion": "2025-11-04T21:34:59.571Z",
       "ultimoConteo": null
     },
     {
@@ -56,21 +62,19 @@
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cintas Filete",
-          "subSistema": "Cinta Curva"
+          "subArea": "Filete"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cintas Filete",
-      "subSistema": "Cinta Curva",
+      "sistemaEquipo": "",
+      "subSistema": "",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cintas Filete",
-      "sistema": "Cinta Curva",
+      "equipo": "",
+      "sistema": "",
       "detalleUbicacion": "",
       "cantidad": 0,
       "cantidadInstalada": 1,
@@ -78,8 +82,23 @@
       "optimo": 1,
       "precio": 0,
       "datosTecnicos": "",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-31T06:21:32.453Z",
+      "multimedia": [
+        {
+          "type": "image",
+          "url": "./imagenes/1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp",
+          "name": "1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp",
+          "size": 72806,
+          "isFileSystem": true
+        },
+        {
+          "type": "image",
+          "url": "./imagenes/1762291953368_Pendiente_Cinta_Curva__foto2.webp",
+          "name": "cinta curva.jpg",
+          "size": 217624,
+          "isFileSystem": true
+        }
+      ],
+      "ultimaModificacion": "2025-11-04T21:32:48.021Z",
       "ultimoConteo": null
     },
     {
@@ -92,21 +111,19 @@
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cintas Filete",
-          "subSistema": "Cinta Curva"
+          "subArea": "Filete"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cintas Filete",
-      "subSistema": "Cinta Curva",
+      "sistemaEquipo": "",
+      "subSistema": "",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cintas Filete",
-      "sistema": "Cinta Curva",
+      "equipo": "",
+      "sistema": "",
       "detalleUbicacion": "",
       "cantidad": 0,
       "cantidadInstalada": 8,
@@ -114,8 +131,16 @@
       "optimo": 8,
       "precio": 0,
       "datosTecnicos": "",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-31T06:21:06.323Z",
+      "multimedia": [
+        {
+          "type": "image",
+          "url": "./imagenes/1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp",
+          "name": "photo_2025-10-25_23-44-21.jpg",
+          "size": 72806,
+          "isFileSystem": true
+        }
+      ],
+      "ultimaModificacion": "2025-11-04T21:33:59.707Z",
       "ultimoConteo": null
     },
     {
@@ -128,21 +153,19 @@
       "ubicaciones": [
         {
           "areaGeneral": "Planta Principal",
-          "subArea": "Filete",
-          "sistemaEquipo": "Cintas Filete",
-          "subSistema": "Cinta Curva"
+          "subArea": "Filete"
         }
       ],
       "planta": "Aquachile Antarfood Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
-      "sistemaEquipo": "Cintas Filete",
-      "subSistema": "Cinta Curva",
+      "sistemaEquipo": "",
+      "subSistema": "",
       "seccion": "",
       "detalle": "",
       "area": "Planta Principal",
-      "equipo": "Cintas Filete",
-      "sistema": "Cinta Curva",
+      "equipo": "",
+      "sistema": "",
       "detalleUbicacion": "",
       "cantidad": 0,
       "cantidadInstalada": 1,
@@ -150,8 +173,23 @@
       "optimo": 1,
       "precio": 0,
       "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
-      "multimedia": [],
-      "ultimaModificacion": "2025-10-31T06:34:17.781Z",
+      "multimedia": [
+        {
+          "type": "image",
+          "url": "./imagenes/1762292751855_Pendiente_Motor_Cinta_Curva_Filete_foto2.webp",
+          "name": "1762292751855_Pendiente_Motor_Cinta_Curva_Filete_foto2.webp",
+          "size": 89676,
+          "isFileSystem": true
+        },
+        {
+          "type": "image",
+          "url": "./imagenes/1762292751855_Pendiente_Motor_Cinta_Curva_Filete_foto2.webp",
+          "name": "motor cinta curva.jpg",
+          "size": 89676,
+          "isFileSystem": true
+        }
+      ],
+      "ultimaModificacion": "2025-11-04T21:45:54.499Z",
       "ultimoConteo": null
     },
     {

@@ -1,0 +1,257 @@
+inventario_v6.0_portable.html:11448 🗺️ MapStorage inicializado
+inventario_v6.0_portable.html:20424 🗺️ MapController definido
+inventario_v6.0_portable.html:34517 === INVENTARIO PRO - INICIANDO ===
+inventario_v6.0_portable.html:34518 Versión: 2.0
+inventario_v6.0_portable.html:21315 ✅ Jerarquía anidada cargada desde localStorage
+inventario_v6.0_portable.html:21272 ✅ Opciones cargadas desde localStorage
+inventario_v6.0_portable.html:20682 🔧 fsManager asignado: ✅ OK
+inventario_v6.0_portable.html:20683 🔧 fsManager.rootFolder: ❌ NO CONECTADO
+inventario_v6.0_portable.html:20685 📱 Dispositivo: PC
+inventario_v6.0_portable.html:20686 💾 Modo de almacenamiento: FILESYSTEM
+inventario_v6.0_portable.html:20687 📁 File System API: ✅ Disponible
+inventario_v6.0_portable.html:39979 
+🚀 Iniciando aplicación...
+
+inventario_v6.0_portable.html:39983 🔄 Detectada sesión FileSystem previa, intentando auto-reconexión...
+inventario_v6.0_portable.html:23298 
+════════════════════════════════════════════════════════════
+inventario_v6.0_portable.html:23299 🔌 CONEXIÓN CENTRALIZADA (AUTO-RECONEXIÓN)
+inventario_v6.0_portable.html:23300 ════════════════════════════════════════════════════════════
+
+inventario_v6.0_portable.html:40299 App disponible en: window.app
+inventario_v6.0_portable.html:40300 === SISTEMA LISTO ===
+inventario_v6.0_portable.html:10678 ✅ Carpeta "imagenes" accesible: FileSystemDirectoryHandle {kind: 'directory', name: 'imagenes'}
+inventario_v6.0_portable.html:10684    📸 Encontrado: mapas
+inventario_v6.0_portable.html:10684    📸 Encontrado: 1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp
+inventario_v6.0_portable.html:10684    📸 Encontrado: 1761249794280_3300105501_PARADA_EMERGENCIA_CON_CAJA_foto2.webp
+inventario_v6.0_portable.html:10687    📊 Total de archivos en carpeta imagenes: 56
+inventario_v6.0_portable.html:10573 ✅ Sesión FileSystem restaurada automáticamente: INVENTARIO_STORAGE
+inventario_v6.0_portable.html:23319 ✅ FileSystem conectado: INVENTARIO_STORAGE
+inventario_v6.0_portable.html:23325 ✅ MapStorage inicializado
+inventario_v6.0_portable.html:23401 📍 Badges actualizados: 🟢 CONECTADO
+inventario_v6.0_portable.html:23338 🔄 Cargando datos desde carpeta...
+inventario_v6.0_portable.html:23859 ⌕ Modo FileSystem activo, intentando cargar desde archivo...
+inventario_v6.0_portable.html:23866 ✅ Cargados 57 repuestos desde FileSystem
+inventario_v6.0_portable.html:23885 📊 [DIAGNÓSTICO] Repuestos CON imágenes: 49
+inventario_v6.0_portable.html:23886 📊 [DIAGNÓSTICO] Repuestos SIN imágenes: 8
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/1762292096910_Pendiente_Chumacera_Ovalada_de_2_pernos__foto1.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): 1762292096910_Pendiente_Chumacera_Ovalada_de_2_pernos__foto1.webp
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): 1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): 1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/1762292751855_Pendiente_Motor_Cinta_Curva_Filete_foto2.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): 1762292751855_Pendiente_Motor_Cinta_Curva_Filete_foto2.webp
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PARADA EMERGENCIA.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): PARADA EMERGENCIA.webp
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PERNO HEX M8X60 INOX.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): PERNO HEX M8X60 INOX.webp
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/DESOXIDANTE WURTH.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): DESOXIDANTE WURTH.webp
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp
+inventario_v6.0_portable.html:21095 🔍 [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp
+inventario_v6.0_portable.html:21096    storageMode: filesystem
+inventario_v6.0_portable.html:21097    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:21098    fsManager.imagesFolder: EXISTE ✅
+inventario_v6.0_portable.html:21142 🔍 Cargando imagen desde FileSystem (carpeta plana): EQUIPO ESTANCO FLUORECENTE 2X18W.webp
+inventario_v6.0_portable.html:34233  ⚠️ Elementos de UI no encontrados para updateUnreadCount
+updateUnreadCount @ inventario_v6.0_portable.html:34233
+addNotification @ inventario_v6.0_portable.html:34209
+showToast @ inventario_v6.0_portable.html:33706
+connectWorkspace @ inventario_v6.0_portable.html:23341
+await in connectWorkspace
+(anonymous) @ inventario_v6.0_portable.html:39984
+(anonymous) @ inventario_v6.0_portable.html:40140
+inventario_v6.0_portable.html:33709 🔔 Notificación registrada: [SUCCESS] ✅ Carpeta conectada y datos cargados
+inventario_v6.0_portable.html:23347 
+════════════════════════════════════════════════════════════
+inventario_v6.0_portable.html:23348 ✅ CONEXIÓN COMPLETADA
+inventario_v6.0_portable.html:23349    📁 Carpeta: INVENTARIO_STORAGE
+inventario_v6.0_portable.html:23350    📊 Repuestos: 57
+inventario_v6.0_portable.html:23351    🗺️ MapStorage: Inicializado
+inventario_v6.0_portable.html:23352 ════════════════════════════════════════════════════════════
+
+inventario_v6.0_portable.html:20741 ✅ Microsoft Edge detectado - Experiencia optimizada
+inventario_v6.0_portable.html:23574 💻 Inputs de foto configurados para PC (Galería)
+inventario_v6.0_portable.html:25006 🔄 Modo Auto activado
+inventario_v6.0_portable.html:34575  [OKR] Contenedor no encontrado, se omite inicialización.
+init @ inventario_v6.0_portable.html:34575
+(anonymous) @ inventario_v6.0_portable.html:40039
+await in (anonymous)
+(anonymous) @ inventario_v6.0_portable.html:40140
+inventario_v6.0_portable.html:40040 App inicializada: InventarioCompleto {ubicacionesActuales: Array(0), currentImageFile: null, currentOptimizeSize: 1200, currentQuality: 0.85, repuestos: Array(57), …}
+inventario_v6.0_portable.html:40041 Repuestos cargados: 57
+inventario_v6.0_portable.html:35661 🔄 Backup Manager inicializado
+inventario_v6.0_portable.html:11559 ✅ Categorías personalizadas cargadas: (6) ['area', 'maquina', 'estructura', 'cinta', 'componente', '${categoryId}']
+inventario_v6.0_portable.html:40056 🗺️ MapController inicializado correctamente
+inventario_v6.0_portable.html:23688 ✅ localStorage ya está limpio (no hay imágenes base64)
+inventario_v6.0_portable.html:36336 🔄 actualizarEstadoUI llamado
+inventario_v6.0_portable.html:36337    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:36338    fsManager.folderPath: INVENTARIO_STORAGE
+inventario_v6.0_portable.html:40070 
+═════════════════════════════════════════════
+inventario_v6.0_portable.html:40071 📊 DIAGNÓSTICO DE RUTAS Y CARGA
+inventario_v6.0_portable.html:40072 ═════════════════════════════════════════════
+inventario_v6.0_portable.html:40075 📁 Carpeta base: INVENTARIO_STORAGE
+inventario_v6.0_portable.html:40076 📁 Storage: INVENTARIO_STORAGE/INVENTARIO_STORAGE
+inventario_v6.0_portable.html:40077 📁 Imágenes: INVENTARIO_STORAGE/INVENTARIO_STORAGE/imagenes/
+inventario_v6.0_portable.html:40078 📄 JSON: INVENTARIO_STORAGE/INVENTARIO_STORAGE/inventario.json
+inventario_v6.0_portable.html:40080 
+📦 Repuestos:
+inventario_v6.0_portable.html:40083   ✅ Con imágenes: 49
+inventario_v6.0_portable.html:40084   ⚪ Sin imágenes: 8
+inventario_v6.0_portable.html:40085   📊 Total: 57
+inventario_v6.0_portable.html:40087 
+💾 localStorage:
+inventario_v6.0_portable.html:40091   📊 Tamaño: 0.01 MB
+inventario_v6.0_portable.html:40104   ✅ Imágenes base64: 0
+inventario_v6.0_portable.html:40109 
+✨ RESUMEN:
+inventario_v6.0_portable.html:40110   ✅ Todas las referencias desde: INVENTARIO_STORAGE
+inventario_v6.0_portable.html:40111   ✅ Imágenes: FileSystem (sin límites)
+inventario_v6.0_portable.html:40112   ✅ Datos: JSON + localStorage (backup)
+inventario_v6.0_portable.html:40113   ✅ Sin referencias externas
+inventario_v6.0_portable.html:40114 ═════════════════════════════════════════════
+
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: 1762292096910_Pendiente_Chumacera_Ovalada_de_2_pernos__foto1.webp (109742 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: 1762292096910_Pendiente_Chumacera_Ovalada_de_2_pernos__foto1.webp (Total: 1)
+inventario_v6.0_portable.html:36336 🔄 actualizarEstadoUI llamado
+inventario_v6.0_portable.html:36337    fsManager.isFileSystemMode: true
+inventario_v6.0_portable.html:36338    fsManager.folderPath: INVENTARIO_STORAGE
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: 1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp (72806 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: 1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp (Total: 2)
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: 1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp (72806 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: 1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp (Total: 2)
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: 1762292751855_Pendiente_Motor_Cinta_Curva_Filete_foto2.webp (89676 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: 1762292751855_Pendiente_Motor_Cinta_Curva_Filete_foto2.webp (Total: 3)
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: PARADA EMERGENCIA.webp (271530 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: PARADA EMERGENCIA.webp (Total: 4)
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: PERNO HEX M8X60 INOX.webp (373432 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: PERNO HEX M8X60 INOX.webp (Total: 5)
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp (40748 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp (Total: 6)
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: DESOXIDANTE WURTH.webp (441872 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: DESOXIDANTE WURTH.webp (Total: 7)
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp (45008 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp (Total: 8)
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp (28896 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp (Total: 9)
+inventario_v6.0_portable.html:21153 ✅ Imagen cargada: EQUIPO ESTANCO FLUORECENTE 2X18W.webp (162636 bytes)
+inventario_v6.0_portable.html:10943 ✅ [CACHÉ GLOBAL] Guardado: EQUIPO ESTANCO FLUORECENTE 2X18W.webp (Total: 10)
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: Chumacera Ovalada de 2 pernos FL206
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/b59e7201-0749-4818-8b3a-780870e8ec0f
+inventario_v6.0_portable.html:25279    multimedia: [{…}]
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: Cinta Curva 
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/916e48a2-b8f3-4822-bd06-256e35aa5078
+inventario_v6.0_portable.html:25279    multimedia: (2) [{…}, {…}]
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: Sprocket Cinta Curva Filete
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/b9b10f9b-6de4-4768-8148-1f082c6be970
+inventario_v6.0_portable.html:25279    multimedia: [{…}]
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: Motor Cinta Curva Filete
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/7e905307-7baf-4d02-aa9c-1e8838f5371e
+inventario_v6.0_portable.html:25279    multimedia: (2) [{…}, {…}]
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: PARADA EMERGENCIA CON CAJA
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/9b01d6a5-8dad-4756-9966-31b857c41890
+inventario_v6.0_portable.html:25279    multimedia: [{…}]
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: PERNO HEX M8X60
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/dae79a8c-a27f-425a-8999-a2c86860bac1
+inventario_v6.0_portable.html:25279    multimedia: [{…}]
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: PINTURA SPRAY BLANCO
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/984dd2ee-2c69-4e96-978a-b1eea679f664
+inventario_v6.0_portable.html:25279    multimedia: [{…}]
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: DESOXIDANTE WURTH ROST OFF 300 ML
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/36226644-4e28-4420-9d25-44c1bc8dc1fb
+inventario_v6.0_portable.html:25279    multimedia: [{…}]
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: BROCHA 4"
+inventario_v6.0_portable.html:25278    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+inventario_v6.0_portable.html:25279    multimedia: []
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: VALVULA BOLA PVC HIDRAULICO 32MM
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/47ce67d1-959d-4965-b2d7-7da2279e1468
+inventario_v6.0_portable.html:25279    multimedia: [{…}]
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: BEL RAY NO TOX FOOD GRADE WATERPROOF (Grasa Liquida)
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/4790b5a6-9783-4d76-8f59-1582a1ebd4a7
+inventario_v6.0_portable.html:25279    multimedia: [{…}]
+inventario_v6.0_portable.html:25277 🖼️ [TARJETA] Renderizando repuesto: EQUIPO ESTANCO FLUORECENTE 2X18W
+inventario_v6.0_portable.html:25278    imageUrl: blob:null/82331b99-bee4-4d28-b7a4-d19f9a363ffa
+inventario_v6.0_portable.html:25279    multimedia: [{…}]
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: BROCHA 4
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: Chumacera Ovalada de 2 pernos FL206
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: Cinta Curva 
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: Sprocket Cinta Curva Filete
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: Motor Cinta Curva Filete
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: PARADA EMERGENCIA CON CAJA
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: PERNO HEX M8X60
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: PINTURA SPRAY BLANCO
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: DESOXIDANTE WURTH ROST OFF 300 ML
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: VALVULA BOLA PVC HIDRAULICO 32MM
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: BEL RAY NO TOX FOOD GRADE WATERPROOF (Grasa Liquida)
+inventario_v6.0_portable.html:1 ✅ Imagen cargada en DOM: EQUIPO ESTANCO FLUORECENTE 2X18W
+app.initNotificationSystemCORRECTO()
+inventario_v6.0_portable.html:34144 🔔 Iniciando sistema de notificaciones...
+inventario_v6.0_portable.html:34149 🔔 Elementos encontrados: {bell: true, panel: true}
+inventario_v6.0_portable.html:34181 🔔 Sistema de notificaciones inicializado correctamente
+undefined
+console.log('Bell listeners:', app.notificationBell)
+VM714:1 Bell listeners: <div id=​"notificationBell" class=​"notification-bell has-unread" title=​"Notificaciones">​…​</div>​flex
+undefined
+const panel = document.getElementById('notificationPanel');
+panel.style.display = 'block';
+panel.classList.add('active');
+undefined
+const bell = document.getElementById('notificationBell');
+const panel = document.getElementById('notificationPanel');
+undefined
+bell.replaceWith(bell.cloneNode(true));
+const newBell = document.getElementById('notificationBell');
+
+undefined
+newBell.addEventListener('click', function(e) {
+    console.log('🔔 CLICK FORZADO DETECTADO!');
+    const panel = document.getElementById('notificationPanel');
+    if (panel.classList.contains('active')) {
+        panel.classList.remove('active');
+        console.log('Panel cerrado');
+    } else {
+        panel.classList.add('active');
+        console.log('Panel abierto');
+    }
+});
+
+console.log('✅ Sistema forzado configurado - Prueba hacer click ahora');
+VM738:13 ✅ Sistema forzado configurado - Prueba hacer click ahora
+undefined
