@@ -4003,6 +4003,277 @@
       font-weight: 500;
     }
 
+    /* 🌳 ÁRBOL JERÁRQUICO ESTILO SAP PM - CORPORATIVO */
+    
+    /* Container principal estilo SAP */
+    .sap-tree-container {
+      background: var(--gray-200); /* Fondo de tarjetas de la app */
+      border: 1px solid var(--gray-500);
+      border-radius: 4px;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Nodo del árbol estilo SAP */
+    .sap-tree-node {
+      border-bottom: 1px solid var(--gray-400);
+      transition: background-color 0.15s ease;
+    }
+
+    /* Item individual del árbol */
+    .sap-tree-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 8px;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+      transition: background-color 0.15s ease;
+      position: relative;
+    }
+
+    /* Hover sutil estilo SAP */
+    .sap-tree-item:hover {
+      background-color: var(--gray-300); /* Hover corporativo */
+    }
+
+    /* Selección con color primario de la app */
+    .sap-tree-item.selected {
+      background-color: rgba(91, 139, 180, 0.2); /* Primary con transparencia */
+      border-left: 3px solid var(--primary);
+      font-weight: 600;
+    }
+
+    /* Indentación por niveles */
+    .sap-tree-item[data-level="0"] { padding-left: 8px; }
+    .sap-tree-item[data-level="1"] { padding-left: 28px; }
+    .sap-tree-item[data-level="2"] { padding-left: 48px; }
+    .sap-tree-item[data-level="3"] { padding-left: 68px; }
+    .sap-tree-item[data-level="4"] { padding-left: 88px; }
+    .sap-tree-item[data-level="5"] { padding-left: 108px; }
+    .sap-tree-item[data-level="6"] { padding-left: 128px; }
+    .sap-tree-item[data-level="7"] { padding-left: 148px; }
+
+    /* Líneas de conexión sutiles */
+    .sap-tree-item::before {
+      content: '';
+      position: absolute;
+      left: calc(var(--indent) - 10px);
+      top: 0;
+      bottom: 50%;
+      width: 1px;
+      background: var(--gray-500); /* Línea de conexión corporativa */
+    }
+
+    .sap-tree-item::after {
+      content: '';
+      position: absolute;
+      left: calc(var(--indent) - 10px);
+      top: 50%;
+      width: 8px;
+      height: 1px;
+      background: var(--gray-500); /* Línea de conexión corporativa */
+    }
+
+    /* Toggle (expandir/contraer) */
+    .sap-tree-toggle {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 4px;
+      font-size: 10px;
+      color: var(--gray-700); /* Color de texto secundario */
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .sap-tree-toggle.expanded {
+      transform: rotate(90deg);
+    }
+
+    .sap-tree-toggle.empty {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Icono de carpeta/documento */
+    .sap-tree-icon {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 6px;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Código alfanumérico estilo SAP */
+    .sap-tree-code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      color: var(--gray-800); /* Texto normal */
+      margin-right: 8px;
+      min-width: 120px;
+      font-weight: 600;
+    }
+
+    /* Descripción/nombre */
+    .sap-tree-label {
+      font-size: 12px;
+      color: var(--gray-900); /* Texto primario */
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Badge de cantidad estilo SAP */
+    .sap-tree-badge {
+      background: var(--gray-400); /* Fondo elevado */
+      border: 1px solid var(--gray-500);
+      border-radius: 3px;
+      padding: 2px 6px;
+      font-size: 10px;
+      color: var(--primary-light); /* Azul claro */
+      margin-left: 8px;
+      font-weight: 600;
+    }
+
+    /* Hijos colapsados */
+    .sap-tree-children {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .sap-tree-children.expanded {
+      max-height: 10000px;
+    }
+
+    /* Estados de iconos */
+    .sap-icon-folder-closed::before { content: '📁'; }
+    .sap-icon-folder-open::before { content: '📂'; }
+    .sap-icon-document::before { content: '📄'; }
+    .sap-icon-equipment::before { content: '⚙️'; }
+    .sap-icon-component::before { content: '🔧'; }
+    
+    /* 🆕 Clases auxiliares para estilos inline */
+    .sap-tree-wrapper {
+      margin-top: 20px;
+    }
+    
+    .sap-tree-header-flex {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .sap-tree-header-count {
+      font-size: 11px;
+      color: var(--gray-700); /* Texto secundario */
+      font-weight: normal;
+    }
+    
+    .sap-toolbar-separator {
+      width: 1px;
+      height: 20px;
+      background: var(--gray-500); /* Separador corporativo */
+      margin: 0 4px;
+    }
+    
+    .sap-tree-scrollable {
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    .sap-tree-hidden {
+      display: none;
+    }
+
+    /* Scrollbar corporativo */
+    .sap-tree-container::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    .sap-tree-container::-webkit-scrollbar-track {
+      background: var(--gray-200);
+    }
+
+    .sap-tree-container::-webkit-scrollbar-thumb {
+      background: var(--gray-500);
+      border: 2px solid var(--gray-200);
+      border-radius: 6px;
+    }
+
+    .sap-tree-container::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
+    /* Header estilo corporativo */
+    .sap-tree-header {
+      background: linear-gradient(135deg, var(--gray-300) 0%, var(--gray-200) 100%);
+      border-bottom: 2px solid var(--primary);
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray-900); /* Texto primario */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Barra de herramientas corporativa */
+    .sap-toolbar {
+      background: var(--gray-300);
+      border-bottom: 1px solid var(--gray-500);
+      padding: 6px 8px;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .sap-toolbar-btn {
+      background: var(--gray-400);
+      border: 1px solid var(--gray-500);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 11px;
+      color: var(--gray-800);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sap-toolbar-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary-dark);
+    }
+
+    .sap-toolbar-btn:active {
+      background: var(--primary-dark);
+      transform: scale(0.98);
+    }
+
+    /* Indicador de carga */
+    .sap-tree-loading {
+      padding: 20px;
+      text-align: center;
+      color: var(--gray-700); /* Texto secundario */
+      font-size: 12px;
+    }
+
+    /* Indicador vacío */
+    .sap-tree-empty {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--gray-600); /* Texto terciario */
+      font-size: 12px;
+    }
+
     /* MAPA */
     .map-container {
       background: var(--bg-secondary);
@@ -9493,7 +9764,41 @@
         <span id="breadcrumbPath" class="breadcrumb-path"></span>
       </div>
       
-      <div id="treeContainer"></div>
+      <!-- 🌳 ÁRBOL JERÁRQUICO ESTILO SAP PM -->
+      <div class="sap-tree-wrapper">
+        <!-- Header estilo SAP -->
+        <div class="sap-tree-header">
+          <div class="sap-tree-header-flex">
+            <span>📁</span>
+            <span>Estructura Organizacional</span>
+          </div>
+          <div class="sap-tree-header-count">
+            <span id="sapTreeCount">0</span> elementos
+          </div>
+        </div>
+        
+        <!-- Barra de herramientas estilo SAP -->
+        <div class="sap-toolbar">
+          <button class="sap-toolbar-btn" onclick="app.sapTreeExpandAll()" title="Expandir todo">
+            📂 Expandir
+          </button>
+          <button class="sap-toolbar-btn" onclick="app.sapTreeCollapseAll()" title="Contraer todo">
+            📁 Contraer
+          </button>
+          <div class="sap-toolbar-separator"></div>
+          <button class="sap-toolbar-btn" onclick="app.sapTreeRefresh()" title="Refrescar">
+            🔄 Refrescar
+          </button>
+        </div>
+        
+        <!-- Container del árbol -->
+        <div class="sap-tree-container sap-tree-scrollable" id="sapTreeContainer">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+      
+      <!-- Container antiguo (backup) -->
+      <div id="treeContainer" class="sap-tree-hidden"></div>
     </div>
   </div>
 
@@ -25065,6 +25370,8 @@ class InventarioCompleto {
     if (tab === 'jerarquia') {
       this.inicializarFiltrosJerarquia();
       this.renderJerarquia();
+      // 🌳 Renderizar árbol estilo SAP PM
+      this.renderSAPTree();
     } else if (tab === 'stats') {
       this.renderStats();
     } else if (tab === 'valores') {
@@ -31328,8 +31635,11 @@ class InventarioCompleto {
     // Actualizar contador
     document.getElementById('repuestosVisibles').textContent = repuestosFiltrados.length;
     
-    // Renderizar árbol filtrado
+    // Renderizar árbol filtrado (antiguo)
     this.renderJerarquiaFiltrada(repuestosFiltrados);
+    
+    // 🌳 Renderizar árbol estilo SAP PM
+    this.renderSAPTree();
   }
 
   // Limpiar todos los filtros
@@ -31354,6 +31664,9 @@ class InventarioCompleto {
     
     // Renderizar todo
     this.renderJerarquia();
+    
+    // 🌳 Renderizar árbol estilo SAP PM
+    this.renderSAPTree();
   }
 
   // Ir a inventario con filtros desde un nodo jerárquico
@@ -35894,6 +36207,374 @@ const okrModule = {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  },
+  
+  // ========================================
+  // 🌳 ÁRBOL JERÁRQUICO ESTILO SAP PM
+  // ========================================
+  
+  /**
+   * Renderiza el árbol jerárquico estilo SAP PM
+   * Convierte la estructura plana en árbol anidado con íconos, colores corporativos beige/cream
+   */
+  renderSAPTree() {
+    const container = document.getElementById('sapTreeContainer');
+    if (!container) {
+      console.warn('⚠️ No se encontró el contenedor del árbol SAP');
+      return;
+    }
+    
+    // Obtener datos filtrados
+    const data = this.getFilteredJerarquiaData();
+    if (!data || data.length === 0) {
+      container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">No hay datos para mostrar</div>';
+      this.updateSAPTreeCount(0);
+      return;
+    }
+    
+    // Construir árbol jerárquico
+    const tree = this.buildTreeStructure(data);
+    
+    // Renderizar HTML
+    container.innerHTML = this.renderTreeNodes(tree, 0);
+    
+    // Actualizar contador
+    this.updateSAPTreeCount(data.length);
+    
+    console.log('✅ Árbol SAP renderizado:', data.length, 'elementos');
+  },
+  
+  /**
+   * Obtiene datos filtrados según los filtros activos en cascada
+   */
+  getFilteredJerarquiaData() {
+    // 🔄 USAR DATOS REALES DE REPUESTOS
+    const filtroPlanta = document.getElementById('filtro_planta')?.value || '';
+    const filtroArea = document.getElementById('filtro_area')?.value || '';
+    const filtroSubArea = document.getElementById('filtro_subarea')?.value || '';
+    const filtroSistema = document.getElementById('filtro_sistemaEquipo')?.value || '';
+    const filtroSubSistema = document.getElementById('filtro_subsistema')?.value || '';
+    const filtroSeccion = document.getElementById('filtro_seccion')?.value || '';
+    const filtroDetalle = document.getElementById('filtro_detalle')?.value || '';
+    
+    // Filtrar repuestos según criterios activos
+    let repuestosFiltrados = this.repuestos.filter(r => {
+      if (filtroPlanta && r.planta !== filtroPlanta) return false;
+      if (filtroArea && r.areaGeneral !== filtroArea) return false;
+      if (filtroSubArea && r.subArea !== filtroSubArea) return false;
+      if (filtroSistema && r.sistemaEquipo !== filtroSistema) return false;
+      if (filtroSubSistema && r.subSistema !== filtroSubSistema) return false;
+      if (filtroSeccion && r.seccion !== filtroSeccion) return false;
+      if (filtroDetalle && r.detalle !== filtroDetalle) return false;
+      return true;
+    });
+    
+    // Convertir a estructura de datos para el árbol SAP
+    const dataMap = new Map();
+    
+    repuestosFiltrados.forEach(r => {
+      // Crear clave única para cada nivel jerárquico
+      const planta = r.planta || 'Sin Planta';
+      const area = r.areaGeneral || 'Sin Área';
+      const subarea = r.subArea || 'Sin Sub-Área';
+      const sistema = r.sistemaEquipo || 'Sin Sistema';
+      const subsistema = r.subSistema || 'Sin Sub-Sistema';
+      const seccion = r.seccion || '';
+      const detalle = r.detalle || '';
+      
+      // Construir jerarquía completa según niveles disponibles
+      let nivelMasBajo = `${planta}|${area}|${subarea}|${sistema}`;
+      
+      if (subsistema && subsistema !== 'Sin Sub-Sistema') {
+        nivelMasBajo += `|${subsistema}`;
+        
+        if (seccion) {
+          nivelMasBajo += `|${seccion}`;
+          
+          if (detalle) {
+            nivelMasBajo += `|${detalle}`;
+          }
+        }
+      }
+      
+      // Contar repuestos por nivel
+      if (!dataMap.has(nivelMasBajo)) {
+        dataMap.set(nivelMasBajo, {
+          planta,
+          area,
+          subarea,
+          sistema,
+          subsistema: subsistema !== 'Sin Sub-Sistema' ? subsistema : null,
+          seccion: seccion || null,
+          detalle: detalle || null,
+          count: 0,
+          repuestos: []
+        });
+      }
+      
+      const entry = dataMap.get(nivelMasBajo);
+      entry.count++;
+      entry.repuestos.push(r);
+    });
+    
+    return Array.from(dataMap.values());
+  },
+  
+  /**
+   * Construye estructura de árbol anidado desde datos planos
+   */
+  buildTreeStructure(data) {
+    const tree = {};
+    
+    data.forEach(item => {
+      // Nivel 1: Planta 🏭
+      if (!tree[item.planta]) {
+        tree[item.planta] = { 
+          label: item.planta, 
+          type: 'planta',
+          children: {},
+          count: 0,
+          repuestos: []
+        };
+      }
+      tree[item.planta].count += item.count;
+      
+      // Nivel 2: Área 📁
+      const areaKey = item.area;
+      if (!tree[item.planta].children[areaKey]) {
+        tree[item.planta].children[areaKey] = {
+          label: item.area,
+          type: 'area',
+          children: {},
+          count: 0,
+          repuestos: []
+        };
+      }
+      tree[item.planta].children[areaKey].count += item.count;
+      
+      // Nivel 3: Sub-Área 📂
+      const subareaKey = item.subarea;
+      if (!tree[item.planta].children[areaKey].children[subareaKey]) {
+        tree[item.planta].children[areaKey].children[subareaKey] = {
+          label: item.subarea,
+          type: 'subarea',
+          children: {},
+          count: 0,
+          repuestos: []
+        };
+      }
+      tree[item.planta].children[areaKey].children[subareaKey].count += item.count;
+      
+      // Nivel 4: Sistema ⚙️
+      const sistemaKey = item.sistema;
+      if (!tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey]) {
+        tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey] = {
+          label: item.sistema,
+          type: 'sistema',
+          children: {},
+          count: 0,
+          repuestos: []
+        };
+      }
+      tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].count += item.count;
+      
+      // Nivel 5: Sub-Sistema 🔧 (opcional)
+      if (item.subsistema) {
+        const subsistemaKey = item.subsistema;
+        if (!tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].children[subsistemaKey]) {
+          tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].children[subsistemaKey] = {
+            label: item.subsistema,
+            type: 'subsistema',
+            children: {},
+            count: 0,
+            repuestos: []
+          };
+        }
+        tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].children[subsistemaKey].count += item.count;
+        
+        // Nivel 6: Sección 📋 (opcional)
+        if (item.seccion) {
+          const seccionKey = item.seccion;
+          if (!tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].children[subsistemaKey].children[seccionKey]) {
+            tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].children[subsistemaKey].children[seccionKey] = {
+              label: item.seccion,
+              type: 'seccion',
+              children: {},
+              count: 0,
+              repuestos: []
+            };
+          }
+          tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].children[subsistemaKey].children[seccionKey].count += item.count;
+          
+          // Nivel 7: Detalle 🔍 (opcional - hoja final)
+          if (item.detalle) {
+            const detalleKey = item.detalle;
+            tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].children[subsistemaKey].children[seccionKey].children[detalleKey] = {
+              label: item.detalle,
+              type: 'detalle',
+              count: item.count,
+              repuestos: item.repuestos || []
+            };
+          } else {
+            // Si no hay detalle, los repuestos van en la sección
+            tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].children[subsistemaKey].children[seccionKey].repuestos.push(...(item.repuestos || []));
+          }
+        } else {
+          // Si no hay sección, los repuestos van en el subsistema
+          tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].children[subsistemaKey].repuestos.push(...(item.repuestos || []));
+        }
+      } else {
+        // Si no hay subsistema, los repuestos van en el sistema
+        tree[item.planta].children[areaKey].children[subareaKey].children[sistemaKey].repuestos.push(...(item.repuestos || []));
+      }
+    });
+    
+    return tree;
+  },
+  
+  /**
+   * Renderiza nodos del árbol recursivamente con estilo SAP PM
+   */
+  renderTreeNodes(nodes, level) {
+    let html = '';
+    
+    Object.keys(nodes).forEach(key => {
+      const node = nodes[key];
+      const hasChildren = node.children && Object.keys(node.children).length > 0;
+      const nodeId = `sap-node-${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Determinar ícono según tipo (estilo SAP PM)
+      let icon = '📄'; // Por defecto
+      if (node.type === 'planta') icon = '🏭';
+      else if (node.type === 'area') icon = '📁';
+      else if (node.type === 'subarea') icon = '📂';
+      else if (node.type === 'sistema') icon = '⚙️';
+      else if (node.type === 'subsistema') icon = '🔧';
+      else if (node.type === 'seccion') icon = '📋';
+      else if (node.type === 'detalle') icon = '🔍';
+      
+      // Clase CSS según nivel de indentación
+      const indent = level > 7 ? 7 : level;
+      
+      html += `
+        <div class="sap-tree-node" data-level="${indent}">
+          <div class="sap-tree-item indent-${indent}" data-node-id="${nodeId}" data-type="${node.type}">
+            ${hasChildren ? `
+              <span class="sap-tree-toggle" onclick="app.sapTreeToggleNode('${nodeId}')">▶</span>
+            ` : `
+              <span class="sap-tree-toggle-placeholder" style="width: 16px; display: inline-block;"></span>
+            `}
+            <span class="sap-tree-icon">${icon}</span>
+            <span class="sap-tree-label" onclick="app.sapTreeSelectNode('${nodeId}', '${node.label}', '${node.type}')">${node.label}</span>
+            ${node.count > 0 ? `<span class="sap-tree-badge">${node.count}</span>` : ''}
+          </div>
+          ${hasChildren ? `
+            <div class="sap-tree-children" data-parent="${nodeId}" style="display: none;">
+              ${this.renderTreeNodes(node.children, level + 1)}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    });
+    
+    return html;
+  },
+  
+  /**
+   * Alterna expansión/colapso de un nodo
+   */
+  sapTreeToggleNode(nodeId) {
+    const item = document.querySelector(`[data-node-id="${nodeId}"]`);
+    const children = document.querySelector(`[data-parent="${nodeId}"]`);
+    const toggle = item?.querySelector('.sap-tree-toggle');
+    
+    if (!children || !toggle) return;
+    
+    const isExpanded = children.style.display !== 'none';
+    
+    if (isExpanded) {
+      children.style.display = 'none';
+      toggle.textContent = '▶';
+      item.classList.remove('expanded');
+    } else {
+      children.style.display = 'block';
+      toggle.textContent = '▼';
+      item.classList.add('expanded');
+    }
+  },
+  
+  /**
+   * Selecciona un nodo (resalta con color primario)
+   */
+  sapTreeSelectNode(nodeId, label, type) {
+    // Remover selección anterior
+    document.querySelectorAll('.sap-tree-item.selected').forEach(el => {
+      el.classList.remove('selected');
+    });
+    
+    // Seleccionar nuevo nodo
+    const item = document.querySelector(`[data-node-id="${nodeId}"]`);
+    if (item) {
+      item.classList.add('selected');
+      console.log('✅ Nodo seleccionado:', {
+        label,
+        type,
+        nodeId
+      });
+      
+      // Mostrar notificación (opcional)
+      this.showToast(`Seleccionado: ${label}`, 'info');
+    }
+  },
+  
+  /**
+   * Expande todos los nodos del árbol
+   */
+  sapTreeExpandAll() {
+    document.querySelectorAll('.sap-tree-children').forEach(el => {
+      el.style.display = 'block';
+    });
+    document.querySelectorAll('.sap-tree-toggle').forEach(el => {
+      el.textContent = '▼';
+    });
+    document.querySelectorAll('.sap-tree-item').forEach(el => {
+      el.classList.add('expanded');
+    });
+    console.log('📂 Todos los nodos expandidos');
+  },
+  
+  /**
+   * Colapsa todos los nodos del árbol
+   */
+  sapTreeCollapseAll() {
+    document.querySelectorAll('.sap-tree-children').forEach(el => {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.sap-tree-toggle').forEach(el => {
+      el.textContent = '▶';
+    });
+    document.querySelectorAll('.sap-tree-item').forEach(el => {
+      el.classList.remove('expanded');
+    });
+    console.log('📁 Todos los nodos colapsados');
+  },
+  
+  /**
+   * Refresca el árbol (vuelve a renderizar)
+   */
+  sapTreeRefresh() {
+    console.log('🔄 Refrescando árbol SAP...');
+    this.renderSAPTree();
+  },
+  
+  /**
+   * Actualiza el contador de elementos en el header
+   */
+  updateSAPTreeCount(count) {
+    const counter = document.getElementById('sapTreeCount');
+    if (counter) {
+      counter.textContent = count;
+    }
   }
 };
 
