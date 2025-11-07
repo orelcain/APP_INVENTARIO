@@ -74,20 +74,13 @@
     "multimedia": [
       {
         "type": "image",
-        "url": "./imagenes/1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp",
-        "name": "1762292036044_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp",
-        "size": 72806,
-        "isFileSystem": true
-      },
-      {
-        "type": "image",
         "url": "./imagenes/1762291953368_Pendiente_Cinta_Curva__foto2.webp",
         "name": "cinta curva.jpg",
         "size": 217624,
         "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-11-04T21:32:48.021Z",
+    "ultimaModificacion": "2025-11-06T00:25:48.559Z",
     "ultimoConteo": null
   },
   {
@@ -127,9 +120,16 @@
         "name": "photo_2025-10-25_23-44-21.jpg",
         "size": 72806,
         "isFileSystem": true
+      },
+      {
+        "type": "image",
+        "url": "./imagenes/1762475561423_Pendiente_Sprocket_Cinta_Curva_Filete_foto2.webp",
+        "name": "cinta curva.jpg",
+        "size": 217624,
+        "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-11-04T21:33:59.707Z",
+    "ultimaModificacion": "2025-11-07T00:41:54.780Z",
     "ultimoConteo": null
   },
   {

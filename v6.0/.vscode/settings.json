@@ -1,0 +1,18 @@
+{
+  "//": "Configuración para suprimir errores del parser de VS Code en JavaScript embebido",
+  "javascript.validate.enable": false,
+  "typescript.validate.enable": false,
+  "html.validate.scripts": false,
+  "html.validate.styles": false,
+  "files.associations": {
+    "**/inventario_v6.0_portable.html": "html"
+  },
+  "js/ts.implicitProjectConfig.checkJs": false,
+  "[html]": {
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    }
+  }
+}
