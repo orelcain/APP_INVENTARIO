@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-06T00:29:05.592Z",
+  "timestamp": "2025-11-07T21:09:48.103Z",
   "version": "5.3.2",
   "tipo": "BACKUP_COMPLETO",
   "estadisticas": {
@@ -7,7 +7,7 @@
     "totalMapas": 1,
     "totalAreas": 10,
     "totalUbicacionesEnMapas": 15,
-    "totalImagenes": 48
+    "totalImagenes": 49
   },
   "repuestos": [
     {
@@ -131,9 +131,16 @@
           "name": "photo_2025-10-25_23-44-21.jpg",
           "size": 72806,
           "isFileSystem": true
+        },
+        {
+          "type": "image",
+          "url": "./imagenes/1762548137935_Pendiente_Sprocket_Cinta_Curva_Filete_foto3.webp",
+          "name": "photo_2025-10-25_23-44-21.jpg",
+          "size": 72806,
+          "isFileSystem": true
         }
       ],
-      "ultimaModificacion": "2025-11-04T21:33:59.707Z",
+      "ultimaModificacion": "2025-11-07T21:08:05.964Z",
       "ultimoConteo": null
     },
     {

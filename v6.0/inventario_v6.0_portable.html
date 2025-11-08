@@ -422,23 +422,22 @@
       width: 100%;
     }
 
-    /* CONTENEDOR PRINCIPAL - 100% ADAPTATIVO */
     .container {
       max-width: 100%;
       width: 100%;
       margin: 0;
-      padding: 0; /* 🔧 Cambiado de 16px a 0px para eliminar el espacio naranja */
+      padding: 0;
     }
 
     .tab-content {
       display: none;
-      height: calc(100vh - 10px); /* 🔧 Reducido de 60px a 50px para ocupar más altura */
-      overflow: auto; /* ✅ Restaurado: auto para que otras pestañas funcionen */
-      padding: 10px; /* ✅ Restaurado: padding para otras pestañas */
+      min-height: calc(100vh - 50px);
+      overflow: auto;
+      padding: 10px;
     }
 
     .tab-content.active {
-      display: block; /* ✅ Restaurado: block para compatibilidad general */
+      display: block;
       animation: fadeIn 0.3s;
     }
     
@@ -648,6 +647,16 @@
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 18px;
       margin-bottom: 20px;
+      min-height: calc(100vh - 300px);
+      align-content: start;
+    }
+
+    #inventario {
+      min-height: calc(100vh - 50px);
+    }
+
+    #inventarioContent {
+      min-height: calc(100vh - 250px);
     }
 
     .repuesto-card {
@@ -1202,16 +1211,16 @@
       background: var(--bg-secondary);
       border-radius: 20px;
       padding: 0;
-      width: clamp(1280px, 98vw, 2100px);
+      width: clamp(800px, 90vw, 1200px);
       min-height: fit-content;
-      max-height: 90vh;
+      max-height: 92vh;
       box-shadow: 0 26px 60px rgba(0, 0, 0, 0.55);
       position: relative;
       border: 1px solid var(--border-color);
       animation: slideUp 0.25s ease;
       display: flex;
       flex-direction: column;
-      margin: clamp(12px, 3vh, 36px) auto clamp(28px, 6vh, 72px);
+      margin: clamp(10px, 2vh, 24px) auto clamp(20px, 4vh, 48px);
       overflow: hidden;
       transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
     }
@@ -1338,7 +1347,7 @@
       overflow-y: auto;
       padding: 0 4px;
       min-height: 0;
-      max-height: 55vh;
+      max-height: calc(92vh - 360px);
     }
 
     .wizard-step {
@@ -1584,7 +1593,7 @@
       flex-direction: column;
       gap: 18px;
       background: transparent;
-      max-height: 65vh;
+      max-height: calc(92vh - 280px);
     }
 
     .sap-form-actions {
@@ -3701,6 +3710,60 @@
       align-items: center;
     }
 
+    /* Barra de búsqueda del árbol SAP */
+    .sap-search-bar {
+      background: var(--bg-secondary);
+      padding: 12px;
+      border-bottom: 2px solid var(--border-color);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .sap-search-input {
+      flex: 1;
+      padding: 10px 12px;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .sap-search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(91, 139, 180, 0.1);
+    }
+
+    .sap-search-clear {
+      padding: 8px 12px;
+      background: var(--secondary);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .sap-search-clear:hover {
+      background: var(--danger);
+      transform: scale(1.05);
+    }
+
+    /* Resaltado de búsqueda */
+    .sap-tree-item.search-highlight {
+      background: rgba(91, 139, 180, 0.15);
+      border-left: 3px solid var(--primary);
+    }
+
+    .sap-tree-item.search-highlight .sap-tree-label {
+      color: var(--primary-light);
+      font-weight: 600;
+    }
+
     .sap-toolbar-btn {
       background: var(--gray-400);
       border: 1px solid var(--gray-500);
@@ -3723,6 +3786,24 @@
       transform: scale(0.98);
     }
 
+    .sap-toolbar-btn-primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary-dark);
+      font-weight: 600;
+    }
+
+    .sap-toolbar-btn-primary:hover {
+      background: var(--primary-light);
+    }
+
+    .sap-toolbar-separator {
+      width: 1px;
+      height: 20px;
+      background: var(--gray-500);
+      margin: 0 4px;
+    }
+
     /* Indicador de carga */
     .sap-tree-loading {
       padding: 20px;
@@ -3735,8 +3816,297 @@
     .sap-tree-empty {
       padding: 40px 20px;
       text-align: center;
-      color: var(--gray-600); /* Texto terciario */
+      color: var(--gray-600);
       font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .sap-tree-empty-child {
+      padding: 8px 12px;
+      margin: 4px 0;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-style: italic;
+    }
+
+    /* ============================================================
+       NODOS DEL ÁRBOL SAP (JERARQUÍA CONFIGURABLE)
+       ============================================================ */
+    .sap-tree {
+      padding: 8px;
+    }
+
+    .sap-node {
+      margin: 4px 0;
+      border-left: 2px solid var(--border-color);
+      padding-left: 12px;
+    }
+
+    .sap-node-level-1 {
+      border-left-color: var(--primary);
+    }
+
+    .sap-node-level-2 {
+      border-left-color: var(--info);
+      margin-left: 20px;
+    }
+
+    .sap-node-level-3 {
+      border-left-color: var(--success);
+      margin-left: 40px;
+    }
+
+    .sap-node-level-4 {
+      border-left-color: var(--warning);
+      margin-left: 60px;
+    }
+
+    .sap-node-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg-secondary);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sap-node-header:hover {
+      background: var(--bg-elevated);
+      transform: translateX(2px);
+    }
+
+    .sap-node-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .sap-node-label {
+      flex: 1;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .sap-node-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .sap-node-toggle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      transition: transform 0.2s ease;
+    }
+
+    .sap-node-children {
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* ============================================================
+       MODAL GESTIÓN DE JERARQUÍA
+       ============================================================ */
+    .jerarquia-manager {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+
+    .jerarquia-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 8px;
+      background: var(--bg-tertiary);
+      overflow-x: auto;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .jerarquia-tab {
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border: 2px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 100px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .jerarquia-tab:hover {
+      background: var(--bg-elevated);
+      border-color: var(--primary);
+    }
+
+    .jerarquia-tab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary-dark);
+    }
+
+    .jerarquia-tab .tab-icon {
+      font-size: 1.5rem;
+    }
+
+    .jerarquia-tab .tab-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .jerarquia-tab .tab-label small {
+      font-size: 0.7rem;
+      opacity: 0.8;
+      font-weight: normal;
+    }
+
+    .jerarquia-content {
+      padding: 20px;
+    }
+
+    .jerarquia-level-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .jerarquia-level-header h3 {
+      font-size: 1.2rem;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .jerarquia-form {
+      background: var(--bg-primary);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 2px solid var(--primary);
+    }
+
+    .jerarquia-form .form-group {
+      margin-bottom: 16px;
+    }
+
+    .jerarquia-form .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .jerarquia-form label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .jerarquia-form .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+
+    .jerarquia-form .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(91, 139, 180, 0.1);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .jerarquia-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .jerarquia-item {
+      background: var(--bg-primary);
+      padding: 16px;
+      border-radius: 8px;
+      border: 2px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .jerarquia-item:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .jerarquia-item-info {
+      flex: 1;
+    }
+
+    .jerarquia-item-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .jerarquia-item-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .jerarquia-item-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .jerarquia-item-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .jerarquia-item-btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .jerarquia-item-btn-edit {
+      background: var(--info);
+      color: white;
+    }
+
+    .jerarquia-item-btn-edit:hover {
+      background: var(--info-dark);
+      transform: scale(1.05);
+    }
+
+    .jerarquia-item-btn-delete {
+      background: var(--danger);
+      color: white;
+    }
+
+    .jerarquia-item-btn-delete:hover {
+      background: var(--danger-dark);
+      transform: scale(1.05);
     }
 
     /* MAPA */
@@ -4056,6 +4426,37 @@
       
       .multimedia-preview {
         max-height: 150px;
+      }
+    }
+
+    /* ================================================================== */
+    /* OPTIMIZACIÓN PARA PANTALLAS GRANDES - Modal más compacto */
+    /* ================================================================== */
+    @media (min-width: 1400px) {
+      .modal-content {
+        width: clamp(700px, 80vw, 1000px) !important;
+        max-width: 1000px !important;
+      }
+      
+      .sap-form-content {
+        transform: scale(0.95);
+        transform-origin: top center;
+      }
+      
+      .wizard-timeline {
+        gap: 8px;
+      }
+      
+      .wizard-step-indicator {
+        padding: 8px 12px;
+      }
+      
+      .form-section-header h3 {
+        font-size: 1.05rem;
+      }
+      
+      .form-section-description {
+        font-size: 0.8rem;
       }
     }
 
@@ -6482,6 +6883,71 @@
       font-weight: 500;
       transition: all 0.2s;
     }
+
+    /* ============================================================
+       ZOOM CONTROLS HORIZONTAL
+       ============================================================ */
+    .zoom-controls-horizontal {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .zoom-btn-h {
+      padding: 6px 10px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      min-width: 32px;
+    }
+
+    .zoom-btn-h:hover {
+      background: var(--primary-dark);
+      transform: scale(1.05);
+    }
+
+    #zoomLevel {
+      font-weight: 600;
+      color: var(--primary);
+      min-width: 50px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    #screenResolution {
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 0 8px;
+      border-left: 1px solid var(--border-color);
+    }
+
+    /* ============================================================
+       MODAL JERARQUÍA - OVERRIDES
+       ============================================================ */
+    #modalJerarquia {
+      display: none;
+    }
+
+    #modalJerarquia .modal-content {
+      max-width: 900px;
+    }
+
+    #jerarquiaForm {
+      display: none;
+    }
+
+    .modal-actions {
+      margin-top: 20px;
+    }
     
     .custom-modal-btn-primary {
       background: var(--primary);
@@ -7386,6 +7852,11 @@
   max-width: 600px;
 }
 
+/* Variante para pestaña Jerarquía (ancho completo) */
+.jerarquia-config-container.full-width {
+  max-width: 100%;
+}
+
 .jerarquia-config-header {
   display: flex;
   align-items: center;
@@ -7399,10 +7870,25 @@
   user-select: none;
 }
 
+/* Variante sin hover para pestaña Jerarquía */
+.jerarquia-config-header.no-hover {
+  cursor: default;
+  background: var(--bg-secondary);
+  padding: 16px 24px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
 .jerarquia-config-header-content {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* Variante con descripción */
+.jerarquia-config-header-content.with-description {
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .jerarquia-config-title {
@@ -7410,6 +7896,16 @@
   margin: 0;
   font-size: 1.3rem;
   font-weight: 600;
+}
+
+.jerarquia-config-title.large {
+  font-size: 1.5rem;
+}
+
+.jerarquia-description {
+  margin: 8px 0 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
 }
 
 .jerarquia-save-btn {
@@ -7424,6 +7920,140 @@
   border-radius: 8px;
   border: 1px solid var(--border-color);
   min-height: 400px;
+}
+
+.jerarquia-tree-sap {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.sap-node {
+  margin-bottom: 2px;
+}
+
+.sap-node-empresa {
+  background: var(--bg-secondary);
+  border-left: 3px solid #0070f3;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.sap-node-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  transition: background 0.15s;
+}
+
+.sap-node-content:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+.sap-node-expand {
+  cursor: pointer;
+  width: 16px;
+  text-align: center;
+  font-size: 10px;
+  color: var(--text-secondary);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.sap-node-icon {
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+}
+
+.sap-node-id {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: rgba(0,0,0,0.05);
+  padding: 2px 6px;
+  border-radius: 3px;
+  min-width: 60px;
+  text-align: center;
+}
+
+.sap-node-name {
+  flex: 1;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.sap-node-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.sap-node-content:hover .sap-node-actions {
+  opacity: 1;
+}
+
+.sap-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.15s;
+}
+
+.sap-btn:hover {
+  background: var(--bg-secondary);
+  border-color: var(--text-secondary);
+}
+
+.sap-btn-edit {
+  border-color: var(--info);
+  color: var(--info);
+}
+
+.sap-btn-edit:hover {
+  background: var(--info);
+  color: white;
+}
+
+.sap-btn-delete {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.sap-btn-delete:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.sap-btn-add {
+  border-color: var(--success);
+  color: var(--success);
+  font-size: 12px;
+}
+
+.sap-btn-add:hover {
+  background: var(--success);
+  color: white;
+}
+
+.sap-children {
+  margin-left: 24px;
+  border-left: 1px dashed var(--border-color);
+  padding-left: 8px;
+  margin-top: 2px;
+}
+
+.sap-add-root {
+  margin-top: 12px;
+  padding-left: 24px;
 }
 
 /* ============================================================
@@ -8525,25 +9155,115 @@
 .pagination-controls {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  margin: 20px 0;
+}
+
+.pagination-items-selector {
+  display: flex;
+  align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.pagination-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-jump {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-input {
+  width: 70px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.pagination-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.btn-pagination {
+  min-width: 40px !important;
+  padding: 8px 12px !important;
+  font-size: 1.1rem;
+}
+
+.btn-pagination-text {
+  min-width: auto !important;
+  padding: 10px 16px !important;
+  font-size: 0.875rem !important;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.btn-pagination-text span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-pagination-text:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-pagination:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .pagination-label {
   font-size: 0.9rem;
   color: var(--text-secondary);
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .pagination-select {
   padding: 8px 12px;
   border-radius: 8px;
   border: 2px solid var(--border-color);
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   color: var(--text-primary);
   cursor: pointer;
   font-size: 0.9rem;
   min-width: 180px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pagination-select:hover {
+  border-color: var(--primary);
+}
+
+.pagination-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .pagination-info {
@@ -8551,12 +9271,50 @@
   color: var(--text-secondary);
   opacity: 0.8;
   font-style: italic;
+  margin-left: 4px;
 }
 
 .page-numbers-container {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.page-number-btn {
+  min-width: 44px !important;
+  padding: 10px 14px !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+
+.page-number-btn:hover:not(:disabled) {
+  background: var(--primary-light);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.page-number-btn.page-active {
+  background: var(--primary) !important;
+  color: white !important;
+  box-shadow: var(--shadow-lg);
+  cursor: default;
+  font-weight: 700 !important;
+}
+
+.pagination-status {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-left: 16px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  white-space: nowrap;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 /* ============================================================
@@ -9093,6 +9851,25 @@
         </button>
       </div>
       
+      <!-- 🔍 CONTROLES DE ZOOM -->
+      <div class="zoom-controls-horizontal">
+        <button onclick="zoomOut()" class="zoom-btn-h" title="Alejar (Zoom Out)">
+          ➖
+        </button>
+        
+        <div id="zoomLevel">100%</div>
+        
+        <button onclick="zoomIn()" class="zoom-btn-h" title="Acercar (Zoom In)">
+          ➕
+        </button>
+        
+        <button onclick="zoomReset()" class="zoom-btn-h" title="Restablecer Zoom (100%)">
+          100
+        </button>
+        
+        <div id="screenResolution">--</div>
+      </div>
+      
       <!-- 🔍 BUSCADOR MÁS COMPACTO -->
       <div class="search-box search-box-custom">
         <span class="search-icon">⌕</span>
@@ -9123,8 +9900,8 @@
     </div>
 
     <!-- PAGINACIÓN -->
-    <div id="pagination" class="pagination-controls hidden">
-      <div class="pagination-controls">
+    <div id="pagination" class="pagination-controls">
+      <div class="pagination-items-selector">
         <label class="pagination-label">Items por página:</label>
         <select id="itemsPerPageSelect" onchange="app.changeItemsPerPage(this.value)" class="pagination-select" aria-label="Seleccionar items por página">
           <option value="auto">Auto (Responsive)</option>
@@ -9135,12 +9912,36 @@
           <option value="30">30 items</option>
           <option value="40">40 items</option>
           <option value="50">50 items</option>
+          <option value="100">100 items</option>
         </select>
         <span id="itemsPerPageInfo" class="pagination-info"></span>
       </div>
-      <button onclick="app.previousPage()" class="btn btn-secondary" id="btnPrevPage">Anterior</button>
-      <div id="pageNumbers" class="page-numbers-container"></div>
-      <button onclick="app.nextPage()" class="btn btn-secondary" id="btnNextPage">Siguiente</button>
+      
+      <div class="pagination-nav">
+        <button onclick="app.goToPage(1)" class="btn btn-secondary btn-pagination btn-pagination-text" id="btnFirstPage" title="Ir a la primera página">
+          <span>« Primera</span>
+        </button>
+        <button onclick="app.previousPage()" class="btn btn-secondary btn-pagination btn-pagination-text" id="btnPrevPage" title="Página anterior">
+          <span>‹ Anterior</span>
+        </button>
+        
+        <div id="pageNumbers" class="page-numbers-container"></div>
+        
+        <button onclick="app.nextPage()" class="btn btn-secondary btn-pagination btn-pagination-text" id="btnNextPage" title="Página siguiente">
+          <span>Siguiente ›</span>
+        </button>
+        <button onclick="app.goToPage('last')" class="btn btn-secondary btn-pagination btn-pagination-text" id="btnLastPage" title="Ir a la última página">
+          <span>Última »</span>
+        </button>
+      </div>
+      
+      <div class="pagination-jump">
+        <label class="pagination-label">Ir a página:</label>
+        <input type="number" id="jumpToPage" min="1" class="pagination-input" placeholder="#" onkeypress="if(event.key==='Enter') app.jumpToPage()" aria-label="Número de página">
+        <button onclick="app.jumpToPage()" class="btn btn-primary btn-sm" title="Ir a página">
+          Ir
+        </button>
+      </div>
     </div>
 
     <div id="inventarioContent">
@@ -9151,141 +9952,19 @@
 
   <!-- TAB JERARQUÍA -->
   <div id="jerarquia" class="tab-content">
-    <div class="tree-container">
-      <div class="tree-header tree-header-custom">
-        <strong class="tree-header-title">Estructura Jerárquica:</strong><br>
-        🏭 <strong>Planta</strong> (Ej: Aquachile) → 
-        <strong>Área</strong> (Ej: Producción) → 
-        <strong>Sub-Área</strong> (Ej: Sistema Agua) → 
-        <strong>Sistema</strong> (Ej: Bomba BP-01) → 
-        <strong>Sub-Sistema</strong> (Ej: Hidráulico) → 
-        <strong>Sección</strong> (Ej: Sellado) → 
-        <strong>Detalle</strong> (Ej: Fijación) → 
-        <strong>Repuesto</strong>
+    <!-- 🌳 ÁRBOL JERÁRQUICO ORGANIZACIONAL -->
+    <div class="jerarquia-config-container full-width">
+      <div id="jerarquiaTreeContainer">
+        <!-- Se llenará dinámicamente con el árbol -->
       </div>
       
-      <!-- BUSCADOR RÁPIDO -->
-      <div class="jerarquia-search-container">
-        <div class="jerarquia-search-wrapper">
-          <input 
-            type="text" 
-            id="searchJerarquia" 
-            placeholder="Buscar niveles o repuestos..." 
-            oninput="app.buscarEnJerarquia(this.value)"
-            class="form-control jerarquia-search-input"
-          />
-          <button 
-            onclick="document.getElementById('searchJerarquia').value = ''; app.buscarEnJerarquia('');" 
-            class="jerarquia-search-clear"
-            title="Limpiar búsqueda"
-          >✖</button>
-        </div>
-        <div id="searchResultsJerarquia" class="jerarquia-search-results"></div>
-      </div>
-      
-      <!-- Controles de jerarquía -->
-      <div class="jerarquia-controls">
-        
-        <!-- Botón Expandir/Contraer Todo -->
-        <button onclick="app.toggleAllTree()" class="btn btn-secondary toggle-tree-btn">
-          <span id="toggleAllIcon">📂</span>
-          <span id="toggleAllText">Expandir Todo</span>
+      <!-- Botón guardar en la parte inferior -->
+      <div style="text-align: right; margin-top: 16px;">
+        <button id="btnGuardarJerarquia" onclick="app.guardarCambiosJerarquia()" 
+                class="btn btn-success jerarquia-save-btn">
+          💾 Guardar Cambios
         </button>
-        
-        <!-- Filtros Escalonados -->
-        <div class="filtros-wrapper">
-          <label class="filtros-label">
-            Filtrar:
-          </label>
-          
-          <!-- Nivel 1: Planta -->
-          <select id="filtro_planta" onchange="app.filtrarEscalonado(1, this.value)" class="form-control filtro-select" aria-label="Filtrar por planta">
-            <option value="">Todas las plantas</option>
-          </select>
-          
-          <!-- Nivel 2: Área -->
-          <select id="filtro_area" onchange="app.filtrarEscalonado(2, this.value)" class="form-control filtro-select-hidden" aria-label="Filtrar por área">
-            <option value="">📁 Todas las áreas</option>
-          </select>
-          
-          <!-- Nivel 3: Sub-Área -->
-          <select id="filtro_subarea" onchange="app.filtrarEscalonado(3, this.value)" class="form-control filtro-select-hidden" aria-label="Filtrar por sub-área">
-            <option value="">📁 Todas las sub-áreas</option>
-          </select>
-          
-          <!-- Nivel 4: Sistema -->
-          <select id="filtro_sistema" onchange="app.filtrarEscalonado(4, this.value)" class="form-control filtro-select-hidden" aria-label="Filtrar por sistema">
-            <option value="">📁 Todos los sistemas</option>
-          </select>
-          
-          <!-- Nivel 5: Sub-Sistema -->
-          <select id="filtro_subsistema" onchange="app.filtrarEscalonado(5, this.value)" class="form-control filtro-select-hidden" aria-label="Filtrar por sub-sistema">
-            <option value="">📁 Todos los sub-sistemas</option>
-          </select>
-          
-          <!-- Nivel 6: Sección -->
-          <select id="filtro_seccion" onchange="app.filtrarEscalonado(6, this.value)" class="form-control filtro-select-hidden" aria-label="Filtrar por sección">
-            <option value="">📁 Todas las secciones</option>
-          </select>
-          
-          <!-- Nivel 7: Detalle -->
-          <select id="filtro_detalle" onchange="app.filtrarEscalonado(7, this.value)" class="form-control filtro-select-hidden" aria-label="Filtrar por detalle">
-            <option value="">📁 Todos los detalles</option>
-          </select>
-          
-          <!-- Botón Limpiar Filtros -->
-          <button onclick="app.limpiarFiltrosJerarquia()" class="btn btn-secondary btn-limpiar-filtros" id="btnLimpiarFiltros">
-            ✖ Limpiar
-          </button>
-        </div>
-        
-        <!-- Contador de repuestos visibles -->
-        <div id="jerarquiaCounter" class="jerarquia-counter">
-          <span id="repuestosVisibles">0</span> repuestos
-        </div>
       </div>
-      
-      <!-- Breadcrumb de Filtros Activos -->
-      <div id="filtrosBreadcrumb" class="filtros-breadcrumb">
-        <span class="breadcrumb-label">Filtro activo:</span>
-        <span id="breadcrumbPath" class="breadcrumb-path"></span>
-      </div>
-      
-      <!-- 🌳 ÁRBOL JERÁRQUICO ESTILO SAP PM -->
-      <div class="sap-tree-wrapper">
-        <!-- Header estilo SAP -->
-        <div class="sap-tree-header">
-          <div class="sap-tree-header-flex">
-            <span>📁</span>
-            <span>Estructura Organizacional</span>
-          </div>
-          <div class="sap-tree-header-count">
-            <span id="sapTreeCount">0</span> elementos
-          </div>
-        </div>
-        
-        <!-- Barra de herramientas estilo SAP -->
-        <div class="sap-toolbar">
-          <button class="sap-toolbar-btn" onclick="app.sapTreeExpandAll()" title="Expandir todo">
-            📂 Expandir
-          </button>
-          <button class="sap-toolbar-btn" onclick="app.sapTreeCollapseAll()" title="Contraer todo">
-            📁 Contraer
-          </button>
-          <div class="sap-toolbar-separator"></div>
-          <button class="sap-toolbar-btn" onclick="app.sapTreeRefresh()" title="Refrescar">
-            🔄 Refrescar
-          </button>
-        </div>
-        
-        <!-- Container del árbol -->
-        <div class="sap-tree-container sap-tree-scrollable" id="sapTreeContainer">
-          <!-- Se llena dinámicamente -->
-        </div>
-      </div>
-      
-      <!-- Container antiguo (backup) -->
-      <div id="treeContainer" class="sap-tree-hidden"></div>
     </div>
   </div>
 
@@ -9656,29 +10335,6 @@
         </div>
         </div> <!-- Fin backup-config-content -->
       </div>
-    </div>
-
-    <!-- 🆕 GESTIÓN DE JERARQUÍA ORGANIZACIONAL -->
-    <div class="jerarquia-config-container">
-      <div onclick="toggleConfigSection('jerarquia-config')" class="jerarquia-config-header">
-        <div class="jerarquia-config-header-content">
-          <span id="jerarquia-config-icon">▶</span>
-          <h3 class="jerarquia-config-title">
-            🏢 Gestión de Jerarquía Organizacional
-          </h3>
-        </div>
-        <button id="btnGuardarJerarquia" onclick="event.stopPropagation(); app.guardarCambiosJerarquia()" 
-                class="btn btn-success jerarquia-save-btn">
-          💾 Guardar Cambios
-        </button>
-      </div>
-      
-      <div id="jerarquia-config-content" class="config-section-content">
-        <!-- Contenedor del árbol jerárquico -->
-        <div id="jerarquiaTreeContainer" class="jerarquia-tree-container">
-        <!-- Se llenará dinámicamente -->
-      </div>
-      </div> <!-- Fin jerarquia-config-content -->
     </div>
 
     <!-- GESTIÓN DE LISTAS DESPLEGABLES -->
@@ -10315,6 +10971,96 @@
       <button onclick="document.getElementById('modalCascada').style.display='none'" class="modal-footer-btn-simple">
         Cerrar
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PARA GESTIONAR JERARQUÍA -->
+<div class="modal" id="modalJerarquia">
+  <div class="modal-content">
+    <button class="modal-close" onclick="app.closeJerarquiaModal()">×</button>
+    
+    <header class="sap-modal-header">
+      <div class="sap-header-row">
+        <div class="sap-header-leading">
+          <span class="sap-header-eyebrow">Configuración</span>
+          <h2 class="sap-header-title">Gestionar Niveles Jerárquicos</h2>
+        </div>
+      </div>
+      <p class="sap-header-subtitle">Administra los 8 niveles de la estructura organizacional</p>
+    </header>
+
+    <div class="jerarquia-manager">
+      <!-- Tabs para cada nivel -->
+      <div class="jerarquia-tabs">
+        <button class="jerarquia-tab active" data-level="1" onclick="app.switchJerarquiaLevel(1)">
+          <span class="tab-icon">🏭</span>
+          <span class="tab-label">Nivel 1<br><small>Planta</small></span>
+        </button>
+        <button class="jerarquia-tab" data-level="2" onclick="app.switchJerarquiaLevel(2)">
+          <span class="tab-icon">📁</span>
+          <span class="tab-label">Nivel 2<br><small>Área</small></span>
+        </button>
+        <button class="jerarquia-tab" data-level="3" onclick="app.switchJerarquiaLevel(3)">
+          <span class="tab-icon">📂</span>
+          <span class="tab-label">Nivel 3<br><small>Sub-Área</small></span>
+        </button>
+        <button class="jerarquia-tab" data-level="4" onclick="app.switchJerarquiaLevel(4)">
+          <span class="tab-icon">⚙️</span>
+          <span class="tab-label">Nivel 4<br><small>Sistema</small></span>
+        </button>
+        <button class="jerarquia-tab" data-level="5" onclick="app.switchJerarquiaLevel(5)">
+          <span class="tab-icon">🔧</span>
+          <span class="tab-label">Nivel 5<br><small>Sub-Sistema</small></span>
+        </button>
+        <button class="jerarquia-tab" data-level="6" onclick="app.switchJerarquiaLevel(6)">
+          <span class="tab-icon">📋</span>
+          <span class="tab-label">Nivel 6<br><small>Sección</small></span>
+        </button>
+        <button class="jerarquia-tab" data-level="7" onclick="app.switchJerarquiaLevel(7)">
+          <span class="tab-icon">🔍</span>
+          <span class="tab-label">Nivel 7<br><small>Detalle</small></span>
+        </button>
+        <button class="jerarquia-tab" data-level="8" onclick="app.switchJerarquiaLevel(8)">
+          <span class="tab-icon">🔩</span>
+          <span class="tab-label">Nivel 8<br><small>Componente</small></span>
+        </button>
+      </div>
+
+      <!-- Contenido del nivel actual -->
+      <div class="jerarquia-content">
+        <div class="jerarquia-level-header">
+          <h3 id="jerarquiaLevelTitle">Nivel 1 - Planta</h3>
+          <button class="btn btn-primary" onclick="app.addJerarquiaItem()">
+            ➕ Agregar Nuevo
+          </button>
+        </div>
+
+        <!-- Formulario para agregar -->
+        <div id="jerarquiaForm" class="jerarquia-form">
+          <div class="form-group">
+            <label for="jerarquiaItemName">Nombre:</label>
+            <input type="text" id="jerarquiaItemName" class="form-control" placeholder="Ingrese el nombre...">
+          </div>
+          <div class="form-group">
+            <label for="jerarquiaItemDesc">Descripción (opcional):</label>
+            <textarea id="jerarquiaItemDesc" class="form-control" rows="2" placeholder="Descripción adicional..."></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" onclick="app.saveJerarquiaItem()">Guardar</button>
+            <button type="button" class="btn btn-secondary" onclick="app.cancelJerarquiaItem()">Cancelar</button>
+          </div>
+        </div>
+
+        <!-- Lista de items del nivel -->
+        <div id="jerarquiaList" class="jerarquia-list">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="app.closeJerarquiaModal()">Cerrar</button>
     </div>
   </div>
 </div>
@@ -20521,7 +21267,6 @@ function initConfigSections() {
     'storage-config',
     'export-config',
     'backup-config',
-    'jerarquia-config',
     'listas-config',
     'herramientas-config'
   ];
@@ -20828,121 +21573,8 @@ class InventarioCompleto {
       return;
     }
 
-    const browserName = this.getBrowserName();
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isIOS = /iphone|ipad|ipod/.test(userAgent);
-    const isEdgeIOS = userAgent.includes('edg/') && isIOS;
-    const isMobile = this.isMobile;
-    const storageMode = this.storageMode;
-    
-    console.warn('⚠️ Navegador no optimizado:', browserName);
-
-    // Mensaje específico según plataforma y navegador
-    let warningMessage = '';
-    
-    if (isEdgeIOS) {
-      warningMessage = 'Edge en iOS usa WebKit (motor de Safari) por restricciones de Apple. La app funciona en <strong>modo móvil con IndexedDB</strong> (límite ~50-100MB). Para almacenamiento ilimitado, usa Edge en <strong>Windows</strong> o <strong>Android</strong>.';
-    } else if (isMobile && storageMode === 'indexeddb') {
-      warningMessage = 'Estás usando <strong>modo móvil con IndexedDB</strong> (límite ~50-100MB para imágenes). Para almacenamiento ilimitado con File System API, usa <strong>Microsoft Edge en Windows/Android</strong>.';
-    } else {
-      warningMessage = 'Esta aplicación está optimizada exclusivamente para <strong>Microsoft Edge</strong> en <strong>Windows</strong> y <strong>Android</strong>. Algunas funciones pueden no funcionar correctamente.';
-    }
-
-    // Crear banner de advertencia
-    const banner = document.createElement('div');
-    banner.id = 'browser-warning-banner';
-    banner.innerHTML = `
-      <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 99999;
-        background: linear-gradient(135deg, var(--danger), #b91c1c);
-        color: white;
-        padding: 16px 20px;
-        box-shadow: var(--shadow-lg);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        animation: slideDown 0.5s ease-out;
-        flex-wrap: wrap;
-      ">
-        <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 250px;">
-          <span style="font-size: 2rem;">⚠️</span>
-          <div>
-            <div style="font-weight: 700; font-size: 1rem; margin-bottom: 4px;">
-              Navegador No Optimizado: ${browserName}
-            </div>
-            <div style="font-size: 0.85rem; opacity: 0.95; line-height: 1.4;">
-              ${warningMessage}
-            </div>
-          </div>
-        </div>
-        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-          <a href="https://www.microsoft.com/edge" target="_blank" 
-             style="
-               padding: 10px 20px;
-               background: var(--primary);
-               color: white;
-               border-radius: 6px;
-               text-decoration: none;
-               font-weight: 600;
-               white-space: nowrap;
-               box-shadow: var(--shadow-md);
-               transition: all 0.3s ease;
-             "
-             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)'"
-             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-md)'">
-            🌐 Descargar Edge
-          </a>
-          <button onclick="document.getElementById('browser-warning-banner').style.display='none'" 
-                  style="
-                    padding: 10px 16px;
-                    background: rgba(255,255,255,0.2);
-                    color: white;
-                    border: 1px solid rgba(255,255,255,0.4);
-                    border-radius: 6px;
-                    cursor: pointer;
-                    font-weight: 600;
-                    white-space: nowrap;
-                    transition: all 0.2s ease;
-                  "
-                  onmouseover="this.style.background='rgba(255,255,255,0.3)'"
-                  onmouseout="this.style.background='rgba(255,255,255,0.2)'">
-            ✕ Cerrar
-          </button>
-        </div>
-      </div>
-      <style>
-        @keyframes slideDown {
-          from {
-            transform: translateY(-100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-        @media (max-width: 768px) {
-          #browser-warning-banner > div {
-            flex-direction: column !important;
-            text-align: center;
-          }
-          #browser-warning-banner a,
-          #browser-warning-banner button {
-            width: 100%;
-          }
-        }
-      </style>
-    `;
-
-    document.body.insertBefore(banner, document.body.firstChild);
-
-    // Ajustar padding del body para que no se solape el contenido
-    document.body.style.paddingTop = '120px';
+    // Ya no mostramos banner de advertencia para otros navegadores
+    console.log('ℹ️ Navegador:', this.getBrowserName());
   }
   
   // Mostrar info amigable para Edge iOS (sin alarmar al usuario)
@@ -22437,28 +23069,24 @@ class InventarioCompleto {
     if (screenWidth <= 768) {
       modalContent.style.width = 'calc(100vw - 24px)';
       modalContent.style.maxWidth = 'calc(100vw - 24px)';
-      modalContent.style.height = 'calc(100vh - 32px)';
-      modalContent.style.marginTop = '16px';
-      modalContent.style.marginBottom = '32px';
+      modalContent.style.height = 'auto';
+      modalContent.style.maxHeight = 'calc(100vh - 40px)';
+      modalContent.style.marginTop = '20px';
+      modalContent.style.marginBottom = '20px';
       return;
     }
 
+    // Para pantallas grandes, usar dimensiones más compactas
     const horizontalMargin = Math.max(32, Math.round(screenWidth * 0.02));
-    const desiredWidth = Math.min(screenWidth - (horizontalMargin * 2), 2100);
-    let topSpacing = Math.max(12, Math.round(window.innerHeight * 0.02));
-    const baseBottomSpacing = Math.max(36, Math.round(window.innerHeight * 0.045));
-    let bottomSpacing = Math.max(baseBottomSpacing, topSpacing + 20);
+    const desiredWidth = Math.min(screenWidth - (horizontalMargin * 2), 1200); // Reducido de 2100 a 1200
+    const topSpacing = Math.max(10, Math.round(window.innerHeight * 0.02));
+    const bottomSpacing = Math.max(20, Math.round(window.innerHeight * 0.04));
 
-    const minDesiredHeight = 980;
-    const maxDesiredHeight = 1480;
-    const scaleFactor = screenWidth >= 1600 ? 1.46 : 1.34;
-    const scaledHeight = Math.round(window.innerHeight * scaleFactor);
-    const desiredHeight = Math.max(minDesiredHeight, Math.min(maxDesiredHeight, scaledHeight));
-
+    // Eliminar estilos de altura fija, dejar que sea automático
     modalContent.style.width = desiredWidth + 'px';
     modalContent.style.maxWidth = desiredWidth + 'px';
-    modalContent.style.height = desiredHeight + 'px';
-    modalContent.style.maxHeight = maxDesiredHeight + 'px';
+    modalContent.style.height = 'auto';
+    modalContent.style.maxHeight = '92vh';
     modalContent.style.marginTop = topSpacing + 'px';
     modalContent.style.marginBottom = bottomSpacing + 'px';
   }
@@ -23617,6 +24245,47 @@ class InventarioCompleto {
     }
     
     this.setupAutocomplete();
+    
+    // 🔄 CARGAR JERARQUÍA desde localStorage
+    const savedJerarquia = localStorage.getItem('jerarquiaLevels');
+    if (savedJerarquia) {
+      try {
+        this.jerarquiaData = JSON.parse(savedJerarquia);
+        console.log('✅ Jerarquía cargada:', this.jerarquiaData);
+      } catch (e) {
+        console.warn('Error cargando jerarquía, inicializando vacía...', e);
+        this.jerarquiaData = {
+          nivel1: [], nivel2: [], nivel3: [], nivel4: [],
+          nivel5: [], nivel6: [], nivel7: [], nivel8: []
+        };
+      }
+    } else {
+      // Inicializar estructura vacía con datos de ejemplo
+      this.jerarquiaData = {
+        nivel1: [
+          { id: '1', name: 'Planta Principal', description: 'Sede central', timestamp: Date.now() }
+        ],
+        nivel2: [
+          { id: '2', name: 'Producción', description: '', timestamp: Date.now() },
+          { id: '3', name: 'Mantenimiento', description: '', timestamp: Date.now() }
+        ],
+        nivel3: [
+          { id: '4', name: 'Línea 1', description: '', timestamp: Date.now() },
+          { id: '5', name: 'Línea 2', description: '', timestamp: Date.now() }
+        ],
+        nivel4: [
+          { id: '6', name: 'Máquina A', description: '', timestamp: Date.now() },
+          { id: '7', name: 'Máquina B', description: '', timestamp: Date.now() }
+        ],
+        nivel5: [],
+        nivel6: [],
+        nivel7: [],
+        nivel8: []
+      };
+      // Guardar datos de ejemplo
+      localStorage.setItem('jerarquiaLevels', JSON.stringify(this.jerarquiaData));
+      console.log('ℹ️ Jerarquía inicializada con datos de ejemplo');
+    }
     
     // Setup listener para cambio de equipo (cargar sistemas)
     const equipoInput = document.getElementById('equipo');
@@ -25386,9 +26055,8 @@ class InventarioCompleto {
     this.currentTab = tab;
     
     if (tab === 'jerarquia') {
-      // 🌳 NUEVO: Inicializar filtros y renderizar árbol SAP
-      this.inicializarFiltrosJerarquia();
-      this.renderSAPTree();
+      // 🌳 Renderizar árbol de gestión de jerarquía
+      setTimeout(() => this.renderJerarquiaTree(), 100);
     } else if (tab === 'stats') {
       this.renderStats();
     } else if (tab === 'valores') {
@@ -26742,8 +27410,17 @@ class InventarioCompleto {
     const pageNumbers = document.getElementById('pageNumbers');
     const btnPrev = document.getElementById('btnPrevPage');
     const btnNext = document.getElementById('btnNextPage');
+    const btnFirst = document.getElementById('btnFirstPage');
+    const btnLast = document.getElementById('btnLastPage');
     const itemsPerPageSelect = document.getElementById('itemsPerPageSelect');
     const itemsPerPageInfo = document.getElementById('itemsPerPageInfo');
+    const jumpToPageInput = document.getElementById('jumpToPage');
+    
+    // Actualizar el input de salto de página
+    if (jumpToPageInput) {
+      jumpToPageInput.max = totalPages;
+      jumpToPageInput.placeholder = `1-${totalPages}`;
+    }
     
     // Actualizar el selector con el valor actual
     if (itemsPerPageSelect) {
@@ -26760,8 +27437,9 @@ class InventarioCompleto {
       itemsPerPageInfo.style.display = 'none';
     }
     
+    // Mostrar paginación siempre (es útil ver los controles de items por página)
     if (pagination) {
-      pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+      pagination.style.display = 'flex';
     }
     
     if (!pageNumbers) return;
@@ -26769,6 +27447,8 @@ class InventarioCompleto {
     // Deshabilitar botones según página actual
     if (btnPrev) btnPrev.disabled = this.currentPage === 1;
     if (btnNext) btnNext.disabled = this.currentPage === totalPages;
+    if (btnFirst) btnFirst.disabled = this.currentPage === 1;
+    if (btnLast) btnLast.disabled = this.currentPage === totalPages;
     
     // Generar números de páginas
     let pages = [];
@@ -26790,29 +27470,21 @@ class InventarioCompleto {
     
     pageNumbers.innerHTML = pages.map(page => {
       if (page === '...') {
-        return `<span style="color: var(--text-secondary); padding: 0 8px; opacity: 0.5;">...</span>`;
+        return `<span style="color: var(--text-secondary); padding: 0 12px; opacity: 0.6; font-weight: 600;">···</span>`;
       }
       
       const isActive = page === this.currentPage;
       return `
         <button 
           onclick="app.goToPage(${page})" 
-          class="btn ${isActive ? 'btn-primary' : 'btn-secondary'}"
-          style="
-            min-width: 42px; 
-            padding: 8px 12px; 
-            font-weight: ${isActive ? '700' : '500'}; 
-            opacity: ${isActive ? '1' : '0.5'};
-            ${isActive ? 'box-shadow: var(--shadow-lg); transform: scale(1.1);' : 'box-shadow: var(--shadow-sm);'}
-            transition: all 0.3s ease;
-          "
+          class="btn page-number-btn ${isActive ? 'btn-primary page-active' : 'btn-secondary'}"
           ${isActive ? 'disabled' : ''}
         >
           ${page}
         </button>
       `;
     }).join('') + `
-      <span style="color: var(--text-secondary); font-size: 0.85rem; margin-left: 12px; white-space: nowrap; opacity: 0.8;">
+      <span class="pagination-status">
         ${startItem}-${endItem} de ${totalItems}
       </span>
     `;
@@ -26846,6 +27518,29 @@ class InventarioCompleto {
       this.renderInventario();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  }
+
+  jumpToPage() {
+    const input = document.getElementById('jumpToPage');
+    const pageNumber = parseInt(input.value);
+    
+    if (!pageNumber || isNaN(pageNumber)) {
+      alert('Por favor ingresa un número de página válido');
+      return;
+    }
+    
+    const itemsPerPage = this.getItemsPerPage();
+    const totalPages = Math.ceil(this.filteredRepuestos.length / itemsPerPage);
+    
+    if (pageNumber < 1 || pageNumber > totalPages) {
+      alert(`El número de página debe estar entre 1 y ${totalPages}`);
+      return;
+    }
+    
+    this.currentPage = pageNumber;
+    this.renderInventario();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    input.value = ''; // Limpiar el input
   }
 
   async openModal(mode, id = null) {
@@ -27018,6 +27713,8 @@ class InventarioCompleto {
         document.getElementById('datosTecnicos').value = repuesto.datosTecnicos || '';
         
         const multimediaOriginal = repuesto.multimedia || [];
+        console.log(`📦 [MODAL EDIT] Multimedia original:`, multimediaOriginal);
+        
         if (modalLastUpdate) {
           const formatted = formatDateTime(repuesto.ultimaModificacion || repuesto.fechaActualizacion || repuesto.updatedAt);
           modalLastUpdate.textContent = formatted || 'Sin registro';
@@ -27026,6 +27723,8 @@ class InventarioCompleto {
         if (multimediaOriginal.length > 0) {
           const multimediaNormalizada = multimediaOriginal.map((media, index) => this.normalizeMultimediaItem(media, index));
           repuesto.multimedia = multimediaNormalizada;
+          
+          console.log(`📦 [MODAL EDIT] Multimedia normalizada:`, multimediaNormalizada);
 
           const isFileSystemMode = fsManager && fsManager.isFileSystemMode;
           
@@ -27048,6 +27747,7 @@ class InventarioCompleto {
           });
           
           console.log(`🖼️ Cargados: ${this.currentMultimedia.length} imágenes, ${this.currentDocuments.length} documentos`);
+          console.log(`📊 [MODAL EDIT] currentMultimedia:`, this.currentMultimedia);
 
           this.refreshModalMultimediaBadge();
           
@@ -27499,28 +28199,11 @@ class InventarioCompleto {
     // Agregar a multimedia
     if (!this.currentMultimedia) this.currentMultimedia = [];
     
-    // 🔧 VERIFICAR DUPLICADOS antes de agregar
-    const yaExiste = this.currentMultimedia.some(img => {
-      if (img.name === this.currentImageFile.name) return true;
-      
-      const sameSize = Math.abs(img.size - blob.size) < 1000; // tolerancia 1KB
-      const sameName = img.name && this.currentImageFile.name && 
-        img.name.toLowerCase().replace(/\.[^/.]+$/, "") === this.currentImageFile.name.toLowerCase().replace(/\.[^/.]+$/, "");
-      
-      return sameSize && sameName;
-    });
-    
-    if (yaExiste) {
-      console.log(`⚠️ Imagen ya existe, ignorando: ${this.currentImageFile.name}`);
-      this.showToast('⚠️ Esta imagen ya existe en la vista previa', 'warning');
-      
-      if (this.optimizerResolve) {
-        this.optimizerResolve();
-      }
-      return;
-    }
-    
+    // ✅ CORRECCIÓN: Usar la variable global fsManager
     const isFileSystemMode = fsManager && fsManager.isFileSystemMode;
+    
+    console.log(`🔍 [OPTIMIZER] isFileSystemMode: ${isFileSystemMode}`);
+    console.log(`🔍 [OPTIMIZER] currentMultimedia.length: ${this.currentMultimedia.length}`);
     
     if (isFileSystemMode) {
       // Guardar en FileSystem
@@ -27533,29 +28216,40 @@ class InventarioCompleto {
       const cleanNombre = nombreRepuesto.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
       const filename = `${timestamp}_${cleanCodSAP}_${cleanNombre}_foto${imageIndex}.webp`;
       
-      const imagePath = await this.fsManager.saveImage(blob, filename);
+      console.log(`💾 Guardando en FileSystem: ${filename}`);
+      const imagePath = await fsManager.saveImage(blob, filename);
       
       if (imagePath) {
-        this.currentMultimedia.push({
+        const newImage = {
           type: 'image',
           url: imagePath,
           name: this.currentImageFile.name,
           size: blob.size,
           isFileSystem: true
-        });
+        };
+        console.log(`✅ Imagen guardada en: ${imagePath}`);
+        console.log(`✅ Objeto a agregar:`, newImage);
+        this.currentMultimedia.push(newImage);
+      } else {
+        console.error('❌ fsManager.saveImage retornó null/undefined');
       }
     } else {
-      // Guardar en IndexedDB
+      // Guardar en IndexedDB o memoria
+      console.log(`💾 Guardando en memoria/IndexedDB`);
       const blobUrl = URL.createObjectURL(blob);
-      this.currentMultimedia.push({
+      const newImage = {
         type: 'image',
         url: this.currentOptimizedDataUrl,
         name: this.currentImageFile.name,
         size: blob.size,
         blob: blob
-      });
+      };
+      console.log(`✅ Imagen en memoria, agregando a currentMultimedia:`, newImage);
+      this.currentMultimedia.push(newImage);
     }
     
+    console.log(`📊 Total imágenes en currentMultimedia: ${this.currentMultimedia.length}`);
+    console.log(`🔄 Actualizando preview...`);
     await this.updateMultimediaPreview();
     this.showToast(`Imagen optimizada agregada (${(blob.size / 1024).toFixed(1)} KB)`, 'success');
     
@@ -27960,93 +28654,90 @@ class InventarioCompleto {
       return;
     }
 
-    console.log(`🖼️ Mostrando ${this.currentMultimedia.length} imágenes en preview`);
-    console.log('📋 Multimedia actual:', this.currentMultimedia);
+    console.log(`🖼️ [PREVIEW] Mostrando ${this.currentMultimedia.length} imágenes`);
 
-    // 🧹 DEDUPLICAR: Eliminar cualquier posible duplicado antes de renderizar
+    // 🧹 DEDUPLICAR
     const multimediaUnica = [];
     const urlsVistas = new Set();
-    const nombresVistos = new Set();
     
     this.currentMultimedia.forEach(media => {
       const key = media.url || media.name || Math.random();
-      const nameKey = media.name || '';
-      
-      // Verificar si ya existe esta imagen
-      if (!urlsVistas.has(key) && !nombresVistos.has(nameKey)) {
+      if (!urlsVistas.has(key)) {
         urlsVistas.add(key);
-        if (nameKey) nombresVistos.add(nameKey);
         multimediaUnica.push(media);
-      } else {
-        console.log(`🗑️ Eliminando duplicado: ${media.name || 'sin nombre'}`);
       }
     });
     
-    // Actualizar el array principal con los elementos únicos
     this.currentMultimedia = multimediaUnica;
 
-    // 🔥 CARGAR IMÁGENES ASÍNCRONAMENTE DESDE FILESYSTEM
-    const imagePromises = this.currentMultimedia.map(async (media, idx) => {
-      console.log(`🔍 [${idx}] Procesando:`, media);
-      
-      const imageUrl = await this.getImageUrl(media);
-      
-      if (!imageUrl) {
-        console.warn(`⚠️ No se pudo cargar imagen del índice ${idx}:`, media);
-        return `
-        <div style="position: relative; display: inline-block; margin: 5px; width: 120px; height: 120px; background: rgba(255,0,0,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 2px dashed var(--danger);">
-          <div style="text-align: center; padding: 8px; font-size: 0.7rem; color: var(--danger);">
-            <div style="font-size: 1.5rem;">❌</div>
-            <div>Error cargando</div>
-          </div>
-        </div>
-        `;
-      }
-      
-      console.log(`✅ [${idx}] URL obtenida:`, imageUrl.substring(0, 50) + '...');
-      
-      const sizeKB = media.size ? (media.size / 1024).toFixed(0) : '??';
-      
-      // Detectar formato basado en la URL o ruta
-      let format = 'JPEG';
-      let badgeColor = 'var(--info)';
-      
-      if (imageUrl.includes('.webp') || media.url?.includes('.webp')) {
-        format = 'WebP';
-        badgeColor = 'var(--success)';
-      } else if (imageUrl.startsWith('data:image/webp')) {
-        format = 'WebP';
-        badgeColor = 'var(--success)';
-      } else if (imageUrl.startsWith('blob:')) {
-        format = 'WebP';
-        badgeColor = 'var(--success)';
-      }
-      
-      return `
-      <div style="position: relative; display: inline-block; margin: 5px;">
-        <img src="${imageUrl}" 
-             style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 2px solid var(--gray-300); box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
-             onload="console.log('✅ Imagen cargada en DOM:', '${media.name || 'sin-nombre'}')"
-             onerror="console.error('❌ Error al cargar imagen en DOM:', this.src); this.style.border='2px solid red';">
-        <button onclick="app.removeMultimedia(${idx})" type="button" style="position: absolute; top: 4px; right: 4px; background: var(--danger); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">×</button>
-        <div style="position: absolute; bottom: 4px; left: 4px; right: 4px; background: rgba(0,0,0,0.8); color: white; padding: 4px 6px; border-radius: 4px; font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-weight: 600;">${sizeKB}KB</span>
-          <span style="background: ${badgeColor}; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; font-weight: 700;">${format}</span>
-        </div>
-      </div>
-      `;
-    });
-
-    // Esperar a que todas las imágenes se carguen
-    const htmlParts = await Promise.all(imagePromises);
-    const validParts = htmlParts.filter(part => part !== null);
+    // 🔥 CARGAR IMÁGENES CON MEJOR MANEJO DE ERRORES
+    const imageCards = [];
     
-    if (validParts.length === 0) {
-      preview.innerHTML = '<div style="padding: 16px; color: var(--danger); font-size: 0.85rem;">⚠️ No se pudieron cargar las imágenes. Verifica la consola para más detalles.</div>';
-      console.error('❌ Ninguna imagen pudo ser cargada');
+    for (let idx = 0; idx < this.currentMultimedia.length; idx++) {
+      const media = this.currentMultimedia[idx];
+      console.log(`🔍 [${idx}] Procesando:`, {
+        type: media.type,
+        url: media.url?.substring(0, 60) + '...',
+        isFileSystem: media.isFileSystem,
+        name: media.name
+      });
+      
+      try {
+        const imageUrl = await this.getImageUrl(media);
+        
+        if (!imageUrl) {
+          console.warn(`⚠️ [${idx}] No se obtuvo URL`);
+          imageCards.push(`
+            <div style="position: relative; display: inline-block; margin: 5px; width: 120px; height: 120px; background: rgba(255,0,0,0.1); border-radius: 8px; border: 2px dashed var(--danger); display: flex; align-items: center; justify-content: center;">
+              <div style="text-align: center; font-size: 0.7rem; color: var(--danger);">
+                <div style="font-size: 1.5rem;">❌</div>
+                <div>Error</div>
+              </div>
+            </div>
+          `);
+          continue;
+        }
+        
+        console.log(`✅ [${idx}] URL obtenida: ${imageUrl.substring(0, 50)}...`);
+        
+        const sizeKB = media.size ? (media.size / 1024).toFixed(0) : '??';
+        const format = imageUrl.includes('.webp') || imageUrl.startsWith('data:image/webp') || imageUrl.startsWith('blob:') ? 'WebP' : 'JPEG';
+        const badgeColor = format === 'WebP' ? 'var(--success)' : 'var(--info)';
+        
+        imageCards.push(`
+          <div style="position: relative; display: inline-block; margin: 5px;">
+            <img src="${imageUrl}" 
+                 style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 2px solid var(--gray-300); box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+                 onload="console.log('✅ [IMG] Cargada en DOM: ${media.name || 'img-' + idx}')"
+                 onerror="console.error('❌ [IMG] Error en DOM:', this.src.substring(0,50)); this.style.border='2px solid red';">
+            <button onclick="app.removeMultimedia(${idx})" type="button" 
+                    style="position: absolute; top: 4px; right: 4px; background: var(--danger); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); line-height: 1;">×</button>
+            <div style="position: absolute; bottom: 4px; left: 4px; right: 4px; background: rgba(0,0,0,0.8); color: white; padding: 4px 6px; border-radius: 4px; font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 600;">${sizeKB}KB</span>
+              <span style="background: ${badgeColor}; padding: 2px 6px; border-radius: 3px; font-size: 0.65rem; font-weight: 700;">${format}</span>
+            </div>
+          </div>
+        `);
+        
+      } catch (error) {
+        console.error(`❌ [${idx}] Error procesando imagen:`, error);
+        imageCards.push(`
+          <div style="position: relative; display: inline-block; margin: 5px; width: 120px; height: 120px; background: rgba(255,0,0,0.1); border-radius: 8px; border: 2px dashed var(--danger); display: flex; align-items: center; justify-content: center;">
+            <div style="text-align: center; font-size: 0.7rem; color: var(--danger);">
+              <div style="font-size: 1.5rem;">⚠️</div>
+              <div>Error</div>
+            </div>
+          </div>
+        `);
+      }
+    }
+
+    if (imageCards.length === 0) {
+      preview.innerHTML = '<div style="padding: 16px; color: var(--danger); font-size: 0.85rem;">⚠️ No se pudieron cargar las imágenes.</div>';
+      console.error('❌ [PREVIEW] Ninguna imagen pudo ser cargada');
     } else {
-      preview.innerHTML = validParts.join('');
-      console.log(`✅ Preview actualizado con ${validParts.length} imágenes`);
+      preview.innerHTML = imageCards.join('');
+      console.log(`✅ [PREVIEW] Actualizado con ${imageCards.length} imágenes`);
     }
 
     this.refreshModalMultimediaBadge();
@@ -28739,7 +29430,7 @@ class InventarioCompleto {
   }
 
   // 🆕 ========================================
-  // FUNCIONES DE GESTIÓN DE JERARQUÍA ANIDADA
+  // FUNCIONES DE GESTIÓN DE JERARQUÍA ANIDADA (v5.4 MIGRADO)
   // ========================================
   
   renderJerarquiaTree() {
@@ -28751,7 +29442,7 @@ class InventarioCompleto {
     
     if (!this.jerarquiaAnidada) {
       console.error('❌ jerarquiaAnidada no está definida');
-      container.innerHTML = '<p style="color: var(--danger); padding: 20px;">Error: No se pudo cargar la jerarquía. Verifica la consola.</p>';
+      container.innerHTML = '<p style="color: var(--danger); padding: 20px;">Error: No se pudo cargar la jerarquía. Usa el botón "Guardar Cambios" en Configuración.</p>';
       return;
     }
     
@@ -28790,33 +29481,35 @@ class InventarioCompleto {
       return div.innerHTML;
     };
     
-    let html = '<div class="jerarquia-tree" style="font-family: monospace; font-size: 0.9rem;">';
+    let html = '<div class="jerarquia-tree-sap">';
     
-    // N1: Empresa (único, no expandible)
+    // N1: Empresa (raíz, siempre visible)
     html += `
-      <div class="tree-node" style="margin-bottom: 16px; padding: 10px; background: var(--bg-secondary); border-radius: 6px; border-left: 4px solid #6366f1;">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="color: var(--text-primary); font-weight: 600;">${escapeHtml(empresa.nombre)}</span>
+      <div class="sap-node sap-node-empresa">
+        <div class="sap-node-content">
+          <span class="sap-node-id">${escapeHtml(empresa.id || 'EMP-01')}</span>
+          <span class="sap-node-name">${escapeHtml(empresa.nombre)}</span>
+          <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('empresa')" title="Editar empresa">
+              ✏️
+            </button>
           </div>
-          <button class="tree-action-btn" onclick="app.editarNodoJerarquia('empresa', null)" 
-                  style="opacity: 0; transition: opacity 0.2s; background: var(--info); color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;"
-                  onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
-            ✏️ Editar
-          </button>
         </div>
       </div>
     `;
     
     // N2: Áreas
+    if (areas && areas.length > 0) {
+      const empresaId = empresa.id || 'EMP-01';
+      html += areas.map((area, aIdx) => this.buildAreaHTML(area, aIdx, empresaId, escapeHtml)).join('');
+    }
+    
+    // Botón agregar área
     html += `
-      <div class="tree-node-hover" style="margin-left: 0px; margin-bottom: 4px; padding: 8px; background: var(--bg-primary); border-radius: 6px;">
-        ${areas.map((area, aIdx) => this.buildAreaHTML(area, aIdx, escapeHtml)).join('')}
-        <div class="tree-actions">
-          <button onclick="app.agregarNodoJerarquia('area', null)" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 4px 12px; border-radius: 3px; cursor: pointer; font-size: 0.75rem; margin-top: 6px;">
-            + Área
-          </button>
-        </div>
+      <div class="sap-add-root">
+        <button class="sap-btn sap-btn-add" onclick="app.agregarNodoJerarquia('area')">
+          ➕ Nueva Área
+        </button>
       </div>
     `;
     
@@ -28824,153 +29517,176 @@ class InventarioCompleto {
     return html;
   }
   
-  buildAreaHTML(area, aIdx, escapeHtml) {
+  buildAreaHTML(area, aIdx, empresaId, escapeHtml) {
     const childrenId = `area_children_${aIdx}`;
-    const subAreasCount = area.subAreas ? area.subAreas.length : 0;
-    
-    // Obtener estado guardado (closed por defecto)
     const isOpen = this.getTreeNodeState(childrenId) === 'open';
-    const displayStyle = isOpen ? 'block' : 'none';
+    const expandIcon = isOpen ? '∨' : '▸';
+    
+    // ID jerárquico: EMPRESA-AREA
+    const areaId = area.id || `AREA-${aIdx+1}`;
+    const fullId = `${empresaId}-${areaId}`;
     
     return `
-      <div style="margin-bottom: 4px; padding-left: 0px;">
-        <div class="tree-node-hover" style="display: flex; align-items: center; gap: 8px; padding: 6px; background: var(--bg-secondary); border-radius: 4px;">
-          <span style="flex: 1; color: var(--text-primary); font-weight: 500; cursor: pointer;" onclick="app.toggleTreeChildren('${childrenId}')">${escapeHtml(area.nombre)}</span>
-          <div class="tree-actions" style="gap: 4px;">
-            <button onclick="app.editarNodoJerarquia('area', ${aIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 0.7rem;">Editar</button>
-            <button onclick="app.eliminarNodoJerarquia('area', ${aIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 0.7rem;">Eliminar</button>
-            <button onclick="app.agregarNodoJerarquia('subArea', ${aIdx})" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 0.7rem;">+ Sub-Área</button>
+      <div class="sap-node">
+        <div class="sap-node-content">
+          <span class="sap-node-expand" onclick="app.toggleTreeChildren('${childrenId}')">${expandIcon}</span>
+          <span class="sap-node-id">${escapeHtml(fullId)}</span>
+          <span class="sap-node-name">${escapeHtml(area.nombre)}</span>
+          <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('area', ${aIdx})" title="Editar">✏️</button>
+            <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('area', ${aIdx})" title="Eliminar">🗑️</button>
+            <button class="sap-btn sap-btn-add" onclick="app.agregarNodoJerarquia('subArea', ${aIdx})" title="Agregar Sub-Área">➕</button>
           </div>
         </div>
-        <div id="${childrenId}" style="display: ${displayStyle}; margin-top: 4px; margin-left: 20px;">
+        <div id="${childrenId}" class="sap-children" style="display: ${isOpen ? 'block' : 'none'};">
           ${area.subAreas && area.subAreas.length > 0 
-            ? area.subAreas.map((subArea, saIdx) => this.buildSubAreaHTML(subArea, aIdx, saIdx, escapeHtml)).join('')
-            : '<div style="color: var(--text-secondary); font-size: 0.75rem; padding: 4px; font-style: italic;">Sin sub-áreas</div>'
+            ? area.subAreas.map((subArea, saIdx) => this.buildSubAreaHTML(subArea, aIdx, saIdx, fullId, escapeHtml)).join('')
+            : '<div style="color: var(--text-secondary); font-size: 11px; padding: 4px; font-style: italic;">Sin sub-áreas</div>'
           }
         </div>
       </div>
     `;
   }
   
-  buildSubAreaHTML(subArea, aIdx, saIdx, escapeHtml) {
+  buildSubAreaHTML(subArea, aIdx, saIdx, areaFullId, escapeHtml) {
     const childrenId = `subarea_children_${aIdx}_${saIdx}`;
-    const sistemasCount = subArea.sistemas ? subArea.sistemas.length : 0;
-    
-    // Obtener estado guardado (closed por defecto)
     const isOpen = this.getTreeNodeState(childrenId) === 'open';
-    const displayStyle = isOpen ? 'block' : 'none';
+    const expandIcon = isOpen ? '∨' : '▸';
+    
+    // ID jerárquico: EMPRESA-AREA-SUBAREA
+    const subAreaId = subArea.id || `SUBA-${saIdx+1}`;
+    const fullId = `${areaFullId}-${subAreaId}`;
     
     return `
-      <div style="margin-bottom: 3px; padding-left: 0px;">
-        <div class="tree-node-hover" style="display: flex; align-items: center; gap: 6px; padding: 4px; background: var(--bg-tertiary); border-radius: 3px;">
-          <span style="flex: 1; color: var(--text-primary); font-size: 0.85rem; cursor: pointer;" onclick="app.toggleTreeChildren('${childrenId}')">${escapeHtml(subArea.nombre)}</span>
-          <div class="tree-actions" style="gap: 3px;">
-            <button onclick="app.editarNodoJerarquia('subArea', ${aIdx}, ${saIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 5px; border-radius: 2px; cursor: pointer; font-size: 0.65rem;">Editar</button>
-            <button onclick="app.eliminarNodoJerarquia('subArea', ${aIdx}, ${saIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 5px; border-radius: 2px; cursor: pointer; font-size: 0.65rem;">Eliminar</button>
-            <button onclick="app.agregarNodoJerarquia('sistema', ${aIdx}, ${saIdx})" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 1px 5px; border-radius: 2px; cursor: pointer; font-size: 0.65rem;">+ Sistema</button>
+      <div class="sap-node">
+        <div class="sap-node-content">
+          <span class="sap-node-expand" onclick="app.toggleTreeChildren('${childrenId}')">${expandIcon}</span>
+          <span class="sap-node-id">${escapeHtml(fullId)}</span>
+          <span class="sap-node-name">${escapeHtml(subArea.nombre)}</span>
+          <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('subArea', ${aIdx}, ${saIdx})" title="Editar">✏️</button>
+            <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('subArea', ${aIdx}, ${saIdx})" title="Eliminar">🗑️</button>
+            <button class="sap-btn sap-btn-add" onclick="app.agregarNodoJerarquia('sistema', ${aIdx}, ${saIdx})" title="Agregar Sistema">➕</button>
           </div>
         </div>
-        <div id="${childrenId}" style="display: ${displayStyle}; margin-top: 3px; margin-left: 16px;">
+        <div id="${childrenId}" class="sap-children" style="display: ${isOpen ? 'block' : 'none'};">
           ${subArea.sistemas && subArea.sistemas.length > 0
-            ? subArea.sistemas.map((sistema, sIdx) => this.buildSistemaHTML(sistema, aIdx, saIdx, sIdx, escapeHtml)).join('')
-            : '<div style="color: var(--text-secondary); font-size: 0.7rem; padding: 3px; font-style: italic;">Sin sistemas</div>'
+            ? subArea.sistemas.map((sistema, sIdx) => this.buildSistemaHTML(sistema, aIdx, saIdx, sIdx, fullId, escapeHtml)).join('')
+            : '<div style="color: var(--text-secondary); font-size: 11px; padding: 4px; font-style: italic;">Sin sistemas</div>'
           }
         </div>
       </div>
     `;
   }
   
-  buildSistemaHTML(sistema, aIdx, saIdx, sIdx, escapeHtml) {
+  buildSistemaHTML(sistema, aIdx, saIdx, sIdx, subAreaFullId, escapeHtml) {
     const childrenId = `sistema_children_${aIdx}_${saIdx}_${sIdx}`;
-    const subSistemasCount = sistema.subSistemas ? sistema.subSistemas.length : 0;
-    
-    // Obtener estado guardado (closed por defecto)
     const isOpen = this.getTreeNodeState(childrenId) === 'open';
-    const displayStyle = isOpen ? 'block' : 'none';
+    const expandIcon = isOpen ? '∨' : '▸';
+    
+    // ID jerárquico: EMPRESA-AREA-SUBAREA-SISTEMA
+    const sistemaId = sistema.id || `SIS-${sIdx+1}`;
+    const fullId = `${subAreaFullId}-${sistemaId}`;
     
     return `
-      <div style="margin-bottom: 2px; padding-left: 0px;">
-        <div class="tree-node-hover" style="display: flex; align-items: center; gap: 4px; padding: 3px 6px; background: var(--bg-secondary); border-radius: 3px;">
-          <span style="flex: 1; color: var(--text-primary); font-size: 0.75rem; cursor: pointer;" onclick="app.toggleTreeChildren('${childrenId}')">• ${escapeHtml(sistema.nombre)}</span>
-          <div class="tree-actions" style="gap: 2px;">
-            <button onclick="app.editarNodoJerarquia('sistema', ${aIdx}, ${saIdx}, ${sIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 4px; border-radius: 2px; cursor: pointer; font-size: 0.6rem;">Editar</button>
-            <button onclick="app.eliminarNodoJerarquia('sistema', ${aIdx}, ${saIdx}, ${sIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 1px 4px; border-radius: 2px; cursor: pointer; font-size: 0.6rem;">Eliminar</button>
-            <button onclick="app.agregarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx})" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 1px 4px; border-radius: 2px; cursor: pointer; font-size: 0.6rem;">+ Sub-Sistema</button>
+      <div class="sap-node">
+        <div class="sap-node-content">
+          <span class="sap-node-expand" onclick="app.toggleTreeChildren('${childrenId}')">${expandIcon}</span>
+          <span class="sap-node-id">${escapeHtml(fullId)}</span>
+          <span class="sap-node-name">${escapeHtml(sistema.nombre)}</span>
+          <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('sistema', ${aIdx}, ${saIdx}, ${sIdx})" title="Editar">✏️</button>
+            <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('sistema', ${aIdx}, ${saIdx}, ${sIdx})" title="Eliminar">🗑️</button>
+            <button class="sap-btn sap-btn-add" onclick="app.agregarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx})" title="Agregar Sub-Sistema">➕</button>
           </div>
         </div>
-        <div id="${childrenId}" style="display: ${displayStyle}; margin-top: 2px; margin-left: 12px;">
+        <div id="${childrenId}" class="sap-children" style="display: ${isOpen ? 'block' : 'none'};">
           ${sistema.subSistemas && sistema.subSistemas.length > 0
-            ? sistema.subSistemas.map((subSistema, ssIdx) => this.buildSubSistemaHTML(subSistema, aIdx, saIdx, sIdx, ssIdx, escapeHtml)).join('')
-            : '<div style="color: var(--text-secondary); font-size: 0.65rem; padding: 2px; font-style: italic;">Sin sub-sistemas</div>'
+            ? sistema.subSistemas.map((subSistema, ssIdx) => this.buildSubSistemaHTML(subSistema, aIdx, saIdx, sIdx, ssIdx, fullId, escapeHtml)).join('')
+            : '<div style="color: var(--text-secondary); font-size: 11px; padding: 4px; font-style: italic;">Sin sub-sistemas</div>'
           }
         </div>
       </div>
     `;
   }
   
-  buildSubSistemaHTML(subSistema, aIdx, saIdx, sIdx, ssIdx, escapeHtml) {
+  buildSubSistemaHTML(subSistema, aIdx, saIdx, sIdx, ssIdx, sistemaFullId, escapeHtml) {
     const childrenId = `subsistema_children_${aIdx}_${saIdx}_${sIdx}_${ssIdx}`;
-    const seccionesCount = subSistema.secciones ? subSistema.secciones.length : 0;
-    
-    // Obtener estado guardado (closed por defecto)
     const isOpen = this.getTreeNodeState(childrenId) === 'open';
-    const displayStyle = isOpen ? 'block' : 'none';
+    const expandIcon = isOpen ? '∨' : '▸';
+    
+    // ID jerárquico: EMPRESA-AREA-SUBAREA-SISTEMA-SUBSISTEMA
+    const subSistemaId = subSistema.id || `SS-${ssIdx+1}`;
+    const fullId = `${sistemaFullId}-${subSistemaId}`;
     
     return `
-      <div style="margin-bottom: 2px; padding-left: 0px;">
-        <div class="tree-node-hover" style="display: flex; align-items: center; gap: 4px; padding: 2px 5px; background: var(--bg-tertiary); border-radius: 2px;">
-          <span style="flex: 1; color: var(--text-primary); font-size: 0.7rem; cursor: pointer;" onclick="app.toggleTreeChildren('${childrenId}')">◦ ${escapeHtml(subSistema.nombre)}</span>
-          <div class="tree-actions" style="gap: 2px;">
-            <button onclick="app.editarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.55rem;">Editar</button>
-            <button onclick="app.eliminarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.55rem;">Eliminar</button>
-            <button onclick="app.agregarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.55rem;">+ Sección</button>
+      <div class="sap-node">
+        <div class="sap-node-content">
+          <span class="sap-node-expand" onclick="app.toggleTreeChildren('${childrenId}')">${expandIcon}</span>
+          <span class="sap-node-id">${escapeHtml(fullId)}</span>
+          <span class="sap-node-name">${escapeHtml(subSistema.nombre)}</span>
+          <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" title="Editar">✏️</button>
+            <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" title="Eliminar">🗑️</button>
+            <button class="sap-btn sap-btn-add" onclick="app.agregarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" title="Agregar Sección">➕</button>
           </div>
         </div>
-        <div id="${childrenId}" style="display: ${displayStyle}; margin-top: 2px; margin-left: 10px;">
+        <div id="${childrenId}" class="sap-children" style="display: ${isOpen ? 'block' : 'none'};">
           ${subSistema.secciones && subSistema.secciones.length > 0
-            ? subSistema.secciones.map((seccion, secIdx) => this.buildSeccionHTML(seccion, aIdx, saIdx, sIdx, ssIdx, secIdx, escapeHtml)).join('')
-            : '<div style="color: var(--text-secondary); font-size: 0.6rem; padding: 2px; font-style: italic;">Sin secciones</div>'
+            ? subSistema.secciones.map((seccion, secIdx) => this.buildSeccionHTML(seccion, aIdx, saIdx, sIdx, ssIdx, secIdx, fullId, escapeHtml)).join('')
+            : '<div style="color: var(--text-secondary); font-size: 11px; padding: 4px; font-style: italic;">Sin secciones</div>'
           }
         </div>
       </div>
     `;
   }
   
-  buildSeccionHTML(seccion, aIdx, saIdx, sIdx, ssIdx, secIdx, escapeHtml) {
+  buildSeccionHTML(seccion, aIdx, saIdx, sIdx, ssIdx, secIdx, subSistemaFullId, escapeHtml) {
     const childrenId = `seccion_children_${aIdx}_${saIdx}_${sIdx}_${ssIdx}_${secIdx}`;
-    const subSeccionesCount = seccion.subSecciones ? seccion.subSecciones.length : 0;
-    
-    // Obtener estado guardado (closed por defecto)
     const isOpen = this.getTreeNodeState(childrenId) === 'open';
-    const displayStyle = isOpen ? 'block' : 'none';
+    const expandIcon = isOpen ? '∨' : '▸';
+    
+    // ID jerárquico: EMPRESA-AREA-SUBAREA-SISTEMA-SUBSISTEMA-SECCION
+    const seccionId = seccion.id || `SEC-${secIdx+1}`;
+    const fullId = `${subSistemaFullId}-${seccionId}`;
     
     return `
-      <div style="margin-bottom: 1px; padding-left: 0px;">
-        <div class="tree-node-hover" style="display: flex; align-items: center; gap: 3px; padding: 2px 4px; background: var(--bg-secondary); border-radius: 2px;">
-          <span style="flex: 1; color: var(--text-primary); font-size: 0.65rem; cursor: pointer;" onclick="app.toggleTreeChildren('${childrenId}')">▪ ${escapeHtml(seccion.nombre)}</span>
-          <div class="tree-actions" style="gap: 1px;">
-            <button onclick="app.editarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.5rem;">Editar</button>
-            <button onclick="app.eliminarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.5rem;">Eliminar</button>
-            <button onclick="app.agregarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" style="background: none; border: 1px solid var(--success); color: var(--success); padding: 0px 3px; border-radius: 2px; cursor: pointer; font-size: 0.5rem;">+ Sub-Sección</button>
+      <div class="sap-node">
+        <div class="sap-node-content">
+          <span class="sap-node-expand" onclick="app.toggleTreeChildren('${childrenId}')">${expandIcon}</span>
+          <span class="sap-node-id">${escapeHtml(fullId)}</span>
+          <span class="sap-node-name">${escapeHtml(seccion.nombre)}</span>
+          <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" title="Editar">✏️</button>
+            <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" title="Eliminar">🗑️</button>
+            <button class="sap-btn sap-btn-add" onclick="app.agregarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" title="Agregar Sub-Sección">➕</button>
           </div>
         </div>
-        <div id="${childrenId}" style="display: ${displayStyle}; margin-top: 1px; margin-left: 8px;">
+        <div id="${childrenId}" class="sap-children" style="display: ${isOpen ? 'block' : 'none'};">
           ${seccion.subSecciones && seccion.subSecciones.length > 0
-            ? seccion.subSecciones.map((subSeccion, sSecIdx) => this.buildSubSeccionHTML(subSeccion, aIdx, saIdx, sIdx, ssIdx, secIdx, sSecIdx, escapeHtml)).join('')
-            : '<div style="color: var(--text-secondary); font-size: 0.55rem; padding: 1px; font-style: italic;">Sin sub-secciones</div>'
+            ? seccion.subSecciones.map((subSeccion, sSecIdx) => this.buildSubSeccionHTML(subSeccion, aIdx, saIdx, sIdx, ssIdx, secIdx, sSecIdx, fullId, escapeHtml)).join('')
+            : '<div style="color: var(--text-secondary); font-size: 11px; padding: 4px; font-style: italic;">Sin sub-secciones</div>'
           }
         </div>
       </div>
     `;
   }
   
-  buildSubSeccionHTML(subSeccion, aIdx, saIdx, sIdx, ssIdx, secIdx, sSecIdx, escapeHtml) {
+  buildSubSeccionHTML(subSeccion, aIdx, saIdx, sIdx, ssIdx, secIdx, sSecIdx, seccionFullId, escapeHtml) {
+    // ID jerárquico: EMPRESA-AREA-SUBAREA-SISTEMA-SUBSISTEMA-SECCION-SUBSECCION
+    const subSeccionId = subSeccion.id || `SSEC-${sSecIdx+1}`;
+    const fullId = `${seccionFullId}-${subSeccionId}`;
+    
     return `
-      <div class="tree-node-hover" style="margin-bottom: 1px; padding: 1px 3px; background: var(--bg-tertiary); border-radius: 2px; display: flex; align-items: center; gap: 2px;">
-        <span style="flex: 1; color: var(--text-primary); font-size: 0.6rem;">- ${escapeHtml(subSeccion.nombre)}</span>
-        <div class="tree-actions" style="gap: 1px;">
-          <button onclick="app.editarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 2px; border-radius: 1px; cursor: pointer; font-size: 0.5rem;">Editar</button>
-          <button onclick="app.eliminarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0px 2px; border-radius: 1px; cursor: pointer; font-size: 0.5rem;">Eliminar</button>
+      <div class="sap-node">
+        <div class="sap-node-content">
+          <span class="sap-node-icon" style="width: 16px;"></span>
+          <span class="sap-node-id">${escapeHtml(fullId)}</span>
+          <span class="sap-node-name">${escapeHtml(subSeccion.nombre)}</span>
+          <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})" title="Editar">✏️</button>
+            <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})" title="Eliminar">🗑️</button>
+          </div>
         </div>
       </div>
     `;
@@ -28994,13 +29710,20 @@ class InventarioCompleto {
     const children = document.getElementById(childrenId);
     if (!children) return;
     
+    // Encontrar el botón de expansión correspondiente
+    const expandBtn = document.querySelector(`[onclick*="${childrenId}"]`);
+    
     if (children.style.display === 'none') {
       children.style.display = 'block';
-      // Guardar estado expandido
+      if (expandBtn && expandBtn.classList.contains('sap-node-expand')) {
+        expandBtn.textContent = '∨';
+      }
       localStorage.setItem('tree-' + childrenId, 'open');
     } else {
       children.style.display = 'none';
-      // Guardar estado colapsado
+      if (expandBtn && expandBtn.classList.contains('sap-node-expand')) {
+        expandBtn.textContent = '▸';
+      }
       localStorage.setItem('tree-' + childrenId, 'closed');
     }
   }
@@ -29183,17 +29906,35 @@ class InventarioCompleto {
       subSeccion: 'Nueva Sub-Sección (N7)'
     };
     
-    const label = labels[tipo] || 'Nuevo Elemento';
-    const nombre = await this.showInputModal(`Ingrese el nombre para: ${label}`, '');
+    const ejemplos = {
+      area: 'Ejemplo: AREA-01, PLANT-PRIN',
+      subArea: 'Ejemplo: EVIS, FILET, EMPAR',
+      sistema: 'Ejemplo: GRAD, GEA, BOMB-01',
+      subSistema: 'Ejemplo: CINTA-L, MOT-PRIN',
+      seccion: 'Ejemplo: SIST-ELEC, SIST-MEC',
+      subSeccion: 'Ejemplo: PANEL-CTL, CABLEADO'
+    };
     
-    if (!nombre || nombre.trim() === '') {
+    const label = labels[tipo] || 'Nuevo Elemento';
+    const ejemplo = ejemplos[tipo] || '';
+    
+    const resultado = await this.showDualInputModal(
+      `Agregar ${label}`,
+      'Código/ID abreviado:',
+      '',
+      ejemplo,
+      'Nombre completo:',
+      ''
+    );
+    
+    if (resultado === null || resultado.input1.trim() === '' || resultado.input2.trim() === '') {
       this.showToast('⚠️ Operación cancelada', 'warning');
       return;
     }
     
     const nuevoNodo = {
-      id: `${tipo}_${Date.now()}`,
-      nombre: nombre.trim()
+      id: resultado.input1.trim().toUpperCase(),
+      nombre: resultado.input2.trim()
     };
     
     // Agregar arrays hijos según el tipo
@@ -29226,7 +29967,7 @@ class InventarioCompleto {
       
       this.saveJerarquiaAnidada();
       this.renderJerarquiaTree();
-      this.showToast(`✅ ${label} agregado: ${nombre}`, 'success');
+      this.showToast(`✅ ${label} agregado: ${resultado.input2}`, 'success');
     } catch (error) {
       console.error('Error agregando nodo:', error);
       this.showToast('❌ Error al agregar elemento', 'error');
@@ -29237,34 +29978,42 @@ class InventarioCompleto {
     try {
       let nodo;
       let label = 'Elemento';
+      let ejemploID = '';
       
       if (tipo === 'empresa') {
         nodo = this.jerarquiaAnidada.empresa;
         label = 'Empresa (N1)';
+        ejemploID = 'Ejemplo: AQ-IN-CHO (Empresa-Tipo-Ubicación)';
       } else if (tipo === 'area') {
         const [aIdx] = indices;
         nodo = this.jerarquiaAnidada.areas[aIdx];
         label = 'Área (N2)';
+        ejemploID = 'Ejemplo: AREA-01, PLANT-PRIN';
       } else if (tipo === 'subArea') {
         const [aIdx, saIdx] = indices;
         nodo = this.jerarquiaAnidada.areas[aIdx].subAreas[saIdx];
         label = 'Sub-Área (N3)';
+        ejemploID = 'Ejemplo: EVIS, FILET, EMPAR';
       } else if (tipo === 'sistema') {
         const [aIdx, saIdx, sIdx] = indices;
         nodo = this.jerarquiaAnidada.areas[aIdx].subAreas[saIdx].sistemas[sIdx];
         label = 'Sistema (N4)';
+        ejemploID = 'Ejemplo: GRAD, GEA, BOMB-01';
       } else if (tipo === 'subSistema') {
         const [aIdx, saIdx, sIdx, ssIdx] = indices;
         nodo = this.jerarquiaAnidada.areas[aIdx].subAreas[saIdx].sistemas[sIdx].subSistemas[ssIdx];
         label = 'Sub-Sistema (N5)';
+        ejemploID = 'Ejemplo: CINTA-L, MOT-PRIN';
       } else if (tipo === 'seccion') {
         const [aIdx, saIdx, sIdx, ssIdx, secIdx] = indices;
         nodo = this.jerarquiaAnidada.areas[aIdx].subAreas[saIdx].sistemas[sIdx].subSistemas[ssIdx].secciones[secIdx];
         label = 'Sección (N6)';
+        ejemploID = 'Ejemplo: SIST-ELEC, SIST-MEC';
       } else if (tipo === 'subSeccion') {
         const [aIdx, saIdx, sIdx, ssIdx, secIdx, subSecIdx] = indices;
         nodo = this.jerarquiaAnidada.areas[aIdx].subAreas[saIdx].sistemas[sIdx].subSistemas[ssIdx].secciones[secIdx].subSecciones[subSecIdx];
         label = 'Sub-Sección (N7)';
+        ejemploID = 'Ejemplo: PANEL-CTL, CABLEADO';
       }
       
       if (!nodo) {
@@ -29272,19 +30021,33 @@ class InventarioCompleto {
         return;
       }
       
-      const nuevoNombre = await this.showInputModal(`Editar nombre de ${label}:`, nodo.nombre);
+      // Modal con dos campos: ID y Nombre
+      const resultado = await this.showDualInputModal(
+        `Editar ${label}`,
+        'Código/ID abreviado:',
+        nodo.id || '',
+        ejemploID,
+        'Nombre completo:',
+        nodo.nombre
+      );
       
-      if (nuevoNombre === null) {
+      if (resultado === null) {
         this.showToast('⚠️ Operación cancelada', 'warning');
         return;
       }
       
-      if (nuevoNombre.trim() === '') {
+      if (resultado.input1.trim() === '') {
+        this.showToast('⚠️ El código/ID no puede estar vacío', 'warning');
+        return;
+      }
+      
+      if (resultado.input2.trim() === '') {
         this.showToast('⚠️ El nombre no puede estar vacío', 'warning');
         return;
       }
       
-      nodo.nombre = nuevoNombre.trim();
+      nodo.id = resultado.input1.trim().toUpperCase();
+      nodo.nombre = resultado.input2.trim();
       this.saveJerarquiaAnidada();
       this.renderJerarquiaTree();
       this.showToast(`✅ ${label} actualizado`, 'success');
@@ -31366,6 +32129,340 @@ class InventarioCompleto {
   }
   
   /**
+   * ============================================================
+   * GESTIÓN DE JERARQUÍA - MODAL Y FUNCIONES CRUD
+   * ============================================================
+   */
+
+  /**
+   * Estructura de datos para niveles jerárquicos
+   */
+  jerarquiaData = {
+    nivel1: [], // Planta
+    nivel2: [], // Área General
+    nivel3: [], // Sub Área
+    nivel4: [], // Sistema/Equipo
+    nivel5: [], // Sub Sistema
+    nivel6: [], // Sección
+    nivel7: [], // Detalle
+    nivel8: []  // Componente
+  };
+
+  jerarquiaCurrentLevel = 1;
+  jerarquiaEditingId = null;
+
+  /**
+   * Abre el modal de gestión de jerarquía
+   */
+  openJerarquiaModal() {
+    // Cargar datos desde localStorage
+    const savedData = localStorage.getItem('jerarquiaLevels');
+    if (savedData) {
+      try {
+        this.jerarquiaData = JSON.parse(savedData);
+      } catch (e) {
+        console.error('Error al cargar datos de jerarquía:', e);
+      }
+    }
+
+    // Mostrar modal
+    const modal = document.getElementById('modalJerarquia');
+    modal.style.display = 'flex';
+
+    // Cargar primer nivel por defecto
+    this.switchJerarquiaLevel(1);
+  }
+
+  /**
+   * Cierra el modal de gestión de jerarquía
+   */
+  closeJerarquiaModal() {
+    const modal = document.getElementById('modalJerarquia');
+    modal.style.display = 'none';
+    this.jerarquiaEditingId = null;
+    this.cancelJerarquiaItem();
+  }
+
+  /**
+   * Cambia entre niveles jerárquicos
+   */
+  switchJerarquiaLevel(level) {
+    this.jerarquiaCurrentLevel = level;
+    this.jerarquiaEditingId = null;
+
+    // Actualizar tabs activos
+    const tabs = document.querySelectorAll('.jerarquia-tab');
+    tabs.forEach(tab => {
+      if (parseInt(tab.getAttribute('data-level')) === level) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
+
+    // Actualizar título
+    const titles = [
+      '🏭 Nivel 1 - Planta',
+      '📁 Nivel 2 - Área General', 
+      '🗂️ Nivel 3 - Sub Área',
+      '⚙️ Nivel 4 - Sistema/Equipo',
+      '🔧 Nivel 5 - Sub Sistema',
+      '📋 Nivel 6 - Sección',
+      '🔍 Nivel 7 - Detalle',
+      '🧩 Nivel 8 - Componente'
+    ];
+    document.getElementById('jerarquiaLevelTitle').textContent = titles[level - 1];
+
+    // Ocultar formulario
+    document.getElementById('jerarquiaForm').style.display = 'none';
+
+    // Renderizar lista de items
+    this.renderJerarquiaList();
+  }
+
+  /**
+   * Renderiza la lista de items del nivel actual
+   */
+  renderJerarquiaList() {
+    const level = this.jerarquiaCurrentLevel;
+    const items = this.jerarquiaData[`nivel${level}`] || [];
+    const listContainer = document.getElementById('jerarquiaList');
+
+    if (items.length === 0) {
+      listContainer.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+          <p>No hay elementos en este nivel</p>
+          <p style="font-size: 0.9rem; margin-top: 8px;">Haz clic en "➕ Agregar Nuevo" para crear el primero</p>
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    items.forEach(item => {
+      const timestamp = new Date(item.timestamp).toLocaleString('es-ES', {
+        day: '2-digit',
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      html += `
+        <div class="jerarquia-item">
+          <div class="jerarquia-item-info">
+            <div class="jerarquia-item-name">${this.escapeHtml(item.name)}</div>
+            ${item.description ? `<div class="jerarquia-item-desc">${this.escapeHtml(item.description)}</div>` : ''}
+            <div class="jerarquia-item-meta">Creado: ${timestamp}</div>
+          </div>
+          <div class="jerarquia-item-actions">
+            <button class="jerarquia-item-btn jerarquia-item-btn-edit" onclick="app.editJerarquiaItem('${item.id}')">
+              ✏️ Editar
+            </button>
+            <button class="jerarquia-item-btn jerarquia-item-btn-delete" onclick="app.deleteJerarquiaItem('${item.id}')">
+              🗑️ Eliminar
+            </button>
+          </div>
+        </div>
+      `;
+    });
+
+    listContainer.innerHTML = html;
+  }
+
+  /**
+   * Muestra el formulario para agregar nuevo item
+   */
+  addJerarquiaItem() {
+    this.jerarquiaEditingId = null;
+    const form = document.getElementById('jerarquiaForm');
+    form.style.display = 'block';
+
+    // Limpiar campos
+    document.getElementById('jerarquiaItemName').value = '';
+    document.getElementById('jerarquiaItemDesc').value = '';
+
+    // Scroll al formulario
+    form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /**
+   * Guarda un item (nuevo o editado)
+   */
+  saveJerarquiaItem() {
+    const name = document.getElementById('jerarquiaItemName').value.trim();
+    const description = document.getElementById('jerarquiaItemDesc').value.trim();
+
+    if (!name) {
+      this.mostrarToast('⚠️ El nombre es obligatorio', 'warning');
+      return;
+    }
+
+    const level = this.jerarquiaCurrentLevel;
+    const levelKey = `nivel${level}`;
+
+    if (this.jerarquiaEditingId) {
+      // Editar existente
+      const itemIndex = this.jerarquiaData[levelKey].findIndex(item => item.id === this.jerarquiaEditingId);
+      if (itemIndex !== -1) {
+        this.jerarquiaData[levelKey][itemIndex].name = name;
+        this.jerarquiaData[levelKey][itemIndex].description = description;
+        this.mostrarToast('✅ Item actualizado exitosamente', 'success');
+      }
+    } else {
+      // Crear nuevo
+      const newItem = {
+        id: Date.now().toString(),
+        name: name,
+        description: description,
+        timestamp: Date.now()
+      };
+      this.jerarquiaData[levelKey].push(newItem);
+      this.mostrarToast('✅ Item creado exitosamente', 'success');
+    }
+
+    // Guardar en localStorage
+    localStorage.setItem('jerarquiaLevels', JSON.stringify(this.jerarquiaData));
+
+    // 🔄 SINCRONIZAR: Actualizar listas de autocompletado
+    this.sincronizarJerarquiaConAutocompletado();
+
+    // Actualizar vista
+    this.cancelJerarquiaItem();
+    this.renderJerarquiaList();
+
+    // Actualizar árbol SAP si está visible
+    if (document.getElementById('jerarquia').style.display !== 'none') {
+      this.renderSAPTree();
+    }
+
+    // Actualizar árbol en Configuración si está visible
+    const configTree = document.getElementById('jerarquiaTreeContainer');
+    if (configTree && configTree.offsetParent !== null) {
+      this.renderJerarquiaTree();
+    }
+  }
+
+  /**
+   * Cancela la edición/creación de item
+   */
+  cancelJerarquiaItem() {
+    this.jerarquiaEditingId = null;
+    const form = document.getElementById('jerarquiaForm');
+    form.style.display = 'none';
+    document.getElementById('jerarquiaItemName').value = '';
+    document.getElementById('jerarquiaItemDesc').value = '';
+  }
+
+  /**
+   * Edita un item existente
+   */
+  editJerarquiaItem(itemId) {
+    const level = this.jerarquiaCurrentLevel;
+    const levelKey = `nivel${level}`;
+    const item = this.jerarquiaData[levelKey].find(i => i.id === itemId);
+
+    if (!item) {
+      this.mostrarToast('❌ Item no encontrado', 'error');
+      return;
+    }
+
+    this.jerarquiaEditingId = itemId;
+
+    // Mostrar formulario con datos
+    const form = document.getElementById('jerarquiaForm');
+    form.style.display = 'block';
+    document.getElementById('jerarquiaItemName').value = item.name;
+    document.getElementById('jerarquiaItemDesc').value = item.description || '';
+
+    // Scroll al formulario
+    form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /**
+   * Elimina un item con confirmación
+   */
+  deleteJerarquiaItem(itemId) {
+    const level = this.jerarquiaCurrentLevel;
+    const levelKey = `nivel${level}`;
+    const item = this.jerarquiaData[levelKey].find(i => i.id === itemId);
+
+    if (!item) {
+      this.mostrarToast('❌ Item no encontrado', 'error');
+      return;
+    }
+
+    if (!confirm(`¿Eliminar "${item.name}"?\n\nEsta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    // Eliminar item
+    this.jerarquiaData[levelKey] = this.jerarquiaData[levelKey].filter(i => i.id !== itemId);
+
+    // Guardar en localStorage
+    localStorage.setItem('jerarquiaLevels', JSON.stringify(this.jerarquiaData));
+
+    // 🔄 SINCRONIZAR: Actualizar listas de autocompletado
+    this.sincronizarJerarquiaConAutocompletado();
+
+    this.mostrarToast('✅ Item eliminado exitosamente', 'success');
+
+    // Actualizar vista
+    this.renderJerarquiaList();
+
+    // Actualizar árbol SAP si está visible
+    if (document.getElementById('jerarquia').style.display !== 'none') {
+      this.renderSAPTree();
+    }
+
+    // Actualizar árbol en Configuración si está visible
+    const configTree = document.getElementById('jerarquiaTreeContainer');
+    if (configTree && configTree.offsetParent !== null) {
+      this.renderJerarquiaTree();
+    }
+  }
+
+  /**
+   * 🔄 Sincroniza la estructura jerárquica con las listas de autocompletado
+   */
+  sincronizarJerarquiaConAutocompletado() {
+    // Mapeo de niveles a campos de autocompletado
+    const levelMapping = {
+      nivel1: 'planta',
+      nivel2: 'area',
+      nivel3: 'subarea',
+      nivel4: 'sistema',
+      nivel5: 'subsistema',
+      nivel6: 'seccion',
+      nivel7: 'detalle',
+      nivel8: 'ubicacion'
+    };
+
+    // Actualizar cada lista
+    Object.keys(levelMapping).forEach(levelKey => {
+      const fieldKey = levelMapping[levelKey];
+      const items = this.jerarquiaData[levelKey] || [];
+      
+      // Extraer solo los nombres
+      this.autocompleteData[fieldKey] = items.map(item => item.name);
+    });
+
+    // Guardar en localStorage
+    localStorage.setItem('autocompleteData', JSON.stringify(this.autocompleteData));
+    
+    console.log('✅ Jerarquía sincronizada con autocompletado:', this.autocompleteData);
+  }
+
+  /**
+   * Escapa caracteres HTML para prevenir XSS
+   */
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  
+  /**
    * Inicializa las opciones de los filtros en cascada (solo plantas al inicio)
    */
   inicializarFiltrosJerarquia() {
@@ -31410,9 +32507,169 @@ class InventarioCompleto {
   
   /**
    * Renderiza el árbol jerárquico estilo SAP PM
-   * Convierte la estructura plana en árbol anidado con íconos, colores corporativos
+   * 🔄 SINCRONIZADO: Usa jerarquiaData del modal de gestión
    */
   renderSAPTree() {
+    console.log('🌳 renderSAPTree() llamado');
+    console.log('  jerarquiaData:', this.jerarquiaData);
+    
+    const container = document.getElementById('sapTreeContainer');
+    if (!container) {
+      console.warn('⚠️ No se encontró el contenedor del árbol SAP');
+      return;
+    }
+    
+    // 🔄 USAR ESTRUCTURA JERÁRQUICA DEL MODAL
+    if (!this.jerarquiaData) {
+      console.warn('⚠️ jerarquiaData no definido, mostrando mensaje');
+      container.innerHTML = '<div class="sap-tree-empty">No hay estructura jerárquica configurada. <br>Usa el botón "➕ Gestionar Niveles" para crear la jerarquía.</div>';
+      this.updateSAPTreeCount(0);
+      return;
+    }
+
+    console.log('✅ Construyendo árbol...');
+    // Construir árbol desde jerarquiaData
+    const treeHTML = this.buildJerarquiaTreeHTML();
+    container.innerHTML = treeHTML;
+
+    // Contar elementos totales
+    let totalItems = 0;
+    Object.keys(this.jerarquiaData).forEach(level => {
+      totalItems += (this.jerarquiaData[level] || []).length;
+    });
+    
+    this.updateSAPTreeCount(totalItems);
+    console.log('✅ Árbol SAP renderizado desde jerarquiaData:', totalItems, 'elementos');
+  }
+
+  /**
+   * Construye el HTML del árbol jerárquico desde jerarquiaData
+   */
+  buildJerarquiaTreeHTML() {
+    const plantas = this.jerarquiaData.nivel1 || [];
+    
+    if (plantas.length === 0) {
+      return '<div class="sap-tree-empty">No hay plantas configuradas. <br>Usa "➕ Gestionar Niveles" para agregar elementos.</div>';
+    }
+
+    let html = '<div class="sap-tree">';
+    
+    plantas.forEach((planta, pIndex) => {
+      html += `
+        <div class="sap-node sap-node-level-1" data-id="${planta.id}">
+          <div class="sap-node-header" onclick="app.sapTreeToggleNode('planta_${pIndex}')">
+            <span class="sap-node-icon">🏭</span>
+            <span class="sap-node-label">${this.escapeHtml(planta.name)}</span>
+            ${planta.description ? `<span class="sap-node-desc">(${this.escapeHtml(planta.description)})</span>` : ''}
+            <span class="sap-node-toggle">▼</span>
+          </div>
+          <div class="sap-node-children" id="planta_${pIndex}">
+            ${this.buildNivel2HTML(pIndex)}
+          </div>
+        </div>
+      `;
+    });
+
+    html += '</div>';
+    return html;
+  }
+
+  buildNivel2HTML(pIndex) {
+    const areas = this.jerarquiaData.nivel2 || [];
+    if (areas.length === 0) {
+      return '<div class="sap-tree-empty-child">Sin áreas generales</div>';
+    }
+
+    let html = '';
+    areas.forEach((area, aIndex) => {
+      html += `
+        <div class="sap-node sap-node-level-2" data-id="${area.id}">
+          <div class="sap-node-header" onclick="app.sapTreeToggleNode('area_${pIndex}_${aIndex}')">
+            <span class="sap-node-icon">📁</span>
+            <span class="sap-node-label">${this.escapeHtml(area.name)}</span>
+            <span class="sap-node-toggle">▼</span>
+          </div>
+          <div class="sap-node-children" id="area_${pIndex}_${aIndex}">
+            ${this.buildNivel3HTML(pIndex, aIndex)}
+          </div>
+        </div>
+      `;
+    });
+    return html;
+  }
+
+  buildNivel3HTML(pIndex, aIndex) {
+    const subareas = this.jerarquiaData.nivel3 || [];
+    if (subareas.length === 0) {
+      return '<div class="sap-tree-empty-child">Sin sub-áreas</div>';
+    }
+
+    let html = '';
+    subareas.forEach((subarea, sIndex) => {
+      html += `
+        <div class="sap-node sap-node-level-3" data-id="${subarea.id}">
+          <div class="sap-node-header" onclick="app.sapTreeToggleNode('subarea_${pIndex}_${aIndex}_${sIndex}')">
+            <span class="sap-node-icon">📂</span>
+            <span class="sap-node-label">${this.escapeHtml(subarea.name)}</span>
+            <span class="sap-node-toggle">▼</span>
+          </div>
+          <div class="sap-node-children" id="subarea_${pIndex}_${aIndex}_${sIndex}">
+            ${this.buildNivel4HTML(pIndex, aIndex, sIndex)}
+          </div>
+        </div>
+      `;
+    });
+    return html;
+  }
+
+  buildNivel4HTML(pIndex, aIndex, sIndex) {
+    const sistemas = this.jerarquiaData.nivel4 || [];
+    if (sistemas.length === 0) {
+      return '<div class="sap-tree-empty-child">Sin sistemas/equipos</div>';
+    }
+
+    let html = '';
+    sistemas.forEach((sistema, siIndex) => {
+      html += `
+        <div class="sap-node sap-node-level-4" data-id="${sistema.id}">
+          <div class="sap-node-header" onclick="app.sapTreeToggleNode('sistema_${pIndex}_${aIndex}_${sIndex}_${siIndex}')">
+            <span class="sap-node-icon">⚙️</span>
+            <span class="sap-node-label">${this.escapeHtml(sistema.name)}</span>
+            <span class="sap-node-toggle">▼</span>
+          </div>
+          <div class="sap-node-children" id="sistema_${pIndex}_${aIndex}_${sIndex}_${siIndex}">
+            <div class="sap-tree-empty-child">🔧 Sub-sistemas, 📋 Secciones y 🔍 Detalles disponibles...</div>
+          </div>
+        </div>
+      `;
+    });
+    return html;
+  }
+
+  /**
+   * Toggle de nodos del árbol
+   */
+  sapTreeToggleNode(nodeId) {
+    const node = document.getElementById(nodeId);
+    if (!node) return;
+
+    const isVisible = node.style.display !== 'none';
+    node.style.display = isVisible ? 'none' : 'block';
+
+    // Cambiar icono del toggle
+    const header = node.previousElementSibling;
+    if (header) {
+      const toggle = header.querySelector('.sap-node-toggle');
+      if (toggle) {
+        toggle.textContent = isVisible ? '▶' : '▼';
+      }
+    }
+  }
+
+  /**
+   * BACKUP: Función original (ahora deprecated)
+   */
+  renderSAPTree_OLD() {
     const container = document.getElementById('sapTreeContainer');
     if (!container) {
       console.warn('⚠️ No se encontró el contenedor del árbol SAP');
@@ -31528,11 +32785,14 @@ class InventarioCompleto {
    * Renderiza recursivamente los nodos del árbol
    * @param {Object} nodes - Nodos del nivel actual
    * @param {Number} level - Nivel actual (0-6)
+   * @param {Object} parentPath - Ruta jerárquica del padre
    * @returns {String} - HTML del árbol
    */
-  renderTreeNodes(nodes, level) {
+  renderTreeNodes(nodes, level, parentPath = {}) {
     const icons = ['🏭', '📁', '📂', '⚙️', '🔧', '📋', '🔍'];
     const icon = icons[level] || '📦';
+    const levelNames = ['planta', 'areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion', 'detalle'];
+    const levelName = levelNames[level];
     
     let html = '';
     let nodeId = 0;
@@ -31543,29 +32803,34 @@ class InventarioCompleto {
       const hasChildren = node._children && Object.keys(node._children).length > 0;
       const hasItems = node._items && node._items.length > 0;
       
+      // Construir ruta actual
+      const currentPath = { ...parentPath, [levelName]: key };
+      const pathStr = JSON.stringify(currentPath).replace(/"/g, '&quot;');
+      
       html += `
         <div class="sap-tree-item" data-level="${level}">
           <div class="sap-tree-item-content">
             ${hasChildren || hasItems ? `<span class="sap-tree-toggle" onclick="app.sapTreeToggleNode('${currentId}')">▶</span>` : '<span style="width:16px;display:inline-block;"></span>'}
             <span class="sap-tree-icon">${icon}</span>
-            <span class="sap-tree-label" onclick="app.sapTreeSelectNode('${currentId}', '${key}', 'node')">${key}</span>
+            <span class="sap-tree-label" onclick='app.sapTreeSelectNode("${currentId}", "${key}", "node", ${level}, ${pathStr})'>${key}</span>
             <span class="sap-tree-badge">${node._count || 0}</span>
           </div>
           <div class="sap-tree-children" id="${currentId}" style="display:none;">
       `;
       
       if (hasChildren) {
-        html += this.renderTreeNodes(node._children, level + 1);
+        html += this.renderTreeNodes(node._children, level + 1, currentPath);
       }
       
       if (hasItems) {
         node._items.forEach(item => {
+          const itemName = (item.nombre || 'Sin nombre').replace(/"/g, '&quot;');
           html += `
             <div class="sap-tree-item sap-tree-leaf" data-level="${level + 1}">
               <div class="sap-tree-item-content">
                 <span style="width:16px;display:inline-block;"></span>
                 <span class="sap-tree-icon">🔩</span>
-                <span class="sap-tree-label" onclick="app.sapTreeSelectNode('item-${item.id}', '${item.codSAP || 'N/A'} - ${item.nombre}', 'item')">${item.codSAP || 'N/A'} - ${item.nombre}</span>
+                <span class="sap-tree-label" onclick="app.sapTreeSelectNode('item-${item.id}', '${item.codSAP || 'N/A'} - ${itemName}', 'item')">${item.codSAP || 'N/A'} - ${item.nombre}</span>
                 <span class="sap-tree-badge">${item.cantidad || 0}</span>
               </div>
             </div>
@@ -31601,9 +32866,9 @@ class InventarioCompleto {
   }
   
   /**
-   * Selecciona un nodo del árbol (highlight visual)
+   * Selecciona un nodo del árbol y filtra el inventario
    */
-  sapTreeSelectNode(nodeId, label, type) {
+  sapTreeSelectNode(nodeId, label, type, level, path) {
     // Quitar selección previa
     document.querySelectorAll('.sap-tree-item.selected').forEach(el => el.classList.remove('selected'));
     
@@ -31611,8 +32876,39 @@ class InventarioCompleto {
     const targetNode = document.querySelector(`[onclick*="${nodeId}"]`)?.closest('.sap-tree-item');
     if (targetNode) {
       targetNode.classList.add('selected');
-      this.showToast(`📍 Seleccionado: ${label}`, 'info', 2000);
     }
+    
+    // Si es un item (repuesto), abrir el modal de edición
+    if (type === 'item') {
+      const itemId = nodeId.replace('item-', '');
+      this.openModal('edit', itemId);
+      return;
+    }
+    
+    // Si es un nodo, filtrar inventario y cambiar a la pestaña de inventario
+    if (type === 'node' && path) {
+      this.aplicarFiltroJerarquico(path);
+      this.showToast(`📍 Filtrando por: ${label}`, 'info', 2000);
+      
+      // Cambiar a pestaña inventario para ver resultados
+      setTimeout(() => {
+        document.querySelector('[data-tab="inventario"]')?.click();
+      }, 500);
+    }
+  }
+  
+  /**
+   * Aplica filtro jerárquico al inventario desde el árbol SAP
+   */
+  aplicarFiltroJerarquico(path) {
+    // path es un objeto con la ruta jerárquica: { planta, areaGeneral, subArea, etc. }
+    this.filtrosJerarquicosActivos = path;
+    
+    // Cambiar a pestaña inventario
+    this.switchTab('inventario');
+    
+    // Renderizar inventario filtrado
+    this.applyFilters();
   }
   
   /**
@@ -31637,6 +32933,70 @@ class InventarioCompleto {
   sapTreeRefresh() {
     this.renderSAPTree();
     this.showToast('🔄 Árbol actualizado', 'success', 1500);
+  }
+  
+  /**
+   * Buscar en el árbol SAP
+   */
+  sapTreeSearch(query) {
+    const tree = document.getElementById('sapTreeContainer');
+    if (!tree) return;
+    
+    query = query.toLowerCase().trim();
+    
+    // Si no hay búsqueda, mostrar todo
+    if (!query) {
+      document.querySelectorAll('.sap-tree-item').forEach(item => {
+        item.style.display = '';
+        item.classList.remove('search-highlight');
+      });
+      return;
+    }
+    
+    // Buscar y resaltar coincidencias
+    let foundCount = 0;
+    document.querySelectorAll('.sap-tree-item').forEach(item => {
+      const label = item.querySelector('.sap-tree-label');
+      if (label) {
+        const text = label.textContent.toLowerCase();
+        if (text.includes(query)) {
+          item.style.display = '';
+          item.classList.add('search-highlight');
+          foundCount++;
+          
+          // Expandir padres
+          let parent = item.parentElement;
+          while (parent) {
+            if (parent.classList && parent.classList.contains('sap-tree-children')) {
+              parent.style.display = 'block';
+              const toggle = parent.previousElementSibling?.querySelector('.sap-tree-toggle');
+              if (toggle) toggle.textContent = '▼';
+            }
+            parent = parent.parentElement;
+          }
+        } else {
+          item.style.display = 'none';
+          item.classList.remove('search-highlight');
+        }
+      }
+    });
+    
+    if (foundCount === 0) {
+      this.showToast('❌ No se encontraron resultados', 'warning', 2000);
+    } else {
+      this.showToast(`✅ ${foundCount} resultado(s) encontrado(s)`, 'success', 1500);
+    }
+  }
+  
+  /**
+   * Limpiar búsqueda del árbol
+   */
+  sapTreeClearSearch() {
+    const input = document.getElementById('sapTreeSearch');
+    if (input) {
+      input.value = '';
+      this.sapTreeSearch('');
+    }
   }
   
   /**
@@ -35380,6 +36740,86 @@ class InventarioCompleto {
       };
       
       // Click fuera del modal para cancelar
+      overlay.onclick = (e) => {
+        if (e.target === overlay) close(null);
+      };
+    });
+  }
+
+  // 🆕 Modal con dos inputs (para ID y Nombre)
+  showDualInputModal(title, label1, defaultValue1 = '', placeholder1 = '', label2, defaultValue2 = '', placeholder2 = '') {
+    return new Promise((resolve) => {
+      const escapeHtml = (text) => {
+        if (!text) return '';
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      };
+      
+      const overlay = document.createElement('div');
+      overlay.className = 'custom-modal-overlay';
+      
+      overlay.innerHTML = `
+        <div class="custom-modal" style="min-width: 450px;">
+          <div class="custom-modal-title">${escapeHtml(title)}</div>
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-primary);">
+              ${escapeHtml(label1)}
+            </label>
+            <input type="text" class="custom-modal-input" id="modal-input-1" value="${escapeHtml(defaultValue1)}" placeholder="${escapeHtml(placeholder1)}" style="text-transform: uppercase;">
+            ${placeholder1 ? `<small style="display: block; margin-top: 4px; color: var(--text-muted); font-size: 11px;">${escapeHtml(placeholder1)}</small>` : ''}
+          </div>
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-primary);">
+              ${escapeHtml(label2)}
+            </label>
+            <input type="text" class="custom-modal-input" id="modal-input-2" value="${escapeHtml(defaultValue2)}" placeholder="${escapeHtml(placeholder2)}">
+          </div>
+          <div class="custom-modal-buttons">
+            <button class="custom-modal-btn custom-modal-btn-secondary" data-action="cancel">Cancelar</button>
+            <button class="custom-modal-btn custom-modal-btn-primary" data-action="accept">Guardar</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(overlay);
+      
+      const input1 = overlay.querySelector('#modal-input-1');
+      const input2 = overlay.querySelector('#modal-input-2');
+      const acceptBtn = overlay.querySelector('[data-action="accept"]');
+      const cancelBtn = overlay.querySelector('[data-action="cancel"]');
+      
+      setTimeout(() => {
+        input1.focus();
+        input1.select();
+      }, 100);
+      
+      const close = (value) => {
+        overlay.remove();
+        resolve(value);
+      };
+      
+      acceptBtn.onclick = () => close({ input1: input1.value, input2: input2.value });
+      cancelBtn.onclick = () => close(null);
+      
+      // Tab para cambiar entre inputs
+      input1.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          input2.focus();
+          input2.select();
+        }
+        if (e.key === 'Escape') close(null);
+      };
+      
+      input2.onkeydown = (e) => {
+        if (e.key === 'Enter') close({ input1: input1.value, input2: input2.value });
+        if (e.key === 'Escape') close(null);
+      };
+      
       overlay.onclick = (e) => {
         if (e.target === overlay) close(null);
       };
@@ -41610,6 +43050,89 @@ window.mapStorage = mapStorage; // ️ AHORA DISPONIBLE - MapStorage integrado
 window.mapController = mapController; // 🗺️ Controlador de mapas
 console.log('App disponible en: window.app');
 console.log('=== SISTEMA LISTO ===');
+
+// 🔍 FUNCIONES DE ZOOM GLOBAL (zoom CSS puro - estilo navegador)
+let currentZoom = 100;
+const minZoom = 50;
+const maxZoom = 150;
+const zoomStep = 10;
+
+function updateZoom(newZoom) {
+  currentZoom = Math.max(minZoom, Math.min(maxZoom, newZoom));
+  
+  const zoomRatio = currentZoom / 100;
+  
+  // Usar solo zoom CSS (el que funcionaba mejor)
+  document.body.style.zoom = zoomRatio;
+  
+  // Actualizar indicador
+  const zoomLevel = document.getElementById('zoomLevel');
+  if (zoomLevel) {
+    zoomLevel.textContent = `${currentZoom}%`;
+  }
+  
+  // Guardar en localStorage
+  localStorage.setItem('appZoom', currentZoom);
+  
+  console.log(`🔍 Zoom ajustado: ${currentZoom}% (zoom CSS puro)`);
+}
+
+function zoomIn() {
+  updateZoom(currentZoom + zoomStep);
+}
+
+function zoomOut() {
+  updateZoom(currentZoom - zoomStep);
+}
+
+function zoomReset() {
+  updateZoom(100);
+}
+
+// Restaurar zoom guardado al cargar
+const savedZoom = localStorage.getItem('appZoom');
+if (savedZoom) {
+  setTimeout(() => {
+    updateZoom(parseInt(savedZoom));
+    console.log(`🔍 Zoom restaurado: ${savedZoom}%`);
+  }, 100);
+}
+
+// Atajos de teclado para zoom (Ctrl + y Ctrl -)
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey || e.metaKey) {
+    if (e.key === '+' || e.key === '=') {
+      e.preventDefault();
+      zoomIn();
+    } else if (e.key === '-' || e.key === '_') {
+      e.preventDefault();
+      zoomOut();
+    } else if (e.key === '0') {
+      e.preventDefault();
+      zoomReset();
+    }
+  }
+});
+
+console.log('🔍 Controles de zoom inicializados (zoom CSS puro - navegador)');
+
+// 📐 Mostrar resolución actual
+function updateResolutionDisplay() {
+  const resolutionDiv = document.getElementById('screenResolution');
+  if (resolutionDiv) {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const ratio = (width / height).toFixed(2);
+    resolutionDiv.innerHTML = `${width}×${height}<br><small style="font-size: 0.5rem;">${ratio}:1</small>`;
+  }
+}
+
+// Actualizar al cargar y al redimensionar
+updateResolutionDisplay();
+window.addEventListener('resize', updateResolutionDisplay);
+
+console.log(`📐 Resolución actual: ${window.innerWidth}×${window.innerHeight}`);
+
 </script>
 
 <!-- MODAL DE DETALLES (para backups, confirmaciones, etc.) -->
