@@ -30424,7 +30424,8 @@ class InventarioCompleto {
     const dragType = this.draggedSAPNode.type;
     const targetType = targetElement.dataset.nodeType || this.getNodeTypeFromElement(targetElement);
     
-    // Solo permitir drop en el mismo tipo de nodo
+    // Permitir drop en el mismo tipo de nodo (CAMBIO: ahora permite diferentes contenedores)
+    // O permitir drop en el contenedor padre para mover entre contenedores
     return dragType === targetType;
   }
   
@@ -30503,9 +30504,9 @@ class InventarioCompleto {
       return;
     }
 
-    // Solo permitir reordenar elementos del mismo tipo y nivel
+    // Solo permitir reordenar elementos del mismo tipo
     if (dragType !== targetType) {
-      console.log('[DROP] ⚠️ Solo puedes reordenar elementos del mismo nivel');
+      console.log('[DROP] ⚠️ Solo puedes reordenar elementos del mismo tipo');
       return;
     }
 
@@ -30519,18 +30520,23 @@ class InventarioCompleto {
       console.log('[DROP] Ajustando para "after", nuevo índice:', adjustedTargetIndices[lastIdx]);
     }
     
-    // Si el elemento origen está antes del destino en el mismo contenedor,
-    // necesitamos ajustar el índice porque splice() primero elimina
+    // NUEVO: Detectar si es mismo contenedor o movimiento entre contenedores
     const sameContainer = JSON.stringify(dragIndices.slice(0, -1)) === JSON.stringify(targetIndices.slice(0, -1));
-    if (sameContainer && dragIndices[dragIndices.length - 1] < adjustedTargetIndices[lastIdx]) {
-      adjustedTargetIndices[lastIdx]--;
-      console.log('[DROP] Ajustando por splice, nuevo índice:', adjustedTargetIndices[lastIdx]);
+    
+    if (sameContainer) {
+      // Mismo contenedor: ajustar por splice
+      if (dragIndices[dragIndices.length - 1] < adjustedTargetIndices[lastIdx]) {
+        adjustedTargetIndices[lastIdx]--;
+        console.log('[DROP] Ajustando por splice (mismo contenedor), nuevo índice:', adjustedTargetIndices[lastIdx]);
+      }
+    } else {
+      console.log('[DROP] Movimiento entre contenedores detectado');
     }
 
     console.log('[DROP] Índices ajustados finales:', adjustedTargetIndices);
 
-    // Implementar lógica de reordenamiento según el tipo
-    this.reorderSAPNodes(dragType, dragIndices, adjustedTargetIndices);
+    // Implementar lógica de movimiento/reordenamiento según el tipo
+    this.moveOrReorderSAPNodes(dragType, dragIndices, adjustedTargetIndices, sameContainer);
   }
 
   onDragEndSAP(event) {
@@ -30550,12 +30556,13 @@ class InventarioCompleto {
     this.hideDropIndicator();
   }
 
-  reorderSAPNodes(type, fromIndices, toIndices) {
+  moveOrReorderSAPNodes(type, fromIndices, toIndices, sameContainer) {
     const hierarquia = this.jerarquiaAnidada;
     
-    console.log(`[REORDER] Tipo: ${type}`);
-    console.log('[REORDER] From:', fromIndices);
-    console.log('[REORDER] To:', toIndices);
+    console.log(`[MOVE/REORDER] Tipo: ${type}`);
+    console.log('[MOVE/REORDER] From:', fromIndices);
+    console.log('[MOVE/REORDER] To:', toIndices);
+    console.log('[MOVE/REORDER] Mismo contenedor:', sameContainer);
     
     try {
       switch (type) {
@@ -30564,11 +30571,11 @@ class InventarioCompleto {
           const [toAreaIdx] = toIndices;
           
           if (fromAreaIdx === toAreaIdx) {
-            console.log('[REORDER] Mismo índice, cancelando');
+            console.log('[MOVE/REORDER] Mismo índice, cancelando');
             return;
           }
           
-          console.log(`[REORDER] Moviendo área de índice ${fromAreaIdx} a ${toAreaIdx}`);
+          console.log(`[MOVE/REORDER] Moviendo área de índice ${fromAreaIdx} a ${toAreaIdx}`);
           const area = hierarquia.areas.splice(fromAreaIdx, 1)[0];
           hierarquia.areas.splice(toAreaIdx, 0, area);
           break;
@@ -30576,70 +30583,112 @@ class InventarioCompleto {
         case 'subArea':
           const [aIdx1, fromSubAreaIdx] = fromIndices;
           const [aIdx2, toSubAreaIdx] = toIndices;
-          if (aIdx1 !== aIdx2) {
-            console.log('[REORDER] ⚠️ Solo puedes reordenar sub-áreas dentro de la misma área');
-            return;
+          
+          if (sameContainer) {
+            // Mismo contenedor: reordenar dentro de la misma área
+            console.log(`[MOVE/REORDER] Reordenando sub-área dentro del área ${aIdx1}`);
+            const subArea = hierarquia.areas[aIdx1].subAreas.splice(fromSubAreaIdx, 1)[0];
+            hierarquia.areas[aIdx1].subAreas.splice(toSubAreaIdx, 0, subArea);
+          } else {
+            // Diferente contenedor: mover sub-área de un área a otra
+            console.log(`[MOVE/REORDER] Moviendo sub-área del área ${aIdx1} al área ${aIdx2}`);
+            const subArea = hierarquia.areas[aIdx1].subAreas.splice(fromSubAreaIdx, 1)[0];
+            hierarquia.areas[aIdx2].subAreas.splice(toSubAreaIdx, 0, subArea);
           }
-          const subArea = hierarquia.areas[aIdx1].subAreas.splice(fromSubAreaIdx, 1)[0];
-          hierarquia.areas[aIdx1].subAreas.splice(toSubAreaIdx, 0, subArea);
           break;
           
         case 'sistema':
           const [a1, sa1, fromSistemaIdx] = fromIndices;
           const [a2, sa2, toSistemaIdx] = toIndices;
-          if (a1 !== a2 || sa1 !== sa2) {
-            console.log('[REORDER] ⚠️ Solo puedes reordenar sistemas dentro de la misma sub-área');
-            return;
+          
+          if (sameContainer) {
+            // Mismo contenedor: reordenar dentro de la misma sub-área
+            console.log(`[MOVE/REORDER] Reordenando sistema dentro de área ${a1}, sub-área ${sa1}`);
+            const sistema = hierarquia.areas[a1].subAreas[sa1].sistemas.splice(fromSistemaIdx, 1)[0];
+            hierarquia.areas[a1].subAreas[sa1].sistemas.splice(toSistemaIdx, 0, sistema);
+          } else {
+            // Diferente contenedor: mover sistema de una sub-área a otra
+            console.log(`[MOVE/REORDER] Moviendo sistema de área ${a1}/sub-área ${sa1} a área ${a2}/sub-área ${sa2}`);
+            const sistema = hierarquia.areas[a1].subAreas[sa1].sistemas.splice(fromSistemaIdx, 1)[0];
+            if (!hierarquia.areas[a2].subAreas[sa2].sistemas) {
+              hierarquia.areas[a2].subAreas[sa2].sistemas = [];
+            }
+            hierarquia.areas[a2].subAreas[sa2].sistemas.splice(toSistemaIdx, 0, sistema);
           }
-          const sistema = hierarquia.areas[a1].subAreas[sa1].sistemas.splice(fromSistemaIdx, 1)[0];
-          hierarquia.areas[a1].subAreas[sa1].sistemas.splice(toSistemaIdx, 0, sistema);
           break;
           
         case 'subSistema':
           const [a3, sa3, s3, fromSubSistemaIdx] = fromIndices;
           const [a4, sa4, s4, toSubSistemaIdx] = toIndices;
-          if (a3 !== a4 || sa3 !== sa4 || s3 !== s4) {
-            console.log('[REORDER] ⚠️ Solo puedes reordenar sub-sistemas dentro del mismo sistema');
-            return;
+          
+          if (sameContainer) {
+            // Mismo contenedor: reordenar dentro del mismo sistema
+            console.log(`[MOVE/REORDER] Reordenando sub-sistema dentro del sistema`);
+            const subSistema = hierarquia.areas[a3].subAreas[sa3].sistemas[s3].subSistemas.splice(fromSubSistemaIdx, 1)[0];
+            hierarquia.areas[a3].subAreas[sa3].sistemas[s3].subSistemas.splice(toSubSistemaIdx, 0, subSistema);
+          } else {
+            // Diferente contenedor: mover sub-sistema de un sistema a otro
+            console.log(`[MOVE/REORDER] Moviendo sub-sistema entre sistemas`);
+            const subSistema = hierarquia.areas[a3].subAreas[sa3].sistemas[s3].subSistemas.splice(fromSubSistemaIdx, 1)[0];
+            if (!hierarquia.areas[a4].subAreas[sa4].sistemas[s4].subSistemas) {
+              hierarquia.areas[a4].subAreas[sa4].sistemas[s4].subSistemas = [];
+            }
+            hierarquia.areas[a4].subAreas[sa4].sistemas[s4].subSistemas.splice(toSubSistemaIdx, 0, subSistema);
           }
-          const subSistema = hierarquia.areas[a3].subAreas[sa3].sistemas[s3].subSistemas.splice(fromSubSistemaIdx, 1)[0];
-          hierarquia.areas[a3].subAreas[sa3].sistemas[s3].subSistemas.splice(toSubSistemaIdx, 0, subSistema);
           break;
           
         case 'seccion':
           const [a5, sa5, s5, ss5, fromSeccionIdx] = fromIndices;
           const [a6, sa6, s6, ss6, toSeccionIdx] = toIndices;
-          if (a5 !== a6 || sa5 !== sa6 || s5 !== s6 || ss5 !== ss6) {
-            console.log('[REORDER] ⚠️ Solo puedes reordenar secciones dentro del mismo sub-sistema');
-            return;
+          
+          if (sameContainer) {
+            // Mismo contenedor: reordenar dentro del mismo sub-sistema
+            console.log(`[MOVE/REORDER] Reordenando sección dentro del sub-sistema`);
+            const seccion = hierarquia.areas[a5].subAreas[sa5].sistemas[s5].subSistemas[ss5].secciones.splice(fromSeccionIdx, 1)[0];
+            hierarquia.areas[a5].subAreas[sa5].sistemas[s5].subSistemas[ss5].secciones.splice(toSeccionIdx, 0, seccion);
+          } else {
+            // Diferente contenedor: mover sección de un sub-sistema a otro
+            console.log(`[MOVE/REORDER] Moviendo sección entre sub-sistemas`);
+            const seccion = hierarquia.areas[a5].subAreas[sa5].sistemas[s5].subSistemas[ss5].secciones.splice(fromSeccionIdx, 1)[0];
+            if (!hierarquia.areas[a6].subAreas[sa6].sistemas[s6].subSistemas[ss6].secciones) {
+              hierarquia.areas[a6].subAreas[sa6].sistemas[s6].subSistemas[ss6].secciones = [];
+            }
+            hierarquia.areas[a6].subAreas[sa6].sistemas[s6].subSistemas[ss6].secciones.splice(toSeccionIdx, 0, seccion);
           }
-          const seccion = hierarquia.areas[a5].subAreas[sa5].sistemas[s5].subSistemas[ss5].secciones.splice(fromSeccionIdx, 1)[0];
-          hierarquia.areas[a5].subAreas[sa5].sistemas[s5].subSistemas[ss5].secciones.splice(toSeccionIdx, 0, seccion);
           break;
           
         case 'subSeccion':
           const [a7, sa7, s7, ss7, sec7, fromSubSeccionIdx] = fromIndices;
           const [a8, sa8, s8, ss8, sec8, toSubSeccionIdx] = toIndices;
-          if (a7 !== a8 || sa7 !== sa8 || s7 !== s8 || ss7 !== ss8 || sec7 !== sec8) {
-            console.log('[REORDER] ⚠️ Solo puedes reordenar sub-secciones dentro de la misma sección');
-            return;
+          
+          if (sameContainer) {
+            // Mismo contenedor: reordenar dentro de la misma sección
+            console.log(`[MOVE/REORDER] Reordenando sub-sección dentro de la sección`);
+            const subSeccion = hierarquia.areas[a7].subAreas[sa7].sistemas[s7].subSistemas[ss7].secciones[sec7].subSecciones.splice(fromSubSeccionIdx, 1)[0];
+            hierarquia.areas[a7].subAreas[sa7].sistemas[s7].subSistemas[ss7].secciones[sec7].subSecciones.splice(toSubSeccionIdx, 0, subSeccion);
+          } else {
+            // Diferente contenedor: mover sub-sección de una sección a otra
+            console.log(`[MOVE/REORDER] Moviendo sub-sección entre secciones`);
+            const subSeccion = hierarquia.areas[a7].subAreas[sa7].sistemas[s7].subSistemas[ss7].secciones[sec7].subSecciones.splice(fromSubSeccionIdx, 1)[0];
+            if (!hierarquia.areas[a8].subAreas[sa8].sistemas[s8].subSistemas[ss8].secciones[sec8].subSecciones) {
+              hierarquia.areas[a8].subAreas[sa8].sistemas[s8].subSistemas[ss8].secciones[sec8].subSecciones = [];
+            }
+            hierarquia.areas[a8].subAreas[sa8].sistemas[s8].subSistemas[ss8].secciones[sec8].subSecciones.splice(toSubSeccionIdx, 0, subSeccion);
           }
-          const subSeccion = hierarquia.areas[a7].subAreas[sa7].sistemas[s7].subSistemas[ss7].secciones[sec7].subSecciones.splice(fromSubSeccionIdx, 1)[0];
-          hierarquia.areas[a7].subAreas[sa7].sistemas[s7].subSistemas[ss7].secciones[sec7].subSecciones.splice(toSubSeccionIdx, 0, subSeccion);
           break;
           
         default:
-          console.log('[REORDER] ⚠️ Tipo de elemento no soportado para reordenar');
+          console.log('[MOVE/REORDER] ⚠️ Tipo de elemento no soportado');
           return;
       }
       
       // Guardar y actualizar
       localStorage.setItem('jerarquiaAnidada', JSON.stringify(hierarquia));
-      console.log('[REORDER] ✅ Orden actualizado exitosamente');
+      console.log('[MOVE/REORDER] ✅ Operación exitosa - ' + (sameContainer ? 'Reordenado' : 'Movido entre contenedores'));
       this.renderJerarquiaTree();
       
     } catch (error) {
-      console.error('[REORDER] Error reordenando nodos:', error);
+      console.error('[MOVE/REORDER] Error:', error);
     }
   }
 
