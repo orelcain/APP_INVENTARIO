@@ -4226,26 +4226,68 @@
       padding: 16px;
       border-radius: 8px;
       border: 2px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       transition: all 0.2s ease;
     }
 
     .jerarquia-item:hover {
       border-color: var(--primary);
       box-shadow: var(--shadow-md);
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .jerarquia-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .jerarquia-item-info {
       flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .jerarquia-item-toggle {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      line-height: 1;
+    }
+
+    .jerarquia-item-toggle:hover {
+      background: rgba(52, 152, 219, 0.1);
+      transform: scale(1.1);
+    }
+
+    .jerarquia-item-toggle.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .jerarquia-item-toggle.collapsed:hover {
+      transform: rotate(-90deg) scale(1.1);
     }
 
     .jerarquia-item-name {
       font-size: 1rem;
       font-weight: 600;
       color: var(--text-primary);
-      margin-bottom: 4px;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .jerarquia-item-name:hover {
+      color: var(--primary);
+    }
+
+    .jerarquia-item-content {
+      flex: 1;
     }
 
     .jerarquia-item-desc {
@@ -4292,6 +4334,66 @@
     .jerarquia-item-btn-delete:hover {
       background: var(--danger-dark);
       transform: scale(1.05);
+    }
+
+    .jerarquia-item-btn-subnivel {
+      background: var(--success);
+      color: white;
+    }
+
+    .jerarquia-item-btn-subnivel:hover {
+      background: var(--success-dark);
+      transform: scale(1.05);
+    }
+
+    .jerarquia-subitems {
+      margin-top: 12px;
+      margin-left: 32px;
+      padding-left: 16px;
+      border-left: 3px solid var(--primary);
+      display: none;
+    }
+
+    .jerarquia-subitems.expanded {
+      display: block;
+    }
+
+    .jerarquia-subitem {
+      background: rgba(52, 152, 219, 0.05);
+      padding: 12px;
+      border-radius: 6px;
+      border: 2px solid rgba(52, 152, 219, 0.2);
+      margin-bottom: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .jerarquia-subitem:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .jerarquia-subitem-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .jerarquia-subitem-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .jerarquia-item.dragging {
+      opacity: 0.5;
+      cursor: move;
+    }
+
+    .jerarquia-item.drag-over {
+      border-color: var(--success);
+      border-style: dashed;
+      background: rgba(46, 204, 113, 0.1);
     }
 
     /* MAPA */
@@ -8139,10 +8241,40 @@
   padding: 4px 8px;
   border-radius: 3px;
   transition: background 0.15s;
+  cursor: pointer;
 }
 
 .sap-node-content:hover {
-  background: rgba(0,0,0,0.03);
+  background: rgba(0,0,0,0.2);
+}
+
+.sap-node-drag-handle {
+  cursor: grab;
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 4px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.sap-node-drag-handle:hover {
+  color: var(--primary);
+}
+
+.sap-node-drag-handle:active {
+  cursor: grabbing;
+}
+
+.sap-node.dragging {
+  opacity: 0.5;
+  cursor: move;
+}
+
+.sap-node.drag-over > .sap-node-content {
+  background: rgba(46, 204, 113, 0.15);
+  border: 2px dashed var(--success);
+  border-radius: 4px;
 }
 
 .sap-node-expand {
@@ -8179,6 +8311,14 @@
   flex: 1;
   color: var(--text-primary);
   font-weight: 500;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.sap-node-name:hover {
+  color: var(--primary);
 }
 
 .sap-node-part-number {
@@ -8252,6 +8392,17 @@
 
 .sap-btn-add:hover {
   background: var(--success);
+  color: white;
+}
+
+.sap-btn-subnivel {
+  border-color: var(--warning);
+  color: var(--warning);
+  font-size: 10px;
+}
+
+.sap-btn-subnivel:hover {
+  background: var(--warning);
   color: white;
 }
 
@@ -29780,12 +29931,19 @@ class InventarioCompleto {
       : '<div class="sap-empty">Sin sub-areas</div>';
 
     return `
-      <div class="sap-node">
+      <div class="sap-node" draggable="true" 
+           ondragstart="app.onDragStartSAP(event, 'area', ${aIdx})"
+           ondragover="app.onDragOverSAP(event)"
+           ondragleave="app.onDragLeaveSAP(event)"
+           ondrop="app.onDropSAP(event, 'area', ${aIdx})"
+           ondragend="app.onDragEndSAP(event)">
         <div class="sap-node-content">
+          <span class="sap-node-drag-handle">⠿</span>
           <span class="sap-node-expand" onclick="app.toggleTreeChildren('${childrenId}')">${expandIcon}</span>
           <span class="sap-node-id">${escapeHtml(fullId)}</span>
-          <span class="sap-node-name">${escapeHtml(area.nombre || 'Sin nombre')}</span>
+          <span class="sap-node-name" onclick="app.toggleTreeChildren('${childrenId}')">${escapeHtml(area.nombre || 'Sin nombre')}</span>
           <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-subnivel" onclick="app.agregarNodoJerarquia('subArea', ${aIdx})" title="Agregar sub-área">+ Sub-Área</button>
             <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('area', ${aIdx})" title="Editar area">Editar</button>
             <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('area', ${aIdx})" title="Eliminar area">Eliminar</button>
           </div>
@@ -29809,12 +29967,19 @@ class InventarioCompleto {
       : '<div class="sap-empty">Sin sistemas</div>';
 
     return `
-      <div class="sap-node">
+      <div class="sap-node" draggable="true"
+           ondragstart="app.onDragStartSAP(event, 'subArea', ${aIdx}, ${saIdx})"
+           ondragover="app.onDragOverSAP(event)"
+           ondragleave="app.onDragLeaveSAP(event)"
+           ondrop="app.onDropSAP(event, 'subArea', ${aIdx}, ${saIdx})"
+           ondragend="app.onDragEndSAP(event)">
         <div class="sap-node-content">
+          <span class="sap-node-drag-handle">⠿</span>
           <span class="sap-node-expand" onclick="app.toggleTreeChildren('${childrenId}')">${expandIcon}</span>
           <span class="sap-node-id">${escapeHtml(fullId)}</span>
-          <span class="sap-node-name">${escapeHtml(subArea.nombre || 'Sin nombre')}</span>
+          <span class="sap-node-name" onclick="app.toggleTreeChildren('${childrenId}')">${escapeHtml(subArea.nombre || 'Sin nombre')}</span>
           <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-subnivel" onclick="app.agregarNodoJerarquia('sistema', ${aIdx}, ${saIdx})" title="Agregar sistema">+ Sistema</button>
             <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('subArea', ${aIdx}, ${saIdx})" title="Editar sub-area">Editar</button>
             <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('subArea', ${aIdx}, ${saIdx})" title="Eliminar sub-area">Eliminar</button>
           </div>
@@ -29838,12 +30003,19 @@ class InventarioCompleto {
       : '<div class="sap-empty">Sin sub-sistemas</div>';
 
     return `
-      <div class="sap-node">
+      <div class="sap-node" draggable="true"
+           ondragstart="app.onDragStartSAP(event, 'sistema', ${aIdx}, ${saIdx}, ${sIdx})"
+           ondragover="app.onDragOverSAP(event)"
+           ondragleave="app.onDragLeaveSAP(event)"
+           ondrop="app.onDropSAP(event, 'sistema', ${aIdx}, ${saIdx}, ${sIdx})"
+           ondragend="app.onDragEndSAP(event)">
         <div class="sap-node-content">
+          <span class="sap-node-drag-handle">⠿</span>
           <span class="sap-node-expand" onclick="app.toggleTreeChildren('${childrenId}')">${expandIcon}</span>
           <span class="sap-node-id">${escapeHtml(fullId)}</span>
-          <span class="sap-node-name">${escapeHtml(sistema.nombre || 'Sin nombre')}</span>
+          <span class="sap-node-name" onclick="app.toggleTreeChildren('${childrenId}')">${escapeHtml(sistema.nombre || 'Sin nombre')}</span>
           <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-subnivel" onclick="app.agregarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx})" title="Agregar sub-sistema">+ Sub-Sistema</button>
             <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('sistema', ${aIdx}, ${saIdx}, ${sIdx})" title="Editar sistema">Editar</button>
             <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('sistema', ${aIdx}, ${saIdx}, ${sIdx})" title="Eliminar sistema">Eliminar</button>
           </div>
@@ -29867,12 +30039,19 @@ class InventarioCompleto {
       : '<div class="sap-empty">Sin secciones</div>';
 
     return `
-      <div class="sap-node">
+      <div class="sap-node" draggable="true"
+           ondragstart="app.onDragStartSAP(event, 'subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})"
+           ondragover="app.onDragOverSAP(event)"
+           ondragleave="app.onDragLeaveSAP(event)"
+           ondrop="app.onDropSAP(event, 'subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})"
+           ondragend="app.onDragEndSAP(event)">
         <div class="sap-node-content">
+          <span class="sap-node-drag-handle">⠿</span>
           <span class="sap-node-expand" onclick="app.toggleTreeChildren('${childrenId}')">${expandIcon}</span>
           <span class="sap-node-id">${escapeHtml(fullId)}</span>
-          <span class="sap-node-name">${escapeHtml(subSistema.nombre || 'Sin nombre')}</span>
+          <span class="sap-node-name" onclick="app.toggleTreeChildren('${childrenId}')">${escapeHtml(subSistema.nombre || 'Sin nombre')}</span>
           <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-subnivel" onclick="app.agregarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" title="Agregar sección">+ Sección</button>
             <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" title="Editar sub-sistema">Editar</button>
             <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})" title="Eliminar sub-sistema">Eliminar</button>
           </div>
@@ -29896,12 +30075,19 @@ class InventarioCompleto {
       : '<div class="sap-empty">Sin sub-secciones</div>';
 
     return `
-      <div class="sap-node">
+      <div class="sap-node" draggable="true"
+           ondragstart="app.onDragStartSAP(event, 'seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})"
+           ondragover="app.onDragOverSAP(event)"
+           ondragleave="app.onDragLeaveSAP(event)"
+           ondrop="app.onDropSAP(event, 'seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})"
+           ondragend="app.onDragEndSAP(event)">
         <div class="sap-node-content">
+          <span class="sap-node-drag-handle">⠿</span>
           <span class="sap-node-expand" onclick="app.toggleTreeChildren('${childrenId}')">${expandIcon}</span>
           <span class="sap-node-id">${escapeHtml(fullId)}</span>
-          <span class="sap-node-name">${escapeHtml(seccion.nombre || 'Sin nombre')}</span>
+          <span class="sap-node-name" onclick="app.toggleTreeChildren('${childrenId}')">${escapeHtml(seccion.nombre || 'Sin nombre')}</span>
           <div class="sap-node-actions">
+            <button class="sap-btn sap-btn-subnivel" onclick="app.agregarNodoJerarquia('subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" title="Agregar sub-sección">+ Sub-Sección</button>
             <button class="sap-btn sap-btn-edit" onclick="app.editarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" title="Editar seccion">Editar</button>
             <button class="sap-btn sap-btn-delete" onclick="app.eliminarNodoJerarquia('seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})" title="Eliminar seccion">Eliminar</button>
           </div>
@@ -29918,8 +30104,14 @@ class InventarioCompleto {
     const fullId = `${seccionFullId}-${subSeccionId}`;
 
     return `
-      <div class="sap-node sap-node-leaf">
+      <div class="sap-node sap-node-leaf" draggable="true"
+           ondragstart="app.onDragStartSAP(event, 'subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})"
+           ondragover="app.onDragOverSAP(event)"
+           ondragleave="app.onDragLeaveSAP(event)"
+           ondrop="app.onDropSAP(event, 'subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})"
+           ondragend="app.onDragEndSAP(event)">
         <div class="sap-node-content">
+          <span class="sap-node-drag-handle">⠿</span>
           <span class="sap-node-spacer"></span>
           <span class="sap-node-id">${escapeHtml(fullId)}</span>
           <span class="sap-node-name">${escapeHtml(subSeccion.nombre || 'Sin nombre')}</span>
@@ -30135,6 +30327,155 @@ class InventarioCompleto {
     return localStorage.getItem('tree-' + childrenId) || 'closed';
   }
   
+  // ===== DRAG & DROP PARA ÁRBOL SAP =====
+  
+  draggedSAPNode = null;
+  
+  onDragStartSAP(event, type, ...indices) {
+    this.draggedSAPNode = { type, indices };
+    event.target.closest('.sap-node').classList.add('dragging');
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/html', event.target.innerHTML);
+  }
+
+  onDragOverSAP(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    
+    const target = event.target.closest('.sap-node');
+    if (target && !target.classList.contains('dragging')) {
+      target.classList.add('drag-over');
+    }
+  }
+
+  onDragLeaveSAP(event) {
+    const target = event.target.closest('.sap-node');
+    if (target) {
+      target.classList.remove('drag-over');
+    }
+  }
+
+  onDropSAP(event, targetType, ...targetIndices) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const target = event.target.closest('.sap-node');
+    if (target) {
+      target.classList.remove('drag-over');
+    }
+
+    if (!this.draggedSAPNode) return;
+    
+    const { type: dragType, indices: dragIndices } = this.draggedSAPNode;
+    
+    // No permitir soltar sobre sí mismo
+    if (dragType === targetType && JSON.stringify(dragIndices) === JSON.stringify(targetIndices)) {
+      return;
+    }
+
+    // Solo permitir reordenar elementos del mismo tipo y nivel
+    if (dragType !== targetType) {
+      this.mostrarToast('⚠️ Solo puedes reordenar elementos del mismo nivel', 'warning');
+      return;
+    }
+
+    // Implementar lógica de reordenamiento según el tipo
+    this.reorderSAPNodes(dragType, dragIndices, targetIndices);
+  }
+
+  onDragEndSAP(event) {
+    event.target.closest('.sap-node').classList.remove('dragging');
+    this.draggedSAPNode = null;
+    
+    // Limpiar todas las clases drag-over
+    document.querySelectorAll('.drag-over').forEach(el => {
+      el.classList.remove('drag-over');
+    });
+  }
+
+  reorderSAPNodes(type, fromIndices, toIndices) {
+    const hierarquia = this.jerarquiaAnidada;
+    
+    try {
+      switch (type) {
+        case 'area':
+          const [fromAreaIdx] = fromIndices;
+          const [toAreaIdx] = toIndices;
+          const area = hierarquia.areas.splice(fromAreaIdx, 1)[0];
+          hierarquia.areas.splice(toAreaIdx, 0, area);
+          break;
+          
+        case 'subArea':
+          const [aIdx1, fromSubAreaIdx] = fromIndices;
+          const [aIdx2, toSubAreaIdx] = toIndices;
+          if (aIdx1 !== aIdx2) {
+            this.mostrarToast('⚠️ Solo puedes reordenar sub-áreas dentro de la misma área', 'warning');
+            return;
+          }
+          const subArea = hierarquia.areas[aIdx1].subAreas.splice(fromSubAreaIdx, 1)[0];
+          hierarquia.areas[aIdx1].subAreas.splice(toSubAreaIdx, 0, subArea);
+          break;
+          
+        case 'sistema':
+          const [a1, sa1, fromSistemaIdx] = fromIndices;
+          const [a2, sa2, toSistemaIdx] = toIndices;
+          if (a1 !== a2 || sa1 !== sa2) {
+            this.mostrarToast('⚠️ Solo puedes reordenar sistemas dentro de la misma sub-área', 'warning');
+            return;
+          }
+          const sistema = hierarquia.areas[a1].subAreas[sa1].sistemas.splice(fromSistemaIdx, 1)[0];
+          hierarquia.areas[a1].subAreas[sa1].sistemas.splice(toSistemaIdx, 0, sistema);
+          break;
+          
+        case 'subSistema':
+          const [a3, sa3, s3, fromSubSistemaIdx] = fromIndices;
+          const [a4, sa4, s4, toSubSistemaIdx] = toIndices;
+          if (a3 !== a4 || sa3 !== sa4 || s3 !== s4) {
+            this.mostrarToast('⚠️ Solo puedes reordenar sub-sistemas dentro del mismo sistema', 'warning');
+            return;
+          }
+          const subSistema = hierarquia.areas[a3].subAreas[sa3].sistemas[s3].subSistemas.splice(fromSubSistemaIdx, 1)[0];
+          hierarquia.areas[a3].subAreas[sa3].sistemas[s3].subSistemas.splice(toSubSistemaIdx, 0, subSistema);
+          break;
+          
+        case 'seccion':
+          const [a5, sa5, s5, ss5, fromSeccionIdx] = fromIndices;
+          const [a6, sa6, s6, ss6, toSeccionIdx] = toIndices;
+          if (a5 !== a6 || sa5 !== sa6 || s5 !== s6 || ss5 !== ss6) {
+            this.mostrarToast('⚠️ Solo puedes reordenar secciones dentro del mismo sub-sistema', 'warning');
+            return;
+          }
+          const seccion = hierarquia.areas[a5].subAreas[sa5].sistemas[s5].subSistemas[ss5].secciones.splice(fromSeccionIdx, 1)[0];
+          hierarquia.areas[a5].subAreas[sa5].sistemas[s5].subSistemas[ss5].secciones.splice(toSeccionIdx, 0, seccion);
+          break;
+          
+        case 'subSeccion':
+          const [a7, sa7, s7, ss7, sec7, fromSubSeccionIdx] = fromIndices;
+          const [a8, sa8, s8, ss8, sec8, toSubSeccionIdx] = toIndices;
+          if (a7 !== a8 || sa7 !== sa8 || s7 !== s8 || ss7 !== ss8 || sec7 !== sec8) {
+            this.mostrarToast('⚠️ Solo puedes reordenar sub-secciones dentro de la misma sección', 'warning');
+            return;
+          }
+          const subSeccion = hierarquia.areas[a7].subAreas[sa7].sistemas[s7].subSistemas[ss7].secciones[sec7].subSecciones.splice(fromSubSeccionIdx, 1)[0];
+          hierarquia.areas[a7].subAreas[sa7].sistemas[s7].subSistemas[ss7].secciones[sec7].subSecciones.splice(toSubSeccionIdx, 0, subSeccion);
+          break;
+          
+        default:
+          this.mostrarToast('⚠️ Tipo de elemento no soportado para reordenar', 'warning');
+          return;
+      }
+      
+      // Guardar y actualizar
+      localStorage.setItem('jerarquiaAnidada', JSON.stringify(hierarquia));
+      this.mostrarToast('✅ Orden actualizado exitosamente', 'success');
+      this.renderJerarquiaTree();
+      
+    } catch (error) {
+      console.error('Error reordenando nodos:', error);
+      this.mostrarToast('❌ Error al reordenar', 'error');
+    }
+  }
+
   async agregarNodoJerarquia(tipo, ...indices) {
     const labels = {
       area: 'Nueva area (N2)',
@@ -32477,8 +32818,7 @@ class InventarioCompleto {
       return;
     }
 
-    let html = '';
-    items.forEach(item => {
+    const renderItem = (item, isSubitem = false) => {
       const timestamp = new Date(item.timestamp).toLocaleString('es-ES', {
         day: '2-digit',
         month: '2-digit', 
@@ -32487,23 +32827,63 @@ class InventarioCompleto {
         minute: '2-digit'
       });
 
-      html += `
-        <div class="jerarquia-item">
-          <div class="jerarquia-item-info">
-            <div class="jerarquia-item-name">${this.escapeHtml(item.name)}</div>
-            ${item.description ? `<div class="jerarquia-item-desc">${this.escapeHtml(item.description)}</div>` : ''}
-            <div class="jerarquia-item-meta">Creado: ${timestamp}</div>
+      const hasSubitems = item.subitems && item.subitems.length > 0;
+      const itemClass = isSubitem ? 'jerarquia-subitem' : 'jerarquia-item';
+      const headerClass = isSubitem ? 'jerarquia-subitem-header' : 'jerarquia-item-header';
+      const nameClass = isSubitem ? 'jerarquia-subitem-name' : 'jerarquia-item-name';
+
+      let html = `
+        <div class="${itemClass}" draggable="true" data-item-id="${item.id}"
+             ondragstart="app.onDragStart(event, '${item.id}')"
+             ondragover="app.onDragOver(event)"
+             ondragleave="app.onDragLeave(event)"
+             ondrop="app.onDrop(event, '${item.id}')"
+             ondragend="app.onDragEnd(event)">
+          <div class="${headerClass}">
+            <div class="jerarquia-item-info">
+              ${hasSubitems ? `
+                <button class="jerarquia-item-toggle" onclick="app.toggleSubitems('${item.id}')">
+                  ▼
+                </button>
+              ` : '<span style="width: 28px;"></span>'}
+              <div class="jerarquia-item-content">
+                <div class="${nameClass}" onclick="app.toggleSubitems('${item.id}')">${this.escapeHtml(item.name)}</div>
+                ${item.description ? `<div class="jerarquia-item-desc">${this.escapeHtml(item.description)}</div>` : ''}
+                ${!isSubitem ? `<div class="jerarquia-item-meta">Creado: ${timestamp}</div>` : ''}
+              </div>
+            </div>
+            <div class="jerarquia-item-actions">
+              ${!isSubitem ? `
+                <button class="jerarquia-item-btn jerarquia-item-btn-subnivel" onclick="app.addSubnivel('${item.id}')">
+                  ➕ Subnivel
+                </button>
+              ` : ''}
+              <button class="jerarquia-item-btn jerarquia-item-btn-edit" onclick="app.editJerarquiaItem('${item.id}', ${isSubitem})">
+                ✏️ Editar
+              </button>
+              <button class="jerarquia-item-btn jerarquia-item-btn-delete" onclick="app.deleteJerarquiaItem('${item.id}', ${isSubitem})">
+                🗑️ Eliminar
+              </button>
+            </div>
           </div>
-          <div class="jerarquia-item-actions">
-            <button class="jerarquia-item-btn jerarquia-item-btn-edit" onclick="app.editJerarquiaItem('${item.id}')">
-               Editar
-            </button>
-            <button class="jerarquia-item-btn jerarquia-item-btn-delete" onclick="app.deleteJerarquiaItem('${item.id}')">
-               Eliminar
-            </button>
-          </div>
-        </div>
       `;
+
+      // Renderizar subitems si existen
+      if (hasSubitems) {
+        html += `<div class="jerarquia-subitems expanded" id="subitems-${item.id}">`;
+        item.subitems.forEach(subitem => {
+          html += renderItem(subitem, true);
+        });
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+      return html;
+    };
+
+    let html = '';
+    items.forEach(item => {
+      html += renderItem(item, false);
     });
 
     listContainer.innerHTML = html;
@@ -32594,49 +32974,107 @@ class InventarioCompleto {
   }
 
   /**
-   * Edita un item existente
+   * Toggle para mostrar/ocultar subitems
    */
-  editJerarquiaItem(itemId) {
-    const level = this.jerarquiaCurrentLevel;
-    const levelKey = `nivel${level}`;
-    const item = this.jerarquiaData[levelKey].find(i => i.id === itemId);
-
-    if (!item) {
-      this.mostrarToast(' Item no encontrado', 'error');
-      return;
+  toggleSubitems(itemId) {
+    const subitemsContainer = document.getElementById(`subitems-${itemId}`);
+    const toggleButton = event.target;
+    
+    if (subitemsContainer) {
+      subitemsContainer.classList.toggle('expanded');
+      if (toggleButton && toggleButton.classList.contains('jerarquia-item-toggle')) {
+        toggleButton.classList.toggle('collapsed');
+      }
     }
-
-    this.jerarquiaEditingId = itemId;
-
-    // Mostrar formulario con datos
-    const form = document.getElementById('jerarquiaForm');
-    form.style.display = 'block';
-    document.getElementById('jerarquiaItemName').value = item.name;
-    document.getElementById('jerarquiaItemDesc').value = item.description || '';
-
-    // Scroll al formulario
-    form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   /**
-   * Elimina un item con confirmacin
+   * Agrega un subnivel a un item existente
    */
-  deleteJerarquiaItem(itemId) {
+  addSubnivel(parentId) {
     const level = this.jerarquiaCurrentLevel;
     const levelKey = `nivel${level}`;
-    const item = this.jerarquiaData[levelKey].find(i => i.id === itemId);
+    const parentItem = this.jerarquiaData[levelKey].find(i => i.id === parentId);
+
+    if (!parentItem) {
+      this.mostrarToast('⚠️ Item padre no encontrado', 'error');
+      return;
+    }
+
+    // Pedir nombre del subnivel
+    const name = prompt('Nombre del subnivel:');
+    if (!name || !name.trim()) {
+      return;
+    }
+
+    const description = prompt('Descripción (opcional):') || '';
+
+    // Inicializar array de subitems si no existe
+    if (!parentItem.subitems) {
+      parentItem.subitems = [];
+    }
+
+    // Crear subnivel
+    const newSubitem = {
+      id: `${parentId}-${Date.now()}`,
+      name: name.trim(),
+      description: description.trim(),
+      timestamp: Date.now()
+    };
+
+    parentItem.subitems.push(newSubitem);
+
+    // Guardar en localStorage
+    localStorage.setItem('jerarquiaLevels', JSON.stringify(this.jerarquiaData));
+
+    this.mostrarToast('✅ Subnivel creado exitosamente', 'success');
+
+    // Actualizar vista
+    this.renderJerarquiaList();
+  }
+
+  /**
+   * Edita un item o subitem existente
+   */
+  editJerarquiaItem(itemId, isSubitem = false) {
+    const level = this.jerarquiaCurrentLevel;
+    const levelKey = `nivel${level}`;
+    
+    let item = null;
+    
+    if (isSubitem) {
+      // Buscar en subitems
+      for (const parentItem of this.jerarquiaData[levelKey]) {
+        if (parentItem.subitems) {
+          item = parentItem.subitems.find(s => s.id === itemId);
+          if (item) break;
+        }
+      }
+    } else {
+      // Buscar en items principales
+      item = this.jerarquiaData[levelKey].find(i => i.id === itemId);
+    }
 
     if (!item) {
-      this.mostrarToast(' Item no encontrado', 'error');
+      this.mostrarToast('⚠️ Item no encontrado', 'error');
       return;
     }
 
-    if (!confirm(`Eliminar "${item.name}"?\n\nEsta accin no se puede deshacer.`)) {
+    // Pedir nuevo nombre
+    const newName = prompt('Editar nombre:', item.name);
+    if (newName === null) return; // Usuario canceló
+    
+    if (!newName.trim()) {
+      this.mostrarToast('⚠️ El nombre no puede estar vacío', 'warning');
       return;
     }
 
-    // Eliminar item
-    this.jerarquiaData[levelKey] = this.jerarquiaData[levelKey].filter(i => i.id !== itemId);
+    const newDesc = prompt('Editar descripción:', item.description || '');
+    if (newDesc === null) return; // Usuario canceló
+
+    // Actualizar item
+    item.name = newName.trim();
+    item.description = newDesc.trim();
 
     // Guardar en localStorage
     localStorage.setItem('jerarquiaLevels', JSON.stringify(this.jerarquiaData));
@@ -32644,21 +33082,150 @@ class InventarioCompleto {
     //  SINCRONIZAR: Actualizar listas de autocompletado
     this.sincronizarJerarquiaConAutocompletado();
 
-    this.mostrarToast(' Item eliminado exitosamente', 'success');
+    this.mostrarToast('✅ Item actualizado exitosamente', 'success');
+
+    // Actualizar vista
+    this.renderJerarquiaList();
+  }
+
+  /**
+   * Elimina un item o subitem con confirmación
+   */
+  deleteJerarquiaItem(itemId, isSubitem = false) {
+    const level = this.jerarquiaCurrentLevel;
+    const levelKey = `nivel${level}`;
+    
+    let item = null;
+    let parentItem = null;
+    
+    if (isSubitem) {
+      // Buscar en subitems
+      for (const parent of this.jerarquiaData[levelKey]) {
+        if (parent.subitems) {
+          item = parent.subitems.find(s => s.id === itemId);
+          if (item) {
+            parentItem = parent;
+            break;
+          }
+        }
+      }
+    } else {
+      // Buscar en items principales
+      item = this.jerarquiaData[levelKey].find(i => i.id === itemId);
+    }
+
+    if (!item) {
+      this.mostrarToast('⚠️ Item no encontrado', 'error');
+      return;
+    }
+
+    if (!confirm(`¿Eliminar "${item.name}"?\n\nEsta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    // Eliminar item
+    if (isSubitem && parentItem) {
+      parentItem.subitems = parentItem.subitems.filter(s => s.id !== itemId);
+    } else {
+      this.jerarquiaData[levelKey] = this.jerarquiaData[levelKey].filter(i => i.id !== itemId);
+    }
+
+    // Guardar en localStorage
+    localStorage.setItem('jerarquiaLevels', JSON.stringify(this.jerarquiaData));
+
+    //  SINCRONIZAR: Actualizar listas de autocompletado
+    this.sincronizarJerarquiaConAutocompletado();
+
+    this.mostrarToast('✅ Item eliminado exitosamente', 'success');
 
     // Actualizar vista
     this.renderJerarquiaList();
 
-    // Actualizar rbol SAP si est visible
+    // Actualizar árbol SAP si está visible
     if (document.getElementById('jerarquia').style.display !== 'none') {
       this.renderSAPTree();
     }
 
-    // Actualizar rbol en Configuracin si est visible
+    // Actualizar árbol en Configuración si está visible
     const configTree = document.getElementById('jerarquiaTreeContainer');
     if (configTree && configTree.offsetParent !== null) {
       this.renderJerarquiaTree();
     }
+  }
+
+  // ===== DRAG & DROP FUNCTIONS =====
+  
+  draggedItemId = null;
+
+  onDragStart(event, itemId) {
+    this.draggedItemId = itemId;
+    event.target.classList.add('dragging');
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/html', event.target.innerHTML);
+  }
+
+  onDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    
+    const target = event.target.closest('.jerarquia-item, .jerarquia-subitem');
+    if (target && !target.classList.contains('dragging')) {
+      target.classList.add('drag-over');
+    }
+  }
+
+  onDragLeave(event) {
+    const target = event.target.closest('.jerarquia-item, .jerarquia-subitem');
+    if (target) {
+      target.classList.remove('drag-over');
+    }
+  }
+
+  onDrop(event, targetItemId) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const target = event.target.closest('.jerarquia-item, .jerarquia-subitem');
+    if (target) {
+      target.classList.remove('drag-over');
+    }
+
+    if (this.draggedItemId === targetItemId) {
+      return; // No hacer nada si se suelta sobre sí mismo
+    }
+
+    const level = this.jerarquiaCurrentLevel;
+    const levelKey = `nivel${level}`;
+    const items = this.jerarquiaData[levelKey];
+
+    // Encontrar índices
+    const draggedIndex = items.findIndex(i => i.id === this.draggedItemId);
+    const targetIndex = items.findIndex(i => i.id === targetItemId);
+
+    if (draggedIndex !== -1 && targetIndex !== -1) {
+      // Reordenar array
+      const draggedItem = items[draggedIndex];
+      items.splice(draggedIndex, 1);
+      items.splice(targetIndex, 0, draggedItem);
+
+      // Guardar en localStorage
+      localStorage.setItem('jerarquiaLevels', JSON.stringify(this.jerarquiaData));
+
+      this.mostrarToast('✅ Orden actualizado', 'success');
+
+      // Actualizar vista
+      this.renderJerarquiaList();
+    }
+  }
+
+  onDragEnd(event) {
+    event.target.classList.remove('dragging');
+    this.draggedItemId = null;
+    
+    // Limpiar todas las clases drag-over
+    document.querySelectorAll('.drag-over').forEach(el => {
+      el.classList.remove('drag-over');
+    });
   }
 
   /**
