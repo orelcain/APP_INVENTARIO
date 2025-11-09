@@ -8277,6 +8277,49 @@
   border-radius: 4px;
 }
 
+/* Línea de inserción visual */
+.sap-drop-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--success));
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.6);
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.sap-drop-indicator.active {
+  opacity: 1;
+}
+
+.sap-drop-indicator::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -3px;
+  width: 9px;
+  height: 9px;
+  background: var(--primary);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(52, 152, 219, 0.8);
+}
+
+/* Cursores personalizados según validez */
+.sap-node.drag-valid {
+  cursor: copy !important;
+}
+
+.sap-node.drag-invalid {
+  cursor: no-drop !important;
+}
+
+.sap-node.dragging * {
+  cursor: grabbing !important;
+}
+
 .sap-node-expand {
   cursor: pointer;
   width: 16px;
@@ -29931,7 +29974,7 @@ class InventarioCompleto {
       : '<div class="sap-empty">Sin sub-areas</div>';
 
     return `
-      <div class="sap-node" draggable="true" 
+      <div class="sap-node" draggable="true" data-node-type="area"
            ondragstart="app.onDragStartSAP(event, 'area', ${aIdx})"
            ondragover="app.onDragOverSAP(event)"
            ondragleave="app.onDragLeaveSAP(event)"
@@ -29967,7 +30010,7 @@ class InventarioCompleto {
       : '<div class="sap-empty">Sin sistemas</div>';
 
     return `
-      <div class="sap-node" draggable="true"
+      <div class="sap-node" draggable="true" data-node-type="subArea"
            ondragstart="app.onDragStartSAP(event, 'subArea', ${aIdx}, ${saIdx})"
            ondragover="app.onDragOverSAP(event)"
            ondragleave="app.onDragLeaveSAP(event)"
@@ -30003,7 +30046,7 @@ class InventarioCompleto {
       : '<div class="sap-empty">Sin sub-sistemas</div>';
 
     return `
-      <div class="sap-node" draggable="true"
+      <div class="sap-node" draggable="true" data-node-type="sistema"
            ondragstart="app.onDragStartSAP(event, 'sistema', ${aIdx}, ${saIdx}, ${sIdx})"
            ondragover="app.onDragOverSAP(event)"
            ondragleave="app.onDragLeaveSAP(event)"
@@ -30039,7 +30082,7 @@ class InventarioCompleto {
       : '<div class="sap-empty">Sin secciones</div>';
 
     return `
-      <div class="sap-node" draggable="true"
+      <div class="sap-node" draggable="true" data-node-type="subSistema"
            ondragstart="app.onDragStartSAP(event, 'subSistema', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx})"
            ondragover="app.onDragOverSAP(event)"
            ondragleave="app.onDragLeaveSAP(event)"
@@ -30075,7 +30118,7 @@ class InventarioCompleto {
       : '<div class="sap-empty">Sin sub-secciones</div>';
 
     return `
-      <div class="sap-node" draggable="true"
+      <div class="sap-node" draggable="true" data-node-type="seccion"
            ondragstart="app.onDragStartSAP(event, 'seccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx})"
            ondragover="app.onDragOverSAP(event)"
            ondragleave="app.onDragLeaveSAP(event)"
@@ -30104,7 +30147,7 @@ class InventarioCompleto {
     const fullId = `${seccionFullId}-${subSeccionId}`;
 
     return `
-      <div class="sap-node sap-node-leaf" draggable="true"
+      <div class="sap-node sap-node-leaf" draggable="true" data-node-type="subSeccion"
            ondragstart="app.onDragStartSAP(event, 'subSeccion', ${aIdx}, ${saIdx}, ${sIdx}, ${ssIdx}, ${secIdx}, ${sSecIdx})"
            ondragover="app.onDragOverSAP(event)"
            ondragleave="app.onDragLeaveSAP(event)"
@@ -30333,9 +30376,18 @@ class InventarioCompleto {
   
   onDragStartSAP(event, type, ...indices) {
     this.draggedSAPNode = { type, indices };
-    event.target.closest('.sap-node').classList.add('dragging');
+    const draggedElement = event.target.closest('.sap-node');
+    draggedElement.classList.add('dragging');
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/html', event.target.innerHTML);
+    
+    // Crear indicador de drop si no existe
+    if (!document.getElementById('sap-drop-indicator')) {
+      const indicator = document.createElement('div');
+      indicator.id = 'sap-drop-indicator';
+      indicator.className = 'sap-drop-indicator';
+      document.body.appendChild(indicator);
+    }
   }
 
   onDragOverSAP(event) {
@@ -30343,15 +30395,79 @@ class InventarioCompleto {
     event.dataTransfer.dropEffect = 'move';
     
     const target = event.target.closest('.sap-node');
-    if (target && !target.classList.contains('dragging')) {
+    if (!target || target.classList.contains('dragging')) {
+      this.hideDropIndicator();
+      return;
+    }
+    
+    // Validar si es un drop válido
+    const isValid = this.isValidDropTarget(target);
+    
+    // Agregar clase según validez
+    if (isValid) {
+      target.classList.add('drag-valid');
+      target.classList.remove('drag-invalid');
       target.classList.add('drag-over');
+      
+      // Mostrar línea de inserción
+      this.showDropIndicator(target, event);
+    } else {
+      target.classList.add('drag-invalid');
+      target.classList.remove('drag-valid', 'drag-over');
+      this.hideDropIndicator();
+    }
+  }
+  
+  isValidDropTarget(targetElement) {
+    if (!this.draggedSAPNode) return false;
+    
+    const dragType = this.draggedSAPNode.type;
+    const targetType = targetElement.dataset.nodeType || this.getNodeTypeFromElement(targetElement);
+    
+    // Solo permitir drop en el mismo tipo de nodo
+    return dragType === targetType;
+  }
+  
+  getNodeTypeFromElement(element) {
+    // Extraer tipo del nodo desde los atributos ondragstart
+    const dragStartAttr = element.getAttribute('ondragstart');
+    if (!dragStartAttr) return null;
+    
+    const match = dragStartAttr.match(/onDragStartSAP\(event,\s*'(\w+)'/);
+    return match ? match[1] : null;
+  }
+  
+  showDropIndicator(targetElement, event) {
+    const indicator = document.getElementById('sap-drop-indicator');
+    if (!indicator) return;
+    
+    const rect = targetElement.getBoundingClientRect();
+    const mouseY = event.clientY;
+    const midpoint = rect.top + rect.height / 2;
+    
+    // Determinar si insertar arriba o abajo
+    const insertBefore = mouseY < midpoint;
+    
+    indicator.style.top = insertBefore ? `${rect.top + window.scrollY}px` : `${rect.bottom + window.scrollY}px`;
+    indicator.style.left = `${rect.left}px`;
+    indicator.style.width = `${rect.width}px`;
+    indicator.classList.add('active');
+    
+    // Guardar posición para el drop
+    this.dropPosition = insertBefore ? 'before' : 'after';
+  }
+  
+  hideDropIndicator() {
+    const indicator = document.getElementById('sap-drop-indicator');
+    if (indicator) {
+      indicator.classList.remove('active');
     }
   }
 
   onDragLeaveSAP(event) {
     const target = event.target.closest('.sap-node');
     if (target) {
-      target.classList.remove('drag-over');
+      target.classList.remove('drag-over', 'drag-valid', 'drag-invalid');
     }
   }
 
@@ -30359,48 +30475,100 @@ class InventarioCompleto {
     event.preventDefault();
     event.stopPropagation();
     
+    console.log('[DROP] Evento drop disparado');
+    console.log('[DROP] Target type:', targetType);
+    console.log('[DROP] Target indices:', targetIndices);
+    console.log('[DROP] Drop position:', this.dropPosition);
+    
     const target = event.target.closest('.sap-node');
     if (target) {
-      target.classList.remove('drag-over');
+      target.classList.remove('drag-over', 'drag-valid', 'drag-invalid');
     }
+    
+    this.hideDropIndicator();
 
-    if (!this.draggedSAPNode) return;
+    if (!this.draggedSAPNode) {
+      console.log('[DROP] No hay nodo siendo arrastrado');
+      return;
+    }
     
     const { type: dragType, indices: dragIndices } = this.draggedSAPNode;
     
+    console.log('[DROP] Drag type:', dragType);
+    console.log('[DROP] Drag indices:', dragIndices);
+    
     // No permitir soltar sobre sí mismo
     if (dragType === targetType && JSON.stringify(dragIndices) === JSON.stringify(targetIndices)) {
+      console.log('[DROP] ⚠️ No puedes mover un elemento sobre sí mismo');
       return;
     }
 
     // Solo permitir reordenar elementos del mismo tipo y nivel
     if (dragType !== targetType) {
-      this.mostrarToast('⚠️ Solo puedes reordenar elementos del mismo nivel', 'warning');
+      console.log('[DROP] ⚠️ Solo puedes reordenar elementos del mismo nivel');
       return;
     }
 
+    // Calcular el índice ajustado según la posición (before/after)
+    let adjustedTargetIndices = [...targetIndices];
+    const lastIdx = adjustedTargetIndices.length - 1;
+    
+    // Si insertamos "after", incrementamos el último índice
+    if (this.dropPosition === 'after') {
+      adjustedTargetIndices[lastIdx]++;
+      console.log('[DROP] Ajustando para "after", nuevo índice:', adjustedTargetIndices[lastIdx]);
+    }
+    
+    // Si el elemento origen está antes del destino en el mismo contenedor,
+    // necesitamos ajustar el índice porque splice() primero elimina
+    const sameContainer = JSON.stringify(dragIndices.slice(0, -1)) === JSON.stringify(targetIndices.slice(0, -1));
+    if (sameContainer && dragIndices[dragIndices.length - 1] < adjustedTargetIndices[lastIdx]) {
+      adjustedTargetIndices[lastIdx]--;
+      console.log('[DROP] Ajustando por splice, nuevo índice:', adjustedTargetIndices[lastIdx]);
+    }
+
+    console.log('[DROP] Índices ajustados finales:', adjustedTargetIndices);
+
     // Implementar lógica de reordenamiento según el tipo
-    this.reorderSAPNodes(dragType, dragIndices, targetIndices);
+    this.reorderSAPNodes(dragType, dragIndices, adjustedTargetIndices);
   }
 
   onDragEndSAP(event) {
-    event.target.closest('.sap-node').classList.remove('dragging');
+    const draggedElement = event.target.closest('.sap-node');
+    if (draggedElement) {
+      draggedElement.classList.remove('dragging');
+    }
     this.draggedSAPNode = null;
+    this.dropPosition = null;
     
-    // Limpiar todas las clases drag-over
-    document.querySelectorAll('.drag-over').forEach(el => {
-      el.classList.remove('drag-over');
+    // Limpiar todas las clases drag
+    document.querySelectorAll('.drag-over, .drag-valid, .drag-invalid').forEach(el => {
+      el.classList.remove('drag-over', 'drag-valid', 'drag-invalid');
     });
+    
+    // Ocultar indicador
+    this.hideDropIndicator();
   }
 
   reorderSAPNodes(type, fromIndices, toIndices) {
     const hierarquia = this.jerarquiaAnidada;
+    
+    console.log(`[REORDER] Tipo: ${type}`);
+    console.log('[REORDER] From:', fromIndices);
+    console.log('[REORDER] To:', toIndices);
     
     try {
       switch (type) {
         case 'area':
           const [fromAreaIdx] = fromIndices;
           const [toAreaIdx] = toIndices;
+          
+          if (fromAreaIdx === toAreaIdx) {
+            console.log('[REORDER] Mismo índice, cancelando');
+            return;
+          }
+          
+          console.log(`[REORDER] Moviendo área de índice ${fromAreaIdx} a ${toAreaIdx}`);
           const area = hierarquia.areas.splice(fromAreaIdx, 1)[0];
           hierarquia.areas.splice(toAreaIdx, 0, area);
           break;
@@ -30409,7 +30577,7 @@ class InventarioCompleto {
           const [aIdx1, fromSubAreaIdx] = fromIndices;
           const [aIdx2, toSubAreaIdx] = toIndices;
           if (aIdx1 !== aIdx2) {
-            this.mostrarToast('⚠️ Solo puedes reordenar sub-áreas dentro de la misma área', 'warning');
+            console.log('[REORDER] ⚠️ Solo puedes reordenar sub-áreas dentro de la misma área');
             return;
           }
           const subArea = hierarquia.areas[aIdx1].subAreas.splice(fromSubAreaIdx, 1)[0];
@@ -30420,7 +30588,7 @@ class InventarioCompleto {
           const [a1, sa1, fromSistemaIdx] = fromIndices;
           const [a2, sa2, toSistemaIdx] = toIndices;
           if (a1 !== a2 || sa1 !== sa2) {
-            this.mostrarToast('⚠️ Solo puedes reordenar sistemas dentro de la misma sub-área', 'warning');
+            console.log('[REORDER] ⚠️ Solo puedes reordenar sistemas dentro de la misma sub-área');
             return;
           }
           const sistema = hierarquia.areas[a1].subAreas[sa1].sistemas.splice(fromSistemaIdx, 1)[0];
@@ -30431,7 +30599,7 @@ class InventarioCompleto {
           const [a3, sa3, s3, fromSubSistemaIdx] = fromIndices;
           const [a4, sa4, s4, toSubSistemaIdx] = toIndices;
           if (a3 !== a4 || sa3 !== sa4 || s3 !== s4) {
-            this.mostrarToast('⚠️ Solo puedes reordenar sub-sistemas dentro del mismo sistema', 'warning');
+            console.log('[REORDER] ⚠️ Solo puedes reordenar sub-sistemas dentro del mismo sistema');
             return;
           }
           const subSistema = hierarquia.areas[a3].subAreas[sa3].sistemas[s3].subSistemas.splice(fromSubSistemaIdx, 1)[0];
@@ -30442,7 +30610,7 @@ class InventarioCompleto {
           const [a5, sa5, s5, ss5, fromSeccionIdx] = fromIndices;
           const [a6, sa6, s6, ss6, toSeccionIdx] = toIndices;
           if (a5 !== a6 || sa5 !== sa6 || s5 !== s6 || ss5 !== ss6) {
-            this.mostrarToast('⚠️ Solo puedes reordenar secciones dentro del mismo sub-sistema', 'warning');
+            console.log('[REORDER] ⚠️ Solo puedes reordenar secciones dentro del mismo sub-sistema');
             return;
           }
           const seccion = hierarquia.areas[a5].subAreas[sa5].sistemas[s5].subSistemas[ss5].secciones.splice(fromSeccionIdx, 1)[0];
@@ -30453,7 +30621,7 @@ class InventarioCompleto {
           const [a7, sa7, s7, ss7, sec7, fromSubSeccionIdx] = fromIndices;
           const [a8, sa8, s8, ss8, sec8, toSubSeccionIdx] = toIndices;
           if (a7 !== a8 || sa7 !== sa8 || s7 !== s8 || ss7 !== ss8 || sec7 !== sec8) {
-            this.mostrarToast('⚠️ Solo puedes reordenar sub-secciones dentro de la misma sección', 'warning');
+            console.log('[REORDER] ⚠️ Solo puedes reordenar sub-secciones dentro de la misma sección');
             return;
           }
           const subSeccion = hierarquia.areas[a7].subAreas[sa7].sistemas[s7].subSistemas[ss7].secciones[sec7].subSecciones.splice(fromSubSeccionIdx, 1)[0];
@@ -30461,18 +30629,17 @@ class InventarioCompleto {
           break;
           
         default:
-          this.mostrarToast('⚠️ Tipo de elemento no soportado para reordenar', 'warning');
+          console.log('[REORDER] ⚠️ Tipo de elemento no soportado para reordenar');
           return;
       }
       
       // Guardar y actualizar
       localStorage.setItem('jerarquiaAnidada', JSON.stringify(hierarquia));
-      this.mostrarToast('✅ Orden actualizado exitosamente', 'success');
+      console.log('[REORDER] ✅ Orden actualizado exitosamente');
       this.renderJerarquiaTree();
       
     } catch (error) {
-      console.error('Error reordenando nodos:', error);
-      this.mostrarToast('❌ Error al reordenar', 'error');
+      console.error('[REORDER] Error reordenando nodos:', error);
     }
   }
 
