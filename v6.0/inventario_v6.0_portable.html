@@ -2305,6 +2305,17 @@
         transform: translateX(0);
       }
     }
+    
+    @keyframes slideOutRight {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+    }
 
     /* ========================================
        ESTILO CORPORATIVO BASE - MINIMALISTA
@@ -30822,11 +30833,42 @@ class InventarioCompleto {
       // Guardar y actualizar
       localStorage.setItem('jerarquiaAnidada', JSON.stringify(hierarquia));
       console.log('[MOVE/REORDER] ✅ Operación exitosa - ' + (sameContainer ? 'Reordenado' : 'Movido entre contenedores'));
+      
+      // Mostrar notificación visual de éxito
+      this.showMoveNotification(sameContainer ? 'Elemento reordenado ✓' : 'Elemento movido entre contenedores ✓');
+      
       this.renderJerarquiaTree();
       
     } catch (error) {
       console.error('[MOVE/REORDER] Error:', error);
+      this.showMoveNotification('Error al mover elemento ✗', true);
     }
+  }
+  
+  showMoveNotification(message, isError = false) {
+    // Crear notificación temporal
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${isError ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' : 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'};
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      z-index: 10000;
+      font-weight: 600;
+      animation: slideInRight 0.3s ease-out;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Remover después de 2 segundos
+    setTimeout(() => {
+      notification.style.animation = 'slideOutRight 0.3s ease-out';
+      setTimeout(() => notification.remove(), 300);
+    }, 2000);
   }
 
   // ========== SISTEMA UNDO/REDO ==========
