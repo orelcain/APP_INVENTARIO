@@ -8320,6 +8320,37 @@
   cursor: grabbing !important;
 }
 
+/* Highlight verde para contenedores válidos durante drag */
+.sap-node.valid-drop-target {
+  background: rgba(46, 204, 113, 0.12) !important;
+  border: 2px solid rgba(46, 204, 113, 0.5) !important;
+  border-radius: 6px;
+  box-shadow: 0 0 12px rgba(46, 204, 113, 0.3);
+  transition: all 0.2s ease;
+}
+
+.sap-node.valid-drop-target > .sap-node-content {
+  background: rgba(46, 204, 113, 0.08);
+}
+
+/* Indicador visual de "drop zone" */
+.sap-node.valid-drop-target::after {
+  content: '✓ Soltar aquí';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--success);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 10;
+}
+
 .sap-node-expand {
   cursor: pointer;
   width: 16px;
@@ -8436,6 +8467,79 @@
 .sap-btn-add:hover {
   background: var(--success);
   color: white;
+}
+
+/* BOTONES UNDO/REDO - Flotantes en cada pestaña */
+.undo-redo-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  z-index: 999;
+  opacity: 0.95;
+}
+
+.undo-redo-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.undo-redo-btn:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.undo-redo-btn:active:not(:disabled) {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.undo-redo-btn:disabled {
+  background: linear-gradient(135deg, #ccc 0%, #999 100%);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.undo-redo-btn::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  margin-bottom: 8px;
+}
+
+.undo-redo-btn:hover::before {
+  opacity: 1;
+}
+
+.undo-btn {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.redo-btn {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
 
 .sap-btn-subnivel {
@@ -21773,6 +21877,13 @@ class InventarioCompleto {
     this.listSortField = 'codSAP';
     this.listSortOrder = 'asc';
     this.columnWidths = ['50px', '0.9fr', '1.5fr', '160px', '220px'];
+    
+    // Sistema de Undo/Redo
+    this.historyStack = [];  // Pila de estados anteriores
+    this.redoStack = [];     // Pila de estados rehechos
+    this.maxHistorySize = 50; // Máximo de estados a guardar
+    this.draggedSAPNode = null;
+    this.dropPosition = null;
 
     //  Estado del asistente por pasos (Layout 8)
     this.wizardState = {
@@ -29897,6 +30008,9 @@ class InventarioCompleto {
       const html = this.buildTreeHTML();
       container.innerHTML = html;
       console.log(' rbol renderizado correctamente');
+      
+      // Actualizar estado de botones undo/redo
+      this.updateUndoRedoButtons();
     } catch (error) {
       console.error(' Error renderizando rbol:', error);
       container.innerHTML = `<p style="color: var(--danger); padding: 20px;">Error renderizando rbol: ${error.message}</p>`;
@@ -29954,6 +30068,18 @@ class InventarioCompleto {
       <div class="sap-add-root">
         <button class="sap-btn sap-btn-add" onclick="app.agregarNodoJerarquia('area')">
           + Nueva rea
+        </button>
+      </div>
+    `;
+    
+    // Botones flotantes de Undo/Redo
+    html += `
+      <div class="undo-redo-controls">
+        <button class="undo-redo-btn undo-btn" onclick="app.undo()" title="Deshacer (Ctrl+Z)" id="sap-undo-btn">
+          ↶
+        </button>
+        <button class="undo-redo-btn redo-btn" onclick="app.redo()" title="Rehacer (Ctrl+Y)" id="sap-redo-btn">
+          ↷
         </button>
       </div>
     `;
@@ -30388,6 +30514,14 @@ class InventarioCompleto {
       indicator.className = 'sap-drop-indicator';
       document.body.appendChild(indicator);
     }
+    
+    // Resaltar en verde todos los nodos del mismo tipo (válidos para drop)
+    document.querySelectorAll('.sap-node').forEach(node => {
+      const nodeType = node.dataset.nodeType || this.getNodeTypeFromElement(node);
+      if (nodeType === type && node !== draggedElement) {
+        node.classList.add('valid-drop-target');
+      }
+    });
   }
 
   onDragOverSAP(event) {
@@ -30548,8 +30682,8 @@ class InventarioCompleto {
     this.dropPosition = null;
     
     // Limpiar todas las clases drag
-    document.querySelectorAll('.drag-over, .drag-valid, .drag-invalid').forEach(el => {
-      el.classList.remove('drag-over', 'drag-valid', 'drag-invalid');
+    document.querySelectorAll('.drag-over, .drag-valid, .drag-invalid, .valid-drop-target').forEach(el => {
+      el.classList.remove('drag-over', 'drag-valid', 'drag-invalid', 'valid-drop-target');
     });
     
     // Ocultar indicador
@@ -30563,6 +30697,9 @@ class InventarioCompleto {
     console.log('[MOVE/REORDER] From:', fromIndices);
     console.log('[MOVE/REORDER] To:', toIndices);
     console.log('[MOVE/REORDER] Mismo contenedor:', sameContainer);
+    
+    // GUARDAR ESTADO PARA UNDO antes de hacer cambios
+    this.saveHistoryState(sameContainer ? 'reorder-' + type : 'move-' + type);
     
     try {
       switch (type) {
@@ -30690,6 +30827,120 @@ class InventarioCompleto {
     } catch (error) {
       console.error('[MOVE/REORDER] Error:', error);
     }
+  }
+
+  // ========== SISTEMA UNDO/REDO ==========
+  
+  saveHistoryState(action = 'drag-drop') {
+    // Guardar copia profunda del estado actual
+    const currentState = {
+      action,
+      timestamp: Date.now(),
+      jerarquia: JSON.parse(JSON.stringify(this.jerarquiaAnidada))
+    };
+    
+    this.historyStack.push(currentState);
+    
+    // Limitar tamaño del historial
+    if (this.historyStack.length > this.maxHistorySize) {
+      this.historyStack.shift();
+    }
+    
+    // Limpiar redo stack cuando se hace una nueva acción
+    this.redoStack = [];
+    
+    this.updateUndoRedoButtons();
+    console.log(`[HISTORY] Estado guardado: ${action} (stack: ${this.historyStack.length})`);
+  }
+  
+  undo() {
+    if (this.historyStack.length === 0) {
+      console.log('[UNDO] No hay acciones para deshacer');
+      return;
+    }
+    
+    // Guardar estado actual en redo stack
+    const currentState = {
+      action: 'current',
+      timestamp: Date.now(),
+      jerarquia: JSON.parse(JSON.stringify(this.jerarquiaAnidada))
+    };
+    this.redoStack.push(currentState);
+    
+    // Restaurar estado anterior
+    const previousState = this.historyStack.pop();
+    this.jerarquiaAnidada = previousState.jerarquia;
+    
+    // Actualizar UI y storage
+    localStorage.setItem('jerarquiaAnidada', JSON.stringify(this.jerarquiaAnidada));
+    this.renderJerarquiaTree();
+    this.updateUndoRedoButtons();
+    
+    console.log(`[UNDO] Acción deshecha: ${previousState.action}`);
+  }
+  
+  redo() {
+    if (this.redoStack.length === 0) {
+      console.log('[REDO] No hay acciones para rehacer');
+      return;
+    }
+    
+    // Guardar estado actual en history stack
+    const currentState = {
+      action: 'before-redo',
+      timestamp: Date.now(),
+      jerarquia: JSON.parse(JSON.stringify(this.jerarquiaAnidada))
+    };
+    this.historyStack.push(currentState);
+    
+    // Restaurar estado siguiente
+    const nextState = this.redoStack.pop();
+    this.jerarquiaAnidada = nextState.jerarquia;
+    
+    // Actualizar UI y storage
+    localStorage.setItem('jerarquiaAnidada', JSON.stringify(this.jerarquiaAnidada));
+    this.renderJerarquiaTree();
+    this.updateUndoRedoButtons();
+    
+    console.log(`[REDO] Acción rehecha`);
+  }
+  
+  updateUndoRedoButtons() {
+    const undoBtn = document.getElementById('undo-btn');
+    const redoBtn = document.getElementById('redo-btn');
+    
+    if (undoBtn) {
+      undoBtn.disabled = this.historyStack.length === 0;
+      undoBtn.setAttribute('data-tooltip', 
+        this.historyStack.length > 0 
+          ? `Deshacer (${this.historyStack.length})`
+          : 'No hay acciones'
+      );
+    }
+    
+    if (redoBtn) {
+      redoBtn.disabled = this.redoStack.length === 0;
+      redoBtn.setAttribute('data-tooltip', 
+        this.redoStack.length > 0 
+          ? `Rehacer (${this.redoStack.length})`
+          : 'No hay acciones'
+      );
+    }
+  }
+  
+  initUndoRedoKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      // Ctrl+Z o Cmd+Z para Undo
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        this.undo();
+      }
+      // Ctrl+Y o Ctrl+Shift+Z o Cmd+Shift+Z para Redo
+      else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) {
+        e.preventDefault();
+        this.redo();
+      }
+    });
   }
 
   async agregarNodoJerarquia(tipo, ...indices) {
@@ -39463,6 +39714,9 @@ const app = new InventarioCompleto();
 
 // Iniciar monitoreo de conexión
 app.startConnectionMonitoring();
+
+// Inicializar atajos de teclado para undo/redo
+app.initUndoRedoKeyboardShortcuts();
 
 // ========================================
 // BACKUP MANAGER - Sistema de backups por inactividad
