@@ -45,25 +45,19 @@
     "ubicaciones": [
       {
         "areaGeneral": "Planta Principal",
-        "subArea": "Filete",
-        "sistemaEquipo": "",
-        "subSistema": "",
-        "planta": "Aquachile Antarfood Chonchi",
-        "seccion": "",
-        "subSeccion": "",
-        "detalles": ""
+        "subArea": "Filete"
       }
     ],
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Filete",
-    "sistemaEquipo": "Cintas Filete",
-    "subSistema": "Cinta Curva",
+    "sistemaEquipo": "",
+    "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Cintas Filete",
-    "sistema": "Cinta Curva",
+    "equipo": "",
+    "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 0,
     "cantidadInstalada": 1,
@@ -81,12 +75,21 @@
         "uploadDate": "2025-11-01T21:22:56.113Z",
         "compressed": true,
         "originalSize": 430009,
-        "url": "./imagenes/1762032176113_cinta curva.webp"
+        "url": "./imagenes/1762032176113_cinta curva.webp",
+        "type": "image",
+        "name": "1762032176113_cinta curva.webp",
+        "isFileSystem": true
+      },
+      {
+        "type": "image",
+        "url": "./imagenes/1762645293878_Pendiente_Cinta_Curva_foto2.webp",
+        "name": "chumacera ovalada de 2 pernos FL 206.jpg",
+        "size": 109742,
+        "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-10-31T06:21:32.453Z",
-    "ultimoConteo": "2025-11-01T21:06:55.897Z",
-    "fechaModificacion": "2025-11-01T21:23:55.973Z"
+    "ultimaModificacion": "2025-11-08T23:41:37.851Z",
+    "ultimoConteo": "2025-11-01T21:06:55.897Z"
   },
   {
     "id": "17613752737800.26683069476947185",
