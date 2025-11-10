@@ -137,29 +137,148 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 4px;
             color: white;
-            font-size: 0.75em;
+            font-size: 0.8em;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .node-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.35);
             transform: scale(1.05);
         }
 
-        .node-btn-add { background: rgba(91, 155, 122, 0.3); }
-        .node-btn-edit { background: rgba(184, 146, 90, 0.3); }
-        .node-btn-delete { background: rgba(184, 107, 107, 0.3); }
+        .node-btn-add { 
+            background: rgba(91, 155, 122, 0.3);
+        }
+        .node-btn-add:hover {
+            background: rgba(91, 155, 122, 0.5);
+        }
+        
+        .node-btn-edit { 
+            background: rgba(184, 146, 90, 0.3);
+        }
+        .node-btn-edit:hover {
+            background: rgba(184, 146, 90, 0.5);
+        }
+        
+        .node-btn-delete { 
+            background: rgba(184, 107, 107, 0.3);
+        }
+        .node-btn-delete:hover {
+            background: rgba(184, 107, 107, 0.5);
+        }
+
+        /* === DRAG & DROP === */
+        .drag-handle {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.95);
+            cursor: pointer;
+            margin-right: 8px;
+            transition: all 0.2s ease;
+            -webkit-user-select: none;
+            user-select: none;
+            flex-shrink: 0;
+            padding: 2px;
+        }
+
+        .drag-handle:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
+        }
+
+        .drag-handle:active {
+            transform: scale(0.95);
+        }
+
+        .tree-node[draggable="true"] {
+            cursor: move;
+        }
+
+        .tree-node.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .tree-node.dragging * {
+            pointer-events: none;
+        }
+
+        .tree-node.drag-over {
+            background: rgba(91, 139, 180, 0.1);
+            border-radius: 6px;
+        }
+
+        .tree-node.drag-valid {
+            background: rgba(91, 155, 122, 0.15);
+        }
+
+        .tree-node.drag-invalid {
+            background: rgba(184, 107, 107, 0.15);
+        }
+
+        /* Indicador de posición de drop */
+        .drop-indicator {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #5b8bb4;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.6);
+            border-radius: 3px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .drop-indicator.active {
+            opacity: 1;
+        }
+
+        .drop-indicator.before {
+            top: -2px;
+        }
+
+        .drop-indicator.after {
+            bottom: -2px;
+        }
+
+        /* Toggle expand/collapse */
+        .node-toggle {
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+            transition: all 0.2s ease;
+            -webkit-user-select: none;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .node-toggle:hover {
+            color: white;
+            transform: scale(1.2);
+        }
+
+        .node-toggle.collapsed {
+            transform: rotate(0deg);
+        }
+
+        .node-toggle.expanded {
+            transform: rotate(90deg);
+        }
 
         .node-id {
-            font-size: 0.75em;
-            opacity: 0.8;
+            font-size: 0.8em;
+            opacity: 0.9;
             flex-shrink: 0;
             min-width: 50px;
         }
 
         .node-name {
-            font-size: 0.9em;
+            font-size: 0.95em;
             font-weight: 600;
             flex: 1;
             white-space: nowrap;
@@ -168,12 +287,12 @@
         }
 
         .node-level {
-            font-size: 0.7em;
-            opacity: 0.7;
+            font-size: 0.75em;
+            opacity: 0.8;
             flex-shrink: 0;
             padding: 2px 8px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 3px;
         }
 
         .tree-children {
@@ -397,23 +516,63 @@
             pointer-events: none;
         }
 
-        /* Leyenda */
+        /* Leyenda colapsable */
         .legend {
             position: fixed;
-            bottom: 30px;
+            top: 20px;
             right: 30px;
             background: #252a33;
-            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             z-index: 1000;
             border: 1px solid #3a4049;
+            max-width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .legend-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .legend-header:hover {
+            background: rgba(91, 139, 180, 0.1);
+        }
+
+        .legend-toggle {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+            color: #5b8bb4;
+            font-weight: bold;
+        }
+
+        .legend.collapsed .legend-toggle {
+            transform: rotate(180deg);
         }
 
         .legend-title {
             font-weight: 600;
-            margin-bottom: 10px;
             color: #e6e9ef;
+            font-size: 0.95em;
+        }
+
+        .legend-content {
+            max-height: 300px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 15px 15px 15px;
+        }
+
+        .legend.collapsed .legend-content {
+            max-height: 0;
+            padding: 0 15px;
         }
 
         .legend-item {
@@ -557,6 +716,121 @@
             background: #4a7d62 !important;
         }
 
+        /* Modal de selección de padre */
+        .move-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .move-modal.active {
+            display: flex;
+        }
+
+        .move-modal-content {
+            background: #252a33;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid #3a4049;
+        }
+
+        .move-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #3a4049;
+        }
+
+        .move-modal-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #e6e9ef;
+        }
+
+        .move-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #b8bec8;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        .move-modal-close:hover {
+            color: #e6e9ef;
+        }
+
+        .move-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .move-option {
+            padding: 10px 12px;
+            background: #2d333d;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .move-option:hover {
+            background: #353c47;
+            border-color: #5b8bb4;
+        }
+
+        .move-option-content {
+            flex: 1;
+        }
+
+        .move-option-title {
+            font-size: 0.95em;
+            font-weight: 500;
+            color: #e6e9ef;
+            margin-bottom: 2px;
+        }
+
+        .move-option-subtitle {
+            font-size: 0.8em;
+            color: #888d96;
+        }
+
+        .move-option.root {
+            background: #3d2f2f;
+            border-color: #b86b6b;
+        }
+
+        .move-option.root:hover {
+            border-color: #d88787;
+        }
+
+        .move-section-title {
+            font-size: 0.75em;
+            color: #888d96;
+            margin: 12px 0 6px 0;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         /* Animaciones */
         @keyframes fadeIn {
             from {
@@ -646,30 +920,35 @@
     </div>
 
     <div class="legend">
-        <div class="legend-title">📋 Niveles Jerárquicos</div>
-        <div class="legend-item">
-            <div class="legend-color empresa"></div>
-            <span>Empresa</span>
+        <div class="legend-header" onclick="toggleLegend()">
+            <div class="legend-title">📋 Niveles Jerárquicos</div>
+            <div class="legend-toggle">▼</div>
         </div>
-        <div class="legend-item">
-            <div class="legend-color area"></div>
-            <span>Área</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color subarea"></div>
-            <span>Sub-Área</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color sistema"></div>
-            <span>Sistema</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color subsistema"></div>
-            <span>Sub-Sistema</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color seccion"></div>
-            <span>Sección</span>
+        <div class="legend-content">
+            <div class="legend-item">
+                <div class="legend-color empresa"></div>
+                <span>Empresa</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color area"></div>
+                <span>Área</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color subarea"></div>
+                <span>Sub-Área</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color sistema"></div>
+                <span>Sistema</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color subsistema"></div>
+                <span>Sub-Sistema</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color seccion"></div>
+                <span>Sección</span>
+            </div>
         </div>
     </div>
 
@@ -904,9 +1183,10 @@
             // Nodo empresa
             html += `
                 <div class="node-content">
+                    <span class="node-toggle expanded" onclick="toggleNodeChildren(this)">›</span>
                     <span class="node-id">${data.empresa.id}</span>
                     <span class="node-name">${data.empresa.nombre}</span>
-                    <span class="node-level">${data.empresa.nivel}</span>
+                    <span class="node-level">${data.empresa.nivel || 'Empresa'}</span>
                     <div class="node-actions">
                         <button class="node-btn node-btn-edit" onclick="editarNodo('empresa')" title="Editar">✏️</button>
                         <button class="node-btn node-btn-add" onclick="agregarNodo('area')" title="+ Área">+</button>
@@ -917,8 +1197,8 @@
             // Áreas
             if (data.areas && data.areas.length > 0) {
                 html += '<div class="tree-children">';
-                data.areas.forEach(area => {
-                    html += buildAreaNode(area);
+                data.areas.forEach((area, index) => {
+                    html += buildAreaNode(area, index);
                 });
                 html += '</div>';
             }
@@ -927,13 +1207,24 @@
             return html;
         }
 
-        function buildAreaNode(area) {
-            let html = '<div class="tree-node">';
+        function buildAreaNode(area, index) {
+            const hasChildren = area.subAreas && area.subAreas.length > 0;
+            const toggleIcon = hasChildren ? '›' : '';
+            
+            let html = `<div class="tree-node" draggable="true" 
+                            ondragstart="onDragStart(event, 'area', ${index})"
+                            ondragover="onDragOver(event)"
+                            ondrop="onDrop(event, 'area', ${index})"
+                            ondragend="onDragEnd(event)"
+                            data-node-type="area" data-node-index="${index}">`;
+            
             html += `
                 <div class="node-content" style="background: linear-gradient(135deg, #b86b6b 0%, #985555 100%);">
+                    <span class="drag-handle" onclick="openMoveModal('area', '${area.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
+                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 20px;"></span>'}
                     <span class="node-id">${area.id}</span>
                     <span class="node-name">${area.nombre}</span>
-                    <span class="node-level">${area.nivel}</span>
+                    <span class="node-level">${area.nivel || 'Área'}</span>
                     <div class="node-actions">
                         <button class="node-btn node-btn-edit" onclick="editarNodo('area', '${area.id}')" title="Editar">✏️</button>
                         <button class="node-btn node-btn-add" onclick="agregarNodo('subArea', '${area.id}')" title="+ Sub-Área">+</button>
@@ -942,10 +1233,10 @@
                 </div>
             `;
             
-            if (area.subAreas && area.subAreas.length > 0) {
+            if (hasChildren) {
                 html += '<div class="tree-children">';
-                area.subAreas.forEach(subArea => {
-                    html += buildSubAreaNode(subArea);
+                area.subAreas.forEach((subArea, subIndex) => {
+                    html += buildSubAreaNode(subArea, index, subIndex);
                 });
                 html += '</div>';
             }
@@ -954,13 +1245,24 @@
             return html;
         }
 
-        function buildSubAreaNode(subArea) {
-            let html = '<div class="tree-node">';
+        function buildSubAreaNode(subArea, areaIndex, subIndex) {
+            const hasChildren = subArea.sistemas && subArea.sistemas.length > 0;
+            const toggleIcon = hasChildren ? '›' : '';
+            
+            let html = `<div class="tree-node" draggable="true"
+                            ondragstart="onDragStart(event, 'subArea', ${areaIndex}, ${subIndex})"
+                            ondragover="onDragOver(event)"
+                            ondrop="onDrop(event, 'subArea', ${areaIndex}, ${subIndex})"
+                            ondragend="onDragEnd(event)"
+                            data-node-type="subArea" data-node-index="${areaIndex},${subIndex}">`;
+            
             html += `
                 <div class="node-content" style="background: linear-gradient(135deg, #5b9b7a 0%, #4a7d62 100%);">
+                    <span class="drag-handle" onclick="openMoveModal('subArea', '${subArea.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
+                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 20px;"></span>'}
                     <span class="node-id">${subArea.id}</span>
                     <span class="node-name">${subArea.nombre}</span>
-                    <span class="node-level">${subArea.nivel}</span>
+                    <span class="node-level">${subArea.nivel || 'Sub-Área'}</span>
                     <div class="node-actions">
                         <button class="node-btn node-btn-edit" onclick="editarNodo('subArea', '${subArea.id}')" title="Editar">✏️</button>
                         <button class="node-btn node-btn-add" onclick="agregarNodo('sistema', '${subArea.id}')" title="+ Sistema">+</button>
@@ -969,10 +1271,10 @@
                 </div>
             `;
             
-            if (subArea.sistemas && subArea.sistemas.length > 0) {
+            if (hasChildren) {
                 html += '<div class="tree-children">';
-                subArea.sistemas.forEach(sistema => {
-                    html += buildSistemaNode(sistema);
+                subArea.sistemas.forEach((sistema, sisIndex) => {
+                    html += buildSistemaNode(sistema, areaIndex, subIndex, sisIndex);
                 });
                 html += '</div>';
             }
@@ -981,13 +1283,24 @@
             return html;
         }
 
-        function buildSistemaNode(sistema) {
-            let html = '<div class="tree-node">';
+        function buildSistemaNode(sistema, areaIndex, subIndex, sisIndex) {
+            const hasChildren = sistema.subSistemas && sistema.subSistemas.length > 0;
+            const toggleIcon = hasChildren ? '›' : '';
+            
+            let html = `<div class="tree-node" draggable="true"
+                            ondragstart="onDragStart(event, 'sistema', ${areaIndex}, ${subIndex}, ${sisIndex})"
+                            ondragover="onDragOver(event)"
+                            ondrop="onDrop(event, 'sistema', ${areaIndex}, ${subIndex}, ${sisIndex})"
+                            ondragend="onDragEnd(event)"
+                            data-node-type="sistema" data-node-index="${areaIndex},${subIndex},${sisIndex}">`;
+            
             html += `
                 <div class="node-content" style="background: linear-gradient(135deg, #b8925a 0%, #9a7848 100%);">
+                    <span class="drag-handle" onclick="openMoveModal('sistema', '${sistema.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
+                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 20px;"></span>'}
                     <span class="node-id">${sistema.id}</span>
                     <span class="node-name">${sistema.nombre}</span>
-                    <span class="node-level">${sistema.nivel}</span>
+                    <span class="node-level">${sistema.nivel || 'Sistema'}</span>
                     <div class="node-actions">
                         <button class="node-btn node-btn-edit" onclick="editarNodo('sistema', '${sistema.id}')" title="Editar">✏️</button>
                         <button class="node-btn node-btn-delete" onclick="eliminarNodo('sistema', '${sistema.id}')" title="Eliminar">🗑️</button>
@@ -995,10 +1308,10 @@
                 </div>
             `;
             
-            if (sistema.subSistemas && sistema.subSistemas.length > 0) {
+            if (hasChildren) {
                 html += '<div class="tree-children">';
-                sistema.subSistemas.forEach(subSistema => {
-                    html += buildSistemaNode(subSistema);
+                sistema.subSistemas.forEach((subSistema, subSisIndex) => {
+                    html += buildSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex);
                 });
                 html += '</div>';
             }
@@ -1019,7 +1332,7 @@
                         <div class="org-node-content">
                             <div class="node-id">${jerarquiaData.empresa.id}</div>
                             <div class="node-name">${jerarquiaData.empresa.nombre}</div>
-                            <div class="node-level">${jerarquiaData.empresa.nivel}</div>
+                            <div class="node-level">${jerarquiaData.empresa.nivel || 'Empresa'}</div>
                         </div>
                     </div>
                 </div>
@@ -1033,7 +1346,7 @@
                         <div class="org-node-content">
                             <div class="node-id">${area.id}</div>
                             <div class="node-name">${area.nombre}</div>
-                            <div class="node-level">${area.nivel}</div>
+                            <div class="node-level">${area.nivel || 'Área'}</div>
                         </div>
                     </div>
                 `;
@@ -1119,6 +1432,20 @@
             else renderNetworkView();
         }
 
+        // Toggle leyenda
+        function toggleLegend() {
+            const legend = document.querySelector('.legend');
+            const title = legend.querySelector('.legend-title');
+            
+            legend.classList.toggle('collapsed');
+            
+            if (legend.classList.contains('collapsed')) {
+                title.textContent = '📋 Leyenda';
+            } else {
+                title.textContent = '📋 Niveles Jerárquicos';
+            }
+        }
+
         // Sincronizar con app principal
         function sincronizarConLocalStorage() {
             try {
@@ -1144,6 +1471,18 @@
         }
 
         // === FUNCIONES DE CRUD MEJORADAS (como la app) ===
+        function getNivelLabel(tipo) {
+            const niveles = {
+                area: 'Área',
+                subArea: 'Sub-Área',
+                sistema: 'Sistema',
+                subSistema: 'Sub-Sistema',
+                seccion: 'Sección',
+                subSeccion: 'Sub-Sección'
+            };
+            return niveles[tipo] || 'Desconocido';
+        }
+
         async function agregarNodo(tipo, parentId) {
             saveState(); // Guardar estado antes de cambiar
             
@@ -1185,7 +1524,7 @@
             const nuevoNodo = {
                 id: resultado.input1.trim().toUpperCase(),
                 nombre: resultado.input2.trim(),
-                nivel: tipo.charAt(0).toUpperCase() + tipo.slice(1)
+                nivel: getNivelLabel(tipo)
             };
             
             // Agregar arrays hijos según el tipo
@@ -1331,6 +1670,391 @@
             saveToLocalStorage();
             renderCurrentView();
             showToast(`🗑️ "${nodo.nombre}" eliminado exitosamente`);
+        }
+
+        // === DRAG & DROP ===
+        let draggedNode = null;
+        let dropPosition = null;
+
+        function onDragStart(event, type, ...indices) {
+            const node = event.target.closest('.tree-node');
+            if (!node) return;
+            
+            node.classList.add('dragging');
+            draggedNode = { type, indices };
+            
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/html', node.innerHTML);
+            
+            console.log('[DRAG START]', type, indices);
+        }
+
+        function onDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            if (!draggedNode) return;
+            
+            const node = event.target.closest('.tree-node');
+            if (!node || node.classList.contains('dragging')) return;
+            
+            const nodeType = node.getAttribute('data-node-type');
+            
+            // Solo permitir drop en nodos del mismo tipo
+            if (nodeType !== draggedNode.type) {
+                node.classList.add('drag-invalid');
+                node.classList.remove('drag-valid', 'drag-over');
+                return;
+            }
+            
+            node.classList.add('drag-valid', 'drag-over');
+            node.classList.remove('drag-invalid');
+            
+            // Determinar posición (antes o después)
+            const rect = node.getBoundingClientRect();
+            const midpoint = rect.top + rect.height / 2;
+            dropPosition = event.clientY < midpoint ? 'before' : 'after';
+            
+            event.dataTransfer.dropEffect = 'move';
+        }
+
+        function onDrop(event, targetType, ...targetIndices) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            if (!draggedNode) return;
+            
+            const node = event.target.closest('.tree-node');
+            if (node) {
+                node.classList.remove('drag-over', 'drag-valid', 'drag-invalid');
+            }
+            
+            // Validar que sean del mismo tipo
+            if (draggedNode.type !== targetType) {
+                showToast('⚠️ Solo puedes reordenar elementos del mismo tipo', 'warning');
+                return;
+            }
+            
+            // No mover sobre sí mismo
+            if (JSON.stringify(draggedNode.indices) === JSON.stringify(targetIndices)) {
+                return;
+            }
+            
+            console.log('[DROP]', {
+                from: draggedNode,
+                to: { type: targetType, indices: targetIndices },
+                position: dropPosition
+            });
+            
+            saveState(); // Guardar antes de mover
+            moveNode(draggedNode.type, draggedNode.indices, targetIndices, dropPosition);
+        }
+
+        function onDragEnd(event) {
+            const node = event.target.closest('.tree-node');
+            if (node) {
+                node.classList.remove('dragging');
+            }
+            
+            // Limpiar todas las clases
+            document.querySelectorAll('.drag-over, .drag-valid, .drag-invalid').forEach(el => {
+                el.classList.remove('drag-over', 'drag-valid', 'drag-invalid');
+            });
+            
+            draggedNode = null;
+            dropPosition = null;
+        }
+
+        function moveNode(type, fromIndices, toIndices, position) {
+            try {
+                let array, parentArray;
+                
+                // Obtener el array correcto según el tipo
+                if (type === 'area') {
+                    array = jerarquiaData.areas;
+                } else if (type === 'subArea') {
+                    const [areaIdx] = fromIndices;
+                    array = jerarquiaData.areas[areaIdx].subAreas;
+                } else if (type === 'sistema') {
+                    const [areaIdx, subIdx] = fromIndices;
+                    array = jerarquiaData.areas[areaIdx].subAreas[subIdx].sistemas;
+                }
+                
+                if (!array) {
+                    showToast('❌ Error al mover nodo', 'error');
+                    return;
+                }
+                
+                const fromIndex = fromIndices[fromIndices.length - 1];
+                let toIndex = toIndices[toIndices.length - 1];
+                
+                // Ajustar índice según posición
+                if (position === 'after') {
+                    toIndex++;
+                }
+                
+                // Ajustar si es en el mismo array y movemos hacia adelante
+                if (fromIndex < toIndex) {
+                    toIndex--;
+                }
+                
+                // Mover el elemento
+                const [movedItem] = array.splice(fromIndex, 1);
+                array.splice(toIndex, 0, movedItem);
+                
+                saveToLocalStorage();
+                renderCurrentView();
+                showToast('✅ Elemento reordenado exitosamente', 'success');
+                
+                console.log('[MOVE SUCCESS]', { from: fromIndex, to: toIndex });
+            } catch (error) {
+                console.error('[MOVE ERROR]', error);
+                showToast('❌ Error al reordenar elemento', 'error');
+            }
+        }
+
+        // === TOGGLE EXPAND/COLLAPSE ===
+        function toggleNodeChildren(toggleElement) {
+            const nodeContent = toggleElement.closest('.node-content');
+            const treeNode = nodeContent.closest('.tree-node');
+            const children = treeNode.querySelector(':scope > .tree-children');
+            
+            if (!children) return;
+            
+            if (children.style.display === 'none') {
+                children.style.display = 'block';
+                toggleElement.textContent = '›';
+                toggleElement.classList.remove('collapsed');
+                toggleElement.classList.add('expanded');
+            } else {
+                children.style.display = 'none';
+                toggleElement.textContent = '›';
+                toggleElement.classList.remove('expanded');
+                toggleElement.classList.add('collapsed');
+            }
+        }
+
+        // === MOVER NODO ENTRE NIVELES ===
+        let currentMoveNode = null;
+
+        function openMoveModal(tipo, nodeId) {
+            const nodo = findNodeById(jerarquiaData.areas, nodeId);
+            if (!nodo) {
+                showToast('❌ Nodo no encontrado', 'error');
+                return;
+            }
+
+            currentMoveNode = { tipo, nodeId, nodo };
+            
+            const modal = document.getElementById('moveModal');
+            const container = document.getElementById('moveOptionsContainer');
+            
+            // Generar opciones según el tipo de nodo
+            let html = '';
+            
+            if (tipo === 'subArea') {
+                // Sub-Área puede: convertirse a Área o moverse a otra Área
+                html += `
+                    <div class="move-option root" onclick="moveToRoot('${nodeId}')">
+                        <div class="move-option-content">
+                            <div class="move-option-title">Convertir a Área</div>
+                            <div class="move-option-subtitle">Nivel raíz</div>
+                        </div>
+                    </div>
+                `;
+                
+                html += '<div class="move-section-title">Mover a otra Área:</div>';
+                jerarquiaData.areas.forEach(area => {
+                    if (!isParentOf(area, nodeId)) {
+                        html += `
+                            <div class="move-option" onclick="moveToParent('${nodeId}', 'area', '${area.id}')">
+                                <div class="move-option-content">
+                                    <div class="move-option-title">${area.nombre}</div>
+                                    <div class="move-option-subtitle">${area.id}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            } else if (tipo === 'sistema') {
+                // Sistema puede: convertirse a Sub-Área, moverse a otra Sub-Área
+                html += `
+                    <div class="move-option root" onclick="promoteToSubArea('${nodeId}')">
+                        <div class="move-option-content">
+                            <div class="move-option-title">Promover a Sub-Área</div>
+                            <div class="move-option-subtitle">Subir un nivel</div>
+                        </div>
+                    </div>
+                `;
+                
+                html += '<div class="move-section-title">Mover a otra Sub-Área:</div>';
+                jerarquiaData.areas.forEach(area => {
+                    if (area.subAreas && area.subAreas.length > 0) {
+                        area.subAreas.forEach(subArea => {
+                            if (!isParentOf(subArea, nodeId)) {
+                                html += `
+                                    <div class="move-option" onclick="moveToParent('${nodeId}', 'subArea', '${subArea.id}')">
+                                        <div class="move-option-content">
+                                            <div class="move-option-title">${area.nombre} › ${subArea.nombre}</div>
+                                            <div class="move-option-subtitle">${subArea.id}</div>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        });
+                    }
+                });
+            } else if (tipo === 'area') {
+                html += `<div class="move-option-content" style="text-align: center; padding: 15px; color: #888d96;">
+                    Las Áreas están en el nivel raíz.
+                    <br><small>Usa drag & drop para reordenar.</small>
+                </div>`;
+            }
+            
+            container.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function closeMoveModal() {
+            const modal = document.getElementById('moveModal');
+            modal.classList.remove('active');
+            currentMoveNode = null;
+        }
+
+        function isParentOf(parentNode, childId) {
+            // Verificar si parentNode contiene a childId en su árbol
+            if (parentNode.id === childId) return true;
+            
+            const checkChildren = (node) => {
+                if (node.id === childId) return true;
+                
+                if (node.subAreas) {
+                    for (let child of node.subAreas) {
+                        if (checkChildren(child)) return true;
+                    }
+                }
+                if (node.sistemas) {
+                    for (let child of node.sistemas) {
+                        if (checkChildren(child)) return true;
+                    }
+                }
+                if (node.subSistemas) {
+                    for (let child of node.subSistemas) {
+                        if (checkChildren(child)) return true;
+                    }
+                }
+                return false;
+            };
+            
+            return checkChildren(parentNode);
+        }
+
+        function moveToRoot(nodeId) {
+            saveState();
+            
+            const nodo = findNodeById(jerarquiaData.areas, nodeId);
+            if (!nodo) {
+                showToast('❌ Nodo no encontrado', 'error');
+                return;
+            }
+            
+            // Remover de su ubicación actual
+            removeNodeById(jerarquiaData.areas, nodeId);
+            
+            // Convertir a Área
+            nodo.nivel = 'Área';
+            nodo.sistemas = nodo.sistemas || [];
+            delete nodo.subSistemas;
+            
+            // Agregar al nivel raíz
+            jerarquiaData.areas.push(nodo);
+            
+            saveToLocalStorage();
+            renderCurrentView();
+            closeMoveModal();
+            showToast(`✅ "${nodo.nombre}" convertido a Área`, 'success');
+        }
+
+        function promoteToSubArea(nodeId) {
+            saveState();
+            
+            const nodo = findNodeById(jerarquiaData.areas, nodeId);
+            if (!nodo) {
+                showToast('❌ Nodo no encontrado', 'error');
+                return;
+            }
+            
+            // Encontrar el padre actual (debe ser una Sub-Área)
+            let parentArea = null;
+            for (let area of jerarquiaData.areas) {
+                if (area.subAreas) {
+                    for (let subArea of area.subAreas) {
+                        if (subArea.sistemas && subArea.sistemas.some(s => s.id === nodeId)) {
+                            parentArea = area;
+                            break;
+                        }
+                    }
+                }
+                if (parentArea) break;
+            }
+            
+            if (!parentArea) {
+                showToast('❌ No se encontró el padre', 'error');
+                return;
+            }
+            
+            // Remover de sistemas
+            removeNodeById(jerarquiaData.areas, nodeId);
+            
+            // Convertir a Sub-Área
+            nodo.nivel = 'Sub-Área';
+            nodo.subAreas = undefined;
+            if (!nodo.sistemas) nodo.sistemas = [];
+            
+            // Agregar como Sub-Área del Área padre
+            if (!parentArea.subAreas) parentArea.subAreas = [];
+            parentArea.subAreas.push(nodo);
+            
+            saveToLocalStorage();
+            renderCurrentView();
+            closeMoveModal();
+            showToast(`✅ "${nodo.nombre}" promovido a Sub-Área`, 'success');
+        }
+
+        function moveToParent(nodeId, parentType, parentId) {
+            saveState();
+            
+            const nodo = findNodeById(jerarquiaData.areas, nodeId);
+            if (!nodo) {
+                showToast('❌ Nodo no encontrado', 'error');
+                return;
+            }
+            
+            // Remover de ubicación actual
+            removeNodeById(jerarquiaData.areas, nodeId);
+            
+            // Encontrar nuevo padre
+            const newParent = findNodeById(jerarquiaData.areas, parentId);
+            if (!newParent) {
+                showToast('❌ Padre no encontrado', 'error');
+                return;
+            }
+            
+            // Agregar al nuevo padre según el tipo
+            if (parentType === 'area') {
+                if (!newParent.subAreas) newParent.subAreas = [];
+                nodo.nivel = 'Sub-Área';
+                newParent.subAreas.push(nodo);
+            } else if (parentType === 'subArea') {
+                if (!newParent.sistemas) newParent.sistemas = [];
+                nodo.nivel = 'Sistema';
+                newParent.sistemas.push(nodo);
+            }
+            
+            saveToLocalStorage();
+            renderCurrentView();
+            closeMoveModal();
+            showToast(`✅ "${nodo.nombre}" movido exitosamente`, 'success');
         }
 
         // Funciones auxiliares
@@ -1632,5 +2356,18 @@
             }
         }
     </style>
+
+    <!-- Modal de mover nodo -->
+    <div id="moveModal" class="move-modal">
+        <div class="move-modal-content">
+            <div class="move-modal-header">
+                <div class="move-modal-title">🔀 Mover Nodo</div>
+                <button class="move-modal-close" onclick="closeMoveModal()">×</button>
+            </div>
+            <div id="moveOptionsContainer" class="move-options">
+                <!-- Opciones se generan dinámicamente -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>
