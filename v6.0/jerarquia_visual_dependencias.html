@@ -116,9 +116,40 @@
         }
 
         .node-content:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(91, 139, 180, 0.4);
         }
+
+        /* Botones de acción en los nodos */
+        .node-actions {
+            display: none;
+            gap: 4px;
+            margin-left: auto;
+        }
+
+        .node-content:hover .node-actions {
+            display: flex;
+        }
+
+        .node-btn {
+            padding: 2px 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            color: white;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .node-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .node-btn-add { background: rgba(91, 155, 122, 0.3); }
+        .node-btn-edit { background: rgba(184, 146, 90, 0.3); }
+        .node-btn-delete { background: rgba(184, 107, 107, 0.3); }
 
         .node-id {
             font-size: 0.75em;
@@ -148,29 +179,47 @@
         .tree-children {
             margin-left: 50px;
             position: relative;
+            padding-left: 30px;
         }
 
-        /* Líneas conectoras verticales */
+        /* Líneas conectoras verticales mejoradas con curvas SVG-style */
         .tree-children::before {
             content: '';
             position: absolute;
-            top: -10px;
-            left: -25px;
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(to bottom, #5b8bb4, #4a7090);
-            opacity: 0.6;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: calc(100% - 20px);
+            background: linear-gradient(180deg, #5b8bb4 0%, #4a7090 50%, rgba(91, 139, 180, 0.3) 100%);
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
         }
 
         .tree-node > .tree-children > .tree-node::before {
             content: '';
             position: absolute;
-            top: 20px;
-            left: -25px;
-            width: 25px;
-            height: 2px;
-            background: linear-gradient(to right, #5b8bb4, #4a7090);
-            opacity: 0.6;
+            top: 18px;
+            left: -30px;
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(90deg, #5b8bb4 0%, #7ba5c8 100%);
+            border-radius: 3px;
+            box-shadow: 0 0 6px rgba(91, 139, 180, 0.3);
+        }
+
+        /* Puntos de conexión en los nodos */
+        .tree-node > .tree-children > .tree-node::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: -33px;
+            width: 8px;
+            height: 8px;
+            background: #5b8bb4;
+            border: 2px solid #1a1d23;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.6);
+            z-index: 3;
         }
 
         /* VISTA 2: Organigrama Horizontal */
@@ -254,7 +303,7 @@
             border-radius: 4px;
         }
 
-        /* Líneas conectoras con SVG */
+        /* Líneas conectoras con SVG mejoradas */
         .connector-svg {
             position: absolute;
             top: 0;
@@ -267,9 +316,17 @@
 
         .connector-line {
             stroke: #5b8bb4;
-            stroke-width: 2;
+            stroke-width: 3;
             fill: none;
-            opacity: 0.6;
+            opacity: 0.7;
+            filter: drop-shadow(0 0 4px rgba(91, 139, 180, 0.5));
+        }
+
+        .connector-dot {
+            fill: #5b8bb4;
+            stroke: #1a1d23;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 4px rgba(91, 139, 180, 0.6));
         }
 
         /* VISTA 3: Red de Dependencias (D3-style simulado) */
@@ -650,10 +707,14 @@
             
             // Nodo empresa
             html += `
-                <div class="node-content" onclick="toggleNode(this)">
+                <div class="node-content">
                     <span class="node-id">${data.empresa.id}</span>
                     <span class="node-name">${data.empresa.nombre}</span>
                     <span class="node-level">${data.empresa.nivel}</span>
+                    <div class="node-actions">
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('empresa')" title="Editar">✏️</button>
+                        <button class="node-btn node-btn-add" onclick="agregarNodo('area')" title="+ Área">+</button>
+                    </div>
                 </div>
             `;
             
@@ -673,10 +734,15 @@
         function buildAreaNode(area) {
             let html = '<div class="tree-node">';
             html += `
-                <div class="node-content" onclick="toggleNode(this)" style="background: linear-gradient(135deg, #b86b6b 0%, #985555 100%);">
+                <div class="node-content" style="background: linear-gradient(135deg, #b86b6b 0%, #985555 100%);">
                     <span class="node-id">${area.id}</span>
                     <span class="node-name">${area.nombre}</span>
                     <span class="node-level">${area.nivel}</span>
+                    <div class="node-actions">
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('area', '${area.id}')" title="Editar">✏️</button>
+                        <button class="node-btn node-btn-add" onclick="agregarNodo('subArea', '${area.id}')" title="+ Sub-Área">+</button>
+                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('area', '${area.id}')" title="Eliminar">🗑️</button>
+                    </div>
                 </div>
             `;
             
@@ -695,10 +761,15 @@
         function buildSubAreaNode(subArea) {
             let html = '<div class="tree-node">';
             html += `
-                <div class="node-content" onclick="toggleNode(this)" style="background: linear-gradient(135deg, #5b9b7a 0%, #4a7d62 100%);">
+                <div class="node-content" style="background: linear-gradient(135deg, #5b9b7a 0%, #4a7d62 100%);">
                     <span class="node-id">${subArea.id}</span>
                     <span class="node-name">${subArea.nombre}</span>
                     <span class="node-level">${subArea.nivel}</span>
+                    <div class="node-actions">
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('subArea', '${subArea.id}')" title="Editar">✏️</button>
+                        <button class="node-btn node-btn-add" onclick="agregarNodo('sistema', '${subArea.id}')" title="+ Sistema">+</button>
+                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('subArea', '${subArea.id}')" title="Eliminar">🗑️</button>
+                    </div>
                 </div>
             `;
             
@@ -715,15 +786,29 @@
         }
 
         function buildSistemaNode(sistema) {
-            return `
-                <div class="tree-node">
-                    <div class="node-content" style="background: linear-gradient(135deg, #b8925a 0%, #9a7848 100%);">
-                        <span class="node-id">${sistema.id}</span>
-                        <span class="node-name">${sistema.nombre}</span>
-                        <span class="node-level">${sistema.nivel}</span>
+            let html = '<div class="tree-node">';
+            html += `
+                <div class="node-content" style="background: linear-gradient(135deg, #b8925a 0%, #9a7848 100%);">
+                    <span class="node-id">${sistema.id}</span>
+                    <span class="node-name">${sistema.nombre}</span>
+                    <span class="node-level">${sistema.nivel}</span>
+                    <div class="node-actions">
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('sistema', '${sistema.id}')" title="Editar">✏️</button>
+                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('sistema', '${sistema.id}')" title="Eliminar">🗑️</button>
                     </div>
                 </div>
             `;
+            
+            if (sistema.subSistemas && sistema.subSistemas.length > 0) {
+                html += '<div class="tree-children">';
+                sistema.subSistemas.forEach(subSistema => {
+                    html += buildSistemaNode(subSistema);
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
         }
 
         // RENDERIZAR VISTA 2: Organigrama
@@ -841,6 +926,173 @@
         function exportView() {
             alert('Función de exportación: Generaría PNG/SVG de la vista actual');
         }
+
+        // === FUNCIONES DE CRUD ===
+        function agregarNodo(tipo, parentId) {
+            const nombre = prompt(`Ingrese el nombre del nuevo ${tipo}:`);
+            if (!nombre) return;
+            
+            const id = `${tipo.toUpperCase()}-${Date.now().toString().slice(-4)}`;
+            const nuevoNodo = {
+                id: id,
+                nombre: nombre,
+                nivel: tipo.charAt(0).toUpperCase() + tipo.slice(1)
+            };
+            
+            if (tipo === 'area') {
+                if (!jerarquiaData.areas) jerarquiaData.areas = [];
+                nuevoNodo.subAreas = [];
+                jerarquiaData.areas.push(nuevoNodo);
+            } else if (tipo === 'subArea') {
+                const area = findNodeById(jerarquiaData.areas, parentId);
+                if (area) {
+                    if (!area.subAreas) area.subAreas = [];
+                    nuevoNodo.sistemas = [];
+                    area.subAreas.push(nuevoNodo);
+                }
+            } else if (tipo === 'sistema') {
+                const subArea = findNodeById(jerarquiaData.areas, parentId, 'subAreas');
+                if (subArea) {
+                    if (!subArea.sistemas) subArea.sistemas = [];
+                    nuevoNodo.subSistemas = [];
+                    subArea.sistemas.push(nuevoNodo);
+                }
+            }
+            
+            renderTreeView();
+            showToast(`✅ ${tipo} "${nombre}" agregado exitosamente`);
+        }
+
+        function editarNodo(tipo, nodeId) {
+            let nodo;
+            if (tipo === 'empresa') {
+                nodo = jerarquiaData.empresa;
+            } else {
+                nodo = findNodeById(jerarquiaData.areas, nodeId);
+            }
+            
+            if (!nodo) {
+                showToast('❌ Nodo no encontrado', 'error');
+                return;
+            }
+            
+            const nuevoNombre = prompt(`Editar nombre de ${tipo}:`, nodo.nombre);
+            if (nuevoNombre && nuevoNombre !== nodo.nombre) {
+                nodo.nombre = nuevoNombre;
+                renderTreeView();
+                showToast(`✏️ ${tipo} actualizado exitosamente`);
+            }
+        }
+
+        function eliminarNodo(tipo, nodeId) {
+            const nodo = findNodeById(jerarquiaData.areas, nodeId);
+            if (!nodo) {
+                showToast('❌ Nodo no encontrado', 'error');
+                return;
+            }
+            
+            // Verificar si tiene hijos
+            const tieneHijos = (nodo.subAreas && nodo.subAreas.length > 0) ||
+                              (nodo.sistemas && nodo.sistemas.length > 0) ||
+                              (nodo.subSistemas && nodo.subSistemas.length > 0);
+            
+            if (tieneHijos) {
+                showToast('⚠️ No se puede eliminar porque tiene elementos hijos', 'warning');
+                return;
+            }
+            
+            if (!confirm(`¿Está seguro de eliminar "${nodo.nombre}"?\n\nEsta acción no se puede deshacer.`)) {
+                return;
+            }
+            
+            // Eliminar el nodo
+            removeNodeById(jerarquiaData.areas, nodeId);
+            renderTreeView();
+            showToast(`🗑️ "${nodo.nombre}" eliminado exitosamente`);
+        }
+
+        // Funciones auxiliares
+        function findNodeById(nodes, id, childKey = null) {
+            if (!nodes) return null;
+            
+            for (let node of nodes) {
+                if (node.id === id) return node;
+                
+                // Buscar en diferentes niveles de hijos
+                const childKeys = childKey ? [childKey] : ['subAreas', 'sistemas', 'subSistemas'];
+                for (let key of childKeys) {
+                    if (node[key]) {
+                        const found = findNodeById(node[key], id);
+                        if (found) return found;
+                    }
+                }
+            }
+            return null;
+        }
+
+        function removeNodeById(nodes, id) {
+            if (!nodes) return false;
+            
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].id === id) {
+                    nodes.splice(i, 1);
+                    return true;
+                }
+                
+                // Buscar recursivamente en hijos
+                if (removeNodeById(nodes[i].subAreas, id)) return true;
+                if (removeNodeById(nodes[i].sistemas, id)) return true;
+                if (removeNodeById(nodes[i].subSistemas, id)) return true;
+            }
+            return false;
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                background: ${type === 'error' ? '#b86b6b' : type === 'warning' ? '#b8925a' : '#5b9b7a'};
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
     </script>
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    </style>
 </body>
 </html>
