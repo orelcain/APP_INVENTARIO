@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jerarquía SAP - Vista de Dependencias</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .view-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .view-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .view-btn:hover:not(.active) {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        /* VISTA 1: Árbol Vertical con Líneas */
+        .tree-view {
+            display: none;
+        }
+
+        .tree-view.active {
+            display: block;
+        }
+
+        .tree-container {
+            overflow-x: auto;
+            padding: 20px;
+        }
+
+        .tree-node {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .node-content {
+            display: inline-block;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .node-content:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .node-id {
+            font-size: 0.8em;
+            opacity: 0.8;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .node-name {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .node-level {
+            font-size: 0.75em;
+            opacity: 0.7;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .tree-children {
+            margin-left: 60px;
+            position: relative;
+        }
+
+        /* Líneas conectoras verticales */
+        .tree-children::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -30px;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+            opacity: 0.5;
+        }
+
+        .tree-node > .tree-children > .tree-node::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: -30px;
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            opacity: 0.5;
+        }
+
+        /* VISTA 2: Organigrama Horizontal */
+        .org-view {
+            display: none;
+            overflow-x: auto;
+            padding: 40px;
+        }
+
+        .org-view.active {
+            display: block;
+        }
+
+        .org-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .org-level {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .org-node {
+            position: relative;
+            min-width: 200px;
+        }
+
+        .org-node-content {
+            padding: 20px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .org-node-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            border-color: #764ba2;
+        }
+
+        .org-node-content .node-id {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .org-node-content .node-name {
+            color: #333;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .org-node-content .node-level {
+            color: #999;
+            font-size: 0.8em;
+        }
+
+        /* Líneas conectoras con SVG */
+        .connector-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .connector-line {
+            stroke: #667eea;
+            stroke-width: 2;
+            fill: none;
+            opacity: 0.6;
+        }
+
+        /* VISTA 3: Red de Dependencias (D3-style simulado) */
+        .network-view {
+            display: none;
+            position: relative;
+            height: 600px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .network-view.active {
+            display: block;
+        }
+
+        .network-node {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: move;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .network-node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .network-node.level-empresa {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 150px;
+            height: 150px;
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .network-node.level-area {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .network-node.level-subarea {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .network-node.level-sistema {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .network-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* Leyenda */
+        .legend {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .legend-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        /* Controles */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tree-node, .org-node, .network-node {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .org-level {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .network-view {
+                height: 400px;
+            }
+
+            .legend {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 Jerarquía SAP - Vista de Dependencias</h1>
+        <p class="subtitle">Visualización interactiva de la estructura organizacional</p>
+
+        <div class="view-toggle">
+            <button class="view-btn active" onclick="switchView('tree')">
+                📊 Árbol Vertical
+            </button>
+            <button class="view-btn" onclick="switchView('org')">
+                🏛️ Organigrama
+            </button>
+            <button class="view-btn" onclick="switchView('network')">
+                🔗 Red de Dependencias
+            </button>
+        </div>
+
+        <!-- VISTA 1: Árbol Vertical -->
+        <div id="treeView" class="tree-view active">
+            <div class="tree-container" id="treeContainer">
+                <!-- Se genera dinámicamente -->
+            </div>
+        </div>
+
+        <!-- VISTA 2: Organigrama -->
+        <div id="orgView" class="org-view">
+            <div class="org-chart" id="orgChart">
+                <!-- Se genera dinámicamente -->
+            </div>
+        </div>
+
+        <!-- VISTA 3: Red de Dependencias -->
+        <div id="networkView" class="network-view">
+            <canvas id="networkCanvas" class="network-canvas"></canvas>
+            <div id="networkNodes"></div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="expandAll()">⬇️ Expandir Todo</button>
+            <button class="control-btn" onclick="collapseAll()">⬆️ Colapsar Todo</button>
+            <button class="control-btn" onclick="resetView()">🔄 Reiniciar Vista</button>
+            <button class="control-btn" onclick="exportView()">💾 Exportar</button>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-title">📋 Niveles Jerárquicos</div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+            <span>Empresa</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+            <span>Área</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+            <span>Sub-Área</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);"></div>
+            <span>Sistema</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+            <span>Sub-Sistema</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);"></div>
+            <span>Sección</span>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo (simulando jerarquía del localStorage)
+        const jerarquiaData = {
+            empresa: {
+                id: 'EMP-01',
+                nombre: 'Planta Procesadora',
+                nivel: 'Empresa'
+            },
+            areas: [
+                {
+                    id: 'AREA-01',
+                    nombre: 'Producción',
+                    nivel: 'Área',
+                    subAreas: [
+                        {
+                            id: 'SUBAREA-01',
+                            nombre: 'Eviscerado',
+                            nivel: 'Sub-Área',
+                            sistemas: [
+                                {
+                                    id: 'SIS-01',
+                                    nombre: 'Línea de Corte',
+                                    nivel: 'Sistema',
+                                    subSistemas: []
+                                },
+                                {
+                                    id: 'SIS-02',
+                                    nombre: 'Mesa de Inspección',
+                                    nivel: 'Sistema',
+                                    subSistemas: []
+                                }
+                            ]
+                        },
+                        {
+                            id: 'SUBAREA-02',
+                            nombre: 'Filete',
+                            nivel: 'Sub-Área',
+                            sistemas: [
+                                {
+                                    id: 'SIS-03',
+                                    nombre: 'Cinta Curva',
+                                    nivel: 'Sistema',
+                                    subSistemas: []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'AREA-02',
+                    nombre: 'Calidad',
+                    nivel: 'Área',
+                    subAreas: [
+                        {
+                            id: 'SUBAREA-03',
+                            nombre: 'Control de Calidad',
+                            nivel: 'Sub-Área',
+                            sistemas: []
+                        }
+                    ]
+                },
+                {
+                    id: 'AREA-03',
+                    nombre: 'Mantenimiento',
+                    nivel: 'Área',
+                    subAreas: []
+                }
+            ]
+        };
+
+        let currentView = 'tree';
+        let collapsedNodes = new Set();
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTreeView();
+            renderOrgView();
+            renderNetworkView();
+        });
+
+        // Cambiar entre vistas
+        function switchView(view) {
+            currentView = view;
+            
+            // Actualizar botones
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Mostrar/ocultar vistas
+            document.querySelectorAll('.tree-view, .org-view, .network-view').forEach(v => v.classList.remove('active'));
+            document.getElementById(view + 'View').classList.add('active');
+        }
+
+        // RENDERIZAR VISTA 1: Árbol Vertical
+        function renderTreeView() {
+            const container = document.getElementById('treeContainer');
+            container.innerHTML = buildTreeHTML(jerarquiaData);
+        }
+
+        function buildTreeHTML(data) {
+            let html = '<div class="tree-node">';
+            
+            // Nodo empresa
+            html += `
+                <div class="node-content" onclick="toggleNode(this)">
+                    <span class="node-id">${data.empresa.id}</span>
+                    <span class="node-name">${data.empresa.nombre}</span>
+                    <span class="node-level">${data.empresa.nivel}</span>
+                </div>
+            `;
+            
+            // Áreas
+            if (data.areas && data.areas.length > 0) {
+                html += '<div class="tree-children">';
+                data.areas.forEach(area => {
+                    html += buildAreaNode(area);
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        function buildAreaNode(area) {
+            let html = '<div class="tree-node">';
+            html += `
+                <div class="node-content" onclick="toggleNode(this)" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <span class="node-id">${area.id}</span>
+                    <span class="node-name">${area.nombre}</span>
+                    <span class="node-level">${area.nivel}</span>
+                </div>
+            `;
+            
+            if (area.subAreas && area.subAreas.length > 0) {
+                html += '<div class="tree-children">';
+                area.subAreas.forEach(subArea => {
+                    html += buildSubAreaNode(subArea);
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        function buildSubAreaNode(subArea) {
+            let html = '<div class="tree-node">';
+            html += `
+                <div class="node-content" onclick="toggleNode(this)" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <span class="node-id">${subArea.id}</span>
+                    <span class="node-name">${subArea.nombre}</span>
+                    <span class="node-level">${subArea.nivel}</span>
+                </div>
+            `;
+            
+            if (subArea.sistemas && subArea.sistemas.length > 0) {
+                html += '<div class="tree-children">';
+                subArea.sistemas.forEach(sistema => {
+                    html += buildSistemaNode(sistema);
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        function buildSistemaNode(sistema) {
+            return `
+                <div class="tree-node">
+                    <div class="node-content" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <span class="node-id">${sistema.id}</span>
+                        <span class="node-name">${sistema.nombre}</span>
+                        <span class="node-level">${sistema.nivel}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // RENDERIZAR VISTA 2: Organigrama
+        function renderOrgView() {
+            const container = document.getElementById('orgChart');
+            let html = '';
+            
+            // Nivel 1: Empresa
+            html += `
+                <div class="org-level">
+                    <div class="org-node">
+                        <div class="org-node-content">
+                            <div class="node-id">${jerarquiaData.empresa.id}</div>
+                            <div class="node-name">${jerarquiaData.empresa.nombre}</div>
+                            <div class="node-level">${jerarquiaData.empresa.nivel}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Nivel 2: Áreas
+            html += '<div class="org-level">';
+            jerarquiaData.areas.forEach(area => {
+                html += `
+                    <div class="org-node">
+                        <div class="org-node-content">
+                            <div class="node-id">${area.id}</div>
+                            <div class="node-name">${area.nombre}</div>
+                            <div class="node-level">${area.nivel}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+        }
+
+        // RENDERIZAR VISTA 3: Red de Dependencias
+        function renderNetworkView() {
+            const container = document.getElementById('networkNodes');
+            const canvas = document.getElementById('networkCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = container.parentElement.offsetWidth;
+            canvas.height = container.parentElement.offsetHeight;
+            
+            // Posiciones de nodos (distribución circular)
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 200;
+            
+            // Nodo empresa (centro)
+            container.innerHTML = `
+                <div class="network-node level-empresa" style="left: ${centerX - 75}px; top: ${centerY - 75}px;">
+                    <div>
+                        <strong>${jerarquiaData.empresa.nombre}</strong><br>
+                        <small>${jerarquiaData.empresa.id}</small>
+                    </div>
+                </div>
+            `;
+            
+            // Nodos áreas (círculo alrededor)
+            jerarquiaData.areas.forEach((area, index) => {
+                const angle = (index / jerarquiaData.areas.length) * 2 * Math.PI;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                
+                container.innerHTML += `
+                    <div class="network-node level-area" style="left: ${x - 60}px; top: ${y - 60}px;">
+                        <div>
+                            <strong>${area.nombre}</strong><br>
+                            <small>${area.id}</small>
+                        </div>
+                    </div>
+                `;
+                
+                // Dibujar línea de conexión
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = '#667eea';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+        }
+
+        // Funciones de control
+        function toggleNode(element) {
+            const parent = element.parentElement;
+            const children = parent.querySelector('.tree-children');
+            if (children) {
+                children.style.display = children.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.tree-children').forEach(el => {
+                el.style.display = 'block';
+            });
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.tree-children').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+
+        function resetView() {
+            if (currentView === 'tree') renderTreeView();
+            else if (currentView === 'org') renderOrgView();
+            else renderNetworkView();
+        }
+
+        function exportView() {
+            alert('Función de exportación: Generaría PNG/SVG de la vista actual');
+        }
+    </script>
+</body>
+</html>
