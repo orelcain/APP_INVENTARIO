@@ -123,20 +123,26 @@
         .node-id {
             font-size: 0.75em;
             opacity: 0.8;
-            display: block;
-            margin-bottom: 3px;
+            flex-shrink: 0;
+            min-width: 50px;
         }
 
         .node-name {
-            font-size: 0.95em;
+            font-size: 0.9em;
             font-weight: 600;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .node-level {
             font-size: 0.7em;
             opacity: 0.7;
-            margin-top: 3px;
-            display: block;
+            flex-shrink: 0;
+            padding: 2px 8px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
         }
 
         .tree-children {
@@ -201,11 +207,15 @@
         }
 
         .org-node-content {
-            padding: 12px 18px;
+            padding: 6px 16px;
             background: #252a33;
             border: 2px solid #5b8bb4;
-            border-radius: 8px;
-            text-align: center;
+            border-radius: 6px;
+            min-width: 280px;
+            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             cursor: pointer;
             transition: all 0.3s ease;
@@ -221,18 +231,27 @@
         .org-node-content .node-id {
             color: #5b8bb4;
             font-weight: 600;
-            font-size: 0.8em;
+            font-size: 0.75em;
+            flex-shrink: 0;
+            min-width: 50px;
         }
 
         .org-node-content .node-name {
             color: #e6e9ef;
-            font-size: 1em;
-            margin: 6px 0;
+            font-size: 0.9em;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .org-node-content .node-level {
             color: #8a909a;
-            font-size: 0.75em;
+            font-size: 0.7em;
+            flex-shrink: 0;
+            padding: 2px 8px;
+            background: rgba(91, 139, 180, 0.2);
+            border-radius: 4px;
         }
 
         /* Líneas conectoras con SVG */
