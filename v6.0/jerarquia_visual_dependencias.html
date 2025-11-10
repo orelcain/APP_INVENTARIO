@@ -486,6 +486,77 @@
             transform: translateY(0);
         }
 
+        .control-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #1a1d23;
+            border-color: #2d333d;
+        }
+
+        .control-btn:disabled:hover {
+            background: #1a1d23;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Botones Undo/Redo flotantes */
+        .undo-redo-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .undo-redo-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #252a33;
+            border: 2px solid #5b8bb4;
+            color: #5b8bb4;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .undo-redo-btn:hover:not(:disabled) {
+            background: #5b8bb4;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(91, 139, 180, 0.4);
+        }
+
+        .undo-redo-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: #2d333d;
+        }
+        
+        .control-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: #2d333d;
+        }
+        
+        .control-btn:disabled:hover {
+            background: #2d333d;
+            transform: none;
+        }
+        
+        .btn-sync {
+            background: #5b9b7a !important;
+        }
+        
+        .btn-sync:hover {
+            background: #4a7d62 !important;
+        }
+
         /* Animaciones */
         @keyframes fadeIn {
             from {
@@ -568,10 +639,12 @@
         </div>
 
         <div class="controls">
+            <button class="control-btn" id="undoBtn" onclick="undo()" title="Deshacer (Ctrl+Z)" disabled>↶ Deshacer</button>
+            <button class="control-btn" id="redoBtn" onclick="redo()" title="Rehacer (Ctrl+Y)" disabled>↷ Rehacer</button>
             <button class="control-btn" onclick="expandAll()">⬇️ Expandir Todo</button>
             <button class="control-btn" onclick="collapseAll()">⬆️ Colapsar Todo</button>
             <button class="control-btn" onclick="resetView()">🔄 Reiniciar Vista</button>
-            <button class="control-btn" onclick="exportView()">💾 Exportar</button>
+            <button class="control-btn btn-sync" onclick="sincronizarConLocalStorage()">� Sincronizar desde App</button>
         </div>
     </div>
 
@@ -604,84 +677,210 @@
     </div>
 
     <script>
-        // Datos de ejemplo (simulando jerarquía del localStorage)
-        const jerarquiaData = {
-            empresa: {
-                id: 'EMP-01',
-                nombre: 'Planta Procesadora',
-                nivel: 'Empresa'
-            },
-            areas: [
-                {
-                    id: 'AREA-01',
-                    nombre: 'Producción',
-                    nivel: 'Área',
-                    subAreas: [
-                        {
-                            id: 'SUBAREA-01',
-                            nombre: 'Eviscerado',
-                            nivel: 'Sub-Área',
-                            sistemas: [
-                                {
-                                    id: 'SIS-01',
-                                    nombre: 'Línea de Corte',
-                                    nivel: 'Sistema',
-                                    subSistemas: []
-                                },
-                                {
-                                    id: 'SIS-02',
-                                    nombre: 'Mesa de Inspección',
-                                    nivel: 'Sistema',
-                                    subSistemas: []
-                                }
-                            ]
-                        },
-                        {
-                            id: 'SUBAREA-02',
-                            nombre: 'Filete',
-                            nivel: 'Sub-Área',
-                            sistemas: [
-                                {
-                                    id: 'SIS-03',
-                                    nombre: 'Cinta Curva',
-                                    nivel: 'Sistema',
-                                    subSistemas: []
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    id: 'AREA-02',
-                    nombre: 'Calidad',
-                    nivel: 'Área',
-                    subAreas: [
-                        {
-                            id: 'SUBAREA-03',
-                            nombre: 'Control de Calidad',
-                            nivel: 'Sub-Área',
-                            sistemas: []
-                        }
-                    ]
-                },
-                {
-                    id: 'AREA-03',
-                    nombre: 'Mantenimiento',
-                    nivel: 'Área',
-                    subAreas: []
-                }
-            ]
-        };
-
+        // === CONFIGURACIÓN Y VARIABLES GLOBALES ===
         let currentView = 'tree';
         let collapsedNodes = new Set();
+        let jerarquiaData = null;
+        let historyStack = [];
+        let historyIndex = -1;
+        const MAX_HISTORY = 50;
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
+            loadFromLocalStorage();
             renderTreeView();
             renderOrgView();
             renderNetworkView();
+            updateUndoRedoButtons();
+            setupKeyboardShortcuts();
         });
+        
+        // === FUNCIONES DE PERSISTENCIA ===
+        function loadFromLocalStorage() {
+            try {
+                const stored = localStorage.getItem('jerarquiaAnidada');
+                if (stored) {
+                    jerarquiaData = JSON.parse(stored);
+                    console.log('✅ Datos cargados desde localStorage');
+                    showToast('📂 Datos cargados correctamente', 'success');
+                } else {
+                    jerarquiaData = getMockData();
+                    console.log('ℹ️ Usando datos de ejemplo');
+                    showToast('ℹ️ Iniciando con datos de ejemplo', 'info');
+                }
+                // Guardar estado inicial
+                saveState();
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                jerarquiaData = getMockData();
+                showToast('⚠️ Error cargando datos, usando ejemplos', 'warning');
+            }
+        }
+        
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('jerarquiaAnidada', JSON.stringify(jerarquiaData));
+                console.log('✅ Datos guardados en localStorage');
+            } catch (error) {
+                console.error('Error guardando datos:', error);
+                showToast('❌ Error al guardar datos', 'error');
+            }
+        }
+        
+        // === SISTEMA DE HISTORIAL (UNDO/REDO) ===
+        function saveState() {
+            const currentState = JSON.stringify(jerarquiaData);
+            
+            // Eliminar estados futuros si estamos en medio del historial
+            if (historyIndex < historyStack.length - 1) {
+                historyStack = historyStack.slice(0, historyIndex + 1);
+            }
+            
+            historyStack.push(currentState);
+            
+            // Limitar tamaño del historial
+            if (historyStack.length > MAX_HISTORY) {
+                historyStack.shift();
+            } else {
+                historyIndex++;
+            }
+            
+            updateUndoRedoButtons();
+        }
+        
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                jerarquiaData = JSON.parse(historyStack[historyIndex]);
+                saveToLocalStorage();
+                renderCurrentView();
+                updateUndoRedoButtons();
+                showToast('↶ Cambio deshecho', 'success');
+            } else {
+                showToast('⚠️ No hay más cambios para deshacer', 'warning');
+            }
+        }
+        
+        function redo() {
+            if (historyIndex < historyStack.length - 1) {
+                historyIndex++;
+                jerarquiaData = JSON.parse(historyStack[historyIndex]);
+                saveToLocalStorage();
+                renderCurrentView();
+                updateUndoRedoButtons();
+                showToast('↷ Cambio rehecho', 'success');
+            } else {
+                showToast('⚠️ No hay más cambios para rehacer', 'warning');
+            }
+        }
+        
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('undoBtn');
+            const redoBtn = document.getElementById('redoBtn');
+            
+            if (undoBtn) {
+                undoBtn.disabled = historyIndex <= 0;
+                undoBtn.style.opacity = historyIndex <= 0 ? '0.3' : '1';
+            }
+            if (redoBtn) {
+                redoBtn.disabled = historyIndex >= historyStack.length - 1;
+                redoBtn.style.opacity = historyIndex >= historyStack.length - 1 ? '0.3' : '1';
+            }
+        }
+        
+        // Atajos de teclado
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                // Ctrl+Z para Undo
+                if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+                    e.preventDefault();
+                    undo();
+                }
+                // Ctrl+Y o Ctrl+Shift+Z para Redo
+                else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) {
+                    e.preventDefault();
+                    redo();
+                }
+            });
+        }
+        
+        // Renderizar vista actual
+        function renderCurrentView() {
+            if (currentView === 'tree') renderTreeView();
+            else if (currentView === 'org') renderOrgView();
+            else renderNetworkView();
+        }
+        
+        // Datos de ejemplo
+        function getMockData() {
+            return {
+                empresa: {
+                    id: 'EMP-01',
+                    nombre: 'Aquachile Antarfood Chonchi',
+                    nivel: 'Empresa'
+                },
+                areas: [
+                    {
+                        id: 'AREA-01',
+                        nombre: 'Planta Principal',
+                        nivel: 'Área',
+                        subAreas: [
+                            {
+                                id: 'SUBAREA-01',
+                                nombre: 'Eviscerado',
+                                nivel: 'Sub-Área',
+                                sistemas: [
+                                    {
+                                        id: 'SIS-01',
+                                        nombre: 'Línea de Corte',
+                                        nivel: 'Sistema',
+                                        subSistemas: []
+                                    },
+                                    {
+                                        id: 'SIS-02',
+                                        nombre: 'Mesa de Inspección',
+                                        nivel: 'Sistema',
+                                        subSistemas: []
+                                    }
+                                ]
+                            },
+                            {
+                                id: 'SUBAREA-02',
+                                nombre: 'Filete',
+                                nivel: 'Sub-Área',
+                                sistemas: [
+                                    {
+                                        id: 'SIS-03',
+                                        nombre: 'Cinta Curva',
+                                        nivel: 'Sistema',
+                                        subSistemas: []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'AREA-02',
+                        nombre: 'Calidad',
+                        nivel: 'Área',
+                        subAreas: [
+                            {
+                                id: 'SUBAREA-03',
+                                nombre: 'Control de Calidad',
+                                nivel: 'Sub-Área',
+                                sistemas: []
+                            }
+                        ]
+                    },
+                    {
+                        id: 'AREA-03',
+                        nombre: 'Mantenimiento',
+                        nivel: 'Área',
+                        subAreas: []
+                    }
+                ]
+            };
+        }
 
         // Cambiar entre vistas
         function switchView(view) {
@@ -923,16 +1122,38 @@
             else renderNetworkView();
         }
 
-        function exportView() {
-            alert('Función de exportación: Generaría PNG/SVG de la vista actual');
+        // Sincronizar con app principal
+        function sincronizarConLocalStorage() {
+            try {
+                const stored = localStorage.getItem('jerarquiaAnidada');
+                if (stored) {
+                    jerarquiaData = JSON.parse(stored);
+                    renderCurrentView();
+                    showToast('✅ Sincronizado con la aplicación principal', 'success');
+                } else {
+                    showToast('⚠️ No hay datos en localStorage', 'warning');
+                }
+            } catch (error) {
+                console.error('Error sincronizando:', error);
+                showToast('❌ Error al sincronizar', 'error');
+            }
+        }
+
+        function renderCurrentView() {
+            if (currentView === 'tree') renderTreeView();
+            else if (currentView === 'org') renderOrgView();
+            else renderNetworkView();
+            updateUndoRedoButtons();
         }
 
         // === FUNCIONES DE CRUD ===
         function agregarNodo(tipo, parentId) {
+            saveState(); // Guardar estado antes de cambiar
+            
             const nombre = prompt(`Ingrese el nombre del nuevo ${tipo}:`);
             if (!nombre) return;
             
-            const id = `${tipo.toUpperCase()}-${Date.now().toString().slice(-4)}`;
+            const id = `${tipo.toUpperCase().substring(0, 4)}-${Date.now().toString().slice(-4)}`;
             const nuevoNodo = {
                 id: id,
                 nombre: nombre,
@@ -959,11 +1180,14 @@
                 }
             }
             
-            renderTreeView();
+            saveToLocalStorage();
+            renderCurrentView();
             showToast(`✅ ${tipo} "${nombre}" agregado exitosamente`);
         }
 
         function editarNodo(tipo, nodeId) {
+            saveState(); // Guardar estado antes de cambiar
+            
             let nodo;
             if (tipo === 'empresa') {
                 nodo = jerarquiaData.empresa;
@@ -979,7 +1203,8 @@
             const nuevoNombre = prompt(`Editar nombre de ${tipo}:`, nodo.nombre);
             if (nuevoNombre && nuevoNombre !== nodo.nombre) {
                 nodo.nombre = nuevoNombre;
-                renderTreeView();
+                saveToLocalStorage();
+                renderCurrentView();
                 showToast(`✏️ ${tipo} actualizado exitosamente`);
             }
         }
@@ -1005,9 +1230,12 @@
                 return;
             }
             
+            saveState(); // Guardar estado antes de eliminar
+            
             // Eliminar el nodo
             removeNodeById(jerarquiaData.areas, nodeId);
-            renderTreeView();
+            saveToLocalStorage();
+            renderCurrentView();
             showToast(`🗑️ "${nodo.nombre}" eliminado exitosamente`);
         }
 
@@ -1047,6 +1275,32 @@
             return false;
         }
 
+        // === FUNCIONES DE PERSISTENCIA ===
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('jerarquiaAnidada', JSON.stringify(jerarquiaData));
+                console.log('✅ Datos guardados en localStorage');
+            } catch (error) {
+                console.error('Error guardando en localStorage:', error);
+                showToast('❌ Error al guardar datos', 'error');
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const stored = localStorage.getItem('jerarquiaAnidada');
+                if (stored) {
+                    jerarquiaData = JSON.parse(stored);
+                    console.log('✅ Datos cargados desde localStorage');
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('Error cargando desde localStorage:', error);
+                return false;
+            }
+        }
+
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
@@ -1062,6 +1316,7 @@
                 box-shadow: 0 4px 12px rgba(0,0,0,0.3);
                 z-index: 10000;
                 animation: slideIn 0.3s ease-out;
+                font-weight: 600;
             `;
             document.body.appendChild(toast);
             
@@ -1070,6 +1325,29 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            // Intentar cargar desde localStorage
+            const loaded = loadFromLocalStorage();
+            if (!loaded) {
+                console.log('No hay datos en localStorage, usando datos de ejemplo');
+            }
+            
+            renderTreeView();
+            updateUndoRedoButtons();
+            
+            // Atajos de teclado
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'z') {
+                    e.preventDefault();
+                    undo();
+                } else if (e.ctrlKey && e.key === 'y') {
+                    e.preventDefault();
+                    redo();
+                }
+            });
+        });
     </script>
     <style>
         @keyframes slideIn {
