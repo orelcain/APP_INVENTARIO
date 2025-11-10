@@ -1146,46 +1146,97 @@
             updateUndoRedoButtons();
         }
 
-        // === FUNCIONES DE CRUD ===
-        function agregarNodo(tipo, parentId) {
+        // === FUNCIONES DE CRUD MEJORADAS (como la app) ===
+        async function agregarNodo(tipo, parentId) {
             saveState(); // Guardar estado antes de cambiar
             
-            const nombre = prompt(`Ingrese el nombre del nuevo ${tipo}:`);
-            if (!nombre) return;
+            const labels = {
+                area: 'Nueva Área (N2)',
+                subArea: 'Nueva Sub-Área (N3)',
+                sistema: 'Nuevo Sistema (N4)',
+                subSistema: 'Nuevo Sub-Sistema (N5)',
+                seccion: 'Nueva Sección (N6)',
+                subSeccion: 'Nueva Sub-Sección (N7)'
+            };
             
-            const id = `${tipo.toUpperCase().substring(0, 4)}-${Date.now().toString().slice(-4)}`;
+            const ejemplos = {
+                area: 'Ejemplo: AREA-01, PLANT-PRIN',
+                subArea: 'Ejemplo: EVIS, FILET, EMPAR',
+                sistema: 'Ejemplo: GRAD, GEA, BOMB-01',
+                subSistema: 'Ejemplo: CINTA-L, MOT-PRIN',
+                seccion: 'Ejemplo: SIST-ELEC, SIST-MEC',
+                subSeccion: 'Ejemplo: PANEL-CTL, CABLEADO'
+            };
+            
+            const label = labels[tipo] || 'Nuevo Elemento';
+            const ejemplo = ejemplos[tipo] || '';
+            
+            const resultado = await showDualInputModal(
+                `Agregar ${label}`,
+                'Código/ID abreviado:',
+                '',
+                ejemplo,
+                'Nombre completo:',
+                ''
+            );
+            
+            if (!resultado || !resultado.input1.trim() || !resultado.input2.trim()) {
+                showToast('⚠️ Operación cancelada', 'warning');
+                return;
+            }
+            
             const nuevoNodo = {
-                id: id,
-                nombre: nombre,
+                id: resultado.input1.trim().toUpperCase(),
+                nombre: resultado.input2.trim(),
                 nivel: tipo.charAt(0).toUpperCase() + tipo.slice(1)
             };
             
-            if (tipo === 'area') {
-                if (!jerarquiaData.areas) jerarquiaData.areas = [];
-                nuevoNodo.subAreas = [];
-                jerarquiaData.areas.push(nuevoNodo);
-            } else if (tipo === 'subArea') {
-                const area = findNodeById(jerarquiaData.areas, parentId);
-                if (area) {
-                    if (!area.subAreas) area.subAreas = [];
-                    nuevoNodo.sistemas = [];
-                    area.subAreas.push(nuevoNodo);
-                }
-            } else if (tipo === 'sistema') {
-                const subArea = findNodeById(jerarquiaData.areas, parentId, 'subAreas');
-                if (subArea) {
-                    if (!subArea.sistemas) subArea.sistemas = [];
-                    nuevoNodo.subSistemas = [];
-                    subArea.sistemas.push(nuevoNodo);
-                }
-            }
+            // Agregar arrays hijos según el tipo
+            if (tipo === 'area') nuevoNodo.subAreas = [];
+            if (tipo === 'subArea') nuevoNodo.sistemas = [];
+            if (tipo === 'sistema') nuevoNodo.subSistemas = [];
+            if (tipo === 'subSistema') nuevoNodo.secciones = [];
+            if (tipo === 'seccion') nuevoNodo.subSecciones = [];
             
-            saveToLocalStorage();
-            renderCurrentView();
-            showToast(`✅ ${tipo} "${nombre}" agregado exitosamente`);
+            try {
+                if (tipo === 'area') {
+                    if (!jerarquiaData.areas) jerarquiaData.areas = [];
+                    jerarquiaData.areas.push(nuevoNodo);
+                } else {
+                    const parent = findNodeById(jerarquiaData.areas, parentId);
+                    if (parent) {
+                        if (tipo === 'subArea') {
+                            if (!parent.subAreas) parent.subAreas = [];
+                            parent.subAreas.push(nuevoNodo);
+                        } else if (tipo === 'sistema') {
+                            if (!parent.sistemas) parent.sistemas = [];
+                            parent.sistemas.push(nuevoNodo);
+                        } else if (tipo === 'subSistema') {
+                            if (!parent.subSistemas) parent.subSistemas = [];
+                            parent.subSistemas.push(nuevoNodo);
+                        } else if (tipo === 'seccion') {
+                            if (!parent.secciones) parent.secciones = [];
+                            parent.secciones.push(nuevoNodo);
+                        } else if (tipo === 'subSeccion') {
+                            if (!parent.subSecciones) parent.subSecciones = [];
+                            parent.subSecciones.push(nuevoNodo);
+                        }
+                    } else {
+                        showToast('❌ Nodo padre no encontrado', 'error');
+                        return;
+                    }
+                }
+                
+                saveToLocalStorage();
+                renderCurrentView();
+                showToast(`✅ ${label} agregado: ${resultado.input2}`, 'success');
+            } catch (error) {
+                console.error('Error agregando nodo:', error);
+                showToast('❌ Error al agregar elemento', 'error');
+            }
         }
 
-        function editarNodo(tipo, nodeId) {
+        async function editarNodo(tipo, nodeId) {
             saveState(); // Guardar estado antes de cambiar
             
             let nodo;
@@ -1200,16 +1251,57 @@
                 return;
             }
             
-            const nuevoNombre = prompt(`Editar nombre de ${tipo}:`, nodo.nombre);
-            if (nuevoNombre && nuevoNombre !== nodo.nombre) {
-                nodo.nombre = nuevoNombre;
-                saveToLocalStorage();
-                renderCurrentView();
-                showToast(`✏️ ${tipo} actualizado exitosamente`);
+            const labels = {
+                empresa: 'Empresa',
+                area: 'Área',
+                subArea: 'Sub-Área',
+                sistema: 'Sistema',
+                subSistema: 'Sub-Sistema',
+                seccion: 'Sección',
+                subSeccion: 'Sub-Sección'
+            };
+            
+            const ejemplos = {
+                empresa: 'Ejemplo: EMP-01',
+                area: 'Ejemplo: AREA-01, PLANT-PRIN',
+                subArea: 'Ejemplo: EVIS, FILET, EMPAR',
+                sistema: 'Ejemplo: GRAD, GEA, BOMB-01',
+                subSistema: 'Ejemplo: CINTA-L, MOT-PRIN',
+                seccion: 'Ejemplo: SIST-ELEC, SIST-MEC',
+                subSeccion: 'Ejemplo: PANEL-CTL, CABLEADO'
+            };
+            
+            const label = labels[tipo] || 'Elemento';
+            const ejemplo = ejemplos[tipo] || '';
+            
+            const resultado = await showDualInputModal(
+                `Editar ${label}`,
+                'Código/ID:',
+                nodo.id,
+                ejemplo,
+                'Nombre:',
+                nodo.nombre
+            );
+            
+            if (!resultado) {
+                showToast('⚠️ Operación cancelada', 'warning');
+                return;
             }
+            
+            if (resultado.input1.trim() && resultado.input1 !== nodo.id) {
+                nodo.id = resultado.input1.trim().toUpperCase();
+            }
+            
+            if (resultado.input2.trim() && resultado.input2 !== nodo.nombre) {
+                nodo.nombre = resultado.input2.trim();
+            }
+            
+            saveToLocalStorage();
+            renderCurrentView();
+            showToast(`✏️ ${label} actualizado`, 'success');
         }
 
-        function eliminarNodo(tipo, nodeId) {
+        async function eliminarNodo(tipo, nodeId) {
             const nodo = findNodeById(jerarquiaData.areas, nodeId);
             if (!nodo) {
                 showToast('❌ Nodo no encontrado', 'error');
@@ -1219,14 +1311,19 @@
             // Verificar si tiene hijos
             const tieneHijos = (nodo.subAreas && nodo.subAreas.length > 0) ||
                               (nodo.sistemas && nodo.sistemas.length > 0) ||
-                              (nodo.subSistemas && nodo.subSistemas.length > 0);
+                              (nodo.subSistemas && nodo.subSistemas.length > 0) ||
+                              (nodo.secciones && nodo.secciones.length > 0) ||
+                              (nodo.subSecciones && nodo.subSecciones.length > 0);
             
             if (tieneHijos) {
-                showToast('⚠️ No se puede eliminar porque tiene elementos hijos', 'warning');
+                showToast(`⚠️ No se puede eliminar "${nodo.nombre}" porque tiene elementos hijos. Elimina primero los hijos.`, 'warning');
                 return;
             }
             
-            if (!confirm(`¿Está seguro de eliminar "${nodo.nombre}"?\n\nEsta acción no se puede deshacer.`)) {
+            const confirmar = await showConfirmModal(`¿Está seguro de eliminar "${nodo.nombre}"?\n\nEsta acción no se puede deshacer.`);
+            
+            if (!confirmar) {
+                showToast('⚠️ Operación cancelada', 'warning');
                 return;
             }
             
@@ -1326,6 +1423,152 @@
             }, 3000);
         }
 
+        // === MODALES AVANZADOS ===
+        function showDualInputModal(titulo, label1, valor1, placeholder1, label2, valor2) {
+            return new Promise((resolve) => {
+                // Crear overlay
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.7);
+                    backdrop-filter: blur(4px);
+                    z-index: 9998;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: fadeIn 0.2s ease-out;
+                `;
+                
+                // Crear modal
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    background: #252a33;
+                    border-radius: 12px;
+                    padding: 30px;
+                    max-width: 500px;
+                    width: 90%;
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+                    border: 1px solid #3a4049;
+                    animation: slideUp 0.3s ease-out;
+                `;
+                
+                modal.innerHTML = `
+                    <h3 style="margin: 0 0 20px 0; color: #5b8bb4; font-size: 1.4em;">${titulo}</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 8px; color: #b8bec8; font-weight: 600;">${label1}</label>
+                        <input type="text" id="dualInput1" value="${valor1}" placeholder="${placeholder1}"
+                               style="width: 100%; padding: 12px; background: #1a1d23; border: 1px solid #3a4049; border-radius: 6px; color: #e6e9ef; font-size: 1em;">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; color: #b8bec8; font-weight: 600;">${label2}</label>
+                        <input type="text" id="dualInput2" value="${valor2}"
+                               style="width: 100%; padding: 12px; background: #1a1d23; border: 1px solid #3a4049; border-radius: 6px; color: #e6e9ef; font-size: 1em;">
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button id="btnModalOk" style="flex: 1; padding: 12px; background: #5b8bb4; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 1em;">
+                            ✓ Aceptar
+                        </button>
+                        <button id="btnModalCancel" style="flex: 1; padding: 12px; background: #1a1d23; color: #b8bec8; border: 1px solid #3a4049; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 1em;">
+                            ✕ Cancelar
+                        </button>
+                    </div>
+                `;
+                
+                overlay.appendChild(modal);
+                document.body.appendChild(overlay);
+                
+                const input1 = document.getElementById('dualInput1');
+                const input2 = document.getElementById('dualInput2');
+                input1.focus();
+                input1.select();
+                
+                const cerrar = (resultado) => {
+                    overlay.style.animation = 'fadeOut 0.2s ease-out';
+                    setTimeout(() => overlay.remove(), 200);
+                    resolve(resultado);
+                };
+                
+                document.getElementById('btnModalOk').onclick = () => {
+                    cerrar({ input1: input1.value, input2: input2.value });
+                };
+                
+                document.getElementById('btnModalCancel').onclick = () => cerrar(null);
+                overlay.onclick = (e) => {
+                    if (e.target === overlay) cerrar(null);
+                };
+                
+                input2.onkeypress = (e) => {
+                    if (e.key === 'Enter') {
+                        cerrar({ input1: input1.value, input2: input2.value });
+                    }
+                };
+            });
+        }
+
+        function showConfirmModal(mensaje) {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.7);
+                    backdrop-filter: blur(4px);
+                    z-index: 9998;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: fadeIn 0.2s ease-out;
+                `;
+                
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    background: #252a33;
+                    border-radius: 12px;
+                    padding: 30px;
+                    max-width: 450px;
+                    width: 90%;
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+                    border: 1px solid #3a4049;
+                    animation: slideUp 0.3s ease-out;
+                `;
+                
+                modal.innerHTML = `
+                    <h3 style="margin: 0 0 15px 0; color: #b8925a; font-size: 1.3em;">⚠️ Confirmar Acción</h3>
+                    <p style="color: #e6e9ef; line-height: 1.5; margin-bottom: 20px; white-space: pre-line;">${mensaje}</p>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="btnConfirmOk" style="flex: 1; padding: 12px; background: #b86b6b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 1em;">
+                            🗑️ Sí, Eliminar
+                        </button>
+                        <button id="btnConfirmCancel" style="flex: 1; padding: 12px; background: #1a1d23; color: #b8bec8; border: 1px solid #3a4049; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 1em;">
+                            Cancelar
+                        </button>
+                    </div>
+                `;
+                
+                overlay.appendChild(modal);
+                document.body.appendChild(overlay);
+                
+                const cerrar = (resultado) => {
+                    overlay.style.animation = 'fadeOut 0.2s ease-out';
+                    setTimeout(() => overlay.remove(), 200);
+                    resolve(resultado);
+                };
+                
+                document.getElementById('btnConfirmOk').onclick = () => cerrar(true);
+                document.getElementById('btnConfirmCancel').onclick = () => cerrar(false);
+                overlay.onclick = (e) => {
+                    if (e.target === overlay) cerrar(false);
+                };
+            });
+        }
+
         // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
             // Intentar cargar desde localStorage
@@ -1368,6 +1611,26 @@
             }
             to {
                 transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
                 opacity: 0;
             }
         }
