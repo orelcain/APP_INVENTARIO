@@ -101,10 +101,10 @@
         .node-content {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 4px 16px;
-            min-width: 280px;
-            max-width: 400px;
+            gap: 6px;
+            padding: 6px 12px;
+            min-width: 320px;
+            max-width: fit-content;
             background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
             color: white;
             border-radius: 6px;
@@ -113,6 +113,7 @@
             transition: all 0.3s ease;
             position: relative;
             z-index: 2;
+            height: 32px;
         }
 
         .node-content:hover {
@@ -123,8 +124,9 @@
         /* Botones de acción en los nodos */
         .node-actions {
             display: none;
-            gap: 4px;
+            gap: 3px;
             margin-left: auto;
+            flex-shrink: 0;
         }
 
         .node-content:hover .node-actions {
@@ -132,14 +134,16 @@
         }
 
         .node-btn {
-            padding: 2px 8px;
+            padding: 3px 6px;
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 4px;
             color: white;
-            font-size: 0.8em;
+            font-size: 0.7em;
             cursor: pointer;
             transition: all 0.2s ease;
+            white-space: nowrap;
+            line-height: 1;
         }
 
         .node-btn:hover {
@@ -170,15 +174,17 @@
 
         /* === DRAG & DROP === */
         .drag-handle {
-            font-size: 1.2em;
+            font-size: 1em;
             color: rgba(255, 255, 255, 0.95);
             cursor: pointer;
-            margin-right: 8px;
+            margin-right: 4px;
             transition: all 0.2s ease;
             -webkit-user-select: none;
             user-select: none;
             flex-shrink: 0;
             padding: 2px;
+            width: 16px;
+            text-align: center;
         }
 
         .drag-handle:hover {
@@ -248,8 +254,8 @@
             font-size: 1em;
             color: rgba(255, 255, 255, 0.9);
             cursor: pointer;
-            margin-right: 8px;
-            width: 20px;
+            margin-right: 4px;
+            width: 16px;
             text-align: center;
             transition: all 0.2s ease;
             -webkit-user-select: none;
@@ -271,77 +277,340 @@
         }
 
         .node-id {
-            font-size: 0.8em;
+            font-size: 0.75em;
             opacity: 0.9;
             flex-shrink: 0;
-            min-width: 50px;
+            padding: 2px 6px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 3px;
+            white-space: nowrap;
         }
 
         .node-name {
-            font-size: 0.95em;
+            font-size: 0.85em;
             font-weight: 600;
-            flex: 1;
+            flex: 0 1 auto;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            max-width: 200px;
         }
 
         .node-level {
-            font-size: 0.75em;
+            font-size: 0.7em;
             opacity: 0.8;
             flex-shrink: 0;
-            padding: 2px 8px;
+            padding: 2px 6px;
             background: rgba(0, 0, 0, 0.15);
             border-radius: 3px;
+            white-space: nowrap;
         }
 
         .tree-children {
-            margin-left: 50px;
+            margin-left: 60px;
             position: relative;
-            padding-left: 30px;
+            padding-top: 0;
         }
 
-        /* Líneas conectoras verticales mejoradas con curvas SVG-style */
-        .tree-children::before {
+        /* ========================================
+           PASO 1: Conectar EMPRESA con ÁREAS
+           ======================================== */
+
+        /* Línea vertical que conecta las ÁREAS - altura dinámica */
+        .tree-container > .tree-node > .tree-children::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
+            top: -16px;
+            bottom: 16px; /* Termina en el centro del último hijo */
+            left: -30px;
             width: 3px;
-            height: calc(100% - 20px);
-            background: linear-gradient(180deg, #5b8bb4 0%, #4a7090 50%, rgba(91, 139, 180, 0.3) 100%);
+            background: linear-gradient(180deg, 
+                #5b8bb4 0%, 
+                #5b8bb4 100%
+            );
             border-radius: 3px;
             box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
         }
 
-        .tree-node > .tree-children > .tree-node::before {
+        /* Línea horizontal de la vertical a cada ÁREA */
+        .tree-container > .tree-node > .tree-children > .tree-node::before {
             content: '';
             position: absolute;
-            top: 18px;
+            top: 16px;
             left: -30px;
             width: 30px;
             height: 3px;
-            background: linear-gradient(90deg, #5b8bb4 0%, #7ba5c8 100%);
+            background: #5b8bb4;
             border-radius: 3px;
-            box-shadow: 0 0 6px rgba(91, 139, 180, 0.3);
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
         }
 
-        /* Puntos de conexión en los nodos */
-        .tree-node > .tree-children > .tree-node::after {
+        /* Puntos de conexión en cada ÁREA */
+        .tree-container > .tree-node > .tree-children > .tree-node::after {
             content: '';
             position: absolute;
-            top: 15px;
+            top: 12px;
             left: -33px;
-            width: 8px;
-            height: 8px;
-            background: #5b8bb4;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
             border: 2px solid #1a1d23;
             border-radius: 50%;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.6);
-            z-index: 3;
+            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            z-index: 2;
         }
 
-        /* VISTA 2: Organigrama Horizontal */
+        /* ========================================
+           PASO 2: Conectar ÁREA con SUB-ÁREAS
+           ======================================== */
+
+        /* Línea vertical que conecta las SUB-ÁREAS de cada ÁREA */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children::before {
+            content: '';
+            position: absolute;
+            top: -16px;
+            bottom: 16px; /* Termina en el centro del último hijo */
+            left: -30px;
+            width: 3px;
+            background: linear-gradient(180deg, 
+                #5b8bb4 0%, 
+                #5b8bb4 100%
+            );
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
+        }
+
+        /* Línea horizontal de la vertical a cada SUB-ÁREA */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: -30px;
+            width: 30px;
+            height: 3px;
+            background: #5b8bb4;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
+        }
+
+        /* Puntos de conexión en cada SUB-ÁREA */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: -33px;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
+            border: 2px solid #1a1d23;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            z-index: 2;
+        }
+
+        /* ========================================
+           PASO 3: Conectar SUB-ÁREA con SISTEMAS
+           ======================================== */
+
+        /* Línea vertical que conecta los SISTEMAS de cada SUB-ÁREA */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children::before {
+            content: '';
+            position: absolute;
+            top: -16px;
+            bottom: 16px; /* Termina en el centro del último hijo */
+            left: -30px;
+            width: 3px;
+            background: linear-gradient(180deg, 
+                #5b8bb4 0%, 
+                #5b8bb4 100%
+            );
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
+        }
+
+        /* Línea horizontal de la vertical a cada SISTEMA */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: -30px;
+            width: 30px;
+            height: 3px;
+            background: #5b8bb4;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
+        }
+
+        /* Puntos de conexión en cada SISTEMA */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: -33px;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
+            border: 2px solid #1a1d23;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            z-index: 2;
+        }
+
+        /* ========================================
+           PASO 4: Conectar SISTEMA con SUB-SISTEMAS
+           ======================================== */
+
+        /* Línea vertical que conecta los SUB-SISTEMAS de cada SISTEMA */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children::before {
+            content: '';
+            position: absolute;
+            top: -16px;
+            bottom: 24px; /* Ajuste para que funcione con hijos pares e impares */
+            left: -30px;
+            width: 3px;
+            background: linear-gradient(180deg, 
+                #5b8bb4 0%, 
+                #5b8bb4 100%
+            );
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
+        }
+
+        /* Línea horizontal de la vertical a cada SUB-SISTEMA */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: -30px;
+            width: 30px;
+            height: 3px;
+            background: #5b8bb4;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
+        }
+
+        /* Puntos de conexión en cada SUB-SISTEMA */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: -33px;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
+            border: 2px solid #1a1d23;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            z-index: 2;
+        }
+
+        /* ========================================
+           PASO 5: Conectar SUB-SISTEMA con SECCIONES
+           ======================================== */
+
+        /* Línea vertical que conecta las SECCIONES de cada SUB-SISTEMA */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children::before {
+            content: '';
+            position: absolute;
+            top: -16px;
+            bottom: 24px; /* Ajuste para que funcione con hijos pares e impares */
+            left: -30px;
+            width: 3px;
+            background: linear-gradient(180deg, 
+                #5b8bb4 0%, 
+                #5b8bb4 100%
+            );
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
+        }
+
+        /* Línea horizontal de la vertical a cada SECCIÓN */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: -30px;
+            width: 30px;
+            height: 3px;
+            background: #5b8bb4;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
+        }
+
+        /* Puntos de conexión en cada SECCIÓN */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: -33px;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
+            border: 2px solid #1a1d23;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            z-index: 2;
+        }
+
+        /* ========================================
+           PASO 6: Conectar SECCIÓN con SUB-SECCIONES
+           ======================================== */
+
+        /* Línea vertical que conecta las SUB-SECCIONES de cada SECCIÓN */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children::before {
+            content: '';
+            position: absolute;
+            top: -16px;
+            bottom: 24px; /* Ajuste para que funcione con hijos pares e impares */
+            left: -30px;
+            width: 3px;
+            background: linear-gradient(180deg, 
+                #5b8bb4 0%, 
+                #5b8bb4 100%
+            );
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
+        }
+
+        /* Línea horizontal de la vertical a cada SUB-SECCIÓN */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: -30px;
+            width: 30px;
+            height: 3px;
+            background: #5b8bb4;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            z-index: 1;
+        }
+
+        /* Puntos de conexión en cada SUB-SECCIÓN */
+        .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: -33px;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
+            border: 2px solid #1a1d23;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            z-index: 2;
+        }
         .org-view {
             display: none;
             overflow-x: auto;
@@ -1023,6 +1292,12 @@
             
             updateUndoRedoButtons();
         }
+
+        // ========================================
+        // OPCIÓN 5: Dibujar líneas SVG dinámicas
+        // ========================================
+        // (Función removida - comenzando desde cero)
+        // ========================================
         
         function undo() {
             if (historyIndex > 0) {
@@ -1188,8 +1463,8 @@
                     <span class="node-name">${data.empresa.nombre}</span>
                     <span class="node-level">${data.empresa.nivel || 'Empresa'}</span>
                     <div class="node-actions">
-                        <button class="node-btn node-btn-edit" onclick="editarNodo('empresa')" title="Editar">✏️</button>
-                        <button class="node-btn node-btn-add" onclick="agregarNodo('area')" title="+ Área">+</button>
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('empresa')" title="Editar">Editar</button>
+                        <button class="node-btn node-btn-add" onclick="agregarNodo('area')" title="Agregar Área">+ Área</button>
                     </div>
                 </div>
             `;
@@ -1221,14 +1496,14 @@
             html += `
                 <div class="node-content" style="background: linear-gradient(135deg, #b86b6b 0%, #985555 100%);">
                     <span class="drag-handle" onclick="openMoveModal('area', '${area.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
-                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 20px;"></span>'}
+                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px;"></span>'}
                     <span class="node-id">${area.id}</span>
                     <span class="node-name">${area.nombre}</span>
                     <span class="node-level">${area.nivel || 'Área'}</span>
                     <div class="node-actions">
-                        <button class="node-btn node-btn-edit" onclick="editarNodo('area', '${area.id}')" title="Editar">✏️</button>
-                        <button class="node-btn node-btn-add" onclick="agregarNodo('subArea', '${area.id}')" title="+ Sub-Área">+</button>
-                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('area', '${area.id}')" title="Eliminar">🗑️</button>
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('area', '${area.id}')" title="Editar">Editar</button>
+                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('area', '${area.id}')" title="Eliminar">Eliminar</button>
+                        <button class="node-btn node-btn-add" onclick="agregarNodo('subArea', '${area.id}')" title="Agregar Sub-Área">+ Sub-Área</button>
                     </div>
                 </div>
             `;
@@ -1259,14 +1534,14 @@
             html += `
                 <div class="node-content" style="background: linear-gradient(135deg, #5b9b7a 0%, #4a7d62 100%);">
                     <span class="drag-handle" onclick="openMoveModal('subArea', '${subArea.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
-                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 20px;"></span>'}
+                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px;"></span>'}
                     <span class="node-id">${subArea.id}</span>
                     <span class="node-name">${subArea.nombre}</span>
                     <span class="node-level">${subArea.nivel || 'Sub-Área'}</span>
                     <div class="node-actions">
-                        <button class="node-btn node-btn-edit" onclick="editarNodo('subArea', '${subArea.id}')" title="Editar">✏️</button>
-                        <button class="node-btn node-btn-add" onclick="agregarNodo('sistema', '${subArea.id}')" title="+ Sistema">+</button>
-                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('subArea', '${subArea.id}')" title="Eliminar">🗑️</button>
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('subArea', '${subArea.id}')" title="Editar">Editar</button>
+                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('subArea', '${subArea.id}')" title="Eliminar">Eliminar</button>
+                        <button class="node-btn node-btn-add" onclick="agregarNodo('sistema', '${subArea.id}')" title="Agregar Sistema">+ Sistema</button>
                     </div>
                 </div>
             `;
@@ -1297,13 +1572,14 @@
             html += `
                 <div class="node-content" style="background: linear-gradient(135deg, #b8925a 0%, #9a7848 100%);">
                     <span class="drag-handle" onclick="openMoveModal('sistema', '${sistema.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
-                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 20px;"></span>'}
+                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px;"></span>'}
                     <span class="node-id">${sistema.id}</span>
                     <span class="node-name">${sistema.nombre}</span>
                     <span class="node-level">${sistema.nivel || 'Sistema'}</span>
                     <div class="node-actions">
-                        <button class="node-btn node-btn-edit" onclick="editarNodo('sistema', '${sistema.id}')" title="Editar">✏️</button>
-                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('sistema', '${sistema.id}')" title="Eliminar">🗑️</button>
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('sistema', '${sistema.id}')" title="Editar">Editar</button>
+                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('sistema', '${sistema.id}')" title="Eliminar">Eliminar</button>
+                        <button class="node-btn node-btn-add" onclick="agregarNodo('subSistema', '${sistema.id}')" title="Agregar Sub-Sistema">+ Sub-Sistema</button>
                     </div>
                 </div>
             `;
@@ -1311,10 +1587,112 @@
             if (hasChildren) {
                 html += '<div class="tree-children">';
                 sistema.subSistemas.forEach((subSistema, subSisIndex) => {
-                    html += buildSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex);
+                    html += buildSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex);
                 });
                 html += '</div>';
             }
+            
+            html += '</div>';
+            return html;
+        }
+
+        function buildSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex) {
+            const hasChildren = subSistema.secciones && subSistema.secciones.length > 0;
+            const toggleIcon = hasChildren ? '›' : '';
+            
+            let html = `<div class="tree-node" draggable="true"
+                            ondragstart="onDragStart(event, 'subSistema', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex})"
+                            ondragover="onDragOver(event)"
+                            ondrop="onDrop(event, 'subSistema', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex})"
+                            ondragend="onDragEnd(event)"
+                            data-node-type="subSistema" data-node-index="${areaIndex},${subIndex},${sisIndex},${subSisIndex}">`;
+            
+            html += `
+                <div class="node-content" style="background: linear-gradient(135deg, #8b7a5a 0%, #6d5e48 100%);">
+                    <span class="drag-handle" onclick="openMoveModal('subSistema', '${subSistema.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
+                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px;"></span>'}
+                    <span class="node-id">${subSistema.id}</span>
+                    <span class="node-name">${subSistema.nombre}</span>
+                    <span class="node-level">${subSistema.nivel || 'Sub-Sistema'}</span>
+                    <div class="node-actions">
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('subSistema', '${subSistema.id}')" title="Editar">Editar</button>
+                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('subSistema', '${subSistema.id}')" title="Eliminar">Eliminar</button>
+                        <button class="node-btn node-btn-add" onclick="agregarNodo('seccion', '${subSistema.id}')" title="Agregar Sección">+ Sección</button>
+                    </div>
+                </div>
+            `;
+            
+            if (hasChildren) {
+                html += '<div class="tree-children">';
+                subSistema.secciones.forEach((seccion, secIndex) => {
+                    html += buildSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex);
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        function buildSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex) {
+            const hasChildren = seccion.subSecciones && seccion.subSecciones.length > 0;
+            const toggleIcon = hasChildren ? '›' : '';
+            
+            let html = `<div class="tree-node" draggable="true"
+                            ondragstart="onDragStart(event, 'seccion', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex})"
+                            ondragover="onDragOver(event)"
+                            ondrop="onDrop(event, 'seccion', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex})"
+                            ondragend="onDragEnd(event)"
+                            data-node-type="seccion" data-node-index="${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex}">`;
+            
+            html += `
+                <div class="node-content" style="background: linear-gradient(135deg, #6b8bb8 0%, #556d98 100%);">
+                    <span class="drag-handle" onclick="openMoveModal('seccion', '${seccion.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
+                    ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px;"></span>'}
+                    <span class="node-id">${seccion.id}</span>
+                    <span class="node-name">${seccion.nombre}</span>
+                    <span class="node-level">${seccion.nivel || 'Sección'}</span>
+                    <div class="node-actions">
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('seccion', '${seccion.id}')" title="Editar">Editar</button>
+                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('seccion', '${seccion.id}')" title="Eliminar">Eliminar</button>
+                        <button class="node-btn node-btn-add" onclick="agregarNodo('subSeccion', '${seccion.id}')" title="Agregar Sub-Sección">+ Sub-Sección</button>
+                    </div>
+                </div>
+            `;
+            
+            if (hasChildren) {
+                html += '<div class="tree-children">';
+                seccion.subSecciones.forEach((subSeccion, subSecIndex) => {
+                    html += buildSubSeccionNode(subSeccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, subSecIndex);
+                });
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        function buildSubSeccionNode(subSeccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, subSecIndex) {
+            let html = `<div class="tree-node" draggable="true"
+                            ondragstart="onDragStart(event, 'subSeccion', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex}, ${subSecIndex})"
+                            ondragover="onDragOver(event)"
+                            ondrop="onDrop(event, 'subSeccion', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex}, ${subSecIndex})"
+                            ondragend="onDragEnd(event)"
+                            data-node-type="subSeccion" data-node-index="${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex},${subSecIndex}">`;
+            
+            html += `
+                <div class="node-content" style="background: linear-gradient(135deg, #7a5b9b 0%, #624a7d 100%);">
+                    <span class="drag-handle" onclick="openMoveModal('subSeccion', '${subSeccion.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
+                    <span style="width: 16px;"></span>
+                    <span class="node-id">${subSeccion.id}</span>
+                    <span class="node-name">${subSeccion.nombre}</span>
+                    <span class="node-level">${subSeccion.nivel || 'Sub-Sección'}</span>
+                    <div class="node-actions">
+                        <button class="node-btn node-btn-edit" onclick="editarNodo('subSeccion', '${subSeccion.id}')" title="Editar">Editar</button>
+                        <button class="node-btn node-btn-delete" onclick="eliminarNodo('subSeccion', '${subSeccion.id}')" title="Eliminar">Eliminar</button>
+                    </div>
+                </div>
+            `;
             
             html += '</div>';
             return html;
@@ -1634,7 +2012,7 @@
             
             saveToLocalStorage();
             renderCurrentView();
-            showToast(`✏️ ${label} actualizado`, 'success');
+            showToast(`${label} actualizado`, 'success');
         }
 
         async function eliminarNodo(tipo, nodeId) {
@@ -1669,7 +2047,7 @@
             removeNodeById(jerarquiaData.areas, nodeId);
             saveToLocalStorage();
             renderCurrentView();
-            showToast(`🗑️ "${nodo.nombre}" eliminado exitosamente`);
+            showToast(`"${nodo.nombre}" eliminado exitosamente`);
         }
 
         // === DRAG & DROP ===
@@ -2065,7 +2443,7 @@
                 if (node.id === id) return node;
                 
                 // Buscar en diferentes niveles de hijos
-                const childKeys = childKey ? [childKey] : ['subAreas', 'sistemas', 'subSistemas'];
+                const childKeys = childKey ? [childKey] : ['subAreas', 'sistemas', 'subSistemas', 'secciones', 'subSecciones'];
                 for (let key of childKeys) {
                     if (node[key]) {
                         const found = findNodeById(node[key], id);
@@ -2089,6 +2467,8 @@
                 if (removeNodeById(nodes[i].subAreas, id)) return true;
                 if (removeNodeById(nodes[i].sistemas, id)) return true;
                 if (removeNodeById(nodes[i].subSistemas, id)) return true;
+                if (removeNodeById(nodes[i].secciones, id)) return true;
+                if (removeNodeById(nodes[i].subSecciones, id)) return true;
             }
             return false;
         }
@@ -2182,7 +2562,7 @@
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 8px; color: #b8bec8; font-weight: 600;">${label1}</label>
                         <input type="text" id="dualInput1" value="${valor1}" placeholder="${placeholder1}"
-                               style="width: 100%; padding: 12px; background: #1a1d23; border: 1px solid #3a4049; border-radius: 6px; color: #e6e9ef; font-size: 1em;">
+                               style="width: 100%; padding: 12px; background: #1a1d23; border: 1px solid #3a4049; border-radius: 6px; color: #e6e9ef; font-size: 1em; text-transform: uppercase;">
                     </div>
                     <div style="margin-bottom: 20px;">
                         <label style="display: block; margin-bottom: 8px; color: #b8bec8; font-weight: 600;">${label2}</label>
@@ -2204,6 +2584,29 @@
                 
                 const input1 = document.getElementById('dualInput1');
                 const input2 = document.getElementById('dualInput2');
+                
+                // Forzar mayúsculas en input1 mientras escribe
+                input1.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
+                
+                // Enter en input1 pasa a input2
+                input1.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        input2.focus();
+                        input2.select();
+                    }
+                });
+                
+                // Enter en input2 guarda
+                input2.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        cerrar({ input1: input1.value, input2: input2.value });
+                    }
+                });
+                
                 input1.focus();
                 input1.select();
                 
@@ -2220,12 +2623,6 @@
                 document.getElementById('btnModalCancel').onclick = () => cerrar(null);
                 overlay.onclick = (e) => {
                     if (e.target === overlay) cerrar(null);
-                };
-                
-                input2.onkeypress = (e) => {
-                    if (e.key === 'Enter') {
-                        cerrar({ input1: input1.value, input2: input2.value });
-                    }
                 };
             });
         }
@@ -2265,7 +2662,7 @@
                     <p style="color: #e6e9ef; line-height: 1.5; margin-bottom: 20px; white-space: pre-line;">${mensaje}</p>
                     <div style="display: flex; gap: 10px;">
                         <button id="btnConfirmOk" style="flex: 1; padding: 12px; background: #b86b6b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 1em;">
-                            🗑️ Sí, Eliminar
+                            Sí, Eliminar
                         </button>
                         <button id="btnConfirmCancel" style="flex: 1; padding: 12px; background: #1a1d23; color: #b8bec8; border: 1px solid #3a4049; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 1em;">
                             Cancelar
