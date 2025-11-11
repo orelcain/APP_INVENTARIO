@@ -50,7 +50,7 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .view-btn {
@@ -77,6 +77,300 @@
             background: #2d333d;
             border-color: #4a5059;
             transform: translateY(-2px);
+        }
+
+        /* Selector de Paletas */
+        .palette-selector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(37, 42, 51, 0.6);
+            border-radius: 10px;
+            border: 1px solid rgba(91, 139, 180, 0.2);
+        }
+
+        .palette-selector label {
+            color: #8a909a;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .palette-selector select {
+            padding: 10px 20px;
+            background: #252a33;
+            color: #e6e9ef;
+            border: 1px solid #4a5059;
+            border-radius: 6px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+        }
+
+        .palette-selector select:hover {
+            border-color: #5b8bb4;
+            background: #2d333d;
+        }
+
+        .palette-selector select:focus {
+            outline: none;
+            border-color: #5b8bb4;
+            box-shadow: 0 0 0 3px rgba(91, 139, 180, 0.2);
+        }
+
+        .palette-preview {
+            display: flex;
+            gap: 3px;
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        .palette-preview-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* === TOOLBAR: BÚSQUEDA, ZOOM, EXPORTAR === */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 15px 20px;
+            background: rgba(37, 42, 51, 0.6);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar-section label {
+            font-size: 1.2em;
+        }
+
+        .toolbar-section:first-child {
+            position: relative;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        #searchInput {
+            padding: 8px 12px;
+            background: #252a33;
+            border: 1px solid #4a5059;
+            border-radius: 6px;
+            color: #e6e9ef;
+            font-size: 0.9em;
+            min-width: 280px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: #5b8bb4;
+            box-shadow: 0 0 0 3px rgba(91, 139, 180, 0.1);
+        }
+
+        .search-results {
+            color: #8a909a;
+            font-size: 0.85em;
+            font-style: italic;
+            white-space: nowrap;
+        }
+
+        /* Autocompletado Dropdown */
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 30px;
+            right: 0;
+            background: #252a33;
+            border: 1px solid #5b8bb4;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .autocomplete-dropdown.show {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(74, 80, 89, 0.3);
+            transition: background 0.2s ease;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .autocomplete-item:hover {
+            background: #2d333d;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-item-id {
+            color: #5b8bb4;
+            font-weight: 700;
+            font-size: 0.85em;
+            min-width: 80px;
+        }
+
+        .autocomplete-item-name {
+            color: #e6e9ef;
+            font-size: 0.9em;
+            flex: 1;
+        }
+
+        .autocomplete-item-level {
+            color: #8a909a;
+            font-size: 0.75em;
+            background: rgba(91, 139, 180, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .autocomplete-item.selected {
+            background: #3d4454;
+            border-left: 3px solid #5b8bb4;
+        }
+
+        .autocomplete-no-results {
+            padding: 15px;
+            text-align: center;
+            color: #8a909a;
+            font-style: italic;
+            font-size: 0.85em;
+        }
+
+        .toolbar-btn {
+            padding: 8px 16px;
+            background: #2d333d;
+            border: 1px solid #4a5059;
+            border-radius: 6px;
+            color: #e6e9ef;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .toolbar-btn:hover {
+            background: #3d4454;
+            border-color: #5b8bb4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(91, 139, 180, 0.2);
+        }
+
+        .toolbar-btn:active {
+            transform: translateY(0);
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+            border-color: #5b8bb4;
+        }
+
+        .export-btn:hover {
+            background: linear-gradient(135deg, #6a9bc5 0%, #5b8bb4 100%);
+            box-shadow: 0 4px 12px rgba(91, 139, 180, 0.4);
+        }
+
+        .zoom-level {
+            color: #e6e9ef;
+            font-weight: 600;
+            font-size: 0.9em;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        /* Destacar nodos en búsqueda */
+        .node-content.search-highlight {
+            animation: pulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.6) !important;
+            border: 2px solid #fbbf24 !important;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(251, 191, 36, 0.6) !important;
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(251, 191, 36, 0.9) !important;
+            }
+        }
+
+        .node-content.search-match {
+            border: 2px solid #10b981 !important;
+        }
+
+        /* Zoom aplicado al contenedor */
+        .tree-container {
+            transform-origin: top center;
+            transition: transform 0.3s ease;
+        }
+
+        /* === MODO EXPORTACIÓN: Layout limpio sin superposición === */
+        .export-mode {
+            width: fit-content !important;
+            height: auto !important;
+            overflow: visible !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .export-mode .tree-node {
+            position: relative !important;
+            margin: 0 0 8px 0 !important; /* Espacio vertical reducido */
+            display: block !important;
+        }
+
+        .export-mode .tree-children {
+            margin-left: 40px !important; /* Indentación reducida */
+            margin-top: 8px !important; /* Espacio antes de hijos */
+            display: block !important;
+            position: relative !important;
+        }
+
+        .export-mode .node-content {
+            position: relative !important;
+            transform: none !important;
+            margin-bottom: 5px !important; /* Espacio mínimo entre tarjetas */
+            display: inline-flex !important;
+        }
+
+        /* Simplificar líneas en modo exportación */
+        .export-mode .tree-node::before,
+        .export-mode .tree-node::after {
+            opacity: 0.5 !important; /* Líneas más sutiles */
+        }
+
+        .export-mode .node-toggle {
+            display: none !important; /* Ocultar toggles en exportación */
+        }
+
+        .export-mode .node-actions {
+            display: none !important; /* Ocultar botones de acción */
         }
 
         /* VISTA 1: Árbol Vertical con Líneas */
@@ -170,6 +464,15 @@
         }
         .node-btn-delete:hover {
             background: rgba(184, 107, 107, 0.5);
+        }
+
+        .node-btn-move {
+            background: rgba(91, 139, 180, 0.3);
+            padding: 2px 5px;
+            font-size: 0.8em;
+        }
+        .node-btn-move:hover {
+            background: rgba(91, 139, 180, 0.5);
         }
 
         /* === DRAG & DROP === */
@@ -316,20 +619,24 @@
            PASO 1: Conectar EMPRESA con ÁREAS
            ======================================== */
 
+        /* ESTILO 10: MONOCROMÁTICO SUTIL */
+        
         /* Línea vertical que conecta las ÁREAS - altura dinámica */
         .tree-container > .tree-node > .tree-children::before {
             content: '';
             position: absolute;
             top: -16px;
-            bottom: 16px; /* Termina en el centro del último hijo */
+            bottom: 16px;
             left: -30px;
-            width: 3px;
-            background: linear-gradient(180deg, 
-                #5b8bb4 0%, 
-                #5b8bb4 100%
-            );
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            width: 2px;
+            background: 
+                linear-gradient(
+                    180deg,
+                    rgba(255, 255, 255, 0.15) 0%,
+                    rgba(255, 255, 255, 0.05) 100%
+                );
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
@@ -340,25 +647,31 @@
             top: 16px;
             left: -30px;
             width: 30px;
-            height: 3px;
-            background: #5b8bb4;
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            height: 2px;
+            background: 
+                linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.2) 0%,
+                    rgba(255, 255, 255, 0.08) 100%
+                );
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
-        /* Puntos de conexión en cada ÁREA */
+        /* Puntos de conexión en cada ÁREA - CÍRCULOS OPACOS */
         .tree-container > .tree-node > .tree-children > .tree-node::after {
             content: '';
             position: absolute;
-            top: 12px;
+            top: 13px;
             left: -33px;
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
-            border: 2px solid #1a1d23;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            box-shadow: none;
+            opacity: 1;
             z-index: 2;
         }
 
@@ -371,15 +684,12 @@
             content: '';
             position: absolute;
             top: -16px;
-            bottom: 16px; /* Termina en el centro del último hijo */
+            bottom: 16px;
             left: -30px;
-            width: 3px;
-            background: linear-gradient(180deg, 
-                #5b8bb4 0%, 
-                #5b8bb4 100%
-            );
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            width: 2px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
@@ -390,25 +700,26 @@
             top: 16px;
             left: -30px;
             width: 30px;
-            height: 3px;
-            background: #5b8bb4;
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
-        /* Puntos de conexión en cada SUB-ÁREA */
+        /* Puntos de conexión en cada SUB-ÁREA - CÍRCULOS OPACOS */
         .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
             content: '';
             position: absolute;
-            top: 12px;
+            top: 13px;
             left: -33px;
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
-            border: 2px solid #1a1d23;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            box-shadow: none;
+            opacity: 1;
             z-index: 2;
         }
 
@@ -421,15 +732,12 @@
             content: '';
             position: absolute;
             top: -16px;
-            bottom: 16px; /* Termina en el centro del último hijo */
+            bottom: 16px;
             left: -30px;
-            width: 3px;
-            background: linear-gradient(180deg, 
-                #5b8bb4 0%, 
-                #5b8bb4 100%
-            );
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            width: 2px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
@@ -440,25 +748,26 @@
             top: 16px;
             left: -30px;
             width: 30px;
-            height: 3px;
-            background: #5b8bb4;
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
-        /* Puntos de conexión en cada SISTEMA */
+        /* Puntos de conexión en cada SISTEMA - CÍRCULOS OPACOS */
         .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
             content: '';
             position: absolute;
-            top: 12px;
+            top: 13px;
             left: -33px;
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
-            border: 2px solid #1a1d23;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            box-shadow: none;
+            opacity: 1;
             z-index: 2;
         }
 
@@ -471,15 +780,12 @@
             content: '';
             position: absolute;
             top: -16px;
-            bottom: 24px; /* Ajuste para que funcione con hijos pares e impares */
+            bottom: 24px;
             left: -30px;
-            width: 3px;
-            background: linear-gradient(180deg, 
-                #5b8bb4 0%, 
-                #5b8bb4 100%
-            );
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            width: 2px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
@@ -490,25 +796,26 @@
             top: 16px;
             left: -30px;
             width: 30px;
-            height: 3px;
-            background: #5b8bb4;
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
-        /* Puntos de conexión en cada SUB-SISTEMA */
+        /* Puntos de conexión en cada SUB-SISTEMA - CÍRCULOS OPACOS */
         .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
             content: '';
             position: absolute;
-            top: 12px;
+            top: 13px;
             left: -33px;
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
-            border: 2px solid #1a1d23;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            box-shadow: none;
+            opacity: 1;
             z-index: 2;
         }
 
@@ -521,15 +828,12 @@
             content: '';
             position: absolute;
             top: -16px;
-            bottom: 24px; /* Ajuste para que funcione con hijos pares e impares */
+            bottom: 24px;
             left: -30px;
-            width: 3px;
-            background: linear-gradient(180deg, 
-                #5b8bb4 0%, 
-                #5b8bb4 100%
-            );
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            width: 2px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
@@ -540,25 +844,26 @@
             top: 16px;
             left: -30px;
             width: 30px;
-            height: 3px;
-            background: #5b8bb4;
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
-        /* Puntos de conexión en cada SECCIÓN */
+        /* Puntos de conexión en cada SECCIÓN - CÍRCULOS OPACOS */
         .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
             content: '';
             position: absolute;
-            top: 12px;
+            top: 13px;
             left: -33px;
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
-            border: 2px solid #1a1d23;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            box-shadow: none;
+            opacity: 1;
             z-index: 2;
         }
 
@@ -571,15 +876,12 @@
             content: '';
             position: absolute;
             top: -16px;
-            bottom: 24px; /* Ajuste para que funcione con hijos pares e impares */
+            bottom: 24px;
             left: -30px;
-            width: 3px;
-            background: linear-gradient(180deg, 
-                #5b8bb4 0%, 
-                #5b8bb4 100%
-            );
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            width: 2px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
@@ -590,25 +892,26 @@
             top: 16px;
             left: -30px;
             width: 30px;
-            height: 3px;
-            background: #5b8bb4;
-            border-radius: 3px;
-            box-shadow: 0 0 8px rgba(91, 139, 180, 0.4);
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+            border-radius: 1px;
+            opacity: 1;
             z-index: 1;
         }
 
-        /* Puntos de conexión en cada SUB-SECCIÓN */
+        /* Puntos de conexión en cada SUB-SECCIÓN - CÍRCULOS OPACOS */
         .tree-container > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
             content: '';
             position: absolute;
-            top: 12px;
+            top: 13px;
             left: -33px;
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, #7ba5c8 0%, #5b8bb4 60%, #4a7090 100%);
-            border: 2px solid #1a1d23;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(91, 139, 180, 0.7);
+            box-shadow: none;
+            opacity: 1;
             z-index: 2;
         }
         .org-view {
@@ -625,70 +928,162 @@
 
         .org-chart {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            overflow: auto;
+            min-height: 600px;
         }
 
-        .org-level {
+        .org-tree {
             display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 20px 0;
-            position: relative;
+            flex-direction: column;
+            align-items: center;
         }
 
         .org-node {
             position: relative;
-            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 8px 0;
         }
 
         .org-node-content {
-            padding: 6px 16px;
+            padding: 4px 10px;
             background: #252a33;
-            border: 2px solid #5b8bb4;
+            border: 1.5px solid #5b8bb4;
             border-radius: 6px;
-            min-width: 280px;
-            max-width: 400px;
+            min-width: 140px;
+            max-width: 200px;
             display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            flex-direction: column;
+            gap: 2px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .org-node-content:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(91, 139, 180, 0.4);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(91, 139, 180, 0.4);
             border-color: #7ba5c8;
             background: #2d333d;
+            z-index: 10;
         }
 
         .org-node-content .node-id {
             color: #5b8bb4;
-            font-weight: 600;
-            font-size: 0.75em;
-            flex-shrink: 0;
-            min-width: 50px;
+            font-weight: 700;
+            font-size: 0.55em;
+            letter-spacing: 0.3px;
         }
 
         .org-node-content .node-name {
             color: #e6e9ef;
-            font-size: 0.9em;
-            flex: 1;
-            white-space: nowrap;
+            font-size: 0.75em;
+            font-weight: 500;
+            line-height: 1.2;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
 
         .org-node-content .node-level {
             color: #8a909a;
-            font-size: 0.7em;
-            flex-shrink: 0;
-            padding: 2px 8px;
-            background: rgba(91, 139, 180, 0.2);
-            border-radius: 4px;
+            font-size: 0.5em;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 2px 6px;
+            background: rgba(91, 139, 180, 0.15);
+            border-radius: 3px;
+            align-self: flex-start;
+        }
+
+        /* Contenedor de hijos en organigrama */
+        .org-children {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            position: relative;
+            padding-top: 25px;
+        }
+
+        /* Línea vertical desde el padre hacia abajo */
+        .org-node > .org-children::before {
+            content: '';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1.5px;
+            height: 25px;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.15) 0%, 
+                rgba(255, 255, 255, 0.05) 100%);
+        }
+
+        /* Línea horizontal conectando hermanos */
+        .org-children > .org-node::before {
+            content: '';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            width: 1.5px;
+            height: 25px;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.12) 0%, 
+                rgba(255, 255, 255, 0.08) 100%);
+        }
+
+        /* Línea horizontal superior conectando todos los hermanos */
+        .org-children::after {
+            content: '';
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            height: 1.5px;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.1) 20%,
+                rgba(255, 255, 255, 0.1) 80%,
+                rgba(255, 255, 255, 0) 100%);
+        }
+
+        /* Nodo único hijo (sin línea horizontal) */
+        .org-children:has(> .org-node:only-child)::after {
+            display: none;
+        }
+
+        /* Estilos por nivel en organigrama */
+        .org-node.level-1 > .org-node-content {
+            min-width: 180px;
+            max-width: 240px;
+            padding: 6px 12px;
+            border-width: 2px;
+            font-size: 1.05em;
+        }
+
+        .org-node.level-2 > .org-node-content {
+            min-width: 160px;
+            max-width: 220px;
+            font-size: 1em;
+        }
+
+        .org-node.level-3 > .org-node-content,
+        .org-node.level-4 > .org-node-content,
+        .org-node.level-5 > .org-node-content,
+        .org-node.level-6 > .org-node-content,
+        .org-node.level-7 > .org-node-content {
+            min-width: 140px;
+            max-width: 200px;
+            padding: 4px 10px;
+            font-size: 0.95em;
         }
 
         /* Líneas conectoras con SVG mejoradas */
@@ -1142,6 +1537,324 @@
                 font-size: 0.8em;
             }
         }
+
+        /* ========================================
+           PALETAS DE COLORES PARA NIVELES
+           ======================================== */
+
+        /* PALETA 1: AZULES PROGRESIVOS */
+        .palette-1 .node-content[data-level="1"] {
+            background: linear-gradient(135deg, #1a2332 0%, #253245 100%) !important;
+            color: #8b95a8 !important;
+        }
+        .palette-1 .node-content[data-level="2"] {
+            background: linear-gradient(135deg, #2a3d54 0%, #354b66 100%) !important;
+            color: #a5b4c8 !important;
+        }
+        .palette-1 .node-content[data-level="3"] {
+            background: linear-gradient(135deg, #3a4d63 0%, #475a75 100%) !important;
+            color: #b8c5d9 !important;
+        }
+        .palette-1 .node-content[data-level="4"] {
+            background: linear-gradient(135deg, #4a5d75 0%, #556880 100%) !important;
+            color: #c5d1e0 !important;
+        }
+        .palette-1 .node-content[data-level="5"] {
+            background: linear-gradient(135deg, #556880 0%, #5f7289 100%) !important;
+            color: #d0dae8 !important;
+        }
+        .palette-1 .node-content[data-level="6"] {
+            background: linear-gradient(135deg, #5f7289 0%, #687a92 100%) !important;
+            color: #dae3ed !important;
+        }
+        .palette-1 .node-content[data-level="7"] {
+            background: linear-gradient(135deg, #687a92 0%, #70829a 100%) !important;
+            color: #e3ebf3 !important;
+        }
+
+        /* PALETA 2: OCÉANO */
+        .palette-2 .node-content[data-level="1"] {
+            background: linear-gradient(135deg, #064e3b 0%, #047857 100%) !important;
+            color: #d1fae5 !important;
+        }
+        .palette-2 .node-content[data-level="2"] {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-2 .node-content[data-level="3"] {
+            background: linear-gradient(135deg, #14b8a6 0%, #2dd4bf 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-2 .node-content[data-level="4"] {
+            background: linear-gradient(135deg, #06b6d4 0%, #4a9eb5 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-2 .node-content[data-level="5"] {
+            background: linear-gradient(135deg, #4a9eb5 0%, #3d8599 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-2 .node-content[data-level="6"] {
+            background: linear-gradient(135deg, #3d8599 0%, #356f80 100%) !important;
+            color: #d1fae5 !important;
+        }
+        .palette-2 .node-content[data-level="7"] {
+            background: linear-gradient(135deg, #356f80 0%, #2d5968 100%) !important;
+            color: #a7f3d0 !important;
+        }
+
+        /* PALETA 3: ATARDECER */
+        .palette-3 .node-content[data-level="1"] {
+            background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%) !important;
+            color: #f3e8ff !important;
+        }
+        .palette-3 .node-content[data-level="2"] {
+            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-3 .node-content[data-level="3"] {
+            background: linear-gradient(135deg, #a78bfa 0%, #b695e8 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-3 .node-content[data-level="4"] {
+            background: linear-gradient(135deg, #b695e8 0%, #9a7dc5 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-3 .node-content[data-level="5"] {
+            background: linear-gradient(135deg, #9a7dc5 0%, #8567a8 100%) !important;
+            color: #f3e8ff !important;
+        }
+        .palette-3 .node-content[data-level="6"] {
+            background: linear-gradient(135deg, #8567a8 0%, #6f5490 100%) !important;
+            color: #e9d5ff !important;
+        }
+        .palette-3 .node-content[data-level="7"] {
+            background: linear-gradient(135deg, #6f5490 0%, #5a4375 100%) !important;
+            color: #ddd6fe !important;
+        }
+
+        /* PALETA 4: CÁLIDA */
+        .palette-4 .node-content[data-level="1"] {
+            background: linear-gradient(135deg, #7c2d12 0%, #9a3412 100%) !important;
+            color: #fed7aa !important;
+        }
+        .palette-4 .node-content[data-level="2"] {
+            background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-4 .node-content[data-level="3"] {
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-4 .node-content[data-level="4"] {
+            background: linear-gradient(135deg, #fb923c 0%, #d18950 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-4 .node-content[data-level="5"] {
+            background: linear-gradient(135deg, #d18950 0%, #b5754a 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-4 .node-content[data-level="6"] {
+            background: linear-gradient(135deg, #b5754a 0%, #956242 100%) !important;
+            color: #fed7aa !important;
+        }
+        .palette-4 .node-content[data-level="7"] {
+            background: linear-gradient(135deg, #956242 0%, #78503a 100%) !important;
+            color: #fde68a !important;
+        }
+
+        /* PALETA 5: GRISES */
+        .palette-5 .node-content[data-level="1"] {
+            background: linear-gradient(135deg, #18181b 0%, #27272a 100%) !important;
+            color: #fafafa !important;
+        }
+        .palette-5 .node-content[data-level="2"] {
+            background: linear-gradient(135deg, #3f3f46 0%, #52525b 100%) !important;
+            color: #fafafa !important;
+        }
+        .palette-5 .node-content[data-level="3"] {
+            background: linear-gradient(135deg, #71717a 0%, #a1a1aa 100%) !important;
+            color: #fafafa !important;
+        }
+        .palette-5 .node-content[data-level="4"] {
+            background: linear-gradient(135deg, #a1a1aa 0%, #8a8a95 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-5 .node-content[data-level="5"] {
+            background: linear-gradient(135deg, #8a8a95 0%, #71717a 100%) !important;
+            color: #f4f4f5 !important;
+        }
+        .palette-5 .node-content[data-level="6"] {
+            background: linear-gradient(135deg, #71717a 0%, #5a5a63 100%) !important;
+            color: #e4e4e7 !important;
+        }
+        .palette-5 .node-content[data-level="7"] {
+            background: linear-gradient(135deg, #5a5a63 0%, #47474f 100%) !important;
+            color: #d4d4d8 !important;
+        }
+
+        /* PALETA 6: NATURALEZA */
+        /* PALETA 6: NATURALEZA */
+        .palette-6 .node-content[data-level="1"] {
+            background: linear-gradient(135deg, #14532d 0%, #166534 100%) !important;
+            color: #dcfce7 !important;
+        }
+        .palette-6 .node-content[data-level="2"] {
+            background: linear-gradient(135deg, #15803d 0%, #16a34a 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-6 .node-content[data-level="3"] {
+            background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-6 .node-content[data-level="4"] {
+            background: linear-gradient(135deg, #4ade80 0%, #5cb876 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-6 .node-content[data-level="5"] {
+            background: linear-gradient(135deg, #5cb876 0%, #4d9a63 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-6 .node-content[data-level="6"] {
+            background: linear-gradient(135deg, #4d9a63 0%, #3f7d51 100%) !important;
+            color: #dcfce7 !important;
+        }
+        .palette-6 .node-content[data-level="7"] {
+            background: linear-gradient(135deg, #3f7d51 0%, #336542 100%) !important;
+            color: #bbf7d0 !important;
+        }
+        /* PALETA 7: GRISES OPACOS */
+        .palette-7 .node-content[data-level="1"] {
+            background: linear-gradient(135deg, #1c1f26 0%, #282c35 100%) !important;
+            color: #7a7f8a !important;
+        }
+        .palette-7 .node-content[data-level="2"] {
+            background: linear-gradient(135deg, #2d3139 0%, #383d47 100%) !important;
+            color: #8d92a0 !important;
+        }
+        .palette-7 .node-content[data-level="3"] {
+            background: linear-gradient(135deg, #3d4249 0%, #484e59 100%) !important;
+            color: #9fa4b2 !important;
+        }
+        .palette-7 .node-content[data-level="4"] {
+            background: linear-gradient(135deg, #4d535e 0%, #575d68 100%) !important;
+            color: #aeb3c0 !important;
+        }
+        .palette-7 .node-content[data-level="5"] {
+            background: linear-gradient(135deg, #5d6370 0%, #666c78 100%) !important;
+            color: #bcc0cb !important;
+        }
+        .palette-7 .node-content[data-level="6"] {
+            background: linear-gradient(135deg, #6d7380 0%, #757b87 100%) !important;
+            color: #c9cdd6 !important;
+        }
+        .palette-7 .node-content[data-level="7"] {
+            background: linear-gradient(135deg, #7d838f 0%, #858b96 100%) !important;
+            color: #d5d9e0 !important;
+        }
+
+        /* PALETA 8: CORPORATIVO OSCURO */
+        .palette-8 .node-content[data-level="1"] {
+            background: linear-gradient(135deg, #171d28 0%, #232a38 100%) !important;
+            color: #8895ab !important;
+            border-left: 4px solid #2d4a6b !important;
+        }
+        .palette-8 .node-content[data-level="2"] {
+            background: linear-gradient(135deg, #232a38 0%, #2d3847 100%) !important;
+            color: #97a5ba !important;
+            border-left: 4px solid #3a5776 !important;
+        }
+        .palette-8 .node-content[data-level="3"] {
+            background: linear-gradient(135deg, #2d3847 0%, #384556 100%) !important;
+            color: #a6b3c7 !important;
+            border-left: 4px solid #476381 !important;
+        }
+        .palette-8 .node-content[data-level="4"] {
+            background: linear-gradient(135deg, #384556 0%, #425363 100%) !important;
+            color: #b4c0d3 !important;
+            border-left: 4px solid #54708c !important;
+        }
+        .palette-8 .node-content[data-level="5"] {
+            background: linear-gradient(135deg, #425363 0%, #4d6070 100%) !important;
+            color: #c1ccde !important;
+            border-left: 4px solid #607c96 !important;
+        }
+        .palette-8 .node-content[data-level="6"] {
+            background: linear-gradient(135deg, #4d6070 0%, #576d7d 100%) !important;
+            color: #cdd7e7 !important;
+            border-left: 4px solid #6b87a0 !important;
+        }
+        .palette-8 .node-content[data-level="7"] {
+            background: linear-gradient(135deg, #576d7d 0%, #61798a 100%) !important;
+            color: #d9e2ef !important;
+            border-left: 4px solid #7692aa !important;
+        }
+
+        /* PALETA 9: APP MATE (DEFAULT) */
+        .palette-9 .node-content[data-level="1"] {
+            background: linear-gradient(135deg, rgba(91, 139, 180, 0.9) 0%, rgba(91, 139, 180, 0.7) 100%) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(91, 139, 180, 0.4) !important;
+        }
+        .palette-9 .node-content[data-level="2"] {
+            background: linear-gradient(135deg, rgba(126, 178, 147, 0.9) 0%, rgba(126, 178, 147, 0.7) 100%) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(126, 178, 147, 0.4) !important;
+        }
+        .palette-9 .node-content[data-level="3"] {
+            background: linear-gradient(135deg, rgba(236, 158, 73, 0.9) 0%, rgba(236, 158, 73, 0.7) 100%) !important;
+            color: #2d1810 !important;
+            border: 1px solid rgba(236, 158, 73, 0.4) !important;
+        }
+        .palette-9 .node-content[data-level="4"] {
+            background: linear-gradient(135deg, rgba(180, 123, 196, 0.9) 0%, rgba(180, 123, 196, 0.7) 100%) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(180, 123, 196, 0.4) !important;
+        }
+        .palette-9 .node-content[data-level="5"] {
+            background: linear-gradient(135deg, rgba(233, 116, 116, 0.9) 0%, rgba(233, 116, 116, 0.7) 100%) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(233, 116, 116, 0.4) !important;
+        }
+        .palette-9 .node-content[data-level="6"] {
+            background: linear-gradient(135deg, rgba(91, 180, 180, 0.9) 0%, rgba(91, 180, 180, 0.7) 100%) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(91, 180, 180, 0.4) !important;
+        }
+        .palette-9 .node-content[data-level="7"] {
+            background: linear-gradient(135deg, rgba(180, 160, 91, 0.9) 0%, rgba(180, 160, 91, 0.7) 100%) !important;
+            color: #2d2610 !important;
+            border: 1px solid rgba(180, 160, 91, 0.4) !important;
+        }
+
+        /* PALETA 10: TIERRA */
+        .palette-10 .node-content[data-level="1"] {
+            background: linear-gradient(135deg, #3e2723 0%, #4e342e 100%) !important;
+            color: #efebe9 !important;
+        }
+        .palette-10 .node-content[data-level="2"] {
+            background: linear-gradient(135deg, #5d4037 0%, #6d4c41 100%) !important;
+            color: #efebe9 !important;
+        }
+        .palette-10 .node-content[data-level="3"] {
+            background: linear-gradient(135deg, #795548 0%, #8d6e63 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-10 .node-content[data-level="4"] {
+            background: linear-gradient(135deg, #8d6e63 0%, #9a8075 100%) !important;
+            color: #ffffff !important;
+        }
+        .palette-10 .node-content[data-level="5"] {
+            background: linear-gradient(135deg, #9a8075 0%, #7d6a5f 100%) !important;
+            color: #efebe9 !important;
+        }
+        .palette-10 .node-content[data-level="6"] {
+            background: linear-gradient(135deg, #7d6a5f 0%, #6a594f 100%) !important;
+            color: #d7ccc8 !important;
+        }
+        .palette-10 .node-content[data-level="7"] {
+            background: linear-gradient(135deg, #6a594f 0%, #554840 100%) !important;
+            color: #bcaaa4 !important;
+        }
     </style>
 </head>
 <body>
@@ -1156,6 +1869,54 @@
             <button class="view-btn" onclick="switchView('network')">
                 🔗 Red de Dependencias
             </button>
+        </div>
+
+        <!-- Selector de Paletas de Colores -->
+        <div class="palette-selector">
+            <label for="paletteSelect">🎨 Paleta de Colores:</label>
+            <select id="paletteSelect" onchange="changePalette()">
+                <option value="palette-1">Azul Mate Oscuro</option>
+                <option value="palette-2">Océano (Verde → Azul)</option>
+                <option value="palette-3">Atardecer (Morado → Rosa)</option>
+                <option value="palette-4">Cálida (Naranja → Amarillo)</option>
+                <option value="palette-5">Grises Profesionales</option>
+                <option value="palette-6">Verde Naturaleza</option>
+                <option value="palette-7">Gris Opaco Muerto</option>
+                <option value="palette-8">Corporativo Oscuro</option>
+                <option value="palette-9" selected>App Mate (Multi-Color)</option>
+                <option value="palette-10">Tonos Tierra</option>
+            </select>
+            <div class="palette-preview" id="palettePreview">
+                <!-- Preview colors generados dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Controles de Búsqueda, Zoom y Exportar -->
+        <div class="toolbar">
+            <div class="toolbar-section">
+                <label for="searchInput">🔍</label>
+                <input type="text" id="searchInput" placeholder="Buscar por ID o nombre..." 
+                       oninput="searchNodesAutocomplete(this.value)" 
+                       onkeydown="handleSearchKeydown(event)"
+                       onfocus="showAutocomplete()"
+                       autocomplete="off">
+                <div id="autocompleteDropdown" class="autocomplete-dropdown">
+                    <!-- Se genera dinámicamente -->
+                </div>
+                <span id="searchResults" class="search-results"></span>
+            </div>
+            
+            <div class="toolbar-section">
+                <button class="toolbar-btn" onclick="zoomOut()" title="Alejar">🔍-</button>
+                <span id="zoomLevel" class="zoom-level">100%</span>
+                <button class="toolbar-btn" onclick="zoomIn()" title="Acercar">🔍+</button>
+                <button class="toolbar-btn" onclick="resetZoom()" title="Restablecer zoom">⟲</button>
+            </div>
+            
+            <div class="toolbar-section">
+                <button class="toolbar-btn export-btn" onclick="exportAsPNG()" title="Descargar como imagen PNG">📷 PNG</button>
+                <button class="toolbar-btn export-btn" onclick="exportAsPDF()" title="Descargar como PDF">📄 PDF</button>
+            </div>
         </div>
 
         <!-- VISTA 1: Árbol Vertical -->
@@ -1450,6 +2211,7 @@
         function renderTreeView() {
             const container = document.getElementById('treeContainer');
             container.innerHTML = buildTreeHTML(jerarquiaData);
+            buildSearchIndex(); // Reconstruir índice después de renderizar
         }
 
         function buildTreeHTML(data) {
@@ -1457,7 +2219,7 @@
             
             // Nodo empresa
             html += `
-                <div class="node-content">
+                <div class="node-content" data-level="1">
                     <span class="node-toggle expanded" onclick="toggleNodeChildren(this)">›</span>
                     <span class="node-id">${data.empresa.id}</span>
                     <span class="node-name">${data.empresa.nombre}</span>
@@ -1494,13 +2256,15 @@
                             data-node-type="area" data-node-index="${index}">`;
             
             html += `
-                <div class="node-content" style="background: linear-gradient(135deg, #b86b6b 0%, #985555 100%);">
+                <div class="node-content" data-level="2" style="background: linear-gradient(135deg, #b86b6b 0%, #985555 100%);">
                     <span class="drag-handle" onclick="openMoveModal('area', '${area.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
                     ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px;"></span>'}
                     <span class="node-id">${area.id}</span>
                     <span class="node-name">${area.nombre}</span>
                     <span class="node-level">${area.nivel || 'Área'}</span>
                     <div class="node-actions">
+                        <button class="node-btn node-btn-move" onclick="moverNodo('area', ${index}, -1); event.stopPropagation();" title="Subir">↑</button>
+                        <button class="node-btn node-btn-move" onclick="moverNodo('area', ${index}, 1); event.stopPropagation();" title="Bajar">↓</button>
                         <button class="node-btn node-btn-edit" onclick="editarNodo('area', '${area.id}')" title="Editar">Editar</button>
                         <button class="node-btn node-btn-delete" onclick="eliminarNodo('area', '${area.id}')" title="Eliminar">Eliminar</button>
                         <button class="node-btn node-btn-add" onclick="agregarNodo('subArea', '${area.id}')" title="Agregar Sub-Área">+ Sub-Área</button>
@@ -1532,13 +2296,15 @@
                             data-node-type="subArea" data-node-index="${areaIndex},${subIndex}">`;
             
             html += `
-                <div class="node-content" style="background: linear-gradient(135deg, #5b9b7a 0%, #4a7d62 100%);">
+                <div class="node-content" data-level="3" style="background: linear-gradient(135deg, #5b9b7a 0%, #4a7d62 100%);">
                     <span class="drag-handle" onclick="openMoveModal('subArea', '${subArea.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
                     ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px;"></span>'}
                     <span class="node-id">${subArea.id}</span>
                     <span class="node-name">${subArea.nombre}</span>
                     <span class="node-level">${subArea.nivel || 'Sub-Área'}</span>
                     <div class="node-actions">
+                        <button class="node-btn node-btn-move" onclick="moverNodo('subArea', ${subIndex}, -1, ${areaIndex}); event.stopPropagation();" title="Subir">↑</button>
+                        <button class="node-btn node-btn-move" onclick="moverNodo('subArea', ${subIndex}, 1, ${areaIndex}); event.stopPropagation();" title="Bajar">↓</button>
                         <button class="node-btn node-btn-edit" onclick="editarNodo('subArea', '${subArea.id}')" title="Editar">Editar</button>
                         <button class="node-btn node-btn-delete" onclick="eliminarNodo('subArea', '${subArea.id}')" title="Eliminar">Eliminar</button>
                         <button class="node-btn node-btn-add" onclick="agregarNodo('sistema', '${subArea.id}')" title="Agregar Sistema">+ Sistema</button>
@@ -1570,13 +2336,15 @@
                             data-node-type="sistema" data-node-index="${areaIndex},${subIndex},${sisIndex}">`;
             
             html += `
-                <div class="node-content" style="background: linear-gradient(135deg, #b8925a 0%, #9a7848 100%);">
+                <div class="node-content" data-level="4" style="background: linear-gradient(135deg, #b8925a 0%, #9a7848 100%);">
                     <span class="drag-handle" onclick="openMoveModal('sistema', '${sistema.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
                     ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px;"></span>'}
                     <span class="node-id">${sistema.id}</span>
                     <span class="node-name">${sistema.nombre}</span>
                     <span class="node-level">${sistema.nivel || 'Sistema'}</span>
                     <div class="node-actions">
+                        <button class="node-btn node-btn-move" onclick="moverNodo('sistema', ${sisIndex}, -1, ${areaIndex}, ${subIndex}); event.stopPropagation();" title="Subir">↑</button>
+                        <button class="node-btn node-btn-move" onclick="moverNodo('sistema', ${sisIndex}, 1, ${areaIndex}, ${subIndex}); event.stopPropagation();" title="Bajar">↓</button>
                         <button class="node-btn node-btn-edit" onclick="editarNodo('sistema', '${sistema.id}')" title="Editar">Editar</button>
                         <button class="node-btn node-btn-delete" onclick="eliminarNodo('sistema', '${sistema.id}')" title="Eliminar">Eliminar</button>
                         <button class="node-btn node-btn-add" onclick="agregarNodo('subSistema', '${sistema.id}')" title="Agregar Sub-Sistema">+ Sub-Sistema</button>
@@ -1608,13 +2376,15 @@
                             data-node-type="subSistema" data-node-index="${areaIndex},${subIndex},${sisIndex},${subSisIndex}">`;
             
             html += `
-                <div class="node-content" style="background: linear-gradient(135deg, #8b7a5a 0%, #6d5e48 100%);">
+                <div class="node-content" data-level="5" style="background: linear-gradient(135deg, #8b7a5a 0%, #6d5e48 100%);">
                     <span class="drag-handle" onclick="openMoveModal('subSistema', '${subSistema.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
                     ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px;"></span>'}
                     <span class="node-id">${subSistema.id}</span>
                     <span class="node-name">${subSistema.nombre}</span>
                     <span class="node-level">${subSistema.nivel || 'Sub-Sistema'}</span>
                     <div class="node-actions">
+                        <button class="node-btn node-btn-move" onclick="moverNodo('subSistema', ${subSisIndex}, -1, ${areaIndex}, ${subIndex}, ${sisIndex}); event.stopPropagation();" title="Subir">↑</button>
+                        <button class="node-btn node-btn-move" onclick="moverNodo('subSistema', ${subSisIndex}, 1, ${areaIndex}, ${subIndex}, ${sisIndex}); event.stopPropagation();" title="Bajar">↓</button>
                         <button class="node-btn node-btn-edit" onclick="editarNodo('subSistema', '${subSistema.id}')" title="Editar">Editar</button>
                         <button class="node-btn node-btn-delete" onclick="eliminarNodo('subSistema', '${subSistema.id}')" title="Eliminar">Eliminar</button>
                         <button class="node-btn node-btn-add" onclick="agregarNodo('seccion', '${subSistema.id}')" title="Agregar Sección">+ Sección</button>
@@ -1646,13 +2416,15 @@
                             data-node-type="seccion" data-node-index="${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex}">`;
             
             html += `
-                <div class="node-content" style="background: linear-gradient(135deg, #6b8bb8 0%, #556d98 100%);">
+                <div class="node-content" data-level="6" style="background: linear-gradient(135deg, #6b8bb8 0%, #556d98 100%);">
                     <span class="drag-handle" onclick="openMoveModal('seccion', '${seccion.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
                     ${hasChildren ? `<span class="node-toggle expanded" onclick="toggleNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px;"></span>'}
                     <span class="node-id">${seccion.id}</span>
                     <span class="node-name">${seccion.nombre}</span>
                     <span class="node-level">${seccion.nivel || 'Sección'}</span>
                     <div class="node-actions">
+                        <button class="node-btn node-btn-move" onclick="moverNodo('seccion', ${secIndex}, -1, ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}); event.stopPropagation();" title="Subir">↑</button>
+                        <button class="node-btn node-btn-move" onclick="moverNodo('seccion', ${secIndex}, 1, ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}); event.stopPropagation();" title="Bajar">↓</button>
                         <button class="node-btn node-btn-edit" onclick="editarNodo('seccion', '${seccion.id}')" title="Editar">Editar</button>
                         <button class="node-btn node-btn-delete" onclick="eliminarNodo('seccion', '${seccion.id}')" title="Eliminar">Eliminar</button>
                         <button class="node-btn node-btn-add" onclick="agregarNodo('subSeccion', '${seccion.id}')" title="Agregar Sub-Sección">+ Sub-Sección</button>
@@ -1681,13 +2453,15 @@
                             data-node-type="subSeccion" data-node-index="${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex},${subSecIndex}">`;
             
             html += `
-                <div class="node-content" style="background: linear-gradient(135deg, #7a5b9b 0%, #624a7d 100%);">
+                <div class="node-content" data-level="7" style="background: linear-gradient(135deg, #7a5b9b 0%, #624a7d 100%);">
                     <span class="drag-handle" onclick="openMoveModal('subSeccion', '${subSeccion.id}'); event.stopPropagation();" title="Mover nodo">⠿</span>
                     <span style="width: 16px;"></span>
                     <span class="node-id">${subSeccion.id}</span>
                     <span class="node-name">${subSeccion.nombre}</span>
                     <span class="node-level">${subSeccion.nivel || 'Sub-Sección'}</span>
                     <div class="node-actions">
+                        <button class="node-btn node-btn-move" onclick="moverNodo('subSeccion', ${subSecIndex}, -1, ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex}); event.stopPropagation();" title="Subir">↑</button>
+                        <button class="node-btn node-btn-move" onclick="moverNodo('subSeccion', ${subSecIndex}, 1, ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex}); event.stopPropagation();" title="Bajar">↓</button>
                         <button class="node-btn node-btn-edit" onclick="editarNodo('subSeccion', '${subSeccion.id}')" title="Editar">Editar</button>
                         <button class="node-btn node-btn-delete" onclick="eliminarNodo('subSeccion', '${subSeccion.id}')" title="Eliminar">Eliminar</button>
                     </div>
@@ -1701,37 +2475,72 @@
         // RENDERIZAR VISTA 2: Organigrama
         function renderOrgView() {
             const container = document.getElementById('orgChart');
-            let html = '';
             
-            // Nivel 1: Empresa
-            html += `
-                <div class="org-level">
-                    <div class="org-node">
-                        <div class="org-node-content">
+            // Construir HTML completo de organigrama jerárquico
+            let html = `
+                <div class="org-tree">
+                    <div class="org-node level-1">
+                        <div class="org-node-content" data-level="1">
                             <div class="node-id">${jerarquiaData.empresa.id}</div>
                             <div class="node-name">${jerarquiaData.empresa.nombre}</div>
-                            <div class="node-level">${jerarquiaData.empresa.nivel || 'Empresa'}</div>
+                            <div class="node-level">Empresa</div>
                         </div>
+                        ${buildOrgChildren(jerarquiaData.areas, 2)}
                     </div>
                 </div>
             `;
             
-            // Nivel 2: Áreas
-            html += '<div class="org-level">';
-            jerarquiaData.areas.forEach(area => {
-                html += `
-                    <div class="org-node">
-                        <div class="org-node-content">
-                            <div class="node-id">${area.id}</div>
-                            <div class="node-name">${area.nombre}</div>
-                            <div class="node-level">${area.nivel || 'Área'}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            html += '</div>';
-            
             container.innerHTML = html;
+        }
+
+        // Construir hijos recursivamente para organigrama
+        function buildOrgChildren(nodes, level) {
+            if (!nodes || nodes.length === 0) return '';
+            
+            let html = '<div class="org-children">';
+            
+            nodes.forEach(node => {
+                html += `
+                    <div class="org-node level-${level}">
+                        <div class="org-node-content" data-level="${level}">
+                            <div class="node-id">${node.id}</div>
+                            <div class="node-name">${node.nombre}</div>
+                            <div class="node-level">${node.nivel || getLevelName(level)}</div>
+                        </div>
+                `;
+                
+                // Renderizar hijos según el nivel
+                if (level === 2 && node.subAreas) {
+                    html += buildOrgChildren(node.subAreas, 3);
+                } else if (level === 3 && node.sistemas) {
+                    html += buildOrgChildren(node.sistemas, 4);
+                } else if (level === 4 && node.subSistemas) {
+                    html += buildOrgChildren(node.subSistemas, 5);
+                } else if (level === 5 && node.secciones) {
+                    html += buildOrgChildren(node.secciones, 6);
+                } else if (level === 6 && node.subSecciones) {
+                    html += buildOrgChildren(node.subSecciones, 7);
+                }
+                
+                html += '</div>'; // cierra org-node
+            });
+            
+            html += '</div>'; // cierra org-children
+            return html;
+        }
+
+        // Obtener nombre del nivel
+        function getLevelName(level) {
+            const names = {
+                1: 'Empresa',
+                2: 'Área',
+                3: 'Sub-Área',
+                4: 'Sistema',
+                5: 'Sub-Sistema',
+                6: 'Sección',
+                7: 'Sub-Sección'
+            };
+            return names[level] || 'Nivel ' + level;
         }
 
         // RENDERIZAR VISTA 3: Red de Dependencias
@@ -1808,6 +2617,523 @@
             if (currentView === 'tree') renderTreeView();
             else if (currentView === 'org') renderOrgView();
             else renderNetworkView();
+        }
+
+        // === BÚSQUEDA Y FILTRADO CON AUTOCOMPLETADO ===
+        let allSearchableNodes = [];
+        let currentSearchMatches = [];
+        let currentSearchIndex = 0;
+        let selectedAutocompleteIndex = -1;
+        let isFilterActive = false; // Indica si hay un filtro de búsqueda activo
+
+        // Construir índice de todos los nodos buscables
+        function buildSearchIndex() {
+            allSearchableNodes = [];
+            
+            function extractNodes(nodes, level, levelName) {
+                if (!nodes) return;
+                
+                nodes.forEach(node => {
+                    allSearchableNodes.push({
+                        id: node.id,
+                        nombre: node.nombre,
+                        nivel: levelName,
+                        data: node
+                    });
+                    
+                    // Recursivamente extraer hijos
+                    if (level === 2 && node.subAreas) extractNodes(node.subAreas, 3, 'Sub-Área');
+                    if (level === 3 && node.sistemas) extractNodes(node.sistemas, 4, 'Sistema');
+                    if (level === 4 && node.subSistemas) extractNodes(node.subSistemas, 5, 'Sub-Sistema');
+                    if (level === 5 && node.secciones) extractNodes(node.secciones, 6, 'Sección');
+                    if (level === 6 && node.subSecciones) extractNodes(node.subSecciones, 7, 'Sub-Sección');
+                });
+            }
+            
+            // Agregar empresa
+            if (jerarquiaData.empresa) {
+                allSearchableNodes.push({
+                    id: jerarquiaData.empresa.id,
+                    nombre: jerarquiaData.empresa.nombre,
+                    nivel: 'Empresa',
+                    data: jerarquiaData.empresa
+                });
+            }
+            
+            // Agregar áreas y sus descendientes
+            if (jerarquiaData.areas) {
+                extractNodes(jerarquiaData.areas, 2, 'Área');
+            }
+        }
+
+        // Búsqueda con autocompletado
+        function searchNodesAutocomplete(query) {
+            const dropdown = document.getElementById('autocompleteDropdown');
+            const searchResults = document.getElementById('searchResults');
+            
+            if (!query || query.trim().length < 1) {
+                dropdown.classList.remove('show');
+                searchResults.textContent = '';
+                clearSearchHighlights();
+                isFilterActive = false; // Limpiar filtro
+                return;
+            }
+            
+            const searchTerm = query.toLowerCase().trim();
+            const matches = allSearchableNodes.filter(node => 
+                node.id.toLowerCase().includes(searchTerm) || 
+                node.nombre.toLowerCase().includes(searchTerm)
+            );
+            
+            if (matches.length > 0) {
+                dropdown.innerHTML = matches.slice(0, 10).map((node, index) => `
+                    <div class="autocomplete-item ${index === 0 ? 'selected' : ''}" 
+                         onclick="selectSearchResult('${node.id}')"
+                         data-index="${index}">
+                        <span class="autocomplete-item-id">${node.id}</span>
+                        <span class="autocomplete-item-name">${node.nombre}</span>
+                        <span class="autocomplete-item-level">${node.nivel}</span>
+                    </div>
+                `).join('');
+                dropdown.classList.add('show');
+                searchResults.textContent = `${matches.length} resultado(s)`;
+                selectedAutocompleteIndex = 0;
+            } else {
+                dropdown.innerHTML = '<div class="autocomplete-no-results">Sin resultados</div>';
+                dropdown.classList.add('show');
+                searchResults.textContent = 'Sin resultados';
+                isFilterActive = false;
+            }
+        }
+
+        // Mostrar autocompletado al hacer focus
+        function showAutocomplete() {
+            const input = document.getElementById('searchInput');
+            if (input.value.trim().length > 0) {
+                searchNodesAutocomplete(input.value);
+            }
+        }
+
+        // Manejar navegación con teclado en autocompletado
+        function handleSearchKeydown(event) {
+            const dropdown = document.getElementById('autocompleteDropdown');
+            const items = dropdown.querySelectorAll('.autocomplete-item:not(.autocomplete-no-results)');
+            
+            if (!dropdown.classList.contains('show') || items.length === 0) return;
+            
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                selectedAutocompleteIndex = Math.min(selectedAutocompleteIndex + 1, items.length - 1);
+                updateAutocompleteSelection(items);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                selectedAutocompleteIndex = Math.max(selectedAutocompleteIndex - 1, 0);
+                updateAutocompleteSelection(items);
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                if (selectedAutocompleteIndex >= 0 && items[selectedAutocompleteIndex]) {
+                    items[selectedAutocompleteIndex].click();
+                }
+            } else if (event.key === 'Escape') {
+                dropdown.classList.remove('show');
+            }
+        }
+
+        function updateAutocompleteSelection(items) {
+            items.forEach((item, index) => {
+                item.classList.toggle('selected', index === selectedAutocompleteIndex);
+            });
+            items[selectedAutocompleteIndex]?.scrollIntoView({ block: 'nearest' });
+        }
+
+        // Seleccionar resultado y mostrar solo esa rama (modo filtro)
+        function selectSearchResult(nodeId) {
+            const dropdown = document.getElementById('autocompleteDropdown');
+            dropdown.classList.remove('show');
+            
+            // Limpiar búsqueda anterior
+            clearSearchHighlights();
+            
+            // Colapsar todo primero
+            document.querySelectorAll('.tree-children').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Encontrar el nodo en el DOM
+            const allNodes = document.querySelectorAll('.node-content');
+            let targetNode = null;
+            
+            allNodes.forEach(node => {
+                const id = node.querySelector('.node-id')?.textContent.trim();
+                if (id === nodeId) {
+                    targetNode = node;
+                }
+            });
+            
+            if (targetNode) {
+                // Expandir toda la rama desde la raíz hasta el nodo encontrado
+                let parent = targetNode.closest('.tree-node');
+                while (parent) {
+                    const parentChildren = parent.querySelector(':scope > .tree-children');
+                    if (parentChildren) {
+                        parentChildren.style.display = 'block';
+                    }
+                    parent = parent.parentElement?.closest('.tree-node');
+                }
+                
+                // Destacar el nodo encontrado
+                targetNode.classList.add('search-highlight');
+                
+                // Scroll al nodo
+                setTimeout(() => {
+                    targetNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 200);
+                
+                const searchResults = document.getElementById('searchResults');
+                searchResults.textContent = '✓ Filtrado activo';
+                isFilterActive = true; // Marcar filtro como activo
+            }
+        }
+
+        // Limpiar resaltados de búsqueda
+        function clearSearchHighlights() {
+            document.querySelectorAll('.node-content').forEach(node => {
+                node.classList.remove('search-highlight', 'search-match');
+            });
+            isFilterActive = false;
+        }
+
+        // Cerrar dropdown al hacer click fuera
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('autocompleteDropdown');
+            const searchInput = document.getElementById('searchInput');
+            
+            if (dropdown && !dropdown.contains(event.target) && event.target !== searchInput) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // === ZOOM ===
+        let currentZoom = 1.0;
+
+        function zoomIn() {
+            if (currentZoom < 2.0) {
+                currentZoom += 0.1;
+                applyZoom();
+            }
+        }
+
+        function zoomOut() {
+            if (currentZoom > 0.5) {
+                currentZoom -= 0.1;
+                applyZoom();
+            }
+        }
+
+        function resetZoom() {
+            currentZoom = 1.0;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const container = document.getElementById('treeContainer');
+            container.style.transform = `scale(${currentZoom})`;
+            document.getElementById('zoomLevel').textContent = Math.round(currentZoom * 100) + '%';
+        }
+
+        // === EXPORTAR COMO PNG ===
+        async function exportAsPNG() {
+            showToast('📸 Generando imagen...', 'info');
+            
+            try {
+                // Cargar html2canvas desde CDN si no está disponible
+                if (typeof html2canvas === 'undefined') {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                    document.head.appendChild(script);
+                    
+                    await new Promise((resolve, reject) => {
+                        script.onload = resolve;
+                        script.onerror = reject;
+                    });
+                }
+                
+                // Detectar vista activa y obtener contenedor correcto
+                let sourceContainer, viewName;
+                if (currentView === 'tree') {
+                    sourceContainer = document.getElementById('treeContainer');
+                    viewName = 'jerarquia';
+                } else if (currentView === 'org') {
+                    sourceContainer = document.getElementById('orgChart');
+                    viewName = 'organigrama';
+                } else {
+                    sourceContainer = document.getElementById('networkView');
+                    viewName = 'red';
+                }
+                
+                // Obtener paleta activa del contenedor principal
+                const mainContainer = document.querySelector('.container');
+                let activePalette = 'palette-9'; // Default
+                for (let i = 1; i <= 10; i++) {
+                    if (mainContainer.classList.contains(`palette-${i}`)) {
+                        activePalette = `palette-${i}`;
+                        break;
+                    }
+                }
+                
+                // Crear contenedor temporal para captura
+                const tempContainer = document.createElement('div');
+                tempContainer.style.position = 'absolute';
+                tempContainer.style.left = '-9999px';
+                tempContainer.style.top = '0';
+                tempContainer.style.width = 'auto';
+                tempContainer.style.height = 'auto';
+                tempContainer.style.overflow = 'visible';
+                tempContainer.style.padding = '30px';
+                tempContainer.style.background = '#1a1d23';
+                tempContainer.classList.add(activePalette); // ← Aplicar paleta activa
+                document.body.appendChild(tempContainer);
+                
+                // Clonar el contenido
+                const clone = sourceContainer.cloneNode(true);
+                clone.classList.add('export-mode'); // ← Aplicar CSS limpio para exportación
+                clone.style.transform = 'scale(1)';
+                clone.style.width = 'auto';
+                clone.style.height = 'auto';
+                clone.style.overflow = 'visible';
+                
+                // Si es vista de árbol, manejar expansión según filtro
+                if (currentView === 'tree') {
+                    const treeChildren = clone.querySelectorAll('.tree-children');
+                    
+                    if (isFilterActive) {
+                        // Si hay filtro activo, copiar estado de visibilidad actual
+                        const originalNodes = sourceContainer.querySelectorAll('.tree-children');
+                        treeChildren.forEach((el, index) => {
+                            if (originalNodes[index]) {
+                                el.style.display = originalNodes[index].style.display;
+                            }
+                        });
+                        
+                        // Ocultar nodos que no están en la rama filtrada
+                        const allCloneNodes = clone.querySelectorAll('.tree-node');
+                        const allOriginalNodes = sourceContainer.querySelectorAll('.tree-node');
+                        
+                        allCloneNodes.forEach((cloneNode, index) => {
+                            const originalNode = allOriginalNodes[index];
+                            if (originalNode) {
+                                const parentChildren = originalNode.closest('.tree-children');
+                                if (parentChildren && parentChildren.style.display === 'none') {
+                                    cloneNode.style.display = 'none';
+                                }
+                            }
+                        });
+                    } else {
+                        // Si no hay filtro, expandir todo
+                        treeChildren.forEach(el => {
+                            el.style.display = 'block';
+                        });
+                    }
+                    
+                    // Remover highlights de búsqueda
+                    const highlights = clone.querySelectorAll('.search-highlight, .search-match');
+                    highlights.forEach(el => {
+                        el.classList.remove('search-highlight', 'search-match');
+                    });
+                }
+                
+                tempContainer.appendChild(clone);
+                
+                // Esperar a que se renderice
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const canvas = await html2canvas(tempContainer, {
+                    backgroundColor: '#1a1d23',
+                    scale: 2,
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true
+                });
+                
+                // Eliminar contenedor temporal
+                document.body.removeChild(tempContainer);
+                
+                const link = document.createElement('a');
+                link.download = `${viewName}_${jerarquiaData.empresa.id}_${new Date().toISOString().split('T')[0]}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                showToast('✅ Imagen descargada exitosamente', 'success');
+            } catch (error) {
+                console.error('Error al exportar PNG:', error);
+                showToast('❌ Error al generar imagen', 'error');
+                // Limpiar contenedor temporal si existe
+                const temp = document.querySelector('div[style*="-9999px"]');
+                if (temp) document.body.removeChild(temp);
+            }
+        }
+
+        // === EXPORTAR COMO PDF ===
+        async function exportAsPDF() {
+            showToast('📄 Generando PDF...', 'info');
+            
+            try {
+                // Cargar jsPDF y html2canvas desde CDN si no están disponibles
+                if (typeof jspdf === 'undefined' || typeof html2canvas === 'undefined') {
+                    const jsPDFScript = document.createElement('script');
+                    jsPDFScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                    document.head.appendChild(jsPDFScript);
+                    
+                    const html2canvasScript = document.createElement('script');
+                    html2canvasScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                    document.head.appendChild(html2canvasScript);
+                    
+                    await Promise.all([
+                        new Promise((resolve, reject) => {
+                            jsPDFScript.onload = resolve;
+                            jsPDFScript.onerror = reject;
+                        }),
+                        new Promise((resolve, reject) => {
+                            html2canvasScript.onload = resolve;
+                            html2canvasScript.onerror = reject;
+                        })
+                    ]);
+                }
+                
+                // Detectar vista activa y obtener contenedor correcto
+                let sourceContainer, viewName;
+                if (currentView === 'tree') {
+                    sourceContainer = document.getElementById('treeContainer');
+                    viewName = 'jerarquia';
+                } else if (currentView === 'org') {
+                    sourceContainer = document.getElementById('orgChart');
+                    viewName = 'organigrama';
+                } else {
+                    sourceContainer = document.getElementById('networkView');
+                    viewName = 'red';
+                }
+                
+                // Obtener paleta activa del contenedor principal
+                const mainContainer = document.querySelector('.container');
+                let activePalette = 'palette-9'; // Default
+                for (let i = 1; i <= 10; i++) {
+                    if (mainContainer.classList.contains(`palette-${i}`)) {
+                        activePalette = `palette-${i}`;
+                        break;
+                    }
+                }
+                
+                // Crear contenedor temporal para captura fuera del viewport
+                const tempContainer = document.createElement('div');
+                tempContainer.style.cssText = `
+                    position: absolute;
+                    left: -99999px;
+                    top: 0;
+                    width: auto;
+                    height: auto;
+                    overflow: visible;
+                    padding: 30px;
+                    background: #1a1d23;
+                    transform: scale(1);
+                `;
+                tempContainer.classList.add(activePalette); // ← Aplicar paleta activa
+                document.body.appendChild(tempContainer);
+                
+                // Clonar el contenido completo
+                const clone = sourceContainer.cloneNode(true);
+                clone.classList.add('export-mode'); // ← Aplicar CSS limpio para exportación
+                clone.style.cssText = `
+                    transform: scale(1);
+                    width: auto;
+                    height: auto;
+                    overflow: visible;
+                    position: relative;
+                `;
+                
+                // Si es vista de árbol, manejar expansión según filtro
+                if (currentView === 'tree') {
+                    const treeChildren = clone.querySelectorAll('.tree-children');
+                    
+                    if (isFilterActive) {
+                        // Si hay filtro activo, copiar estado de visibilidad actual
+                        const originalNodes = sourceContainer.querySelectorAll('.tree-children');
+                        treeChildren.forEach((el, index) => {
+                            if (originalNodes[index]) {
+                                el.style.display = originalNodes[index].style.display;
+                            }
+                        });
+                        
+                        // Ocultar nodos que no están en la rama filtrada
+                        const allCloneNodes = clone.querySelectorAll('.tree-node');
+                        const allOriginalNodes = sourceContainer.querySelectorAll('.tree-node');
+                        
+                        allCloneNodes.forEach((cloneNode, index) => {
+                            const originalNode = allOriginalNodes[index];
+                            if (originalNode) {
+                                const parentChildren = originalNode.closest('.tree-children');
+                                if (parentChildren && parentChildren.style.display === 'none') {
+                                    cloneNode.style.display = 'none';
+                                }
+                            }
+                        });
+                    } else {
+                        // Si no hay filtro, expandir todo
+                        treeChildren.forEach(el => {
+                            el.style.display = 'block';
+                        });
+                    }
+                    
+                    // Remover highlights de búsqueda
+                    const highlights = clone.querySelectorAll('.search-highlight, .search-match');
+                    highlights.forEach(el => {
+                        el.classList.remove('search-highlight', 'search-match');
+                    });
+                }
+                
+                tempContainer.appendChild(clone);
+                
+                // Esperar renderizado completo
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                // Capturar con html2canvas
+                const canvas = await html2canvas(tempContainer, {
+                    backgroundColor: '#1a1d23',
+                    scale: 1.5,
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true,
+                    removeContainer: false
+                });
+                
+                // Eliminar contenedor temporal
+                document.body.removeChild(tempContainer);
+                
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                
+                // Calcular dimensiones del PDF (px a mm)
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+                const pdfWidth = imgWidth * 0.264583 / 1.5; // mm (compensar scale)
+                const pdfHeight = imgHeight * 0.264583 / 1.5; // mm
+                
+                const pdf = new jsPDF({
+                    orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
+                    unit: 'mm',
+                    format: [Math.max(pdfWidth, 210), Math.max(pdfHeight, 297)]
+                });
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+                pdf.save(`${viewName}_${jerarquiaData.empresa.id}_${new Date().toISOString().split('T')[0]}.pdf`);
+                
+                showToast('✅ PDF descargado exitosamente', 'success');
+            } catch (error) {
+                console.error('Error al exportar PDF:', error);
+                showToast('❌ Error al generar PDF', 'error');
+                // Limpiar contenedor temporal si existe
+                const temp = document.querySelector('div[style*="-99999px"]');
+                if (temp) document.body.removeChild(temp);
+            }
         }
 
         // Toggle leyenda
@@ -2048,6 +3374,55 @@
             saveToLocalStorage();
             renderCurrentView();
             showToast(`"${nodo.nombre}" eliminado exitosamente`);
+        }
+
+        // === REORDENAR NODOS (MOVER ARRIBA/ABAJO) ===
+        function moverNodo(tipo, index, direction, ...parentIndices) {
+            saveState(); // Guardar estado antes de mover
+            
+            let array;
+            
+            // Obtener el array correcto según el tipo y los índices del padre
+            if (tipo === 'area') {
+                array = jerarquiaData.areas;
+            } else if (tipo === 'subArea') {
+                const [areaIndex] = parentIndices;
+                array = jerarquiaData.areas[areaIndex].subAreas;
+            } else if (tipo === 'sistema') {
+                const [areaIndex, subIndex] = parentIndices;
+                array = jerarquiaData.areas[areaIndex].subAreas[subIndex].sistemas;
+            } else if (tipo === 'subSistema') {
+                const [areaIndex, subIndex, sisIndex] = parentIndices;
+                array = jerarquiaData.areas[areaIndex].subAreas[subIndex].sistemas[sisIndex].subSistemas;
+            } else if (tipo === 'seccion') {
+                const [areaIndex, subIndex, sisIndex, subSisIndex] = parentIndices;
+                array = jerarquiaData.areas[areaIndex].subAreas[subIndex].sistemas[sisIndex].subSistemas[subSisIndex].secciones;
+            } else if (tipo === 'subSeccion') {
+                const [areaIndex, subIndex, sisIndex, subSisIndex, secIndex] = parentIndices;
+                array = jerarquiaData.areas[areaIndex].subAreas[subIndex].sistemas[sisIndex].subSistemas[subSisIndex].secciones[secIndex].subSecciones;
+            }
+            
+            if (!array || array.length <= 1) {
+                showToast('No se puede mover', 'warning');
+                return;
+            }
+            
+            const newIndex = index + direction;
+            
+            // Validar límites
+            if (newIndex < 0 || newIndex >= array.length) {
+                showToast('No se puede mover más ' + (direction < 0 ? 'arriba' : 'abajo'), 'warning');
+                return;
+            }
+            
+            // Intercambiar posiciones
+            const temp = array[index];
+            array[index] = array[newIndex];
+            array[newIndex] = temp;
+            
+            saveToLocalStorage();
+            renderCurrentView();
+            showToast('✓ Orden actualizado', 'success');
         }
 
         // === DRAG & DROP ===
@@ -2697,6 +4072,8 @@
             
             renderTreeView();
             updateUndoRedoButtons();
+            initPalette();
+            buildSearchIndex(); // Construir índice de búsqueda
             
             // Atajos de teclado
             document.addEventListener('keydown', (e) => {
@@ -2709,6 +4086,71 @@
                 }
             });
         });
+
+        // ========================================
+        // SISTEMA DE PALETAS DE COLORES
+        // ========================================
+
+        const palettes = {
+            'palette-1': ['#1e3a5f', '#2563eb', '#3b82f6', '#60a5fa', '#7dd3fc', '#bae6fd', '#e0f2fe'],
+            'palette-2': ['#064e3b', '#059669', '#14b8a6', '#06b6d4', '#0ea5e9', '#7dd3fc', '#e0f2fe'],
+            'palette-3': ['#4c1d95', '#7c3aed', '#a78bfa', '#c084fc', '#e879f9', '#f9a8d4', '#fce7f3'],
+            'palette-4': ['#7c2d12', '#c2410c', '#f97316', '#fb923c', '#fbbf24', '#fde047', '#fef3c7'],
+            'palette-5': ['#18181b', '#3f3f46', '#71717a', '#a1a1aa', '#d4d4d8', '#f4f4f5', '#ffffff'],
+            'palette-6': ['#14532d', '#15803d', '#22c55e', '#4ade80', '#86efac', '#dcfce7', '#f0fdf4'],
+            'palette-7': ['#7f1d1d', '#b91c1c', '#ef4444', '#fb7185', '#fda4af', '#fecdd3', '#fff1f2'],
+            'palette-8': ['#0c1e3d', '#1e3a5f', '#2c5282', '#3b6ba5', '#5991d4', '#93c5fd', '#dbeafe'],
+            'palette-9': ['rgba(91,139,180,0.9)', 'rgba(126,178,147,0.9)', 'rgba(236,158,73,0.9)', 'rgba(180,123,196,0.9)', 'rgba(233,116,116,0.9)', 'rgba(91,180,180,0.9)', 'rgba(180,160,91,0.9)'],
+            'palette-10': ['#3e2723', '#5d4037', '#795548', '#a1887f', '#bcaaa4', '#d7ccc8', '#efebe9']
+        };
+
+        function initPalette() {
+            // Cargar paleta guardada o usar default
+            const savedPalette = localStorage.getItem('selectedPalette') || 'palette-9';
+            document.getElementById('paletteSelect').value = savedPalette;
+            applyPalette(savedPalette);
+            updatePalettePreview(savedPalette);
+        }
+
+        function changePalette() {
+            const select = document.getElementById('paletteSelect');
+            const palette = select.value;
+            
+            // Guardar preferencia
+            localStorage.setItem('selectedPalette', palette);
+            
+            // Aplicar paleta
+            applyPalette(palette);
+            updatePalettePreview(palette);
+        }
+
+        function applyPalette(paletteName) {
+            const container = document.querySelector('.container');
+            
+            // Remover todas las clases de paleta
+            for (let i = 1; i <= 10; i++) {
+                container.classList.remove(`palette-${i}`);
+            }
+            
+            // Agregar la nueva clase
+            container.classList.add(paletteName);
+            
+            console.log(`✅ Paleta aplicada: ${paletteName}`);
+        }
+
+        function updatePalettePreview(paletteName) {
+            const preview = document.getElementById('palettePreview');
+            const colors = palettes[paletteName];
+            
+            preview.innerHTML = '';
+            colors.forEach(color => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'palette-preview-color';
+                colorDiv.style.background = color;
+                colorDiv.title = color;
+                preview.appendChild(colorDiv);
+            });
+        }
     </script>
     <style>
         @keyframes slideIn {
