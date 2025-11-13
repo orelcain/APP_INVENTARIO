@@ -2,8 +2,8 @@
 
 **Repositorio:** APP_INVENTARIO  
 **Owner:** orelcain  
-**Estado:** ✅ v6.0 en desarrollo activo - 85% completado  
-**Última actualización:** 1 de noviembre de 2025
+**Estado:** ✅ v6.0 en desarrollo activo - 95% completado  
+**Última actualización:** 13 de noviembre de 2025
 
 > **📑 NAVEGACIÓN RÁPIDA:**  
 > [📅 Historial Cronológico](#-historial-cronológico-de-desarrollo) • [🎯 Estructura](#-estructura-del-proyecto) • [🚀 Inicio Rápido](#-inicio-rápido) • [📊 Comparación](#-comparación-de-versiones) • [📈 Métricas](#-métricas-del-proyecto) • [🎨 Características](#-características-v60) • [🐛 Solución Problemas](#-solución-de-problemas) • [✅ Checklist](#-checklist-rápido)
@@ -48,6 +48,50 @@ Estado: 85% completado
 Cambios: +2,111 líneas / -510 líneas
 Push: 8.46 MB + documentación
 ```
+
+### 🎨 13 Noviembre 2025 - MEJORAS VISUALES Y UX v6.0
+```
+Estado: 95% completado
+Mejoras: Sistema de jerarquía visual completo + paleta de colores profesional
+```
+
+#### ✅ Sistema de Jerarquía Visual - COMPLETO 100%
+- ✅ Árbol visual de 7 niveles jerárquicos implementado
+- ✅ Conectores visuales con líneas sutiles y círculos de conexión
+- ✅ Paleta de colores progresiva azul-gris profesional:
+  - Nivel 1 (Empresa): #3d4e63 → #2d3d4f (más oscuro)
+  - Nivel 2 (Área): #405266 → #30415a
+  - Nivel 3 (Sub-Área): #43566b → #33465d
+  - Nivel 4 (Sistema): #475b71 → #374b61
+  - Nivel 5 (Sub-Sistema): #4b6077 → #3b5067
+  - Nivel 6 (Sección): #4f657d → #3f556d
+  - Nivel 7 (Sub-Sección): #536a83 → #435a73 (más claro)
+- ✅ Gradientes direccionales (135deg) en cada nivel
+- ✅ Efecto hover con brillo (brightness 1.15) y sombra profesional
+- ✅ Botones de acción con colores distintivos:
+  - Agregar: Verde (#6bb893) con hover más intenso
+  - Editar: Naranja/Dorado (#b8926b) con hover más intenso
+  - Eliminar: Rojo (#b86b6b) con hover más intenso
+- ✅ Sistema de modal dual para agregar/editar sub-niveles
+- ✅ Funcionalidad CRUD completa en todos los niveles
+- ✅ Wrapper visual-v2-tree-container para estilos aislados
+- ✅ Soporte completo para tipos de hijos en nivel 7 (Sub-Sección)
+
+#### 🐛 Correcciones Implementadas
+1. **Botones de acción no clicables** (✅ RESUELTO)
+   - Problema: Botones visibles en hover pero sin respuesta
+   - Solución: Agregado pointer-events: auto y z-index: 10
+   - Resultado: ✅ Todos los botones funcionan correctamente
+
+2. **Error placeholder2 is not defined** (✅ RESUELTO)
+   - Problema: Modal falla al agregar sub-niveles
+   - Solución: Agregado parámetro placeholder2='' en función showDualInputModalWithAbbrev
+   - Resultado: ✅ Modales funcionan perfectamente
+
+3. **Colores no se actualizaban** (✅ RESUELTO)
+   - Problema: CSS .palette-visual con mayor especificidad
+   - Solución: Actualización paralela de ambos selectores (.palette-visual y .visual-v2-tree-container)
+   - Resultado: ✅ Colores se aplican correctamente en toda la jerarquía
 
 #### ✅ TAB Inventario - MIGRADO 100%
 - ✅ Grid 6 columnas responsive (6/6/5/4/3/2/1 breakpoints)

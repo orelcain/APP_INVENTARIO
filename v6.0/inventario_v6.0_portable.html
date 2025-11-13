@@ -8435,8 +8435,8 @@
   padding: 6px 12px;
   min-width: 320px;
   max-width: fit-content;
-  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, #536a83 0%, #435a73 100%);
+  color: #e8edf3;
   border-radius: 6px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   cursor: pointer;
@@ -8446,51 +8446,10 @@
   height: 32px;
 }
 
-.visual-v2-tree-container .node-content[data-level="1"] {
-  background: linear-gradient(135deg, rgba(91, 139, 180, 0.9) 0%, rgba(91, 139, 180, 0.7) 100%);
-  color: #ffffff;
-  border: 1px solid rgba(91, 139, 180, 0.4);
-}
-
-.visual-v2-tree-container .node-content[data-level="2"] {
-  background: linear-gradient(135deg, rgba(126, 178, 147, 0.9) 0%, rgba(126, 178, 147, 0.7) 100%);
-  color: #ffffff;
-  border: 1px solid rgba(126, 178, 147, 0.4);
-}
-
-.visual-v2-tree-container .node-content[data-level="3"] {
-  background: linear-gradient(135deg, rgba(236, 158, 73, 0.9) 0%, rgba(236, 158, 73, 0.7) 100%);
-  color: #2d1810;
-  border: 1px solid rgba(236, 158, 73, 0.4);
-}
-
-.visual-v2-tree-container .node-content[data-level="4"] {
-  background: linear-gradient(135deg, rgba(180, 123, 196, 0.9) 0%, rgba(180, 123, 196, 0.7) 100%);
-  color: #ffffff;
-  border: 1px solid rgba(180, 123, 196, 0.4);
-}
-
-.visual-v2-tree-container .node-content[data-level="5"] {
-  background: linear-gradient(135deg, rgba(233, 116, 116, 0.9) 0%, rgba(233, 116, 116, 0.7) 100%);
-  color: #ffffff;
-  border: 1px solid rgba(233, 116, 116, 0.4);
-}
-
-.visual-v2-tree-container .node-content[data-level="6"] {
-  background: linear-gradient(135deg, rgba(91, 180, 180, 0.9) 0%, rgba(91, 180, 180, 0.7) 100%);
-  color: #ffffff;
-  border: 1px solid rgba(91, 180, 180, 0.4);
-}
-
-.visual-v2-tree-container .node-content[data-level="7"] {
-  background: linear-gradient(135deg, rgba(180, 160, 91, 0.9) 0%, rgba(180, 160, 91, 0.7) 100%);
-  color: #2d2610;
-  border: 1px solid rgba(180, 160, 91, 0.4);
-}
-
 .visual-v2-tree-container .node-content:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(91, 139, 180, 0.4);
+  box-shadow: 0 6px 20px rgba(83, 106, 131, 0.5);
+  filter: brightness(1.15);
 }
 
 .visual-v2-tree-container .node-content.search-highlight {
@@ -8518,6 +8477,9 @@
   gap: 3px;
   margin-left: auto;
   flex-shrink: 0;
+  pointer-events: auto;
+  z-index: 10;
+  position: relative;
 }
 
 .visual-v2-tree-container .node-content:hover .node-actions {
@@ -8535,6 +8497,9 @@
   transition: all 0.2s ease;
   white-space: nowrap;
   line-height: 1;
+  pointer-events: auto;
+  z-index: 10;
+  position: relative;
 }
 
 .visual-v2-tree-container .node-actions .node-btn:hover {
@@ -8543,27 +8508,33 @@
 }
 
 .visual-v2-tree-container .node-btn-add {
-  background: rgba(91, 155, 122, 0.3);
+  background: rgba(107, 184, 147, 0.4);
+  border-color: rgba(107, 184, 147, 0.5);
 }
 
 .visual-v2-tree-container .node-btn-add:hover {
-  background: rgba(91, 155, 122, 0.5);
+  background: rgba(107, 184, 147, 0.65);
+  border-color: rgba(107, 184, 147, 0.7);
 }
 
 .visual-v2-tree-container .node-btn-edit {
-  background: rgba(184, 146, 90, 0.3);
+  background: rgba(184, 146, 107, 0.4);
+  border-color: rgba(184, 146, 107, 0.5);
 }
 
 .visual-v2-tree-container .node-btn-edit:hover {
-  background: rgba(184, 146, 90, 0.5);
+  background: rgba(184, 146, 107, 0.65);
+  border-color: rgba(184, 146, 107, 0.7);
 }
 
 .visual-v2-tree-container .node-btn-delete {
-  background: rgba(184, 107, 107, 0.3);
+  background: rgba(184, 107, 107, 0.4);
+  border-color: rgba(184, 107, 107, 0.5);
 }
 
 .visual-v2-tree-container .node-btn-delete:hover {
-  background: rgba(184, 107, 107, 0.5);
+  background: rgba(184, 107, 107, 0.65);
+  border-color: rgba(184, 107, 107, 0.7);
 }
 
 .visual-v2-tree-container .node-btn-move {
@@ -8786,6 +8757,88 @@
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 50%;
+  z-index: 2;
+}
+
+/* PASO 5: Conectar SUB-SISTEMA con SECCIONES */
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children::before {
+  top: -16px;
+  bottom: 24px;
+  left: -30px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 1px;
+  opacity: 1;
+  z-index: 1;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: -30px;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: 1px;
+  opacity: 1;
+  z-index: 1;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
+  content: '';
+  position: absolute;
+  top: 13px;
+  left: -33px;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  box-shadow: none;
+  opacity: 1;
+  z-index: 2;
+}
+
+/* PASO 6: Conectar SECCIÓN con SUB-SECCIONES */
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children::before {
+  content: '';
+  position: absolute;
+  top: -16px;
+  bottom: 24px;
+  left: -30px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 1px;
+  opacity: 1;
+  z-index: 1;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: -30px;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: 1px;
+  opacity: 1;
+  z-index: 1;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
+  content: '';
+  position: absolute;
+  top: 13px;
+  left: -33px;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  box-shadow: none;
+  opacity: 1;
   z-index: 2;
 }
 
@@ -9613,8 +9666,8 @@
   padding: 6px 12px;
   min-width: 320px;
   max-width: fit-content;
-  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
-  color: white;
+  background: linear-gradient(135deg, #3d4a5c 0%, #2d3847 100%);
+  color: #c5cdd9;
   border-radius: 6px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.3);
   cursor: pointer;
@@ -9625,7 +9678,8 @@
 }
 
 .palette-visual .node-content[data-level="1"] {
-  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  background: linear-gradient(135deg, #3d4e63 0%, #2d3d4f 100%);
+  color: #d5dce5;
   padding-left: 12px;
 }
 
@@ -9634,38 +9688,45 @@
 }
 
 .palette-visual .node-content[data-level="2"] {
-  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  background: linear-gradient(135deg, #405266 0%, #30415a 100%);
+  color: #d5dce5;
   padding-left: 12px;
 }
 
 .palette-visual .node-content[data-level="3"] {
-  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  background: linear-gradient(135deg, #43566b 0%, #33465d 100%);
+  color: #dbe2ea;
   padding-left: 12px;
 }
 
 .palette-visual .node-content[data-level="4"] {
-  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  background: linear-gradient(135deg, #475b71 0%, #374b61 100%);
+  color: #dbe2ea;
   padding-left: 12px;
 }
 
 .palette-visual .node-content[data-level="5"] {
-  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  background: linear-gradient(135deg, #4b6077 0%, #3b5067 100%);
+  color: #e2e8ef;
   padding-left: 12px;
 }
 
 .palette-visual .node-content[data-level="6"] {
-  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  background: linear-gradient(135deg, #4f657d 0%, #3f556d 100%);
+  color: #e2e8ef;
   padding-left: 12px;
 }
 
 .palette-visual .node-content[data-level="7"] {
-  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  background: linear-gradient(135deg, #536a83 0%, #435a73 100%);
+  color: #e8edf3;
   padding-left: 12px;
 }
 
 .palette-visual .node-content:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(91, 139, 180, 0.4);
+  box-shadow: 0 6px 20px rgba(83, 106, 131, 0.5);
+  filter: brightness(1.15);
 }
 
 .palette-visual .node-toggle {
@@ -31896,7 +31957,7 @@ class InventarioCompleto {
       return this.escapeHtml ? this.escapeHtml(String(text)) : String(text);
     };
 
-    let html = '<div class="tree-container"><div class="tree-node" data-node-type="empresa">';
+    let html = '<div class="visual-v2-tree-container"><div class="tree-container"><div class="tree-node" data-node-type="empresa">';
 
     html += `
       <div class="node-content" data-level="1">
@@ -31919,7 +31980,7 @@ class InventarioCompleto {
       html += '</div>';
     }
 
-    html += '</div></div>';
+    html += '</div></div></div>';
     return html;
   }
   
@@ -32135,6 +32196,9 @@ class InventarioCompleto {
 
   buildVisualSubSeccionNode(subSeccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, subSecIndex) {
     const labels = this.getVisualDisplayLabels();
+    const childTypeMap = this.getVisualChildTypeMap();
+    const childType = childTypeMap.subSeccion;
+    const childLabel = childType ? labels[childType] : null;
     const safeId = this.sanitizeVisualText(subSeccion && subSeccion.id ? subSeccion.id : null, this.getVisualFallbackId('subSeccion', [areaIndex, subIndex, sisIndex, subSisIndex, secIndex, subSecIndex]));
     const safeName = this.sanitizeVisualText(subSeccion && subSeccion.nombre ? subSeccion.nombre : null, `${labels.subSeccion} ${subSecIndex + 1}`);
     const indexPath = `${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex},${subSecIndex}`;
@@ -32153,6 +32217,7 @@ class InventarioCompleto {
           <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('subSeccion', '${indexPath}', 1)" title="Bajar">↓</button>
           <button class="node-btn node-btn-edit" onclick="event.stopPropagation(); app.editarNodoJerarquia('subSeccion', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex}, ${subSecIndex})" title="Editar sub-sección">Editar</button>
           <button class="node-btn node-btn-delete" onclick="event.stopPropagation(); app.eliminarNodoJerarquia('subSeccion', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex}, ${subSecIndex})" title="Eliminar sub-sección">Eliminar</button>
+          ${childType && childLabel ? `<button class="node-btn node-btn-add" onclick="event.stopPropagation(); app.agregarNodoJerarquia('${childType}', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex}, ${subSecIndex})" title="Agregar ${childLabel}">+ ${childLabel}</button>` : ''}
         </div>
       </div>
     `;
@@ -40486,7 +40551,7 @@ class InventarioCompleto {
   /**
    * Modal con generación automática de abreviaturas
    */
-  showDualInputModalWithAbbrev(title, label1, defaultValue1 = '', placeholder1 = '', label2, defaultValue2 = '', autoGenerate = true) {
+  showDualInputModalWithAbbrev(title, label1, defaultValue1 = '', placeholder1 = '', label2, defaultValue2 = '', placeholder2 = '', autoGenerate = true) {
     return new Promise((resolve) => {
       const escapeHtml = (text) => {
         if (!text) return '';
