@@ -8237,6 +8237,569 @@
   margin-top: 6px;
 }
 
+.visual-v2-wrapper {
+  margin-top: 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(90, 120, 160, 0.3);
+  background: linear-gradient(135deg, rgba(21, 25, 33, 0.96), rgba(27, 32, 41, 0.96));
+  position: relative;
+  min-height: 480px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.visual-v2-wrapper.is-hidden {
+  display: none;
+}
+
+.visual-v2-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: #eaf2ff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.visual-v2-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  background: rgba(24, 28, 36, 0.9);
+  border-bottom: 1px solid rgba(74, 128, 176, 0.3);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.visual-v2-toolbar-left {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1;
+}
+
+.visual-v2-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.visual-v2-heading-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(91, 139, 180, 0.45));
+}
+
+.visual-v2-title {
+  margin: 0;
+  font-size: 1.3rem;
+  letter-spacing: 0.4px;
+  color: #8eb6ff;
+  text-transform: uppercase;
+}
+
+.visual-v2-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: rgba(208, 224, 255, 0.75);
+}
+
+.visual-v2-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.visual-v2-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  background: rgba(57, 90, 140, 0.35);
+  color: #eaf2ff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  min-width: 48px;
+}
+
+.visual-v2-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(82, 122, 186, 0.55);
+  box-shadow: 0 8px 18px rgba(82, 122, 186, 0.35);
+}
+
+.visual-v2-btn:active {
+  transform: translateY(0);
+}
+
+.visual-v2-zoom-indicator {
+  min-width: 64px;
+  text-align: center;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(33, 39, 55, 0.9);
+  border: 1px solid rgba(91, 139, 180, 0.45);
+}
+
+.visual-v2-toolbar-divider {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(180deg, rgba(91, 139, 180, 0) 0%, rgba(91, 139, 180, 0.45) 50%, rgba(91, 139, 180, 0) 100%);
+}
+
+.visual-v2-statusbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: rgba(24, 28, 36, 0.65);
+  border-bottom: 1px solid rgba(74, 128, 176, 0.25);
+  font-size: 0.85rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.visual-v2-status-label {
+  color: rgba(208, 224, 255, 0.65);
+}
+
+.visual-v2-status-value {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(91, 139, 180, 0.18);
+  color: #a9c7ff;
+  font-weight: 600;
+}
+
+.visual-v2-status-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.visual-v2-search-status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(91, 139, 180, 0.12);
+  color: #c6dcff;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.visual-v2-tree-scroll {
+  flex: 1;
+  overflow: auto;
+  padding: 24px 32px 32px;
+  position: relative;
+}
+
+.visual-v2-tree-container {
+  transform-origin: top center;
+  transition: transform 0.25s ease;
+  min-width: 780px;
+  color: #f0f4ff;
+}
+
+.visual-v2-tree-container .tree-container {
+  padding: 20px;
+  width: fit-content;
+  min-width: 720px;
+  overflow-x: visible;
+}
+
+.visual-v2-search-wrapper {
+  position: relative;
+  flex: 1 1 260px;
+  max-width: 540px;
+}
+
+.visual-v2-wrapper .jerarquia-search-suggestions {
+  z-index: 1500;
+}
+
+.visual-v2-tree-container .tree-node {
+  position: relative;
+  margin: 6px 0;
+}
+
+.visual-v2-tree-container .node-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  min-width: 320px;
+  max-width: fit-content;
+  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+  height: 32px;
+}
+
+.visual-v2-tree-container .node-content[data-level="1"] {
+  background: linear-gradient(135deg, rgba(91, 139, 180, 0.9) 0%, rgba(91, 139, 180, 0.7) 100%);
+  color: #ffffff;
+  border: 1px solid rgba(91, 139, 180, 0.4);
+}
+
+.visual-v2-tree-container .node-content[data-level="2"] {
+  background: linear-gradient(135deg, rgba(126, 178, 147, 0.9) 0%, rgba(126, 178, 147, 0.7) 100%);
+  color: #ffffff;
+  border: 1px solid rgba(126, 178, 147, 0.4);
+}
+
+.visual-v2-tree-container .node-content[data-level="3"] {
+  background: linear-gradient(135deg, rgba(236, 158, 73, 0.9) 0%, rgba(236, 158, 73, 0.7) 100%);
+  color: #2d1810;
+  border: 1px solid rgba(236, 158, 73, 0.4);
+}
+
+.visual-v2-tree-container .node-content[data-level="4"] {
+  background: linear-gradient(135deg, rgba(180, 123, 196, 0.9) 0%, rgba(180, 123, 196, 0.7) 100%);
+  color: #ffffff;
+  border: 1px solid rgba(180, 123, 196, 0.4);
+}
+
+.visual-v2-tree-container .node-content[data-level="5"] {
+  background: linear-gradient(135deg, rgba(233, 116, 116, 0.9) 0%, rgba(233, 116, 116, 0.7) 100%);
+  color: #ffffff;
+  border: 1px solid rgba(233, 116, 116, 0.4);
+}
+
+.visual-v2-tree-container .node-content[data-level="6"] {
+  background: linear-gradient(135deg, rgba(91, 180, 180, 0.9) 0%, rgba(91, 180, 180, 0.7) 100%);
+  color: #ffffff;
+  border: 1px solid rgba(91, 180, 180, 0.4);
+}
+
+.visual-v2-tree-container .node-content[data-level="7"] {
+  background: linear-gradient(135deg, rgba(180, 160, 91, 0.9) 0%, rgba(180, 160, 91, 0.7) 100%);
+  color: #2d2610;
+  border: 1px solid rgba(180, 160, 91, 0.4);
+}
+
+.visual-v2-tree-container .node-content:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(91, 139, 180, 0.4);
+}
+
+.visual-v2-tree-container .node-content.search-highlight {
+  animation: visual-v2-pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.6) !important;
+  border: 2px solid #fbbf24 !important;
+}
+
+.visual-v2-tree-container .node-content.search-match {
+  border: 2px solid #10b981 !important;
+}
+
+@keyframes visual-v2-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.6) !important;
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.9) !important;
+  }
+}
+
+.visual-v2-tree-container .node-actions {
+  display: none;
+  gap: 3px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.visual-v2-tree-container .node-content:hover .node-actions {
+  display: flex;
+}
+
+.visual-v2-tree-container .node-actions .node-btn {
+  padding: 3px 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 0.7em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.visual-v2-tree-container .node-actions .node-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+}
+
+.visual-v2-tree-container .node-btn-add {
+  background: rgba(91, 155, 122, 0.3);
+}
+
+.visual-v2-tree-container .node-btn-add:hover {
+  background: rgba(91, 155, 122, 0.5);
+}
+
+.visual-v2-tree-container .node-btn-edit {
+  background: rgba(184, 146, 90, 0.3);
+}
+
+.visual-v2-tree-container .node-btn-edit:hover {
+  background: rgba(184, 146, 90, 0.5);
+}
+
+.visual-v2-tree-container .node-btn-delete {
+  background: rgba(184, 107, 107, 0.3);
+}
+
+.visual-v2-tree-container .node-btn-delete:hover {
+  background: rgba(184, 107, 107, 0.5);
+}
+
+.visual-v2-tree-container .node-btn-move {
+  background: rgba(91, 139, 180, 0.3);
+  padding: 2px 5px;
+  font-size: 0.8em;
+}
+
+.visual-v2-tree-container .node-btn-move:hover {
+  background: rgba(91, 139, 180, 0.5);
+}
+
+.visual-v2-tree-container .tree-children {
+  margin-left: 60px;
+  position: relative;
+  padding-top: 0;
+}
+
+.visual-v2-tree-container .drag-handle {
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  margin-right: 4px;
+  transition: all 0.2s ease;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.visual-v2-tree-container .drag-handle:hover {
+  transform: scale(1.1);
+}
+
+.visual-v2-tree-container .drag-handle:active {
+  cursor: grabbing;
+  transform: scale(1.15);
+}
+
+.visual-v2-tree-container .dragging .node-content {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+.visual-v2-tree-container .drop-target {
+  outline: 2px dashed rgba(91, 139, 180, 0.6);
+  outline-offset: 6px;
+}
+
+.visual-v2-tree-container .node-id,
+.visual-v2-tree-container .node-level {
+  font-size: 0.75em;
+  opacity: 0.9;
+  flex-shrink: 0;
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.visual-v2-tree-container .node-level {
+  font-size: 0.7em;
+  opacity: 0.8;
+}
+
+.visual-v2-tree-container .node-name {
+  font-size: 0.85em;
+  font-weight: 600;
+  flex: 0 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.visual-v2-tree-container .node-toggle {
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  margin-right: 4px;
+  width: 16px;
+  text-align: center;
+  transition: all 0.2s ease;
+  -webkit-user-select: none;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.visual-v2-tree-container .node-toggle:hover {
+  color: #ffffff;
+  transform: scale(1.2);
+}
+
+.visual-v2-tree-container .node-toggle.collapsed {
+  transform: rotate(0deg);
+}
+
+.visual-v2-tree-container .node-toggle.expanded {
+  transform: rotate(90deg);
+}
+
+.visual-v2-tree-container > .tree-node > .tree-children::before,
+.visual-v2-tree-container .tree-children::before,
+.visual-v2-tree-container .tree-children > .tree-node::before,
+.visual-v2-tree-container .tree-children > .tree-node::after {
+  content: '';
+  position: absolute;
+  opacity: 1;
+  z-index: 1;
+}
+
+.visual-v2-tree-container > .tree-node > .tree-children::before {
+  top: -16px;
+  bottom: 16px;
+  left: -30px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 1px;
+}
+
+.visual-v2-tree-container > .tree-node > .tree-children > .tree-node::before {
+  top: 16px;
+  left: -30px;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: 1px;
+}
+
+.visual-v2-tree-container > .tree-node > .tree-children > .tree-node::after {
+  top: 13px;
+  left: -33px;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children::before {
+  top: -16px;
+  bottom: 16px;
+  left: -30px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 1px;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node::before {
+  top: 16px;
+  left: -30px;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: 1px;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node::after {
+  top: 13px;
+  left: -33px;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children::before {
+  top: -16px;
+  bottom: 16px;
+  left: -30px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 1px;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::before {
+  top: 16px;
+  left: -30px;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: 1px;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
+  top: 13px;
+  left: -33px;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children::before {
+  top: -16px;
+  bottom: 24px;
+  left: -30px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-radius: 1px;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::before {
+  top: 16px;
+  left: -30px;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-radius: 1px;
+}
+
+.visual-v2-tree-container .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node > .tree-children > .tree-node::after {
+  top: 13px;
+  left: -33px;
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.visual-v2-export {
+  background: #1a1d23;
+  padding: 30px;
+}
+
+.visual-v2-empty {
+  padding: 40px;
+  text-align: center;
+  color: rgba(208, 224, 255, 0.6);
+}
+
 .jerarquia-tree-sap {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 13px;
@@ -8714,54 +9277,57 @@
 
 .jerarquia-controls-bar {
   display: flex;
-  gap: 12px;
+  gap: 20px;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  background: var(--bg-secondary);
-  border-radius: 6px;
-  border: 1px solid var(--border-color);
-  margin-bottom: 0;
+  padding: 15px 20px;
+  background: rgba(37, 42, 51, 0.6);
+  border-radius: 10px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
   position: relative;
+}
+
+.jerarquia-controls-bar.is-visual-v2-active {
+  display: none;
 }
 
 .jerarquia-search-wrapper {
   position: relative;
   flex: 1;
-  min-width: 300px;
-  max-width: 700px;
+  min-width: 280px;
+  max-width: 500px;
 }
 
 .jerarquia-search-icon {
   position: absolute;
-  left: 10px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 13px;
+  font-size: 14px;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .jerarquia-search-input {
   width: 100%;
-  padding: 6px 10px 6px 40px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: var(--text-primary);
-  font-size: 13px;
+  padding: 8px 12px 8px 40px;
+  background: #252a33;
+  border: 1px solid #4a5059;
+  border-radius: 6px;
+  color: #e6e9ef;
+  font-size: 0.9em;
   transition: all 0.3s ease;
 }
 
 .jerarquia-search-input:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: #5b8bb4;
   box-shadow: 0 0 0 3px rgba(91, 139, 180, 0.1);
 }
 
 .jerarquia-search-input::placeholder {
-  color: var(--text-muted);
+  color: #8a909a;
 }
 
 .jerarquia-search-suggestions {
@@ -8769,13 +9335,14 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  margin-top: 4px;
+  background: #252a33;
+  border: 1px solid #5b8bb4;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  margin-top: 0;
   max-height: 300px;
   overflow-y: auto;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
   z-index: 1000;
   display: none;
 }
@@ -8785,10 +9352,13 @@
 }
 
 .jerarquia-suggestion-item {
-  padding: 10px 12px;
+  padding: 10px 15px;
   cursor: pointer;
-  border-bottom: 1px solid var(--border-color);
-  transition: background 0.2s;
+  border-bottom: 1px solid rgba(74, 80, 89, 0.3);
+  transition: background 0.2s ease;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .jerarquia-suggestion-item:last-child {
@@ -8796,64 +9366,61 @@
 }
 
 .jerarquia-suggestion-item:hover {
-  background: var(--bg-tertiary);
+  background: #2d333d;
 }
 
 .jerarquia-suggestion-item.selected {
-  background: rgba(91, 139, 180, 0.15);
-  border-left: 3px solid var(--primary);
+  background: #3d4454;
+  border-left: 3px solid #5b8bb4;
 }
 
 .jerarquia-suggestion-main {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 600;
+  gap: 10px;
+  flex: 1;
 }
 
 .jerarquia-suggestion-id {
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  color: var(--primary-light);
+  color: #5b8bb4;
+  font-weight: 700;
+  font-size: 0.85em;
+  min-width: 80px;
 }
 
 .jerarquia-suggestion-meta {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 4px;
   display: flex;
   gap: 6px;
   align-items: center;
+  font-size: 0.75em;
+  color: #8a909a;
 }
 
 .jerarquia-suggestion-path {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 4px;
-  font-family: 'Courier New', monospace;
+  font-size: 0.75em;
+  color: #8a909a;
 }
 
 .jerarquia-match {
-  background: rgba(91, 139, 180, 0.25);
-  color: var(--primary-light);
+  background: rgba(91, 139, 180, 0.3);
+  color: #e6e9ef;
   border-radius: 3px;
   padding: 0 2px;
 }
 
 .jerarquia-search-status {
-  margin-top: 6px;
-  margin-left: 12px;
-  font-size: 12px;
-  color: var(--text-muted);
-  display: inline-block;
+  font-size: 0.85em;
+  color: #8a909a;
+  font-style: italic;
+  white-space: nowrap;
 }
 
 .jerarquia-search-status.success {
-  color: var(--success);
+  color: #10b981;
 }
 
 .jerarquia-search-status.warning {
-  color: var(--warning);
+  color: #fbbf24;
 }
 
 /* Toggle Triple de Vistas - Compacto sin iconos */
@@ -8871,7 +9438,7 @@
 /* Botones Expandir/Contraer */
 .jerarquia-expand-controls {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   align-items: center;
 }
 
@@ -8879,29 +9446,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 12px;
+  padding: 8px 16px;
   background: #2d333d;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: #7a8189;
-  font-size: 10px;
-  font-weight: 600;
+  border: 1px solid #4a5059;
+  border-radius: 6px;
+  color: #e6e9ef;
+  font-size: 0.9em;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   white-space: nowrap;
-  letter-spacing: 0.5px;
 }
 
 .jerarquia-expand-btn:hover {
-  background: #3a4049;
-  color: #8a9098;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  background: #3d4454;
+  border-color: #5b8bb4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(91, 139, 180, 0.2);
 }
 
 .jerarquia-expand-btn:active {
   transform: translateY(0);
-  box-shadow: none;
 }
 
 .jerarquia-expand-btn .expand-label {
@@ -8945,6 +9510,21 @@
   box-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Botón de reset especial */
+.jerarquia-toggle-option.jerarquia-reset-btn {
+  flex: 0 0 auto;
+  min-width: 40px;
+  padding: 6px;
+  background: #dc3545;
+  color: white;
+}
+
+.jerarquia-toggle-option.jerarquia-reset-btn:hover {
+  background: #c82333;
+  transform: translateY(-1px) rotate(180deg);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Pestañas de Vista - Ocultas ahora */
@@ -9006,7 +9586,7 @@
 
 /* PALETA VISUAL: ÁRBOL CON CONEXIONES - Vista 3 (jerarquia_visual_dependencias) */
 #jerarquiaTreeContainer.palette-visual {
-  background: #1e2229;
+  background: #1a1d23;
   padding: 40px;
   overflow: visible;
   min-height: 600px;
@@ -9014,9 +9594,11 @@
 }
 
 .palette-visual .tree-container {
-  overflow: visible;
+  overflow-x: auto;
   padding: 20px;
   height: auto;
+  transform-origin: top center;
+  transition: transform 0.3s ease;
 }
 
 .palette-visual .tree-node {
@@ -9043,9 +9625,8 @@
 }
 
 .palette-visual .node-content[data-level="1"] {
-  background: linear-gradient(135deg, #171d28 0%, #232a38 100%);
-  border-left: 4px solid #2d4a6b;
-  padding-left: 16px;
+  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  padding-left: 12px;
 }
 
 .palette-visual .tree-container > .tree-node > .node-content[data-level="1"] {
@@ -9053,39 +9634,33 @@
 }
 
 .palette-visual .node-content[data-level="2"] {
-  background: linear-gradient(135deg, #1e2936 0%, #2a3543 100%);
-  border-left: 4px solid #354c69;
-  padding-left: 16px;
+  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  padding-left: 12px;
 }
 
 .palette-visual .node-content[data-level="3"] {
-  background: linear-gradient(135deg, #283544 0%, #344254 100%);
-  border-left: 4px solid #3f5573;
-  padding-left: 16px;
+  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  padding-left: 12px;
 }
 
 .palette-visual .node-content[data-level="4"] {
-  background: linear-gradient(135deg, #324454 0%, #3e5164 100%);
-  border-left: 4px solid #4a617c;
-  padding-left: 16px;
+  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  padding-left: 12px;
 }
 
 .palette-visual .node-content[data-level="5"] {
-  background: linear-gradient(135deg, #3d5265 0%, #496176 100%);
-  border-left: 4px solid #566e84;
-  padding-left: 16px;
+  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  padding-left: 12px;
 }
 
 .palette-visual .node-content[data-level="6"] {
-  background: linear-gradient(135deg, #4a6276 0%, #567185 100%);
-  border-left: 4px solid #61798a;
-  padding-left: 16px;
+  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  padding-left: 12px;
 }
 
 .palette-visual .node-content[data-level="7"] {
-  background: linear-gradient(135deg, #576d7d 0%, #61798a 100%);
-  border-left: 4px solid #7692aa;
-  padding-left: 16px;
+  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  padding-left: 12px;
 }
 
 .palette-visual .node-content:hover {
@@ -9129,47 +9704,18 @@
   white-space: nowrap;
 }
 
-.palette-visual .node-content[data-level="1"] .node-id {
-  background: #232a38;
-  color: #8895ab;
-  border: 1px solid #2d4a6b;
-}
-
-.palette-visual .node-content[data-level="2"] .node-id {
-  background: #2a3543;
-  color: #97a8be;
-  border: 1px solid #354c69;
-}
-
-.palette-visual .node-content[data-level="3"] .node-id {
-  background: #344254;
-  color: #a8b9d0;
-  border: 1px solid #3f5573;
-}
-
-.palette-visual .node-content[data-level="4"] .node-id {
-  background: #3e5164;
-  color: #bacbdf;
-  border: 1px solid #4a617c;
-}
-
-.palette-visual .node-content[data-level="5"] .node-id {
-  background: #496176;
-  color: #cddceb;
-  border: 1px solid #566e84;
-}
-
-.palette-visual .node-content[data-level="6"] .node-id {
-  background: #567185;
-  color: #d9e2ef;
-  border: 1px solid #61798a;
-}
-
+.palette-visual .node-content[data-level="1"] .node-id,
+.palette-visual .node-content[data-level="2"] .node-id,
+.palette-visual .node-content[data-level="3"] .node-id,
+.palette-visual .node-content[data-level="4"] .node-id,
+.palette-visual .node-content[data-level="5"] .node-id,
+.palette-visual .node-content[data-level="6"] .node-id,
 .palette-visual .node-content[data-level="7"] .node-id {
-  background: #61798a;
-  color: #e8f0f7;
-  border: 1px solid #7692aa;
+  background: rgba(0, 0, 0, 0.15);
+  color: white;
+  border: none;
 }
+
 .palette-visual .node-name {
   font-size: 0.85em;
   font-weight: 600;
@@ -11616,7 +12162,7 @@
     <!--  RBOL JERRQUICO ORGANIZACIONAL -->
     <div class="jerarquia-config-container full-width">
       
-      <!-- 🔍 CONTROLES DE BÚSQUEDA Y VISUALIZACIÓN -->
+      <!-- 🔍 BARRA DE CONTROLES -->
       <div class="jerarquia-controls-bar">
         <div class="jerarquia-search-wrapper">
           <span class="jerarquia-search-icon">🔍</span>
@@ -11634,33 +12180,20 @@
         <!-- Botones Expandir/Contraer -->
         <div class="jerarquia-expand-controls">
           <button class="jerarquia-expand-btn" onclick="app.expandirTodoJerarquia()" title="Expandir todo">
-            <span class="expand-label">EXPANDIR TODO</span>
+            <span class="expand-label">📂 EXPANDIR TODO</span>
           </button>
           <button class="jerarquia-expand-btn" onclick="app.contraerTodoJerarquia()" title="Contraer todo">
-            <span class="expand-label">CONTRAER TODO</span>
-          </button>
-        </div>
-        
-        <!-- Toggle Triple de Vistas -->
-        <div class="jerarquia-view-toggle">
-          <button class="jerarquia-toggle-option active" data-palette="original" onclick="app.changeJerarquiaPaletteByTab('original')" title="Vista Original">
-            <span class="toggle-label">ORIGINAL</span>
-          </button>
-          <button class="jerarquia-toggle-option" data-palette="palette-8" onclick="app.changeJerarquiaPaletteByTab('palette-8')" title="Vista Oscura">
-            <span class="toggle-label">OSCURA</span>
-          </button>
-          <button class="jerarquia-toggle-option" data-palette="palette-visual" onclick="app.changeJerarquiaPaletteByTab('palette-visual')" title="Árbol Visual">
-            <span class="toggle-label">VISUAL</span>
+            <span class="expand-label">📁 CONTRAER TODO</span>
           </button>
         </div>
       </div>
       </div>
       
-      <div id="jerarquiaTreeContainer">
-        <!-- Se llenar dinmicamente con el rbol -->
+      <div id="jerarquiaTreeContainer" class="palette-visual">
+        <!-- Se llenará dinámicamente con el árbol visual -->
       </div>
       
-      <!-- Botn guardar en la parte inferior -->
+      <!-- Botón guardar en la parte inferior -->
       <div class="jerarquia-save-container">
         <button id="btnGuardarJerarquia" onclick="app.guardarCambiosJerarquia()" 
                 class="btn btn-success jerarquia-save-btn">
@@ -12755,6 +13288,8 @@
     </div>
   </div>
 </div>
+
+<script src="modules/visualTreeV2.js"></script>
 
 <script>
 // @ts-nocheck
@@ -22928,6 +23463,12 @@ dibujarUbicacionesResaltadas(ctx) {
 
 console.log(' MapController definido');
 
+window.addEventListener('load', () => {
+  if (window.app && typeof window.app.initJerarquiaSearch === 'function') {
+    window.app.initJerarquiaSearch();
+  }
+});
+
 /* FIN MAP CONTROLLER */
 
 // ============================================
@@ -23011,6 +23552,8 @@ class InventarioCompleto {
     this.listSortField = 'codSAP';
     this.listSortOrder = 'asc';
     this.columnWidths = ['50px', '0.9fr', '1.5fr', '160px', '220px'];
+  this.currentJerarquiaPalette = 'palette-visual';
+  this.lastVisualV2Refresh = 0;
     
     // Sistema de Undo/Redo
     this.historyStack = [];  // Pila de estados anteriores
@@ -23814,8 +24357,10 @@ class InventarioCompleto {
   loadJerarquiaAnidada() {
     try {
       const stored = localStorage.getItem('inventarioJerarquiaAnidada');
-      if (stored) {
-        this.jerarquiaAnidada = JSON.parse(stored);
+      const legacy = !stored ? localStorage.getItem('jerarquiaAnidada') : null;
+      if (stored || legacy) {
+        const raw = stored || legacy;
+        this.jerarquiaAnidada = JSON.parse(raw);
         
         //  MIGRACIN: Si tiene "plantas", renombrar a "areas"
         if (this.jerarquiaAnidada.plantas && !this.jerarquiaAnidada.areas) {
@@ -23825,6 +24370,12 @@ class InventarioCompleto {
           this.saveJerarquiaAnidada();
         }
         
+        //  Alinear claves usadas por la demo Visual 2.0
+        if (!stored) {
+          console.log(' Sincronizando jerarquiaAnidada legado hacia inventarioJerarquiaAnidada');
+          this.saveJerarquiaAnidada();
+        }
+
         console.log(' Jerarqua anidada cargada desde localStorage');
       } else {
         // Primera vez: crear estructura base
@@ -23927,6 +24478,7 @@ class InventarioCompleto {
   saveJerarquiaAnidada() {
     try {
       localStorage.setItem('inventarioJerarquiaAnidada', JSON.stringify(this.jerarquiaAnidada));
+      localStorage.setItem('jerarquiaAnidada', JSON.stringify(this.jerarquiaAnidada));
       console.log(' Jerarqua anidada guardada');
     } catch (error) {
       console.error(' Error guardando jerarqua anidada:', error);
@@ -27745,12 +28297,10 @@ class InventarioCompleto {
     this.currentTab = tab;
     
     if (tab === 'jerarquia') {
-      //  Renderizar rbol de gestin de jerarqua
+      // 🌲 Renderizar árbol visual de jerarquía
       setTimeout(() => {
         this.renderJerarquiaTree();
-        //  Inicializar búsqueda y cargar paleta guardada
         this.initJerarquiaSearch();
-        this.loadJerarquiaPalettePreference();
       }, 100);
     } else if (tab === 'stats') {
       this.renderStats();
@@ -31130,51 +31680,39 @@ class InventarioCompleto {
   
   renderJerarquiaTree() {
     const container = document.getElementById('jerarquiaTreeContainer');
+
     if (!container) {
-      console.error(' No se encontr el contenedor jerarquiaTreeContainer');
+      console.error('❌ No se encontró el contenedor jerarquiaTreeContainer');
       return;
     }
     
     if (!this.jerarquiaAnidada) {
-      console.error(' jerarquiaAnidada no est definida');
-      container.innerHTML = '<p style="color: var(--danger); padding: 20px;">Error: No se pudo cargar la jerarqua. Usa el botn "Guardar Cambios" en Configuracin.</p>';
+      console.error('❌ jerarquiaAnidada no está definida');
+      container.innerHTML = '<p style="color: var(--danger); padding: 20px;">Error: No se pudo cargar la jerarquía. Usa el botón "Guardar Cambios" en Configuración.</p>';
       return;
     }
     
-    console.log(' Renderizando rbol jerrquico:', this.jerarquiaAnidada);
+    console.log('🌲 Renderizando árbol visual de jerarquía');
     
     try {
-      // Detectar si está en modo Vista 3 (Árbol Visual)
-      const isPaletteVisual = container.classList.contains('palette-visual');
-
-      if (isPaletteVisual) {
-        container.style.setProperty('min-height', '600px');
-        container.style.setProperty('height', 'auto');
-        container.style.setProperty('overflow', 'visible');
-        container.style.setProperty('padding', '40px');
-        container.style.setProperty('background', '#1e2229');
-      } else {
-        container.style.removeProperty('min-height');
-        container.style.removeProperty('height');
-        container.style.removeProperty('overflow');
-        container.style.removeProperty('padding');
-        container.style.removeProperty('background');
-      }
+      // Aplicar estilos del contenedor visual
+      container.style.setProperty('background', '#1e2229');
+      container.style.setProperty('padding', '40px');
+      container.style.setProperty('overflow', 'visible');
+      container.style.setProperty('min-height', '600px');
+      container.style.setProperty('height', 'auto');
       
-      let html;
-      if (isPaletteVisual) {
-        // Usar renderizador de jerarquia_visual_dependencias
-        html = this.buildTreeHTML_Visual();
-      } else {
-        // Usar renderizador SAP normal
-        html = this.buildTreeHTML();
-      }
-      
+      // Usar SIEMPRE el renderizador visual
+      const html = this.buildTreeHTML_Visual();
       container.innerHTML = html;
-      console.log(` rbol renderizado correctamente (modo: ${isPaletteVisual ? 'Visual' : 'SAP'})`);
       
+      console.log('✅ Árbol visual renderizado correctamente');
+      
+      // Reconstruir índice de búsqueda
       if (typeof this.buildJerarquiaSearchIndex === 'function') {
         this.buildJerarquiaSearchIndex();
+        
+        // Mantener búsqueda activa si había una
         const searchInput = document.getElementById('jerarquiaSearchInput');
         const currentQuery = searchInput ? searchInput.value.trim() : '';
         if (currentQuery) {
@@ -31196,8 +31734,8 @@ class InventarioCompleto {
       // Actualizar estado de botones undo/redo
       this.updateUndoRedoButtons();
     } catch (error) {
-      console.error(' Error renderizando rbol:', error);
-      container.innerHTML = `<p style="color: var(--danger); padding: 20px;">Error renderizando rbol: ${error.message}</p>`;
+      console.error('❌ Error renderizando árbol:', error);
+      container.innerHTML = `<p style="color: var(--danger); padding: 20px;">Error renderizando árbol: ${error.message}</p>`;
     }
   }
   
@@ -31784,7 +32322,7 @@ class InventarioCompleto {
     } else {
       // Ocultar
       children.style.display = 'none';
-      toggleElement.textContent = '›';
+  toggleElement.textContent = '›';
       toggleElement.classList.remove('expanded');
       toggleElement.classList.add('collapsed');
     }
@@ -32667,6 +33205,13 @@ class InventarioCompleto {
           ? `Rehacer (${this.redoStack.length})`
           : 'No hay acciones'
       );
+    }
+
+    if (this.visualV2 && typeof this.visualV2.setUndoRedoState === 'function') {
+      this.visualV2.setUndoRedoState({
+        canUndo: this.historyStack.length > 0,
+        canRedo: this.redoStack.length > 0
+      });
     }
   }
   
@@ -46029,6 +46574,21 @@ Sistema de Gestin de Repuestos con Mapas Visuales
   } else {
     console.log(' Canvas de mapa no encontrado - MapController no inicializado');
   }
+
+  // Inicializar vista Visual 2.0 embebida
+  if (!app.visualV2) {
+    const visualV2Wrapper = document.getElementById('jerarquiaVisualV2Container');
+    if (window.visualTreeV2Module && visualV2Wrapper) {
+      try {
+        app.visualV2 = window.visualTreeV2Module.create(app);
+        app.visualV2.mount(visualV2Wrapper);
+        app.visualV2.render();
+        console.log(' Visual 2.0 inicializado');
+      } catch (error) {
+        console.warn(' Error inicializando Visual 2.0:', error);
+      }
+    }
+  }
   
   //  PASO 3: Limpiar localStorage si estamos en modo FileSystem
   if (fsManager.isFileSystemMode) {
@@ -46269,6 +46829,11 @@ app.demoNotificationTypes = function() {
   }, messages.length * 800 + 1000);
 };
 
+// Obtiene el contenedor activo de la jerarquía
+app.getActiveJerarquiaContainer = function() {
+  return document.getElementById('jerarquiaTreeContainer');
+};
+
 // ============================================================
 //  FUNCIONES DE BÚSQUEDA Y PALETAS PARA JERARQUÍA
 // ============================================================
@@ -46284,6 +46849,11 @@ app.changeJerarquiaPalette = function() {
   }
   
   const selectedPalette = select.value;
+
+  if (selectedPalette === 'visual-v2') {
+    this.changeJerarquiaPaletteByTab('visual-v2');
+    return;
+  }
   
   // Remover todas las clases de paleta anteriores
   container.classList.remove('palette-8', 'palette-9', 'palette-visual');
@@ -46310,204 +46880,55 @@ app.changeJerarquiaPalette = function() {
   console.log(`✓ Vista cambiada a: ${selectedPalette}`);
   
   // Guardar preferencia en localStorage
-  localStorage.setItem('jerarquiaPalettePreference', selectedPalette);
+  localStorage.setItem('jerarquiaPalettePreference', 'palette-visual');
   
   // Re-renderizar el árbol para aplicar el nuevo formato
   this.renderJerarquiaTree();
-};
-
-// Nueva función para cambiar paleta desde las pestañas
-app.changeJerarquiaPaletteByTab = function(palette) {
-  const container = document.getElementById('jerarquiaTreeContainer');
-  const options = document.querySelectorAll('.jerarquia-toggle-option');
-  
-  if (!container) {
-    console.error('No se encontró el contenedor de jerarquía');
-    return;
-  }
-  
-  // Remover clase 'active' de todas las opciones
-  options.forEach(opt => opt.classList.remove('active'));
-  
-  // Agregar clase 'active' a la opción seleccionada
-  const activeOption = document.querySelector(`.jerarquia-toggle-option[data-palette="${palette}"]`);
-  if (activeOption) {
-    activeOption.classList.add('active');
-  }
-  
-  // Remover todas las clases de paleta anteriores
-  container.classList.remove('palette-8', 'palette-9', 'palette-visual');
-  
-  // Agregar la nueva paleta seleccionada (excepto 'original' que no necesita clase)
-  if (palette !== 'original') {
-    container.classList.add(palette);
-  }
-  
-  if (palette === 'palette-visual') {
-    container.style.setProperty('min-height', '600px');
-    container.style.setProperty('height', 'auto');
-    container.style.setProperty('overflow', 'visible');
-    container.style.setProperty('padding', '40px');
-    container.style.setProperty('background', '#1e2229');
-  } else {
-    container.style.removeProperty('min-height');
-    container.style.removeProperty('height');
-    container.style.removeProperty('overflow');
-    container.style.removeProperty('padding');
-    container.style.removeProperty('background');
-  }
-  
-  console.log(`✓ Vista cambiada a: ${palette}`);
-  
-  // Guardar preferencia en localStorage
-  localStorage.setItem('jerarquiaPalettePreference', palette);
-  
-  // Re-renderizar el árbol para aplicar el nuevo formato
-  this.renderJerarquiaTree();
-};
-
-// Cargar paleta guardada al inicializar
-app.loadJerarquiaPalettePreference = function() {
-  const savedPalette = localStorage.getItem('jerarquiaPalettePreference') || 'original';
-  const container = document.getElementById('jerarquiaTreeContainer');
-  const options = document.querySelectorAll('.jerarquia-toggle-option');
-  
-  if (container) {
-    // Actualizar opciones del toggle activas
-    options.forEach(opt => {
-      if (opt.dataset.palette === savedPalette) {
-        opt.classList.add('active');
-      } else {
-        opt.classList.remove('active');
-      }
-    });
-    
-    // Limpiar todas las clases de paleta primero
-    container.classList.remove('palette-8', 'palette-9', 'palette-visual');
-    // Solo agregar clase si no es 'original'
-    if (savedPalette !== 'original') {
-      container.classList.add(savedPalette);
-    }
-    
-    if (savedPalette === 'palette-visual') {
-      container.style.setProperty('min-height', '600px');
-      container.style.setProperty('height', 'auto');
-      container.style.setProperty('overflow', 'visible');
-      container.style.setProperty('padding', '40px');
-      container.style.setProperty('background', '#1e2229');
-    } else {
-      container.style.removeProperty('min-height');
-      container.style.removeProperty('height');
-      container.style.removeProperty('overflow');
-      container.style.removeProperty('padding');
-      container.style.removeProperty('background');
-    }
-    console.log(`✓ Vista cargada: ${savedPalette}`);
-    
-    // IMPORTANTE: Re-renderizar para aplicar la estructura correcta (SAP vs Visual)
-    this.renderJerarquiaTree();
-  }
 };
 
 // Expandir todos los nodos de la jerarquía
 app.expandirTodoJerarquia = function() {
-  const container = document.getElementById('jerarquiaTreeContainer');
-  const isPaletteVisual = container?.classList.contains('palette-visual');
+  const treeChildren = document.querySelectorAll('.tree-children');
+  const toggles = document.querySelectorAll('.node-toggle');
   
-  if (isPaletteVisual) {
-    // Vista Visual: expandir tree-children
-    const treeChildren = document.querySelectorAll('.tree-children');
-    const toggles = document.querySelectorAll('.node-toggle');
-    
-    treeChildren.forEach(children => {
-      children.style.display = 'block';
-    });
-    
-    toggles.forEach(toggle => {
-      toggle.textContent = '›'; // Icono expandido en vista visual
-      toggle.classList.remove('collapsed');
-      toggle.classList.add('expanded');
-    });
-    
-    console.log('✓ Todos los nodos expandidos (Vista Visual)');
-  } else {
-    // Vistas Original y Oscura: expandir contenedores SAP (nueva y antigua estructura)
-    const sapChildren = document.querySelectorAll('.sap-children');
-    const legacyChildren = document.querySelectorAll('.sap-node-children');
-    const sapExpanders = document.querySelectorAll('.sap-node-expand');
-
-    sapChildren.forEach(children => {
-      children.style.display = 'block';
-      if (children.id) {
-        localStorage.setItem('tree-' + children.id, 'open');
-      }
-    });
-
-    sapExpanders.forEach(expand => {
-      expand.textContent = '\u2228'; // Icono expandido (∨)
-    });
-
-    legacyChildren.forEach(children => {
-      children.style.display = 'block';
-    });
-
-    console.log('✓ Todos los nodos expandidos (Vista SAP)');
-  }
+  treeChildren.forEach(children => {
+    children.style.display = 'block';
+  });
+  
+  toggles.forEach(toggle => {
+    toggle.textContent = '›';
+    toggle.classList.remove('collapsed');
+    toggle.classList.add('expanded');
+  });
+  
+  console.log('✅ Todos los nodos expandidos');
 };
 
 // Contraer todos los nodos de la jerarquía
 app.contraerTodoJerarquia = function() {
-  const container = document.getElementById('jerarquiaTreeContainer');
-  const isPaletteVisual = container?.classList.contains('palette-visual');
+  const allTreeChildren = document.querySelectorAll('.tree-children');
+  const toggles = document.querySelectorAll('.node-toggle');
   
-  if (isPaletteVisual) {
-    // Vista Visual: contraer tree-children (excepto el primer nivel)
-    const allTreeChildren = document.querySelectorAll('.tree-children');
-    const toggles = document.querySelectorAll('.node-toggle');
-    
-    // Contraer todos los tree-children excepto el del nodo raíz (empresa)
-    allTreeChildren.forEach((children, index) => {
-      if (index > 0) { // Mantener visible solo el primer nivel (áreas)
-        children.style.display = 'none';
-      }
-    });
-    
-    // Actualizar iconos de toggle
-    toggles.forEach((toggle, index) => {
-      if (index > 0) { // Cambiar todos menos el de la empresa
-        toggle.textContent = '▶'; // Icono contraído
-        toggle.classList.remove('expanded');
-        toggle.classList.add('collapsed');
-      }
-    });
-    
-    console.log('✓ Todos los nodos contraídos (Vista Visual)');
-  } else {
-    // Vistas Original y Oscura: contraer contenedores SAP (nueva y antigua estructura)
-    const sapChildren = document.querySelectorAll('.sap-children');
-    const legacyChildren = document.querySelectorAll('.sap-node-children');
-    const sapExpanders = document.querySelectorAll('.sap-node-expand');
-
-    sapChildren.forEach(children => {
+  // Contraer todos excepto el primer nivel (mantener áreas visibles)
+  allTreeChildren.forEach((children, index) => {
+    if (index > 0) {
       children.style.display = 'none';
-      if (children.id) {
-        localStorage.setItem('tree-' + children.id, 'closed');
-      }
-    });
-
-    sapExpanders.forEach(expand => {
-      expand.textContent = '\u203A'; // Icono contraído (›)
-    });
-
-    legacyChildren.forEach(children => {
-      children.style.display = 'none';
-    });
-
-    console.log('✓ Todos los nodos contraídos (Vista SAP)');
-  }
+    }
+  });
+  
+  // Actualizar iconos de toggle
+  toggles.forEach((toggle, index) => {
+    if (index > 0) {
+      toggle.textContent = '›';
+      toggle.classList.remove('expanded');
+      toggle.classList.add('collapsed');
+    }
+  });
+  
+  console.log('✅ Todos los nodos contraídos');
 };
 
-// Búsqueda avanzada en jerarquía
+// 🔍 Sistema de búsqueda en jerarquía
 app.jerarquiaSearchState = {
   index: [],
   matches: [],
@@ -46523,7 +46944,7 @@ app.initJerarquiaSearch = function() {
   const suggestionsContainer = document.getElementById('jerarquiaSearchSuggestions');
 
   if (!searchInput || !suggestionsContainer) {
-    console.warn('Elementos de búsqueda no encontrados');
+    console.warn('⚠️ Elementos de búsqueda no encontrados');
     return;
   }
 
@@ -46564,78 +46985,49 @@ app.initJerarquiaSearch = function() {
   };
 
   document.addEventListener('click', this._jerarquiaSearchOutsideHandler);
-
   console.log('🔍 Búsqueda de jerarquía inicializada');
 };
 
 app.updateJerarquiaSearchStatus = function(message = '', variant = '') {
   const statusElement = document.getElementById('jerarquiaSearchStatus');
-  if (!statusElement) return;
+  if (statusElement) {
+    statusElement.textContent = message;
+    statusElement.classList.remove('success', 'warning');
 
-  statusElement.textContent = message;
-  statusElement.classList.remove('success', 'warning');
-
-  if (message && variant) {
-    statusElement.classList.add(variant);
+    if (message && variant) {
+      statusElement.classList.add(variant);
+    }
   }
 };
 
 app.collapseJerarquiaTree = function() {
-  const container = document.getElementById('jerarquiaTreeContainer');
+  const container = this.getActiveJerarquiaContainer();
   if (!container) return;
 
-  if (container.classList.contains('palette-visual')) {
-    container.querySelectorAll('.tree-children').forEach((children) => {
-      children.style.display = 'none';
-    });
+  (container.querySelectorAll('.tree-children') || []).forEach((children) => {
+    children.style.display = 'none';
+  });
 
-    container.querySelectorAll('.node-toggle').forEach((toggle) => {
-      toggle.classList.remove('expanded');
-      toggle.classList.add('collapsed');
-      toggle.textContent = '›';
-    });
-  } else {
-    container.querySelectorAll('.sap-children').forEach((children) => {
-      if (children.id) {
-        this.setTreeNodeState(children.id, 'closed');
-      }
-      children.style.display = 'none';
-    });
-
-    container.querySelectorAll('.sap-node-expand').forEach((toggle) => {
-      toggle.textContent = '\u203A';
-    });
-  }
+  (container.querySelectorAll('.node-toggle') || []).forEach((toggle) => {
+    toggle.classList.remove('expanded');
+    toggle.classList.add('collapsed');
+    toggle.textContent = '›';
+  });
 };
 
 app.resetJerarquiaTreeView = function() {
-  const container = document.getElementById('jerarquiaTreeContainer');
+  const container = this.getActiveJerarquiaContainer();
   if (!container) return;
 
-  if (container.classList.contains('palette-visual')) {
-    container.querySelectorAll('.tree-children').forEach((children) => {
-      children.style.display = 'block';
-    });
+  (container.querySelectorAll('.tree-children') || []).forEach((children) => {
+    children.style.display = 'block';
+  });
 
-    container.querySelectorAll('.node-toggle').forEach((toggle) => {
-      toggle.classList.remove('collapsed');
-      toggle.classList.add('expanded');
-      toggle.textContent = '›';
-    });
-  } else {
-    container.querySelectorAll('.sap-children').forEach((children) => {
-      children.style.display = this.getTreeNodeState(children.id) === 'open' ? 'block' : 'none';
-    });
-
-    container.querySelectorAll('.sap-node-expand').forEach((toggle) => {
-      const parentChildren = toggle.closest('.sap-node')?.querySelector(':scope > .sap-children');
-      if (parentChildren && parentChildren.style.display === 'block') {
-        toggle.textContent = '\u2228';
-      } else {
-        toggle.textContent = '\u203A';
-      }
-    });
-  }
+  (container.querySelectorAll('.node-toggle') || []).forEach((toggle) => {
+    toggle.classList.remove('collapsed');
+    toggle.classList.add('expanded');
+    toggle.textContent = '›';
+  });
 };
 
 app.buildJerarquiaSearchIndex = function() {
@@ -46742,6 +47134,8 @@ app.performJerarquiaSearch = function(rawQuery) {
 
   if (matches.length === 0) {
     this.updateJerarquiaSearchStatus('No se encontraron resultados', 'warning');
+  } else {
+    this.updateJerarquiaSearchStatus(`${matches.length} resultado(s)`);
   }
 
   this.renderJerarquiaSuggestions(matches, query);
@@ -46755,7 +47149,6 @@ app.renderJerarquiaSuggestions = function(matches, rawQuery) {
   if (!matches || matches.length === 0) {
     suggestionsContainer.innerHTML = '<div class="jerarquia-suggestion-item" style="opacity: 0.6;">No se encontraron resultados</div>';
     suggestionsContainer.classList.add('active');
-    this.updateJerarquiaSearchStatus('No se encontraron resultados', 'warning');
     return;
   }
 
@@ -46775,12 +47168,7 @@ app.renderJerarquiaSuggestions = function(matches, rawQuery) {
     const pattern = new RegExp(`(${escapeRegex(rawQuery.trim())})`, 'gi');
     return text
       .split(pattern)
-      .map((segment, idx) => {
-        if (idx % 2 === 1) {
-          return `<mark class="jerarquia-match">${escapeHtml(segment)}</mark>`;
-        }
-        return escapeHtml(segment);
-      })
+      .map((segment, idx) => (idx % 2 === 1 ? `<mark class="jerarquia-match">${escapeHtml(segment)}</mark>` : escapeHtml(segment)))
       .join('');
   };
 
@@ -46809,7 +47197,6 @@ app.renderJerarquiaSuggestions = function(matches, rawQuery) {
     .join('');
 
   suggestionsContainer.classList.add('active');
-  this.updateJerarquiaSearchStatus(`${matches.length} resultado(s)`);
   this.updateJerarquiaSuggestionSelection();
 };
 
@@ -46892,7 +47279,7 @@ app.highlightJerarquiaMatches = function(rawQuery) {
     return;
   }
 
-  const container = document.getElementById('jerarquiaTreeContainer');
+  const container = this.getActiveJerarquiaContainer();
   if (!container) return;
 
   container.querySelectorAll('.node-content').forEach((node) => {
@@ -46902,21 +47289,13 @@ app.highlightJerarquiaMatches = function(rawQuery) {
       node.classList.add('search-match');
     }
   });
-
-  container.querySelectorAll('.sap-node-content').forEach((node) => {
-    const idText = node.querySelector('.sap-node-id')?.textContent || '';
-    const nameText = node.querySelector('.sap-node-name')?.textContent || '';
-    if (`${idText} ${nameText}`.toLowerCase().includes(query)) {
-      node.classList.add('search-match');
-    }
-  });
 };
 
 app.clearJerarquiaSearchHighlights = function() {
-  const container = document.getElementById('jerarquiaTreeContainer');
+  const container = this.getActiveJerarquiaContainer();
   if (!container) return;
 
-  container.querySelectorAll('.node-content, .sap-node-content').forEach((node) => {
+  container.querySelectorAll('.node-content').forEach((node) => {
     node.classList.remove('search-match', 'search-highlight');
   });
 };
@@ -46926,7 +47305,7 @@ app.focusJerarquiaSearchResult = function(match) {
     return;
   }
 
-  const container = document.getElementById('jerarquiaTreeContainer');
+  const container = this.getActiveJerarquiaContainer();
   if (!container) return;
 
   const hasIndices = Array.isArray(match.indices) && match.indices.length > 0;
@@ -46957,35 +47336,18 @@ app.focusJerarquiaSearchResult = function(match) {
   }
 
   let targetElement = null;
-  const isVisual = container.classList.contains('palette-visual');
 
-  if (isVisual) {
-    if (Array.isArray(match.indices) && match.indices.length) {
-      const selector = `.tree-node[data-node-index="${match.indices.join(',')}"] > .node-content`;
-      targetElement = container.querySelector(selector);
-    }
+  if (Array.isArray(match.indices) && match.indices.length) {
+    const selector = `.tree-node[data-node-index="${match.indices.join(',')}"] > .node-content`;
+    targetElement = container.querySelector(selector);
+  }
 
-    if (!targetElement) {
-      targetElement = Array.from(container.querySelectorAll('.node-content')).find((node) => {
-        const idText = node.querySelector('.node-id')?.textContent?.trim().toLowerCase();
-        const nameText = node.querySelector('.node-name')?.textContent?.trim().toLowerCase();
-        return (match.id && idText === match.id.toLowerCase()) || (match.nombre && nameText === match.nombre.toLowerCase());
-      }) || null;
-    }
-  } else {
-    if (match.id) {
-      targetElement = Array.from(container.querySelectorAll('.sap-node-id')).find((span) => span.textContent.trim().toLowerCase() === match.id.toLowerCase());
-      targetElement = targetElement ? targetElement.closest('.sap-node-content') : null;
-    }
-
-    if (!targetElement && match.nombre) {
-      const nameSpan = Array.from(container.querySelectorAll('.sap-node-name')).find((span) => span.textContent.trim().toLowerCase() === match.nombre.toLowerCase());
-      targetElement = nameSpan ? nameSpan.closest('.sap-node-content') : null;
-    }
-
-    if (!targetElement && match.nivel === 'Empresa') {
-      targetElement = container.querySelector('.sap-node-empresa .sap-node-content');
-    }
+  if (!targetElement) {
+    targetElement = Array.from(container.querySelectorAll('.node-content')).find((node) => {
+      const idText = node.querySelector('.node-id')?.textContent?.trim().toLowerCase();
+      const nameText = node.querySelector('.node-name')?.textContent?.trim().toLowerCase();
+      return (match.id && idText === match.id.toLowerCase()) || (match.nombre && nameText === match.nombre.toLowerCase());
+    }) || null;
   }
 
   if (targetElement) {
@@ -46997,63 +47359,16 @@ app.focusJerarquiaSearchResult = function(match) {
 };
 
 app.expandJerarquiaPath = function(indices) {
-  const container = document.getElementById('jerarquiaTreeContainer');
+  const container = this.getActiveJerarquiaContainer();
   if (!container) return;
-
-  if (container.classList.contains('palette-visual')) {
-    this.expandVisualJerarquiaPath(indices);
-    return;
-  }
 
   if (!Array.isArray(indices) || indices.length === 0) {
     return;
   }
-
-  const openNode = (id) => {
-    const element = document.getElementById(id);
-    if (element && element.style.display === 'none') {
-      element.style.display = 'block';
-      this.setTreeNodeState(id, 'open');
-
-      const expandIcon = element.previousElementSibling?.querySelector('.sap-node-expand');
-      if (expandIcon) {
-        expandIcon.textContent = '\u2228';
-      }
-    }
-  };
-
-  if (indices.length >= 1) {
-    openNode(`area_children_${indices[0]}`);
-  }
-
-  if (indices.length >= 2) {
-    openNode(`subarea_children_${indices[0]}_${indices[1]}`);
-  }
-
-  if (indices.length >= 3) {
-    openNode(`sistema_children_${indices[0]}_${indices[1]}_${indices[2]}`);
-  }
-
-  if (indices.length >= 4) {
-    openNode(`subsistema_children_${indices[0]}_${indices[1]}_${indices[2]}_${indices[3]}`);
-  }
-
-  if (indices.length >= 5) {
-    openNode(`seccion_children_${indices[0]}_${indices[1]}_${indices[2]}_${indices[3]}_${indices[4]}`);
-  }
-};
-
-app.expandVisualJerarquiaPath = function(indices) {
-  const container = document.getElementById('jerarquiaTreeContainer');
-  if (!container) return;
 
   const rootChildren = container.querySelector('.tree-container > .tree-node > .tree-children');
   if (rootChildren) {
     rootChildren.style.display = 'block';
-  }
-
-  if (!Array.isArray(indices) || indices.length === 0) {
-    return;
   }
 
   const ensureExpanded = (treeNode) => {
@@ -47083,8 +47398,14 @@ app.expandVisualJerarquiaPath = function(indices) {
   });
 };
 
-app.clearJerarquiaSearch = function() {
+app.clearJerarquiaSearch = function(context = {}) {
   const suggestionsContainer = document.getElementById('jerarquiaSearchSuggestions');
+  const input = document.getElementById('jerarquiaSearchInput');
+
+  if (input && !context.preserveInput) {
+    input.value = '';
+  }
+
   if (suggestionsContainer) {
     suggestionsContainer.innerHTML = '';
     suggestionsContainer.classList.remove('active');

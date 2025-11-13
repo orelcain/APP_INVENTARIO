@@ -80,61 +80,6 @@
         }
 
         /* Selector de Paletas */
-        .palette-selector {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            padding: 15px;
-            background: rgba(37, 42, 51, 0.6);
-            border-radius: 10px;
-            border: 1px solid rgba(91, 139, 180, 0.2);
-        }
-
-        .palette-selector label {
-            color: #8a909a;
-            font-weight: 600;
-            font-size: 0.95em;
-        }
-
-        .palette-selector select {
-            padding: 10px 20px;
-            background: #252a33;
-            color: #e6e9ef;
-            border: 1px solid #4a5059;
-            border-radius: 6px;
-            font-size: 0.95em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 250px;
-        }
-
-        .palette-selector select:hover {
-            border-color: #5b8bb4;
-            background: #2d333d;
-        }
-
-        .palette-selector select:focus {
-            outline: none;
-            border-color: #5b8bb4;
-            box-shadow: 0 0 0 3px rgba(91, 139, 180, 0.2);
-        }
-
-        .palette-preview {
-            display: flex;
-            gap: 3px;
-            padding: 5px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-        }
-
-        .palette-preview-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 3px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
 
         /* === TOOLBAR: BÚSQUEDA, ZOOM, EXPORTAR === */
         .toolbar {
@@ -914,369 +859,6 @@
             opacity: 1;
             z-index: 2;
         }
-        .org-view {
-            display: none;
-            overflow-x: auto;
-            padding: 40px;
-            background: #1e2229;
-            border-radius: 8px;
-        }
-
-        .org-view.active {
-            display: block;
-        }
-
-        .org-chart {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 40px 20px;
-            overflow: auto;
-            min-height: 600px;
-        }
-
-        .org-tree {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .org-node {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 8px 0;
-        }
-
-        .org-node-content {
-            padding: 4px 10px;
-            background: #252a33;
-            border: 1.5px solid #5b8bb4;
-            border-radius: 6px;
-            min-width: 140px;
-            max-width: 200px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        .org-node-content:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 20px rgba(91, 139, 180, 0.4);
-            border-color: #7ba5c8;
-            background: #2d333d;
-            z-index: 10;
-        }
-
-        .org-node-content .node-id {
-            color: #5b8bb4;
-            font-weight: 700;
-            font-size: 0.55em;
-            letter-spacing: 0.3px;
-        }
-
-        .org-node-content .node-name {
-            color: #e6e9ef;
-            font-size: 0.75em;
-            font-weight: 500;
-            line-height: 1.2;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-
-        .org-node-content .node-level {
-            color: #8a909a;
-            font-size: 0.5em;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            padding: 2px 6px;
-            background: rgba(91, 139, 180, 0.15);
-            border-radius: 3px;
-            align-self: flex-start;
-        }
-
-        /* Contenedor de hijos en organigrama */
-        .org-children {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-            position: relative;
-            padding-top: 25px;
-        }
-
-        /* Línea vertical desde el padre hacia abajo */
-        .org-node > .org-children::before {
-            content: '';
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 1.5px;
-            height: 25px;
-            background: linear-gradient(180deg, 
-                rgba(255, 255, 255, 0.15) 0%, 
-                rgba(255, 255, 255, 0.05) 100%);
-        }
-
-        /* Línea horizontal conectando hermanos */
-        .org-children > .org-node::before {
-            content: '';
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            width: 1.5px;
-            height: 25px;
-            background: linear-gradient(180deg, 
-                rgba(255, 255, 255, 0.12) 0%, 
-                rgba(255, 255, 255, 0.08) 100%);
-        }
-
-        /* Línea horizontal superior conectando todos los hermanos */
-        .org-children::after {
-            content: '';
-            position: absolute;
-            top: -25px;
-            left: 0;
-            right: 0;
-            height: 1.5px;
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.1) 20%,
-                rgba(255, 255, 255, 0.1) 80%,
-                rgba(255, 255, 255, 0) 100%);
-        }
-
-        /* Nodo único hijo (sin línea horizontal) */
-        .org-children:has(> .org-node:only-child)::after {
-            display: none;
-        }
-
-        /* Estilos por nivel en organigrama */
-        .org-node.level-1 > .org-node-content {
-            min-width: 180px;
-            max-width: 240px;
-            padding: 6px 12px;
-            border-width: 2px;
-            font-size: 1.05em;
-        }
-
-        .org-node.level-2 > .org-node-content {
-            min-width: 160px;
-            max-width: 220px;
-            font-size: 1em;
-        }
-
-        .org-node.level-3 > .org-node-content,
-        .org-node.level-4 > .org-node-content,
-        .org-node.level-5 > .org-node-content,
-        .org-node.level-6 > .org-node-content,
-        .org-node.level-7 > .org-node-content {
-            min-width: 140px;
-            max-width: 200px;
-            padding: 4px 10px;
-            font-size: 0.95em;
-        }
-
-        /* Líneas conectoras con SVG mejoradas */
-        .connector-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .connector-line {
-            stroke: #5b8bb4;
-            stroke-width: 3;
-            fill: none;
-            opacity: 0.7;
-            filter: drop-shadow(0 0 4px rgba(91, 139, 180, 0.5));
-        }
-
-        .connector-dot {
-            fill: #5b8bb4;
-            stroke: #1a1d23;
-            stroke-width: 2;
-            filter: drop-shadow(0 0 4px rgba(91, 139, 180, 0.6));
-        }
-
-        /* VISTA 3: Red de Dependencias (D3-style simulado) */
-        .network-view {
-            display: none;
-            position: relative;
-            height: 600px;
-            background: #1e2229;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #2d333d;
-        }
-
-        .network-view.active {
-            display: block;
-        }
-
-        .network-node {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            cursor: move;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .network-node:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            z-index: 100;
-        }
-
-        .network-node.level-empresa {
-            background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
-            color: white;
-            width: 150px;
-            height: 150px;
-            font-size: 1.2em;
-            font-weight: 700;
-        }
-
-        .network-node.level-area {
-            background: linear-gradient(135deg, #b86b6b 0%, #985555 100%);
-            color: white;
-        }
-
-        .network-node.level-subarea {
-            background: linear-gradient(135deg, #5b9b7a 0%, #4a7d62 100%);
-            color: white;
-        }
-
-        .network-node.level-sistema {
-            background: linear-gradient(135deg, #b8925a 0%, #9a7848 100%);
-            color: white;
-        }
-
-        .network-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        /* Leyenda colapsable */
-        .legend {
-            position: fixed;
-            top: 20px;
-            right: 30px;
-            background: #252a33;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            z-index: 1000;
-            border: 1px solid #3a4049;
-            max-width: 250px;
-            transition: all 0.3s ease;
-        }
-
-        .legend-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 15px;
-            cursor: pointer;
-            -webkit-user-select: none;
-            user-select: none;
-            border-radius: 8px;
-            transition: background 0.2s ease;
-        }
-
-        .legend-header:hover {
-            background: rgba(91, 139, 180, 0.1);
-        }
-
-        .legend-toggle {
-            font-size: 1.2em;
-            transition: transform 0.3s ease;
-            color: #5b8bb4;
-            font-weight: bold;
-        }
-
-        .legend.collapsed .legend-toggle {
-            transform: rotate(180deg);
-        }
-
-        .legend-title {
-            font-weight: 600;
-            color: #e6e9ef;
-            font-size: 0.95em;
-        }
-
-        .legend-content {
-            max-height: 300px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-            padding: 0 15px 15px 15px;
-        }
-
-        .legend.collapsed .legend-content {
-            max-height: 0;
-            padding: 0 15px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin: 8px 0;
-            font-size: 0.9em;
-            color: #b8bec8;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            margin-right: 10px;
-        }
-
-        .legend-color.empresa {
-            background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
-        }
-
-        .legend-color.area {
-            background: linear-gradient(135deg, #b86b6b 0%, #985555 100%);
-        }
-
-        .legend-color.subarea {
-            background: linear-gradient(135deg, #5b9b7a 0%, #4a7d62 100%);
-        }
-
-        .legend-color.sistema {
-            background: linear-gradient(135deg, #b8925a 0%, #9a7848 100%);
-        }
-
-        .legend-color.subsistema {
-            background: linear-gradient(135deg, #6a7581 0%, #4a5059 100%);
-        }
-
-        .legend-color.seccion {
-            background: linear-gradient(135deg, #5b8bb4 0%, #7ba5c8 100%);
-        }
 
         /* Controles */
         .controls {
@@ -1507,7 +1089,7 @@
             }
         }
 
-        .tree-node, .org-node, .network-node {
+    .tree-node {
             animation: fadeIn 0.5s ease-out;
         }
 
@@ -1519,22 +1101,6 @@
 
             h1 {
                 font-size: 1.8em;
-            }
-
-            .org-level {
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .network-view {
-                height: 400px;
-            }
-
-            .legend {
-                bottom: 10px;
-                right: 10px;
-                padding: 10px;
-                font-size: 0.8em;
             }
         }
 
@@ -1858,38 +1424,9 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="view-toggle">
-            <button class="view-btn active" onclick="switchView('tree')">
-                📊 Árbol Vertical
-            </button>
-            <button class="view-btn" onclick="switchView('org')">
-                🏛️ Organigrama
-            </button>
-            <button class="view-btn" onclick="switchView('network')">
-                🔗 Red de Dependencias
-            </button>
-        </div>
+    <div class="container palette-8">
 
-        <!-- Selector de Paletas de Colores -->
-        <div class="palette-selector">
-            <label for="paletteSelect">🎨 Paleta de Colores:</label>
-            <select id="paletteSelect" onchange="changePalette()">
-                <option value="palette-1">Azul Mate Oscuro</option>
-                <option value="palette-2">Océano (Verde → Azul)</option>
-                <option value="palette-3">Atardecer (Morado → Rosa)</option>
-                <option value="palette-4">Cálida (Naranja → Amarillo)</option>
-                <option value="palette-5">Grises Profesionales</option>
-                <option value="palette-6">Verde Naturaleza</option>
-                <option value="palette-7">Gris Opaco Muerto</option>
-                <option value="palette-8">Corporativo Oscuro</option>
-                <option value="palette-9" selected>App Mate (Multi-Color)</option>
-                <option value="palette-10">Tonos Tierra</option>
-            </select>
-            <div class="palette-preview" id="palettePreview">
-                <!-- Preview colors generados dinámicamente -->
-            </div>
-        </div>
+        <!-- Paleta Corporativo Oscuro aplicada por defecto -->
 
         <!-- Controles de Búsqueda, Zoom y Exportar -->
         <div class="toolbar">
@@ -1905,87 +1442,19 @@
                 </div>
                 <span id="searchResults" class="search-results"></span>
             </div>
-            
-            <div class="toolbar-section">
-                <button class="toolbar-btn" onclick="zoomOut()" title="Alejar">🔍-</button>
-                <span id="zoomLevel" class="zoom-level">100%</span>
-                <button class="toolbar-btn" onclick="zoomIn()" title="Acercar">🔍+</button>
-                <button class="toolbar-btn" onclick="resetZoom()" title="Restablecer zoom">⟲</button>
-            </div>
-            
-            <div class="toolbar-section">
-                <button class="toolbar-btn export-btn" onclick="exportAsPNG()" title="Descargar como imagen PNG">📷 PNG</button>
-                <button class="toolbar-btn export-btn" onclick="exportAsPDF()" title="Descargar como PDF">📄 PDF</button>
-            </div>
         </div>
 
-        <!-- VISTA 1: Árbol Vertical -->
+        <!-- VISTA: Árbol Vertical -->
         <div id="treeView" class="tree-view active">
             <div class="tree-container" id="treeContainer">
                 <!-- Se genera dinámicamente -->
             </div>
         </div>
 
-        <!-- VISTA 2: Organigrama -->
-        <div id="orgView" class="org-view">
-            <div class="org-chart" id="orgChart">
-                <!-- Se genera dinámicamente -->
-            </div>
-        </div>
-
-        <!-- VISTA 3: Red de Dependencias -->
-        <div id="networkView" class="network-view">
-            <canvas id="networkCanvas" class="network-canvas"></canvas>
-            <div id="networkNodes"></div>
-        </div>
-
-        <div class="controls">
-            <button class="control-btn" id="undoBtn" onclick="undo()" title="Deshacer (Ctrl+Z)" disabled>↶ Deshacer</button>
-            <button class="control-btn" id="redoBtn" onclick="redo()" title="Rehacer (Ctrl+Y)" disabled>↷ Rehacer</button>
-            <button class="control-btn" onclick="expandAll()">⬇️ Expandir Todo</button>
-            <button class="control-btn" onclick="collapseAll()">⬆️ Colapsar Todo</button>
-            <button class="control-btn" onclick="resetView()">🔄 Reiniciar Vista</button>
-            <button class="control-btn btn-sync" onclick="sincronizarConLocalStorage()">� Sincronizar desde App</button>
-        </div>
-    </div>
-
-    <div class="legend">
-        <div class="legend-header" onclick="toggleLegend()">
-            <div class="legend-title">📋 Niveles Jerárquicos</div>
-            <div class="legend-toggle">▼</div>
-        </div>
-        <div class="legend-content">
-            <div class="legend-item">
-                <div class="legend-color empresa"></div>
-                <span>Empresa</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color area"></div>
-                <span>Área</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color subarea"></div>
-                <span>Sub-Área</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color sistema"></div>
-                <span>Sistema</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color subsistema"></div>
-                <span>Sub-Sistema</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color seccion"></div>
-                <span>Sección</span>
-            </div>
-        </div>
     </div>
 
     <script>
         // === CONFIGURACIÓN Y VARIABLES GLOBALES ===
-        let currentView = 'tree';
-        let collapsedNodes = new Set();
         let jerarquiaData = null;
         let historyStack = [];
         let historyIndex = -1;
@@ -1995,8 +1464,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadFromLocalStorage();
             renderTreeView();
-            renderOrgView();
-            renderNetworkView();
             updateUndoRedoButtons();
             setupKeyboardShortcuts();
         });
@@ -2117,12 +1584,6 @@
         }
         
         // Renderizar vista actual
-        function renderCurrentView() {
-            if (currentView === 'tree') renderTreeView();
-            else if (currentView === 'org') renderOrgView();
-            else renderNetworkView();
-        }
-        
         // Datos de ejemplo
         function getMockData() {
             return {
@@ -2192,19 +1653,6 @@
                     }
                 ]
             };
-        }
-
-        // Cambiar entre vistas
-        function switchView(view) {
-            currentView = view;
-            
-            // Actualizar botones
-            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Mostrar/ocultar vistas
-            document.querySelectorAll('.tree-view, .org-view, .network-view').forEach(v => v.classList.remove('active'));
-            document.getElementById(view + 'View').classList.add('active');
         }
 
         // RENDERIZAR VISTA 1: Árbol Vertical
@@ -2471,127 +1919,6 @@
             html += '</div>';
             return html;
         }
-
-        // RENDERIZAR VISTA 2: Organigrama
-        function renderOrgView() {
-            const container = document.getElementById('orgChart');
-            
-            // Construir HTML completo de organigrama jerárquico
-            let html = `
-                <div class="org-tree">
-                    <div class="org-node level-1">
-                        <div class="org-node-content" data-level="1">
-                            <div class="node-id">${jerarquiaData.empresa.id}</div>
-                            <div class="node-name">${jerarquiaData.empresa.nombre}</div>
-                            <div class="node-level">Empresa</div>
-                        </div>
-                        ${buildOrgChildren(jerarquiaData.areas, 2)}
-                    </div>
-                </div>
-            `;
-            
-            container.innerHTML = html;
-        }
-
-        // Construir hijos recursivamente para organigrama
-        function buildOrgChildren(nodes, level) {
-            if (!nodes || nodes.length === 0) return '';
-            
-            let html = '<div class="org-children">';
-            
-            nodes.forEach(node => {
-                html += `
-                    <div class="org-node level-${level}">
-                        <div class="org-node-content" data-level="${level}">
-                            <div class="node-id">${node.id}</div>
-                            <div class="node-name">${node.nombre}</div>
-                            <div class="node-level">${node.nivel || getLevelName(level)}</div>
-                        </div>
-                `;
-                
-                // Renderizar hijos según el nivel
-                if (level === 2 && node.subAreas) {
-                    html += buildOrgChildren(node.subAreas, 3);
-                } else if (level === 3 && node.sistemas) {
-                    html += buildOrgChildren(node.sistemas, 4);
-                } else if (level === 4 && node.subSistemas) {
-                    html += buildOrgChildren(node.subSistemas, 5);
-                } else if (level === 5 && node.secciones) {
-                    html += buildOrgChildren(node.secciones, 6);
-                } else if (level === 6 && node.subSecciones) {
-                    html += buildOrgChildren(node.subSecciones, 7);
-                }
-                
-                html += '</div>'; // cierra org-node
-            });
-            
-            html += '</div>'; // cierra org-children
-            return html;
-        }
-
-        // Obtener nombre del nivel
-        function getLevelName(level) {
-            const names = {
-                1: 'Empresa',
-                2: 'Área',
-                3: 'Sub-Área',
-                4: 'Sistema',
-                5: 'Sub-Sistema',
-                6: 'Sección',
-                7: 'Sub-Sección'
-            };
-            return names[level] || 'Nivel ' + level;
-        }
-
-        // RENDERIZAR VISTA 3: Red de Dependencias
-        function renderNetworkView() {
-            const container = document.getElementById('networkNodes');
-            const canvas = document.getElementById('networkCanvas');
-            const ctx = canvas.getContext('2d');
-            
-            canvas.width = container.parentElement.offsetWidth;
-            canvas.height = container.parentElement.offsetHeight;
-            
-            // Posiciones de nodos (distribución circular)
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = 200;
-            
-            // Nodo empresa (centro)
-            container.innerHTML = `
-                <div class="network-node level-empresa" style="left: ${centerX - 75}px; top: ${centerY - 75}px;">
-                    <div>
-                        <strong>${jerarquiaData.empresa.nombre}</strong><br>
-                        <small>${jerarquiaData.empresa.id}</small>
-                    </div>
-                </div>
-            `;
-            
-            // Nodos áreas (círculo alrededor)
-            jerarquiaData.areas.forEach((area, index) => {
-                const angle = (index / jerarquiaData.areas.length) * 2 * Math.PI;
-                const x = centerX + radius * Math.cos(angle);
-                const y = centerY + radius * Math.sin(angle);
-                
-                container.innerHTML += `
-                    <div class="network-node level-area" style="left: ${x - 60}px; top: ${y - 60}px;">
-                        <div>
-                            <strong>${area.nombre}</strong><br>
-                            <small>${area.id}</small>
-                        </div>
-                    </div>
-                `;
-                
-                // Dibujar línea de conexión
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(x, y);
-                ctx.strokeStyle = '#5b8bb4';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            });
-        }
-
         // Funciones de control
         function toggleNode(element) {
             const parent = element.parentElement;
@@ -2614,9 +1941,7 @@
         }
 
         function resetView() {
-            if (currentView === 'tree') renderTreeView();
-            else if (currentView === 'org') renderOrgView();
-            else renderNetworkView();
+            renderTreeView();
         }
 
         // === BÚSQUEDA Y FILTRADO CON AUTOCOMPLETADO ===
@@ -2858,18 +2183,9 @@
                     });
                 }
                 
-                // Detectar vista activa y obtener contenedor correcto
-                let sourceContainer, viewName;
-                if (currentView === 'tree') {
-                    sourceContainer = document.getElementById('treeContainer');
-                    viewName = 'jerarquia';
-                } else if (currentView === 'org') {
-                    sourceContainer = document.getElementById('orgChart');
-                    viewName = 'organigrama';
-                } else {
-                    sourceContainer = document.getElementById('networkView');
-                    viewName = 'red';
-                }
+                // Contenedor a exportar (solo vista jerárquica)
+                const sourceContainer = document.getElementById('treeContainer');
+                const viewName = 'jerarquia';
                 
                 // Obtener paleta activa del contenedor principal
                 const mainContainer = document.querySelector('.container');
@@ -2902,45 +2218,43 @@
                 clone.style.height = 'auto';
                 clone.style.overflow = 'visible';
                 
-                // Si es vista de árbol, manejar expansión según filtro
-                if (currentView === 'tree') {
-                    const treeChildren = clone.querySelectorAll('.tree-children');
-                    
-                    if (isFilterActive) {
-                        // Si hay filtro activo, copiar estado de visibilidad actual
-                        const originalNodes = sourceContainer.querySelectorAll('.tree-children');
-                        treeChildren.forEach((el, index) => {
-                            if (originalNodes[index]) {
-                                el.style.display = originalNodes[index].style.display;
+                // Preparar árbol para exportación respetando filtros activos
+                const treeChildren = clone.querySelectorAll('.tree-children');
+
+                if (isFilterActive) {
+                    // Copiar estado de visibilidad actual cuando hay filtro
+                    const originalNodes = sourceContainer.querySelectorAll('.tree-children');
+                    treeChildren.forEach((el, index) => {
+                        if (originalNodes[index]) {
+                            el.style.display = originalNodes[index].style.display;
+                        }
+                    });
+
+                    // Ocultar nodos fuera de la rama filtrada
+                    const allCloneNodes = clone.querySelectorAll('.tree-node');
+                    const allOriginalNodes = sourceContainer.querySelectorAll('.tree-node');
+
+                    allCloneNodes.forEach((cloneNode, index) => {
+                        const originalNode = allOriginalNodes[index];
+                        if (originalNode) {
+                            const parentChildren = originalNode.closest('.tree-children');
+                            if (parentChildren && parentChildren.style.display === 'none') {
+                                cloneNode.style.display = 'none';
                             }
-                        });
-                        
-                        // Ocultar nodos que no están en la rama filtrada
-                        const allCloneNodes = clone.querySelectorAll('.tree-node');
-                        const allOriginalNodes = sourceContainer.querySelectorAll('.tree-node');
-                        
-                        allCloneNodes.forEach((cloneNode, index) => {
-                            const originalNode = allOriginalNodes[index];
-                            if (originalNode) {
-                                const parentChildren = originalNode.closest('.tree-children');
-                                if (parentChildren && parentChildren.style.display === 'none') {
-                                    cloneNode.style.display = 'none';
-                                }
-                            }
-                        });
-                    } else {
-                        // Si no hay filtro, expandir todo
-                        treeChildren.forEach(el => {
-                            el.style.display = 'block';
-                        });
-                    }
-                    
-                    // Remover highlights de búsqueda
-                    const highlights = clone.querySelectorAll('.search-highlight, .search-match');
-                    highlights.forEach(el => {
-                        el.classList.remove('search-highlight', 'search-match');
+                        }
+                    });
+                } else {
+                    // Expandir todo el árbol cuando no hay filtro
+                    treeChildren.forEach(el => {
+                        el.style.display = 'block';
                     });
                 }
+
+                // Limpiar resaltados de búsqueda en la exportación
+                const highlights = clone.querySelectorAll('.search-highlight, .search-match');
+                highlights.forEach(el => {
+                    el.classList.remove('search-highlight', 'search-match');
+                });
                 
                 tempContainer.appendChild(clone);
                 
@@ -3000,18 +2314,9 @@
                     ]);
                 }
                 
-                // Detectar vista activa y obtener contenedor correcto
-                let sourceContainer, viewName;
-                if (currentView === 'tree') {
-                    sourceContainer = document.getElementById('treeContainer');
-                    viewName = 'jerarquia';
-                } else if (currentView === 'org') {
-                    sourceContainer = document.getElementById('orgChart');
-                    viewName = 'organigrama';
-                } else {
-                    sourceContainer = document.getElementById('networkView');
-                    viewName = 'red';
-                }
+                // Contenedor a exportar (solo vista jerárquica)
+                const sourceContainer = document.getElementById('treeContainer');
+                const viewName = 'jerarquia';
                 
                 // Obtener paleta activa del contenedor principal
                 const mainContainer = document.querySelector('.container');
@@ -3050,45 +2355,39 @@
                     position: relative;
                 `;
                 
-                // Si es vista de árbol, manejar expansión según filtro
-                if (currentView === 'tree') {
-                    const treeChildren = clone.querySelectorAll('.tree-children');
-                    
-                    if (isFilterActive) {
-                        // Si hay filtro activo, copiar estado de visibilidad actual
-                        const originalNodes = sourceContainer.querySelectorAll('.tree-children');
-                        treeChildren.forEach((el, index) => {
-                            if (originalNodes[index]) {
-                                el.style.display = originalNodes[index].style.display;
+                // Preparar árbol para exportación respetando filtros activos
+                const treeChildren = clone.querySelectorAll('.tree-children');
+
+                if (isFilterActive) {
+                    const originalNodes = sourceContainer.querySelectorAll('.tree-children');
+                    treeChildren.forEach((el, index) => {
+                        if (originalNodes[index]) {
+                            el.style.display = originalNodes[index].style.display;
+                        }
+                    });
+
+                    const allCloneNodes = clone.querySelectorAll('.tree-node');
+                    const allOriginalNodes = sourceContainer.querySelectorAll('.tree-node');
+
+                    allCloneNodes.forEach((cloneNode, index) => {
+                        const originalNode = allOriginalNodes[index];
+                        if (originalNode) {
+                            const parentChildren = originalNode.closest('.tree-children');
+                            if (parentChildren && parentChildren.style.display === 'none') {
+                                cloneNode.style.display = 'none';
                             }
-                        });
-                        
-                        // Ocultar nodos que no están en la rama filtrada
-                        const allCloneNodes = clone.querySelectorAll('.tree-node');
-                        const allOriginalNodes = sourceContainer.querySelectorAll('.tree-node');
-                        
-                        allCloneNodes.forEach((cloneNode, index) => {
-                            const originalNode = allOriginalNodes[index];
-                            if (originalNode) {
-                                const parentChildren = originalNode.closest('.tree-children');
-                                if (parentChildren && parentChildren.style.display === 'none') {
-                                    cloneNode.style.display = 'none';
-                                }
-                            }
-                        });
-                    } else {
-                        // Si no hay filtro, expandir todo
-                        treeChildren.forEach(el => {
-                            el.style.display = 'block';
-                        });
-                    }
-                    
-                    // Remover highlights de búsqueda
-                    const highlights = clone.querySelectorAll('.search-highlight, .search-match');
-                    highlights.forEach(el => {
-                        el.classList.remove('search-highlight', 'search-match');
+                        }
+                    });
+                } else {
+                    treeChildren.forEach(el => {
+                        el.style.display = 'block';
                     });
                 }
+
+                const highlights = clone.querySelectorAll('.search-highlight, .search-match');
+                highlights.forEach(el => {
+                    el.classList.remove('search-highlight', 'search-match');
+                });
                 
                 tempContainer.appendChild(clone);
                 
@@ -3135,21 +2434,6 @@
                 if (temp) document.body.removeChild(temp);
             }
         }
-
-        // Toggle leyenda
-        function toggleLegend() {
-            const legend = document.querySelector('.legend');
-            const title = legend.querySelector('.legend-title');
-            
-            legend.classList.toggle('collapsed');
-            
-            if (legend.classList.contains('collapsed')) {
-                title.textContent = '📋 Leyenda';
-            } else {
-                title.textContent = '📋 Niveles Jerárquicos';
-            }
-        }
-
         // Sincronizar con app principal
         function sincronizarConLocalStorage() {
             try {
@@ -3168,9 +2452,7 @@
         }
 
         function renderCurrentView() {
-            if (currentView === 'tree') renderTreeView();
-            else if (currentView === 'org') renderOrgView();
-            else renderNetworkView();
+            renderTreeView();
             updateUndoRedoButtons();
         }
 
@@ -4072,7 +3354,7 @@
             
             renderTreeView();
             updateUndoRedoButtons();
-            initPalette();
+        applyPalette('palette-8');
             buildSearchIndex(); // Construir índice de búsqueda
             
             // Atajos de teclado
@@ -4091,39 +3373,6 @@
         // SISTEMA DE PALETAS DE COLORES
         // ========================================
 
-        const palettes = {
-            'palette-1': ['#1e3a5f', '#2563eb', '#3b82f6', '#60a5fa', '#7dd3fc', '#bae6fd', '#e0f2fe'],
-            'palette-2': ['#064e3b', '#059669', '#14b8a6', '#06b6d4', '#0ea5e9', '#7dd3fc', '#e0f2fe'],
-            'palette-3': ['#4c1d95', '#7c3aed', '#a78bfa', '#c084fc', '#e879f9', '#f9a8d4', '#fce7f3'],
-            'palette-4': ['#7c2d12', '#c2410c', '#f97316', '#fb923c', '#fbbf24', '#fde047', '#fef3c7'],
-            'palette-5': ['#18181b', '#3f3f46', '#71717a', '#a1a1aa', '#d4d4d8', '#f4f4f5', '#ffffff'],
-            'palette-6': ['#14532d', '#15803d', '#22c55e', '#4ade80', '#86efac', '#dcfce7', '#f0fdf4'],
-            'palette-7': ['#7f1d1d', '#b91c1c', '#ef4444', '#fb7185', '#fda4af', '#fecdd3', '#fff1f2'],
-            'palette-8': ['#0c1e3d', '#1e3a5f', '#2c5282', '#3b6ba5', '#5991d4', '#93c5fd', '#dbeafe'],
-            'palette-9': ['rgba(91,139,180,0.9)', 'rgba(126,178,147,0.9)', 'rgba(236,158,73,0.9)', 'rgba(180,123,196,0.9)', 'rgba(233,116,116,0.9)', 'rgba(91,180,180,0.9)', 'rgba(180,160,91,0.9)'],
-            'palette-10': ['#3e2723', '#5d4037', '#795548', '#a1887f', '#bcaaa4', '#d7ccc8', '#efebe9']
-        };
-
-        function initPalette() {
-            // Cargar paleta guardada o usar default
-            const savedPalette = localStorage.getItem('selectedPalette') || 'palette-9';
-            document.getElementById('paletteSelect').value = savedPalette;
-            applyPalette(savedPalette);
-            updatePalettePreview(savedPalette);
-        }
-
-        function changePalette() {
-            const select = document.getElementById('paletteSelect');
-            const palette = select.value;
-            
-            // Guardar preferencia
-            localStorage.setItem('selectedPalette', palette);
-            
-            // Aplicar paleta
-            applyPalette(palette);
-            updatePalettePreview(palette);
-        }
-
         function applyPalette(paletteName) {
             const container = document.querySelector('.container');
             
@@ -4136,20 +3385,6 @@
             container.classList.add(paletteName);
             
             console.log(`✅ Paleta aplicada: ${paletteName}`);
-        }
-
-        function updatePalettePreview(paletteName) {
-            const preview = document.getElementById('palettePreview');
-            const colors = palettes[paletteName];
-            
-            preview.innerHTML = '';
-            colors.forEach(color => {
-                const colorDiv = document.createElement('div');
-                colorDiv.className = 'palette-preview-color';
-                colorDiv.style.background = color;
-                colorDiv.title = color;
-                preview.appendChild(colorDiv);
-            });
         }
     </script>
     <style>
