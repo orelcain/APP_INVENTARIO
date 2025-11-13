@@ -2578,6 +2578,36 @@
       opacity: 0.5;
     }
 
+    /* Botones de acción (limpiar, deshacer, rehacer) */
+    .glass-action-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      margin-left: 8px;
+    }
+
+    .glass-action-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      transform: scale(1.05);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-action-btn:active {
+      transform: scale(0.95);
+    }
+
     /* Controles de zoom glassmorphism */
     .glass-zoom-controls {
       display: inline-flex;
@@ -9330,9 +9360,9 @@
 
 .jerarquia-controls-bar {
   display: flex;
-  gap: 20px;
+  gap: 8px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 15px 20px;
   background: rgba(37, 42, 51, 0.6);
   border-radius: 10px;
@@ -9466,6 +9496,7 @@
   color: #8a909a;
   font-style: italic;
   white-space: nowrap;
+  display: none; /* Oculto por defecto */
 }
 
 .jerarquia-search-status.success {
@@ -9474,6 +9505,14 @@
 
 .jerarquia-search-status.warning {
   color: #fbbf24;
+}
+
+/* Separador en jerarquía */
+.jerarquia-controls-bar .toolbar-separator {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 4px;
 }
 
 /* Toggle Triple de Vistas - Compacto sin iconos */
@@ -9489,22 +9528,18 @@
 }
 
 /* Botones Expandir/Contraer */
-.jerarquia-expand-controls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
 .jerarquia-expand-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 16px;
-  background: #2d333d;
-  border: 1px solid #4a5059;
-  border-radius: 6px;
-  color: #e6e9ef;
-  font-size: 0.9em;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -9512,14 +9547,14 @@
 }
 
 .jerarquia-expand-btn:hover {
-  background: #3d4454;
-  border-color: #5b8bb4;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(91, 139, 180, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .jerarquia-expand-btn:active {
-  transform: translateY(0);
+  transform: scale(0.95);
 }
 
 .jerarquia-expand-btn .expand-label {
@@ -12142,6 +12177,10 @@
           <span class="search-icon">🔍</span>
           <input type="text" id="searchInput" placeholder="Buscar...">
         </div>
+        <button onclick="clearSearch()" class="glass-action-btn" title="Limpiar búsqueda">✕</button>
+        <div class="toolbar-separator"></div>
+        <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
+        <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
       </div>
     </div>
 
@@ -12236,17 +12275,19 @@
           />
           <div id="jerarquiaSearchSuggestions" class="jerarquia-search-suggestions"></div>
         </div>
-        <span id="jerarquiaSearchStatus" class="jerarquia-search-status"></span>
+        <button onclick="clearJerarquiaSearch()" class="glass-action-btn" title="Limpiar búsqueda">✕</button>
+        <div class="toolbar-separator"></div>
+        <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
+        <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
+        <div class="toolbar-separator"></div>
         
         <!-- Botones Expandir/Contraer -->
-        <div class="jerarquia-expand-controls">
-          <button class="jerarquia-expand-btn" onclick="app.expandirTodoJerarquia()" title="Expandir todo">
-            <span class="expand-label">📂 EXPANDIR TODO</span>
-          </button>
-          <button class="jerarquia-expand-btn" onclick="app.contraerTodoJerarquia()" title="Contraer todo">
-            <span class="expand-label">📁 CONTRAER TODO</span>
-          </button>
-        </div>
+        <button class="jerarquia-expand-btn" onclick="app.expandirTodoJerarquia()" title="Expandir todo">
+          <span class="expand-label">Expandir</span>
+        </button>
+        <button class="jerarquia-expand-btn" onclick="app.contraerTodoJerarquia()" title="Contraer todo">
+          <span class="expand-label">Contraer</span>
+        </button>
       </div>
       </div>
       
@@ -29534,7 +29575,7 @@ class InventarioCompleto {
                   Editar
                 </button>
                 <button 
-                  onclick="app.eliminarRepuesto('${r.id}')"
+                  onclick="app.deleteRepuesto('${r.id}')"
                   style="
                     background: linear-gradient(135deg, #8B5A5A, #6B4444);
                     color: white;
@@ -31335,6 +31376,13 @@ class InventarioCompleto {
         // Preservar fecha de ltimo conteo si existe
         const repuestoAnterior = this.repuestos[index];
         data.ultimoConteo = repuestoAnterior.ultimoConteo || null;
+        
+        // Guardar estado para deshacer (copia del original y editado)
+        saveState('edit', {
+          original: JSON.parse(JSON.stringify(repuestoAnterior)),
+          edited: JSON.parse(JSON.stringify(data))
+        });
+        
         this.repuestos[index] = data;
 
         const ubicacionesAfectadas = ubicacionesLimpias.length === 1
@@ -31362,6 +31410,10 @@ class InventarioCompleto {
       }
     } else {
       console.log(` Agregando nuevo repuesto: ${data.nombre}`);
+      
+      // Guardar estado para deshacer
+      saveState('add', JSON.parse(JSON.stringify(data)));
+      
       this.repuestos.unshift(data); // Agregar al inicio para que aparezca primero
       const ubicacionesDefinidas = ubicacionesLimpias.length === 1
         ? '1 ubicacin definida'
@@ -31399,7 +31451,12 @@ class InventarioCompleto {
     //  Buscar el repuesto para eliminar sus imgenes fsicas
     const repuesto = this.repuestos.find(r => r.id === id);
     
-    if (repuesto && repuesto.multimedia && fsManager.isFileSystemMode) {
+    if (!repuesto) return;
+    
+    // Guardar estado para deshacer
+    saveState('delete', JSON.parse(JSON.stringify(repuesto)));
+    
+    if (repuesto.multimedia && fsManager.isFileSystemMode) {
       // Filtrar solo imgenes de FileSystem
       const imagenesFileSystem = repuesto.multimedia
         .filter(m => m.type === 'image' && m.isFileSystem && m.url)
@@ -31767,6 +31824,9 @@ class InventarioCompleto {
       const html = this.buildTreeHTML_Visual();
       container.innerHTML = html;
       
+      // 🔄 Restaurar estados de expansión guardados
+      this.restoreExpandStates();
+      
       console.log('✅ Árbol visual renderizado correctamente');
       
       // Reconstruir índice de búsqueda
@@ -31959,9 +32019,14 @@ class InventarioCompleto {
 
     let html = '<div class="visual-v2-tree-container"><div class="tree-container"><div class="tree-node" data-node-type="empresa">';
 
+    // ID único para la empresa
+    const empresaNodeId = `empresa_${escape(empresa.id, 'EMP-01')}`;
+    const empresaExpanded = this.getNodeExpandState(empresaNodeId);
+    const empresaToggleClass = empresaExpanded ? 'expanded' : 'collapsed';
+
     html += `
-      <div class="node-content" data-level="1">
-        <span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">›</span>
+      <div class="node-content" data-level="1" data-node-id="${empresaNodeId}">
+        <span class="node-toggle ${empresaToggleClass}" onclick="app.toggleVisualNodeChildren(this)">›</span>
         <span class="node-id">${escape(empresa.id, 'EMP-01')}</span>
         <span class="node-name">${escape(empresa.nombre, 'Empresa')}</span>
         <span class="node-level">${labels.empresa}</span>
@@ -31973,9 +32038,10 @@ class InventarioCompleto {
     `;
 
     if (Array.isArray(areas) && areas.length > 0) {
-      html += '<div class="tree-children" style="display: block;">';
+      const empresaChildrenDisplay = empresaExpanded ? 'block' : 'none';
+      html += `<div class="tree-children" style="display: ${empresaChildrenDisplay};">`;
       areas.forEach((area, index) => {
-        html += this.buildVisualAreaNode(area, index);
+        html += this.buildVisualAreaNode(area, index, empresaNodeId);
       });
       html += '</div>';
     }
@@ -31984,7 +32050,7 @@ class InventarioCompleto {
     return html;
   }
   
-  buildVisualAreaNode(area, index) {
+  buildVisualAreaNode(area, index, parentNodeId) {
     const labels = this.getVisualDisplayLabels();
     const childTypeMap = this.getVisualChildTypeMap();
     const childType = childTypeMap.area;
@@ -31994,13 +32060,18 @@ class InventarioCompleto {
     const safeId = this.sanitizeVisualText(area && area.id ? area.id : null, this.getVisualFallbackId('area', [index]));
     const safeName = this.sanitizeVisualText(area && area.nombre ? area.nombre : null, `${labels.area} ${index + 1}`);
     const indexPath = `${index}`;
+    
+    // ID único y estado de expansión
+    const areaNodeId = `${parentNodeId}_area_${index}`;
+    const areaExpanded = this.getNodeExpandState(areaNodeId);
+    const areaToggleClass = areaExpanded ? 'expanded' : 'collapsed';
 
     let html = `<div class="tree-node" data-node-type="area" data-node-index="${indexPath}">`;
 
     html += `
-      <div class="node-content" data-level="2">
+      <div class="node-content" data-level="2" data-node-id="${areaNodeId}">
         <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('area', '${indexPath}')" title="Mover nodo">⠿</span>
-        ${hasChildren ? `<span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
+        ${hasChildren ? `<span class="node-toggle ${areaToggleClass}" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
         <span class="node-id">${safeId}</span>
         <span class="node-name">${safeName}</span>
         <span class="node-level">${labels.area}</span>
@@ -32015,9 +32086,10 @@ class InventarioCompleto {
     `;
 
     if (hasChildren) {
-      html += '<div class="tree-children" style="display: block;">';
+      const areaChildrenDisplay = areaExpanded ? 'block' : 'none';
+      html += `<div class="tree-children" style="display: ${areaChildrenDisplay};">`;
       area.subAreas.forEach((subArea, subIndex) => {
-        html += this.buildVisualSubAreaNode(subArea, index, subIndex);
+        html += this.buildVisualSubAreaNode(subArea, index, subIndex, areaNodeId);
       });
       html += '</div>';
     }
@@ -32026,7 +32098,7 @@ class InventarioCompleto {
     return html;
   }
 
-  buildVisualSubAreaNode(subArea, areaIndex, subIndex) {
+  buildVisualSubAreaNode(subArea, areaIndex, subIndex, parentNodeId) {
     const labels = this.getVisualDisplayLabels();
     const childTypeMap = this.getVisualChildTypeMap();
     const childType = childTypeMap.subArea;
@@ -32036,13 +32108,18 @@ class InventarioCompleto {
     const safeId = this.sanitizeVisualText(subArea && subArea.id ? subArea.id : null, this.getVisualFallbackId('subArea', [areaIndex, subIndex]));
     const safeName = this.sanitizeVisualText(subArea && subArea.nombre ? subArea.nombre : null, `${labels.subArea} ${subIndex + 1}`);
     const indexPath = `${areaIndex},${subIndex}`;
+    
+    // ID único y estado
+    const nodeId = `${parentNodeId}_subarea_${subIndex}`;
+    const expanded = this.getNodeExpandState(nodeId);
+    const toggleClass = expanded ? 'expanded' : 'collapsed';
 
     let html = `<div class="tree-node" data-node-type="subArea" data-node-index="${indexPath}">`;
 
     html += `
-      <div class="node-content" data-level="3">
+      <div class="node-content" data-level="3" data-node-id="${nodeId}">
         <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('subArea', '${indexPath}')" title="Mover nodo">⠿</span>
-        ${hasChildren ? `<span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
+        ${hasChildren ? `<span class="node-toggle ${toggleClass}" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
         <span class="node-id">${safeId}</span>
         <span class="node-name">${safeName}</span>
         <span class="node-level">${labels.subArea}</span>
@@ -32057,7 +32134,8 @@ class InventarioCompleto {
     `;
 
     if (hasChildren) {
-      html += '<div class="tree-children" style="display: block;">';
+      const childrenDisplay = expanded ? 'block' : 'none';
+      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
       subArea.sistemas.forEach((sistema, sisIndex) => {
         html += this.buildVisualSistemaNode(sistema, areaIndex, subIndex, sisIndex);
       });
@@ -32375,6 +32453,17 @@ class InventarioCompleto {
     
     if (!children) return;
     
+    // Obtener o generar ID único del nodo para persistencia
+    let nodeId = nodeContent.getAttribute('data-node-id');
+    
+    // Si no tiene ID, generarlo ahora
+    if (!nodeId) {
+      const nodeType = treeNode.getAttribute('data-node-type') || 'node';
+      const nodeIndex = treeNode.getAttribute('data-node-index') || 'unknown';
+      nodeId = `${nodeType}_${nodeIndex}`;
+      nodeContent.setAttribute('data-node-id', nodeId);
+    }
+    
     // Si no tiene style.display o está vacío, se considera visible (display: block por defecto en CSS)
     const isCurrentlyHidden = children.style.display === 'none';
     
@@ -32384,12 +32473,117 @@ class InventarioCompleto {
       toggleElement.textContent = '›';
       toggleElement.classList.remove('collapsed');
       toggleElement.classList.add('expanded');
+      
+      // Guardar estado expandido
+      this.saveNodeExpandState(nodeId, true);
     } else {
       // Ocultar
       children.style.display = 'none';
-  toggleElement.textContent = '›';
+      toggleElement.textContent = '›';
       toggleElement.classList.remove('expanded');
       toggleElement.classList.add('collapsed');
+      
+      // Guardar estado contraído
+      this.saveNodeExpandState(nodeId, false);
+    }
+  }
+  
+  // Restaurar estados de expansión de todos los nodos
+  restoreExpandStates() {
+    try {
+      const stateKey = 'jerarquia_expand_state';
+      const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
+      const stateCount = Object.keys(state).length;
+      
+      if (stateCount === 0) {
+        console.log('ℹ️  No hay estados guardados para restaurar');
+        return;
+      }
+      
+      let restored = 0;
+      let skipped = 0;
+      
+      // Iterar solo sobre nodos que tienen toggle (pueden expandirse/contraerse)
+      const nodesWithToggle = document.querySelectorAll('.node-content[data-node-id]');
+      
+      nodesWithToggle.forEach((nodeContent) => {
+        const nodeId = nodeContent.getAttribute('data-node-id');
+        const savedState = state[nodeId];
+        
+        // Si no hay estado guardado para este nodo, skip
+        if (savedState === undefined) {
+          return;
+        }
+        
+        const treeNode = nodeContent.closest('.tree-node');
+        const toggle = nodeContent.querySelector('.node-toggle');
+        const children = treeNode.querySelector(':scope > .tree-children');
+        
+        // Si el nodo no tiene children o toggle, skip silenciosamente (es un nodo hoja)
+        if (!children || !toggle) {
+          skipped++;
+          return;
+        }
+        
+        // Restaurar el estado
+        if (savedState) {
+          // Expandido
+          children.style.display = 'block';
+          toggle.classList.remove('collapsed');
+          toggle.classList.add('expanded');
+        } else {
+          // Contraído
+          children.style.display = 'none';
+          toggle.classList.remove('expanded');
+          toggle.classList.add('collapsed');
+        }
+        
+        restored++;
+      });
+      
+      console.log(`✅ Persistencia: ${restored} nodos restaurados de ${stateCount} guardados`);
+      
+      if (skipped > 0) {
+        console.log(`   (${skipped} nodos hoja ignorados)`);
+      }
+    } catch (e) {
+      console.error('❌ Error restaurando estados:', e);
+    }
+  }
+  
+  // Guardar estado de expansión de un nodo
+  saveNodeExpandState(nodeId, isExpanded) {
+    try {
+      const stateKey = 'jerarquia_expand_state';
+      let state = JSON.parse(localStorage.getItem(stateKey) || '{}');
+      state[nodeId] = isExpanded;
+      localStorage.setItem(stateKey, JSON.stringify(state));
+    } catch (e) {
+      console.error('❌ Error guardando estado de nodo:', e);
+    }
+  }
+  
+  // Obtener estado de expansión de un nodo
+  getNodeExpandState(nodeId) {
+    try {
+      const stateKey = 'jerarquia_expand_state';
+      const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
+      const savedState = state[nodeId];
+      // Por defecto, retornar true (expandido) si no hay estado guardado
+      return savedState !== undefined ? savedState : true;
+    } catch (e) {
+      console.error('❌ Error obteniendo estado de nodo:', e);
+      return true; // Por defecto expandido
+    }
+  }
+  
+  // Limpiar todos los estados guardados
+  clearNodeExpandStates() {
+    try {
+      localStorage.removeItem('jerarquia_expand_state');
+      console.log('🗑️ Estados de expansión limpiados');
+    } catch (e) {
+      console.error('Error limpiando estados:', e);
     }
   }
   
@@ -46966,7 +47160,15 @@ app.expandirTodoJerarquia = function() {
     toggle.classList.add('expanded');
   });
   
-  console.log('✅ Todos los nodos expandidos');
+  // Guardar todos los nodos como expandidos
+  document.querySelectorAll('[data-node-id]').forEach(node => {
+    const nodeId = node.getAttribute('data-node-id');
+    if (nodeId) {
+      this.saveNodeExpandState(nodeId, true);
+    }
+  });
+  
+  console.log('✅ Todos los nodos expandidos y estado guardado');
 };
 
 // Contraer todos los nodos de la jerarquía
@@ -46990,7 +47192,15 @@ app.contraerTodoJerarquia = function() {
     }
   });
   
-  console.log('✅ Todos los nodos contraídos');
+  // Guardar todos los nodos como contraídos excepto el primero
+  document.querySelectorAll('[data-node-id]').forEach((node, index) => {
+    const nodeId = node.getAttribute('data-node-id');
+    if (nodeId) {
+      this.saveNodeExpandState(nodeId, index === 0); // Solo el primero expandido
+    }
+  });
+  
+  console.log('✅ Todos los nodos contraídos y estado guardado');
 };
 
 // 🔍 Sistema de búsqueda en jerarquía
@@ -47520,6 +47730,141 @@ function updateZoom(newZoom) {
   console.log(` Zoom ajustado: ${currentZoom}% (zoom CSS puro)`);
 }
 
+// ========================================
+// SISTEMA DE HISTORIAL (UNDO/REDO)
+// ========================================
+let undoStack = [];
+let redoStack = [];
+const MAX_HISTORY = 50;
+
+function saveState(action, data) {
+  const state = {
+    action: action,
+    data: JSON.parse(JSON.stringify(data)),
+    timestamp: Date.now()
+  };
+  
+  undoStack.push(state);
+  if (undoStack.length > MAX_HISTORY) {
+    undoStack.shift();
+  }
+  
+  // Limpiar redo stack cuando se hace una nueva acción
+  redoStack = [];
+  
+  console.log(`💾 Estado guardado: ${action}`, undoStack.length);
+}
+
+function undoAction() {
+  if (undoStack.length === 0) {
+    showNotification('No hay acciones para deshacer', 'info');
+    return;
+  }
+  
+  const state = undoStack.pop();
+  redoStack.push(state);
+  
+  restoreState(state, 'undo');
+  showNotification(`Deshecho: ${state.action}`, 'success');
+  console.log(`↶ Deshacer: ${state.action}`, undoStack.length);
+}
+
+function redoAction() {
+  if (redoStack.length === 0) {
+    showNotification('No hay acciones para rehacer', 'info');
+    return;
+  }
+  
+  const state = redoStack.pop();
+  undoStack.push(state);
+  
+  restoreState(state, 'redo');
+  showNotification(`Rehecho: ${state.action}`, 'success');
+  console.log(`↷ Rehacer: ${state.action}`, redoStack.length);
+}
+
+function restoreState(state, operation) {
+  // Restaurar el estado según el tipo de acción
+  switch(state.action) {
+    case 'add':
+      if (operation === 'undo') {
+        // Eliminar el item agregado
+        const index = app.repuestos.findIndex(r => r.id === state.data.id);
+        if (index !== -1) {
+          app.repuestos.splice(index, 1);
+        }
+      } else {
+        // Volver a agregar el item
+        app.repuestos.push(state.data);
+      }
+      break;
+      
+    case 'edit':
+      if (operation === 'undo') {
+        // Restaurar datos originales
+        const index = app.repuestos.findIndex(r => r.id === state.data.original.id);
+        if (index !== -1) {
+          app.repuestos[index] = state.data.original;
+        }
+      } else {
+        // Aplicar datos editados
+        const index = app.repuestos.findIndex(r => r.id === state.data.edited.id);
+        if (index !== -1) {
+          app.repuestos[index] = state.data.edited;
+        }
+      }
+      break;
+      
+    case 'delete':
+      if (operation === 'undo') {
+        // Restaurar item eliminado
+        app.repuestos.push(state.data);
+      } else {
+        // Eliminar nuevamente
+        const index = app.repuestos.findIndex(r => r.id === state.data.id);
+        if (index !== -1) {
+          app.repuestos.splice(index, 1);
+        }
+      }
+      break;
+  }
+  
+  // Actualizar vista
+  app.render();
+  app.saveData();
+}
+
+// ========================================
+// FUNCIÓN PARA LIMPIAR BÚSQUEDA
+// ========================================
+function clearSearch() {
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.focus();
+    // Disparar evento para que se apliquen los filtros
+    if (app && typeof app.applyFilters === 'function') {
+      app.applyFilters();
+    }
+    showNotification('Búsqueda limpiada', 'info');
+  }
+}
+
+function clearJerarquiaSearch() {
+  const searchInput = document.getElementById('jerarquiaSearchInput');
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.focus();
+    // Disparar evento para limpiar el filtro de jerarquía
+    const event = new Event('input', { bubbles: true });
+    searchInput.dispatchEvent(event);
+    showNotification('Búsqueda de jerarquía limpiada', 'info');
+  }
+}
+
+// ========================================
+// ZOOM FUNCTIONS
+// ========================================
 function zoomIn() {
   updateZoom(currentZoom + zoomStep);
 }
@@ -47553,11 +47898,18 @@ document.addEventListener('keydown', (e) => {
     } else if (e.key === '0') {
       e.preventDefault();
       zoomReset();
+    } else if (e.key === 'z' || e.key === 'Z') {
+      e.preventDefault();
+      undoAction();
+    } else if (e.key === 'y' || e.key === 'Y') {
+      e.preventDefault();
+      redoAction();
     }
   }
 });
 
 console.log(' Controles de zoom inicializados (zoom CSS puro - navegador)');
+console.log('⌨️ Atajos de teclado: Ctrl+Z (Deshacer) | Ctrl+Y (Rehacer)');
 
 //  Mostrar resolucin actual
 function updateResolutionDisplay() {
