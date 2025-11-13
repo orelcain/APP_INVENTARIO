@@ -31275,75 +31275,146 @@ class InventarioCompleto {
   // ============================================================
   // RENDERIZADOR PARA VISTA 3: ÁRBOL VISUAL (jerarquia_visual_dependencias)
   // ============================================================
-  
+
+  getVisualTypeOrder() {
+    return ['area', 'subArea', 'sistema', 'subSistema', 'seccion', 'subSeccion'];
+  }
+
+  getVisualChildKeyMap() {
+    return {
+      empresa: 'areas',
+      area: 'subAreas',
+      subArea: 'sistemas',
+      sistema: 'subSistemas',
+      subSistema: 'secciones',
+      seccion: 'subSecciones',
+      subSeccion: null
+    };
+  }
+
+  getVisualChildTypeMap() {
+    return {
+      area: 'subArea',
+      subArea: 'sistema',
+      sistema: 'subSistema',
+      subSistema: 'seccion',
+      seccion: 'subSeccion',
+      subSeccion: null
+    };
+  }
+
+  getVisualDisplayLabels() {
+    return {
+      empresa: 'Empresa',
+      area: 'Área',
+      subArea: 'Sub-Área',
+      sistema: 'Sistema',
+      subSistema: 'Sub-Sistema',
+      seccion: 'Sección',
+      subSeccion: 'Sub-Sección'
+    };
+  }
+
+  getVisualParentMap() {
+    return {
+      area: 'empresa',
+      subArea: 'area',
+      sistema: 'subArea',
+      subSistema: 'sistema',
+      seccion: 'subSistema',
+      subSeccion: 'seccion'
+    };
+  }
+
+  sanitizeVisualText(value, fallback = '') {
+    const text = value ?? fallback;
+    return this.escapeHtml ? this.escapeHtml(String(text)) : String(text);
+  }
+
+  getVisualFallbackId(type, indices = []) {
+    const labels = this.getVisualDisplayLabels();
+    const normalized = Array.isArray(indices) && indices.length > 0
+      ? indices.map((idx) => (Number.isFinite(idx) ? idx + 1 : idx)).join('.')
+      : '1';
+    return `${labels[type] || 'Nodo'}-${normalized}`;
+  }
+
   buildTreeHTML_Visual() {
     if (!this.jerarquiaAnidada) {
       console.error('🔴 jerarquiaAnidada es null o undefined');
       return '<p>Error: No hay datos de jerarquía</p>';
     }
-    
+
     const { empresa, areas } = this.jerarquiaAnidada;
-    
+
     if (!empresa || !areas) {
       console.error('🔴 Faltan propiedades en jerarquiaAnidada:', this.jerarquiaAnidada);
       return '<p>Error: Estructura de jerarquía incompleta</p>';
     }
-    
-    console.log('🎨 Vista 3 - Construyendo árbol visual con:', { 
-      empresa: empresa.nombre, 
-      numAreas: areas.length,
-      primeraArea: areas[0] ? areas[0].nombre : 'N/A'
-    });
-    
-    let html = '<div class="tree-container"><div class="tree-node">';
-    
-    // Nodo empresa
+
+    const labels = this.getVisualDisplayLabels();
+    const escape = (value, fallback = '') => {
+      const text = value ?? fallback;
+      return this.escapeHtml ? this.escapeHtml(String(text)) : String(text);
+    };
+
+    let html = '<div class="tree-container"><div class="tree-node" data-node-type="empresa">';
+
     html += `
       <div class="node-content" data-level="1">
         <span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">›</span>
-        <span class="node-id">${empresa.id || 'EMP-01'}</span>
-        <span class="node-name">${empresa.nombre}</span>
-        <span class="node-level">Empresa</span>
+        <span class="node-id">${escape(empresa.id, 'EMP-01')}</span>
+        <span class="node-name">${escape(empresa.nombre, 'Empresa')}</span>
+        <span class="node-level">${labels.empresa}</span>
+        <div class="node-actions">
+          <button class="node-btn node-btn-edit" onclick="event.stopPropagation(); app.editarNodoJerarquia('empresa')" title="Editar empresa">Editar</button>
+          <button class="node-btn node-btn-add" onclick="event.stopPropagation(); app.agregarNodoJerarquia('area')" title="Agregar área">+ Área</button>
+        </div>
       </div>
     `;
-    
-    // Áreas
-    if (areas && areas.length > 0) {
-      console.log('🎨 Generando', areas.length, 'áreas...');
+
+    if (Array.isArray(areas) && areas.length > 0) {
       html += '<div class="tree-children" style="display: block;">';
       areas.forEach((area, index) => {
         html += this.buildVisualAreaNode(area, index);
       });
       html += '</div>';
-    } else {
-      console.warn('⚠️ No hay áreas para mostrar');
     }
-    
-    html += '</div></div>'; // cierra tree-node y tree-container
+
+    html += '</div></div>';
     return html;
   }
   
   buildVisualAreaNode(area, index) {
-    console.log(`🎨 buildVisualAreaNode llamado - Área ${index}:`, {
-      nombre: area.nombre,
-      id: area.id,
-      subAreas: area.subAreas?.length || 0,
-      objetoCompleto: area
-    });
-    const hasChildren = area.subAreas && area.subAreas.length > 0;
+    const labels = this.getVisualDisplayLabels();
+    const childTypeMap = this.getVisualChildTypeMap();
+    const childType = childTypeMap.area;
+    const childLabel = childType ? labels[childType] : null;
+    const hasChildren = Array.isArray(area && area.subAreas) && area.subAreas.length > 0;
     const toggleIcon = hasChildren ? '›' : '';
-    
-    let html = `<div class="tree-node" data-node-type="area" data-node-index="${index}">`;
-    
+    const safeId = this.sanitizeVisualText(area && area.id ? area.id : null, this.getVisualFallbackId('area', [index]));
+    const safeName = this.sanitizeVisualText(area && area.nombre ? area.nombre : null, `${labels.area} ${index + 1}`);
+    const indexPath = `${index}`;
+
+    let html = `<div class="tree-node" data-node-type="area" data-node-index="${indexPath}">`;
+
     html += `
       <div class="node-content" data-level="2">
+        <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('area', '${indexPath}')" title="Mover nodo">⠿</span>
         ${hasChildren ? `<span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
-        <span class="node-id">${area.id}</span>
-        <span class="node-name">${area.nombre}</span>
-        <span class="node-level">Área</span>
+        <span class="node-id">${safeId}</span>
+        <span class="node-name">${safeName}</span>
+        <span class="node-level">${labels.area}</span>
+        <div class="node-actions">
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('area', '${indexPath}', -1)" title="Subir">↑</button>
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('area', '${indexPath}', 1)" title="Bajar">↓</button>
+          <button class="node-btn node-btn-edit" onclick="event.stopPropagation(); app.editarNodoJerarquia('area', ${index})" title="Editar área">Editar</button>
+          <button class="node-btn node-btn-delete" onclick="event.stopPropagation(); app.eliminarNodoJerarquia('area', ${index})" title="Eliminar área">Eliminar</button>
+          ${childType && childLabel ? `<button class="node-btn node-btn-add" onclick="event.stopPropagation(); app.agregarNodoJerarquia('${childType}', ${index})" title="Agregar ${childLabel}">+ ${childLabel}</button>` : ''}
+        </div>
       </div>
     `;
-    
+
     if (hasChildren) {
       html += '<div class="tree-children" style="display: block;">';
       area.subAreas.forEach((subArea, subIndex) => {
@@ -31351,26 +31422,41 @@ class InventarioCompleto {
       });
       html += '</div>';
     }
-    
+
     html += '</div>';
     return html;
   }
-  
+
   buildVisualSubAreaNode(subArea, areaIndex, subIndex) {
-    const hasChildren = subArea.sistemas && subArea.sistemas.length > 0;
+    const labels = this.getVisualDisplayLabels();
+    const childTypeMap = this.getVisualChildTypeMap();
+    const childType = childTypeMap.subArea;
+    const childLabel = childType ? labels[childType] : null;
+    const hasChildren = Array.isArray(subArea && subArea.sistemas) && subArea.sistemas.length > 0;
     const toggleIcon = hasChildren ? '›' : '';
-    
-    let html = `<div class="tree-node" data-node-type="subArea" data-node-index="${areaIndex},${subIndex}">`;
-    
+    const safeId = this.sanitizeVisualText(subArea && subArea.id ? subArea.id : null, this.getVisualFallbackId('subArea', [areaIndex, subIndex]));
+    const safeName = this.sanitizeVisualText(subArea && subArea.nombre ? subArea.nombre : null, `${labels.subArea} ${subIndex + 1}`);
+    const indexPath = `${areaIndex},${subIndex}`;
+
+    let html = `<div class="tree-node" data-node-type="subArea" data-node-index="${indexPath}">`;
+
     html += `
       <div class="node-content" data-level="3">
+        <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('subArea', '${indexPath}')" title="Mover nodo">⠿</span>
         ${hasChildren ? `<span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
-        <span class="node-id">${subArea.id}</span>
-        <span class="node-name">${subArea.nombre}</span>
-        <span class="node-level">Sub-Área</span>
+        <span class="node-id">${safeId}</span>
+        <span class="node-name">${safeName}</span>
+        <span class="node-level">${labels.subArea}</span>
+        <div class="node-actions">
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('subArea', '${indexPath}', -1)" title="Subir">↑</button>
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('subArea', '${indexPath}', 1)" title="Bajar">↓</button>
+          <button class="node-btn node-btn-edit" onclick="event.stopPropagation(); app.editarNodoJerarquia('subArea', ${areaIndex}, ${subIndex})" title="Editar sub-área">Editar</button>
+          <button class="node-btn node-btn-delete" onclick="event.stopPropagation(); app.eliminarNodoJerarquia('subArea', ${areaIndex}, ${subIndex})" title="Eliminar sub-área">Eliminar</button>
+          ${childType && childLabel ? `<button class="node-btn node-btn-add" onclick="event.stopPropagation(); app.agregarNodoJerarquia('${childType}', ${areaIndex}, ${subIndex})" title="Agregar ${childLabel}">+ ${childLabel}</button>` : ''}
+        </div>
       </div>
     `;
-    
+
     if (hasChildren) {
       html += '<div class="tree-children" style="display: block;">';
       subArea.sistemas.forEach((sistema, sisIndex) => {
@@ -31378,26 +31464,41 @@ class InventarioCompleto {
       });
       html += '</div>';
     }
-    
+
     html += '</div>';
     return html;
   }
-  
+
   buildVisualSistemaNode(sistema, areaIndex, subIndex, sisIndex) {
-    const hasChildren = sistema.subSistemas && sistema.subSistemas.length > 0;
+    const labels = this.getVisualDisplayLabels();
+    const childTypeMap = this.getVisualChildTypeMap();
+    const childType = childTypeMap.sistema;
+    const childLabel = childType ? labels[childType] : null;
+    const hasChildren = Array.isArray(sistema && sistema.subSistemas) && sistema.subSistemas.length > 0;
     const toggleIcon = hasChildren ? '›' : '';
-    
-    let html = `<div class="tree-node" data-node-type="sistema" data-node-index="${areaIndex},${subIndex},${sisIndex}">`;
-    
+    const safeId = this.sanitizeVisualText(sistema && sistema.id ? sistema.id : null, this.getVisualFallbackId('sistema', [areaIndex, subIndex, sisIndex]));
+    const safeName = this.sanitizeVisualText(sistema && sistema.nombre ? sistema.nombre : null, `${labels.sistema} ${sisIndex + 1}`);
+    const indexPath = `${areaIndex},${subIndex},${sisIndex}`;
+
+    let html = `<div class="tree-node" data-node-type="sistema" data-node-index="${indexPath}">`;
+
     html += `
       <div class="node-content" data-level="4">
+        <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('sistema', '${indexPath}')" title="Mover nodo">⠿</span>
         ${hasChildren ? `<span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
-        <span class="node-id">${sistema.id}</span>
-        <span class="node-name">${sistema.nombre}</span>
-        <span class="node-level">Sistema</span>
+        <span class="node-id">${safeId}</span>
+        <span class="node-name">${safeName}</span>
+        <span class="node-level">${labels.sistema}</span>
+        <div class="node-actions">
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('sistema', '${indexPath}', -1)" title="Subir">↑</button>
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('sistema', '${indexPath}', 1)" title="Bajar">↓</button>
+          <button class="node-btn node-btn-edit" onclick="event.stopPropagation(); app.editarNodoJerarquia('sistema', ${areaIndex}, ${subIndex}, ${sisIndex})" title="Editar sistema">Editar</button>
+          <button class="node-btn node-btn-delete" onclick="event.stopPropagation(); app.eliminarNodoJerarquia('sistema', ${areaIndex}, ${subIndex}, ${sisIndex})" title="Eliminar sistema">Eliminar</button>
+          ${childType && childLabel ? `<button class="node-btn node-btn-add" onclick="event.stopPropagation(); app.agregarNodoJerarquia('${childType}', ${areaIndex}, ${subIndex}, ${sisIndex})" title="Agregar ${childLabel}">+ ${childLabel}</button>` : ''}
+        </div>
       </div>
     `;
-    
+
     if (hasChildren) {
       html += '<div class="tree-children" style="display: block;">';
       sistema.subSistemas.forEach((subSistema, subSisIndex) => {
@@ -31405,26 +31506,41 @@ class InventarioCompleto {
       });
       html += '</div>';
     }
-    
+
     html += '</div>';
     return html;
   }
-  
+
   buildVisualSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex) {
-    const hasChildren = subSistema.secciones && subSistema.secciones.length > 0;
+    const labels = this.getVisualDisplayLabels();
+    const childTypeMap = this.getVisualChildTypeMap();
+    const childType = childTypeMap.subSistema;
+    const childLabel = childType ? labels[childType] : null;
+    const hasChildren = Array.isArray(subSistema && subSistema.secciones) && subSistema.secciones.length > 0;
     const toggleIcon = hasChildren ? '›' : '';
-    
-    let html = `<div class="tree-node" data-node-type="subSistema" data-node-index="${areaIndex},${subIndex},${sisIndex},${subSisIndex}">`;
-    
+    const safeId = this.sanitizeVisualText(subSistema && subSistema.id ? subSistema.id : null, this.getVisualFallbackId('subSistema', [areaIndex, subIndex, sisIndex, subSisIndex]));
+    const safeName = this.sanitizeVisualText(subSistema && subSistema.nombre ? subSistema.nombre : null, `${labels.subSistema} ${subSisIndex + 1}`);
+    const indexPath = `${areaIndex},${subIndex},${sisIndex},${subSisIndex}`;
+
+    let html = `<div class="tree-node" data-node-type="subSistema" data-node-index="${indexPath}">`;
+
     html += `
       <div class="node-content" data-level="5">
+        <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('subSistema', '${indexPath}')" title="Mover nodo">⠿</span>
         ${hasChildren ? `<span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
-        <span class="node-id">${subSistema.id}</span>
-        <span class="node-name">${subSistema.nombre}</span>
-        <span class="node-level">Sub-Sistema</span>
+        <span class="node-id">${safeId}</span>
+        <span class="node-name">${safeName}</span>
+        <span class="node-level">${labels.subSistema}</span>
+        <div class="node-actions">
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('subSistema', '${indexPath}', -1)" title="Subir">↑</button>
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('subSistema', '${indexPath}', 1)" title="Bajar">↓</button>
+          <button class="node-btn node-btn-edit" onclick="event.stopPropagation(); app.editarNodoJerarquia('subSistema', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex})" title="Editar sub-sistema">Editar</button>
+          <button class="node-btn node-btn-delete" onclick="event.stopPropagation(); app.eliminarNodoJerarquia('subSistema', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex})" title="Eliminar sub-sistema">Eliminar</button>
+          ${childType && childLabel ? `<button class="node-btn node-btn-add" onclick="event.stopPropagation(); app.agregarNodoJerarquia('${childType}', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex})" title="Agregar ${childLabel}">+ ${childLabel}</button>` : ''}
+        </div>
       </div>
     `;
-    
+
     if (hasChildren) {
       html += '<div class="tree-children" style="display: block;">';
       subSistema.secciones.forEach((seccion, secIndex) => {
@@ -31432,26 +31548,41 @@ class InventarioCompleto {
       });
       html += '</div>';
     }
-    
+
     html += '</div>';
     return html;
   }
-  
+
   buildVisualSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex) {
-    const hasChildren = seccion.subSecciones && seccion.subSecciones.length > 0;
+    const labels = this.getVisualDisplayLabels();
+    const childTypeMap = this.getVisualChildTypeMap();
+    const childType = childTypeMap.seccion;
+    const childLabel = childType ? labels[childType] : null;
+    const hasChildren = Array.isArray(seccion && seccion.subSecciones) && seccion.subSecciones.length > 0;
     const toggleIcon = hasChildren ? '›' : '';
-    
-    let html = `<div class="tree-node" data-node-type="seccion" data-node-index="${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex}">`;
-    
+    const safeId = this.sanitizeVisualText(seccion && seccion.id ? seccion.id : null, this.getVisualFallbackId('seccion', [areaIndex, subIndex, sisIndex, subSisIndex, secIndex]));
+    const safeName = this.sanitizeVisualText(seccion && seccion.nombre ? seccion.nombre : null, `${labels.seccion} ${secIndex + 1}`);
+    const indexPath = `${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex}`;
+
+    let html = `<div class="tree-node" data-node-type="seccion" data-node-index="${indexPath}">`;
+
     html += `
       <div class="node-content" data-level="6">
+        <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('seccion', '${indexPath}')" title="Mover nodo">⠿</span>
         ${hasChildren ? `<span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
-        <span class="node-id">${seccion.id}</span>
-        <span class="node-name">${seccion.nombre}</span>
-        <span class="node-level">Sección</span>
+        <span class="node-id">${safeId}</span>
+        <span class="node-name">${safeName}</span>
+        <span class="node-level">${labels.seccion}</span>
+        <div class="node-actions">
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('seccion', '${indexPath}', -1)" title="Subir">↑</button>
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('seccion', '${indexPath}', 1)" title="Bajar">↓</button>
+          <button class="node-btn node-btn-edit" onclick="event.stopPropagation(); app.editarNodoJerarquia('seccion', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex})" title="Editar sección">Editar</button>
+          <button class="node-btn node-btn-delete" onclick="event.stopPropagation(); app.eliminarNodoJerarquia('seccion', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex})" title="Eliminar sección">Eliminar</button>
+          ${childType && childLabel ? `<button class="node-btn node-btn-add" onclick="event.stopPropagation(); app.agregarNodoJerarquia('${childType}', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex})" title="Agregar ${childLabel}">+ ${childLabel}</button>` : ''}
+        </div>
       </div>
     `;
-    
+
     if (hasChildren) {
       html += '<div class="tree-children" style="display: block;">';
       seccion.subSecciones.forEach((subSeccion, subSecIndex) => {
@@ -31459,25 +31590,179 @@ class InventarioCompleto {
       });
       html += '</div>';
     }
-    
+
     html += '</div>';
     return html;
   }
-  
+
   buildVisualSubSeccionNode(subSeccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, subSecIndex) {
-    let html = `<div class="tree-node" data-node-type="subSeccion" data-node-index="${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex},${subSecIndex}">`;
-    
+    const labels = this.getVisualDisplayLabels();
+    const safeId = this.sanitizeVisualText(subSeccion && subSeccion.id ? subSeccion.id : null, this.getVisualFallbackId('subSeccion', [areaIndex, subIndex, sisIndex, subSisIndex, secIndex, subSecIndex]));
+    const safeName = this.sanitizeVisualText(subSeccion && subSeccion.nombre ? subSeccion.nombre : null, `${labels.subSeccion} ${subSecIndex + 1}`);
+    const indexPath = `${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex},${subSecIndex}`;
+
+    let html = `<div class="tree-node" data-node-type="subSeccion" data-node-index="${indexPath}">`;
+
     html += `
       <div class="node-content" data-level="7">
+        <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('subSeccion', '${indexPath}')" title="Mover nodo">⠿</span>
         <span style="width: 16px; display: inline-block;"></span>
-        <span class="node-id">${subSeccion.id}</span>
-        <span class="node-name">${subSeccion.nombre}</span>
-        <span class="node-level">Sub-Sección</span>
+        <span class="node-id">${safeId}</span>
+        <span class="node-name">${safeName}</span>
+        <span class="node-level">${labels.subSeccion}</span>
+        <div class="node-actions">
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('subSeccion', '${indexPath}', -1)" title="Subir">↑</button>
+          <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('subSeccion', '${indexPath}', 1)" title="Bajar">↓</button>
+          <button class="node-btn node-btn-edit" onclick="event.stopPropagation(); app.editarNodoJerarquia('subSeccion', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex}, ${subSecIndex})" title="Editar sub-sección">Editar</button>
+          <button class="node-btn node-btn-delete" onclick="event.stopPropagation(); app.eliminarNodoJerarquia('subSeccion', ${areaIndex}, ${subIndex}, ${sisIndex}, ${subSisIndex}, ${secIndex}, ${subSecIndex})" title="Eliminar sub-sección">Eliminar</button>
+        </div>
       </div>
     `;
-    
+
     html += '</div>';
     return html;
+  }
+
+  getVisualCollectionInfo(type, indices) {
+    if (!this.jerarquiaAnidada) return null;
+
+    if (type === 'area') {
+      return {
+        collection: Array.isArray(this.jerarquiaAnidada.areas) ? this.jerarquiaAnidada.areas : [],
+        parentNode: this.jerarquiaAnidada,
+        parentType: 'empresa',
+        parentIndices: []
+      };
+    }
+
+    const parentMap = this.getVisualParentMap();
+    const parentType = parentMap[type];
+    if (!parentType) return null;
+
+    const parentIndices = Array.isArray(indices) && indices.length > 0 ? indices.slice(0, -1) : [];
+    const parentNode = parentType === 'empresa'
+      ? this.jerarquiaAnidada.empresa
+      : this.getVisualNodeByTypeAndIndices(parentType, parentIndices);
+
+    if (!parentNode) return null;
+
+    const childKeyMap = this.getVisualChildKeyMap();
+    const childKey = childKeyMap[parentType];
+    if (!childKey) return null;
+
+    if (!Array.isArray(parentNode[childKey])) {
+      parentNode[childKey] = [];
+    }
+
+    return {
+      collection: parentNode[childKey],
+      parentNode,
+      parentType,
+      parentIndices
+    };
+  }
+
+  getVisualNodeByTypeAndIndices(type, indices) {
+    if (!this.jerarquiaAnidada) return null;
+    if (type === 'empresa') {
+      return this.jerarquiaAnidada.empresa || null;
+    }
+
+    const pathIndices = Array.isArray(indices) ? indices.map((value) => Number(value)) : [];
+    const childKeyMap = this.getVisualChildKeyMap();
+    const typeOrder = this.getVisualTypeOrder();
+
+    if (!Array.isArray(this.jerarquiaAnidada.areas)) {
+      return null;
+    }
+
+    let currentCollection = this.jerarquiaAnidada.areas;
+    let currentNode = null;
+
+    for (let depth = 0; depth < typeOrder.length; depth++) {
+      const currentType = typeOrder[depth];
+      const indexValue = pathIndices[depth];
+
+      if (!Number.isFinite(indexValue)) {
+        return null;
+      }
+
+      if (!Array.isArray(currentCollection) || indexValue < 0 || indexValue >= currentCollection.length) {
+        return null;
+      }
+
+      currentNode = currentCollection[indexValue];
+
+      if (currentType === type) {
+        return currentNode || null;
+      }
+
+      const childKey = childKeyMap[currentType];
+      if (!childKey) {
+        return null;
+      }
+
+      currentCollection = currentNode ? currentNode[childKey] : null;
+    }
+
+    return null;
+  }
+
+  reordenarVisualNodo(type, indicesPath, direction) {
+    if (!direction || typeof direction !== 'number') {
+      return;
+    }
+
+    let indices = [];
+    if (Array.isArray(indicesPath)) {
+      indices = indicesPath.map((value) => Number(value));
+    } else if (typeof indicesPath === 'number') {
+      indices = [Number(indicesPath)];
+    } else if (typeof indicesPath === 'string' && indicesPath.trim() !== '') {
+      indices = indicesPath.split(',').map((value) => Number(value.trim())).filter((value) => !Number.isNaN(value));
+    }
+
+    if (indices.some((value) => Number.isNaN(value))) {
+      console.warn('[VISUAL] Índices no válidos para reordenar:', indicesPath);
+      this.showMoveNotification('Movimiento inválido ✗', true);
+      return;
+    }
+
+    if (indices.length === 0 && type !== 'area') {
+      console.warn('[VISUAL] Faltan índices para reordenar', type, indicesPath);
+      this.showMoveNotification('No se pudo mover el elemento ✗', true);
+      return;
+    }
+
+    const info = this.getVisualCollectionInfo(type, indices);
+    if (!info || !Array.isArray(info.collection)) {
+      console.warn('[VISUAL] No se encontró la colección para', type, indices);
+      this.showMoveNotification('Movimiento no disponible ✗', true);
+      return;
+    }
+
+    const currentIndex = indices.length > 0 ? indices[indices.length - 1] : 0;
+    const targetIndex = currentIndex + direction;
+
+    if (targetIndex < 0 || targetIndex >= info.collection.length) {
+      this.showMoveNotification(direction < 0 ? 'Ya está en la parte superior ✗' : 'Ya está en la parte inferior ✗', true);
+      return;
+    }
+
+    const fromIndices = [...indices];
+    const toIndices = [...indices];
+    if (toIndices.length === 0) {
+      toIndices[0] = targetIndex;
+    } else {
+      toIndices[toIndices.length - 1] = targetIndex;
+    }
+
+    this.moveOrReorderSAPNodes(type, fromIndices, toIndices, true);
+  }
+
+  openVisualMoveModal(type, indicesPath) {
+    console.log('[VISUAL] Solicitud de mover nodo', { type, indicesPath });
+    this.showMoveNotification('Mover nodo (modal en desarrollo)', true);
   }
   
   toggleVisualNodeChildren(toggleElement) {
@@ -32400,6 +32685,54 @@ class InventarioCompleto {
     });
   }
 
+  /**
+   * Genera una abreviatura inteligente de 3-4 letras a partir de un nombre
+   */
+  generarAbreviatura(nombre) {
+    if (!nombre || nombre.trim() === '') return '';
+    
+    // Limpiar y normalizar
+    let texto = nombre.trim().toUpperCase();
+    
+    // Remover artículos, preposiciones y palabras comunes
+    const palabrasIgnorar = ['DE', 'DEL', 'LA', 'EL', 'LOS', 'LAS', 'Y', 'A', 'EN', 'CON', 'PARA', 'POR'];
+    let palabras = texto.split(/[\s\-_]+/).filter(p => p && !palabrasIgnorar.includes(p));
+    
+    if (palabras.length === 0) {
+      palabras = texto.split(/[\s\-_]+/).filter(p => p);
+    }
+    
+    // Estrategia 1: Si es una palabra, tomar primeras 3-4 letras
+    if (palabras.length === 1) {
+      const palabra = palabras[0];
+      if (palabra.length <= 4) return palabra;
+      return palabra.substring(0, 4);
+    }
+    
+    // Estrategia 2: Tomar iniciales de cada palabra
+    let abrev = palabras.map(p => p[0]).join('');
+    if (abrev.length >= 3 && abrev.length <= 4) return abrev;
+    
+    // Estrategia 3: Si hay muchas palabras, tomar las más significativas
+    if (abrev.length > 4) {
+      return abrev.substring(0, 4);
+    }
+    
+    // Estrategia 4: Si solo 2 palabras, tomar 2 letras de cada una
+    if (palabras.length === 2 && abrev.length < 3) {
+      return (palabras[0].substring(0, 2) + palabras[1].substring(0, 2));
+    }
+    
+    // Estrategia 5: Tomar consonantes principales
+    let consonantes = texto.replace(/[AEIOUÁÉÍÓÚ\s\-_]/g, '');
+    if (consonantes.length >= 3) {
+      return consonantes.substring(0, 4);
+    }
+    
+    // Fallback: primeras 4 letras
+    return texto.replace(/[\s\-_]/g, '').substring(0, 4);
+  }
+
   async agregarNodoJerarquia(tipo, ...indices) {
     const labels = {
       area: 'Nueva area (N2)',
@@ -32422,13 +32755,14 @@ class InventarioCompleto {
     const label = labels[tipo] || 'Nuevo Elemento';
     const ejemplo = ejemplos[tipo] || '';
     
-    const resultado = await this.showDualInputModal(
+    const resultado = await this.showDualInputModalWithAbbrev(
       `Agregar ${label}`,
-  'Codigo/ID abreviado:',
+      'Codigo/ID abreviado:',
       '',
       ejemplo,
       'Nombre completo:',
-      ''
+      '',
+      true // Habilitar auto-generación de abreviatura
     );
     
     if (resultado === null || resultado.input1.trim() === '' || resultado.input2.trim() === '') {
@@ -32526,13 +32860,14 @@ class InventarioCompleto {
       }
       
       // Modal con dos campos: ID y Nombre
-      const resultado = await this.showDualInputModal(
+      const resultado = await this.showDualInputModalWithAbbrev(
         `Editar ${label}`,
         'Cdigo/ID abreviado:',
         nodo.id || '',
         ejemploID,
         'Nombre completo:',
-        nodo.nombre
+        nodo.nombre,
+        false // No auto-generar si ya existe
       );
       
       if (resultado === null) {
@@ -39603,6 +39938,104 @@ class InventarioCompleto {
     });
   }
 
+  /**
+   * Modal con generación automática de abreviaturas
+   */
+  showDualInputModalWithAbbrev(title, label1, defaultValue1 = '', placeholder1 = '', label2, defaultValue2 = '', autoGenerate = true) {
+    return new Promise((resolve) => {
+      const escapeHtml = (text) => {
+        if (!text) return '';
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      };
+      
+      const overlay = document.createElement('div');
+      overlay.className = 'custom-modal-overlay';
+      
+      overlay.innerHTML = `
+        <div class="custom-modal" style="min-width: 450px;">
+          <div class="custom-modal-title">${escapeHtml(title)}</div>
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-primary);">
+              ${escapeHtml(label2)}
+            </label>
+            <input type="text" class="custom-modal-input" id="modal-input-2" value="${escapeHtml(defaultValue2)}" placeholder="${escapeHtml(placeholder2 || 'Ingrese el nombre completo')}" autofocus>
+          </div>
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-primary);">
+              ${escapeHtml(label1)}
+              ${autoGenerate ? '<span style="color: var(--info); font-size: 11px; font-weight: normal;"> (se sugiere automáticamente)</span>' : ''}
+            </label>
+            <input type="text" class="custom-modal-input" id="modal-input-1" value="${escapeHtml(defaultValue1)}" placeholder="${escapeHtml(placeholder1)}" style="text-transform: uppercase;">
+            ${placeholder1 ? `<small style="display: block; margin-top: 4px; color: var(--text-muted); font-size: 11px;">${escapeHtml(placeholder1)}</small>` : ''}
+          </div>
+          <div class="custom-modal-buttons">
+            <button class="custom-modal-btn custom-modal-btn-secondary" data-action="cancel">Cancelar</button>
+            <button class="custom-modal-btn custom-modal-btn-primary" data-action="accept">Guardar</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(overlay);
+      
+      const input1 = overlay.querySelector('#modal-input-1');
+      const input2 = overlay.querySelector('#modal-input-2');
+      const acceptBtn = overlay.querySelector('[data-action="accept"]');
+      const cancelBtn = overlay.querySelector('[data-action="cancel"]');
+      
+      // Auto-generar abreviatura mientras se escribe el nombre
+      let userEditedAbbrev = !!defaultValue1; // Si ya tiene valor, el usuario lo editó
+      
+      if (autoGenerate) {
+        input2.addEventListener('input', () => {
+          if (!userEditedAbbrev) {
+            const abrev = this.generarAbreviatura(input2.value);
+            input1.value = abrev;
+          }
+        });
+        
+        input1.addEventListener('input', () => {
+          userEditedAbbrev = true; // Usuario editó manualmente
+        });
+      }
+      
+      setTimeout(() => {
+        input2.focus();
+        input2.select();
+      }, 100);
+      
+      const close = (value) => {
+        overlay.remove();
+        resolve(value);
+      };
+      
+      acceptBtn.onclick = () => close({ input1: input1.value, input2: input2.value });
+      cancelBtn.onclick = () => close(null);
+      
+      input2.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          input1.focus();
+          input1.select();
+        }
+        if (e.key === 'Escape') close(null);
+      };
+      
+      input1.onkeydown = (e) => {
+        if (e.key === 'Enter') close({ input1: input1.value, input2: input2.value });
+        if (e.key === 'Escape') close(null);
+      };
+      
+      overlay.onclick = (e) => {
+        if (e.target === overlay) close(null);
+      };
+    });
+  }
+
   //  Modal personalizado para confirmacin (reemplazo de confirm)
   showConfirmModal(message) {
     return new Promise((resolve) => {
@@ -45998,18 +46431,26 @@ app.expandirTodoJerarquia = function() {
     
     console.log('✓ Todos los nodos expandidos (Vista Visual)');
   } else {
-    // Vistas Original y Oscura: expandir sap-node
-    const nodes = document.querySelectorAll('.sap-node');
-    const toggles = document.querySelectorAll('.sap-node-toggle');
-    
-    nodes.forEach(node => {
-      node.style.display = 'block';
+    // Vistas Original y Oscura: expandir contenedores SAP (nueva y antigua estructura)
+    const sapChildren = document.querySelectorAll('.sap-children');
+    const legacyChildren = document.querySelectorAll('.sap-node-children');
+    const sapExpanders = document.querySelectorAll('.sap-node-expand');
+
+    sapChildren.forEach(children => {
+      children.style.display = 'block';
+      if (children.id) {
+        localStorage.setItem('tree-' + children.id, 'open');
+      }
     });
-    
-    toggles.forEach(toggle => {
-      toggle.textContent = '▼'; // Icono de expandido
+
+    sapExpanders.forEach(expand => {
+      expand.textContent = '\u2228'; // Icono expandido (∨)
     });
-    
+
+    legacyChildren.forEach(children => {
+      children.style.display = 'block';
+    });
+
     console.log('✓ Todos los nodos expandidos (Vista SAP)');
   }
 };
@@ -46042,34 +46483,26 @@ app.contraerTodoJerarquia = function() {
     
     console.log('✓ Todos los nodos contraídos (Vista Visual)');
   } else {
-    // Vistas Original y Oscura: contraer sap-node
-    const allNodes = document.querySelectorAll('.sap-node');
-    const empresaNode = document.querySelector('.sap-node-empresa + .sap-node');
-    
-    allNodes.forEach(node => {
-      // No contraer el primer nivel (áreas directas de la empresa)
-      if (node === empresaNode) return;
-      
-      // Verificar si es un nodo hijo (tiene padre .sap-node)
-      const parentNode = node.parentElement?.closest('.sap-node');
-      if (parentNode) {
-        node.style.display = 'none';
+    // Vistas Original y Oscura: contraer contenedores SAP (nueva y antigua estructura)
+    const sapChildren = document.querySelectorAll('.sap-children');
+    const legacyChildren = document.querySelectorAll('.sap-node-children');
+    const sapExpanders = document.querySelectorAll('.sap-node-expand');
+
+    sapChildren.forEach(children => {
+      children.style.display = 'none';
+      if (children.id) {
+        localStorage.setItem('tree-' + children.id, 'closed');
       }
     });
-    
-    // Actualizar los iconos de toggle
-    const toggles = document.querySelectorAll('.sap-node-toggle');
-    toggles.forEach(toggle => {
-      // Solo cambiar los toggles que tienen hijos
-      const header = toggle.closest('.sap-node-header');
-      if (header) {
-        const nextNode = header.nextElementSibling;
-        if (nextNode && nextNode.classList.contains('sap-node')) {
-          toggle.textContent = '▶'; // Icono de contraído
-        }
-      }
+
+    sapExpanders.forEach(expand => {
+      expand.textContent = '\u203A'; // Icono contraído (›)
     });
-    
+
+    legacyChildren.forEach(children => {
+      children.style.display = 'none';
+    });
+
     console.log('✓ Todos los nodos contraídos (Vista SAP)');
   }
 };
