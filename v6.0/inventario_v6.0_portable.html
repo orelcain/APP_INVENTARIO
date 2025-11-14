@@ -9693,20 +9693,62 @@
 
 /* PALETA VISUAL: ÁRBOL CON CONEXIONES - Vista 3 (jerarquia_visual_dependencias) */
 #jerarquiaTreeContainer {
-  transition: opacity 0.25s ease;
+  position: relative;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
 }
 
 #jerarquiaTreeContainer.jerarquia-tree-restoring {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
-  transition: none;
+  transform: translateY(8px);
+  transition: none !important;
+}
+
+#jerarquiaTreeContainer.jerarquia-tree-restoring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 18, 25, 0.8);
+  z-index: 2;
+  pointer-events: none;
+}
+
+#jerarquiaTreeContainer.jerarquia-tree-restoring::before {
+  content: '';
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--primary, #4db6ff);
+  animation: jerarquia-spinner 0.9s linear infinite;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 #jerarquiaTreeContainer.jerarquia-tree-ready {
   opacity: 1;
   pointer-events: auto;
   visibility: visible;
+  transform: translateY(0);
+}
+
+@keyframes jerarquia-spinner {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 #jerarquiaTreeContainer.palette-visual {
