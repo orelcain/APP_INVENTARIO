@@ -246,6 +246,15 @@
       overflow: hidden !important;
     }
 
+    .hidden-file-input {
+      display: none !important;
+    }
+
+    .mapa-legacy-title {
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
     /* RESPONSIVE BREAKPOINTS CLAVE */
     @media (max-width: 1024px) {
       .layout-grid {
@@ -9562,6 +9571,16 @@
   z-index: 1;
 }
 
+/* Botón Debug */
+.jerarquia-expand-btn.debug-btn {
+  background: rgba(91, 139, 180, 0.15);
+}
+
+/* Botón Reset */
+.jerarquia-expand-btn.reset-btn {
+  background: rgba(180, 91, 91, 0.15);
+}
+
 .jerarquia-toggle-option {
   flex: 1;
   position: relative;
@@ -9673,6 +9692,19 @@
    ============================================================ */
 
 /* PALETA VISUAL: ÁRBOL CON CONEXIONES - Vista 3 (jerarquia_visual_dependencias) */
+#jerarquiaTreeContainer {
+  transition: opacity 0.25s ease;
+}
+
+#jerarquiaTreeContainer.jerarquia-tree-restoring {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#jerarquiaTreeContainer.jerarquia-tree-ready {
+  opacity: 1;
+}
+
 #jerarquiaTreeContainer.palette-visual {
   background: #1a1d23;
   padding: 40px;
@@ -12288,6 +12320,13 @@
         <button class="jerarquia-expand-btn" onclick="app.contraerTodoJerarquia()" title="Contraer todo">
           <span class="expand-label">Contraer</span>
         </button>
+        <div class="toolbar-separator"></div>
+        <button class="jerarquia-expand-btn debug-btn" onclick="debugPersistencia()" title="Ver estados en consola">
+          <span class="expand-label">🐛 Debug</span>
+        </button>
+        <button class="jerarquia-expand-btn reset-btn" onclick="resetPersistencia()" title="Limpiar estados guardados">
+          <span class="expand-label">🗑️ Reset</span>
+        </button>
       </div>
       </div>
       
@@ -12313,13 +12352,13 @@
   
   <div id="mapa" class="tab-content">
     <div class="map-container">
-      <h2 style="margin-bottom: 20px; color: var(--primary);">Mapa de Ubicaciones</h2>
+      <h2 class="mapa-legacy-title">Mapa de Ubicaciones</h2>
       
       <div class="map-controls">
         <button class="tool-btn" onclick="document.getElementById('mapImageInput').click()">
           Cargar Imagen
         </button>
-        <input type="file" id="mapImageInput" accept="image/*" style="display: none;" onchange="app.loadMapImage(event)">
+        <input type="file" id="mapImageInput" accept="image/*" class="hidden-file-input" onchange="app.loadMapImage(event)">
         
         <button class="tool-btn active" data-tool="select" onclick="app.selectTool('select')">
           Seleccionar
@@ -31813,6 +31852,8 @@ class InventarioCompleto {
     console.log('🌲 Renderizando árbol visual de jerarquía');
     
     try {
+      container.classList.add('jerarquia-tree-restoring');
+      container.classList.remove('jerarquia-tree-ready');
       // Aplicar estilos del contenedor visual
       container.style.setProperty('background', '#1e2229');
       container.style.setProperty('padding', '40px');
@@ -31824,8 +31865,17 @@ class InventarioCompleto {
       const html = this.buildTreeHTML_Visual();
       container.innerHTML = html;
       
-      // 🔄 Restaurar estados de expansión guardados
-      this.restoreExpandStates();
+      // 🔄 Restaurar estados de expansión guardados (con delay para asegurar DOM)
+      setTimeout(() => {
+        try {
+          this.restoreExpandStates();
+        } finally {
+          requestAnimationFrame(() => {
+            container.classList.remove('jerarquia-tree-restoring');
+            container.classList.add('jerarquia-tree-ready');
+          });
+        }
+      }, 100);
       
       console.log('✅ Árbol visual renderizado correctamente');
       
@@ -31998,6 +32048,42 @@ class InventarioCompleto {
     return `${labels[type] || 'Nodo'}-${normalized}`;
   }
 
+  getLegacyNodeId(type, indexPath) {
+    if (!type) return null;
+    if (Array.isArray(indexPath)) {
+      return `${type}_${indexPath.join(',')}`;
+    }
+    if (typeof indexPath === 'number' && Number.isFinite(indexPath)) {
+      return `${type}_${indexPath}`;
+    }
+    if (typeof indexPath === 'string' && indexPath.trim() !== '') {
+      return `${type}_${indexPath}`;
+    }
+    return `${type}_root`;
+  }
+
+  getLegacyIdFromNodeContent(nodeContent) {
+    if (!nodeContent) return null;
+    const explicitLegacy = nodeContent.getAttribute('data-legacy-id');
+    if (explicitLegacy) return explicitLegacy;
+    const treeNode = nodeContent.closest('.tree-node');
+    if (!treeNode) return null;
+    const nodeType = treeNode.getAttribute('data-node-type');
+    const nodeIndex = treeNode.getAttribute('data-node-index');
+    if (!nodeType) return null;
+    if (!nodeIndex || nodeIndex.trim() === '') {
+      return `${nodeType}_root`;
+    }
+    return `${nodeType}_${nodeIndex}`;
+  }
+
+  isLegacyNodeId(nodeId) {
+    if (typeof nodeId !== 'string') {
+      return false;
+    }
+    return /^(empresa|area|subArea|sistema|subSistema|seccion|subSeccion)_[0-9]+(?:,[0-9]+)*$/.test(nodeId);
+  }
+
   buildTreeHTML_Visual() {
     if (!this.jerarquiaAnidada) {
       console.error('🔴 jerarquiaAnidada es null o undefined');
@@ -32021,11 +32107,12 @@ class InventarioCompleto {
 
     // ID único para la empresa
     const empresaNodeId = `empresa_${escape(empresa.id, 'EMP-01')}`;
+    const empresaLegacyId = this.getLegacyNodeId('empresa', escape(empresa.id, 'EMP-01'));
     const empresaExpanded = this.getNodeExpandState(empresaNodeId);
     const empresaToggleClass = empresaExpanded ? 'expanded' : 'collapsed';
 
     html += `
-      <div class="node-content" data-level="1" data-node-id="${empresaNodeId}">
+      <div class="node-content" data-level="1" data-node-id="${empresaNodeId}" data-legacy-id="${empresaLegacyId}">
         <span class="node-toggle ${empresaToggleClass}" onclick="app.toggleVisualNodeChildren(this)">›</span>
         <span class="node-id">${escape(empresa.id, 'EMP-01')}</span>
         <span class="node-name">${escape(empresa.nombre, 'Empresa')}</span>
@@ -32063,13 +32150,14 @@ class InventarioCompleto {
     
     // ID único y estado de expansión
     const areaNodeId = `${parentNodeId}_area_${index}`;
+    const areaLegacyId = this.getLegacyNodeId('area', indexPath);
     const areaExpanded = this.getNodeExpandState(areaNodeId);
     const areaToggleClass = areaExpanded ? 'expanded' : 'collapsed';
 
     let html = `<div class="tree-node" data-node-type="area" data-node-index="${indexPath}">`;
 
     html += `
-      <div class="node-content" data-level="2" data-node-id="${areaNodeId}">
+      <div class="node-content" data-level="2" data-node-id="${areaNodeId}" data-legacy-id="${areaLegacyId}">
         <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('area', '${indexPath}')" title="Mover nodo">⠿</span>
         ${hasChildren ? `<span class="node-toggle ${areaToggleClass}" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
         <span class="node-id">${safeId}</span>
@@ -32111,13 +32199,14 @@ class InventarioCompleto {
     
     // ID único y estado
     const nodeId = `${parentNodeId}_subarea_${subIndex}`;
+    const legacyNodeId = this.getLegacyNodeId('subArea', indexPath);
     const expanded = this.getNodeExpandState(nodeId);
     const toggleClass = expanded ? 'expanded' : 'collapsed';
 
     let html = `<div class="tree-node" data-node-type="subArea" data-node-index="${indexPath}">`;
 
     html += `
-      <div class="node-content" data-level="3" data-node-id="${nodeId}">
+      <div class="node-content" data-level="3" data-node-id="${nodeId}" data-legacy-id="${legacyNodeId}">
         <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('subArea', '${indexPath}')" title="Mover nodo">⠿</span>
         ${hasChildren ? `<span class="node-toggle ${toggleClass}" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
         <span class="node-id">${safeId}</span>
@@ -32137,7 +32226,7 @@ class InventarioCompleto {
       const childrenDisplay = expanded ? 'block' : 'none';
       html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
       subArea.sistemas.forEach((sistema, sisIndex) => {
-        html += this.buildVisualSistemaNode(sistema, areaIndex, subIndex, sisIndex);
+        html += this.buildVisualSistemaNode(sistema, areaIndex, subIndex, sisIndex, nodeId);
       });
       html += '</div>';
     }
@@ -32146,7 +32235,7 @@ class InventarioCompleto {
     return html;
   }
 
-  buildVisualSistemaNode(sistema, areaIndex, subIndex, sisIndex) {
+  buildVisualSistemaNode(sistema, areaIndex, subIndex, sisIndex, parentNodeId) {
     const labels = this.getVisualDisplayLabels();
     const childTypeMap = this.getVisualChildTypeMap();
     const childType = childTypeMap.sistema;
@@ -32157,12 +32246,18 @@ class InventarioCompleto {
     const safeName = this.sanitizeVisualText(sistema && sistema.nombre ? sistema.nombre : null, `${labels.sistema} ${sisIndex + 1}`);
     const indexPath = `${areaIndex},${subIndex},${sisIndex}`;
 
+    const nodeId = `${parentNodeId}_sistema_${sisIndex}`;
+    const legacyNodeId = this.getLegacyNodeId('sistema', indexPath);
+    const expanded = this.getNodeExpandState(nodeId);
+    const toggleClass = expanded ? 'expanded' : 'collapsed';
+    const childrenDisplay = expanded ? 'block' : 'none';
+
     let html = `<div class="tree-node" data-node-type="sistema" data-node-index="${indexPath}">`;
 
     html += `
-      <div class="node-content" data-level="4">
+      <div class="node-content" data-level="4" data-node-id="${nodeId}" data-legacy-id="${legacyNodeId}">
         <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('sistema', '${indexPath}')" title="Mover nodo">⠿</span>
-        ${hasChildren ? `<span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
+        ${hasChildren ? `<span class="node-toggle ${toggleClass}" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
         <span class="node-id">${safeId}</span>
         <span class="node-name">${safeName}</span>
         <span class="node-level">${labels.sistema}</span>
@@ -32177,9 +32272,9 @@ class InventarioCompleto {
     `;
 
     if (hasChildren) {
-      html += '<div class="tree-children" style="display: block;">';
+      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
       sistema.subSistemas.forEach((subSistema, subSisIndex) => {
-        html += this.buildVisualSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex);
+        html += this.buildVisualSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex, nodeId);
       });
       html += '</div>';
     }
@@ -32188,7 +32283,7 @@ class InventarioCompleto {
     return html;
   }
 
-  buildVisualSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex) {
+  buildVisualSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex, parentNodeId) {
     const labels = this.getVisualDisplayLabels();
     const childTypeMap = this.getVisualChildTypeMap();
     const childType = childTypeMap.subSistema;
@@ -32199,12 +32294,18 @@ class InventarioCompleto {
     const safeName = this.sanitizeVisualText(subSistema && subSistema.nombre ? subSistema.nombre : null, `${labels.subSistema} ${subSisIndex + 1}`);
     const indexPath = `${areaIndex},${subIndex},${sisIndex},${subSisIndex}`;
 
+    const nodeId = `${parentNodeId}_subSistema_${subSisIndex}`;
+    const legacyNodeId = this.getLegacyNodeId('subSistema', indexPath);
+    const expanded = this.getNodeExpandState(nodeId);
+    const toggleClass = expanded ? 'expanded' : 'collapsed';
+    const childrenDisplay = expanded ? 'block' : 'none';
+
     let html = `<div class="tree-node" data-node-type="subSistema" data-node-index="${indexPath}">`;
 
     html += `
-      <div class="node-content" data-level="5">
+      <div class="node-content" data-level="5" data-node-id="${nodeId}" data-legacy-id="${legacyNodeId}">
         <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('subSistema', '${indexPath}')" title="Mover nodo">⠿</span>
-        ${hasChildren ? `<span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
+        ${hasChildren ? `<span class="node-toggle ${toggleClass}" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
         <span class="node-id">${safeId}</span>
         <span class="node-name">${safeName}</span>
         <span class="node-level">${labels.subSistema}</span>
@@ -32219,9 +32320,9 @@ class InventarioCompleto {
     `;
 
     if (hasChildren) {
-      html += '<div class="tree-children" style="display: block;">';
+      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
       subSistema.secciones.forEach((seccion, secIndex) => {
-        html += this.buildVisualSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex);
+        html += this.buildVisualSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, nodeId);
       });
       html += '</div>';
     }
@@ -32230,7 +32331,7 @@ class InventarioCompleto {
     return html;
   }
 
-  buildVisualSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex) {
+  buildVisualSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, parentNodeId) {
     const labels = this.getVisualDisplayLabels();
     const childTypeMap = this.getVisualChildTypeMap();
     const childType = childTypeMap.seccion;
@@ -32241,12 +32342,18 @@ class InventarioCompleto {
     const safeName = this.sanitizeVisualText(seccion && seccion.nombre ? seccion.nombre : null, `${labels.seccion} ${secIndex + 1}`);
     const indexPath = `${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex}`;
 
+    const nodeId = `${parentNodeId}_seccion_${secIndex}`;
+    const legacyNodeId = this.getLegacyNodeId('seccion', indexPath);
+    const expanded = this.getNodeExpandState(nodeId);
+    const toggleClass = expanded ? 'expanded' : 'collapsed';
+    const childrenDisplay = expanded ? 'block' : 'none';
+
     let html = `<div class="tree-node" data-node-type="seccion" data-node-index="${indexPath}">`;
 
     html += `
-      <div class="node-content" data-level="6">
+      <div class="node-content" data-level="6" data-node-id="${nodeId}" data-legacy-id="${legacyNodeId}">
         <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('seccion', '${indexPath}')" title="Mover nodo">⠿</span>
-        ${hasChildren ? `<span class="node-toggle expanded" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
+        ${hasChildren ? `<span class="node-toggle ${toggleClass}" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
         <span class="node-id">${safeId}</span>
         <span class="node-name">${safeName}</span>
         <span class="node-level">${labels.seccion}</span>
@@ -32261,9 +32368,9 @@ class InventarioCompleto {
     `;
 
     if (hasChildren) {
-      html += '<div class="tree-children" style="display: block;">';
+      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
       seccion.subSecciones.forEach((subSeccion, subSecIndex) => {
-        html += this.buildVisualSubSeccionNode(subSeccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, subSecIndex);
+        html += this.buildVisualSubSeccionNode(subSeccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, subSecIndex, nodeId);
       });
       html += '</div>';
     }
@@ -32272,7 +32379,7 @@ class InventarioCompleto {
     return html;
   }
 
-  buildVisualSubSeccionNode(subSeccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, subSecIndex) {
+  buildVisualSubSeccionNode(subSeccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, subSecIndex, parentNodeId) {
     const labels = this.getVisualDisplayLabels();
     const childTypeMap = this.getVisualChildTypeMap();
     const childType = childTypeMap.subSeccion;
@@ -32281,10 +32388,13 @@ class InventarioCompleto {
     const safeName = this.sanitizeVisualText(subSeccion && subSeccion.nombre ? subSeccion.nombre : null, `${labels.subSeccion} ${subSecIndex + 1}`);
     const indexPath = `${areaIndex},${subIndex},${sisIndex},${subSisIndex},${secIndex},${subSecIndex}`;
 
+    const nodeId = `${parentNodeId}_subSeccion_${subSecIndex}`;
+    const legacyNodeId = this.getLegacyNodeId('subSeccion', indexPath);
+
     let html = `<div class="tree-node" data-node-type="subSeccion" data-node-index="${indexPath}">`;
 
     html += `
-      <div class="node-content" data-level="7">
+      <div class="node-content" data-level="7" data-node-id="${nodeId}" data-legacy-id="${legacyNodeId}">
         <span class="drag-handle" onclick="event.stopPropagation(); app.openVisualMoveModal('subSeccion', '${indexPath}')" title="Mover nodo">⠿</span>
         <span style="width: 16px; display: inline-block;"></span>
         <span class="node-id">${safeId}</span>
@@ -32467,6 +32577,8 @@ class InventarioCompleto {
     // Si no tiene style.display o está vacío, se considera visible (display: block por defecto en CSS)
     const isCurrentlyHidden = children.style.display === 'none';
     
+    const legacyNodeId = this.getLegacyIdFromNodeContent(nodeContent);
+
     if (isCurrentlyHidden) {
       // Mostrar
       children.style.display = 'block';
@@ -32475,7 +32587,7 @@ class InventarioCompleto {
       toggleElement.classList.add('expanded');
       
       // Guardar estado expandido
-      this.saveNodeExpandState(nodeId, true);
+      this.saveNodeExpandState(nodeId, true, legacyNodeId);
     } else {
       // Ocultar
       children.style.display = 'none';
@@ -32484,80 +32596,167 @@ class InventarioCompleto {
       toggleElement.classList.add('collapsed');
       
       // Guardar estado contraído
-      this.saveNodeExpandState(nodeId, false);
+      this.saveNodeExpandState(nodeId, false, legacyNodeId);
     }
   }
   
   // Restaurar estados de expansión de todos los nodos
   restoreExpandStates() {
+    console.log('🔄 [RESTORE] Iniciando restauración de estados...');
     try {
       const stateKey = 'jerarquia_expand_state';
       const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
       const stateCount = Object.keys(state).length;
       
+      console.log(`📦 [RESTORE] Estados en localStorage:`, state);
+      console.log(`📊 [RESTORE] Total estados guardados: ${stateCount}`);
+      
       if (stateCount === 0) {
-        console.log('ℹ️  No hay estados guardados para restaurar');
+        console.log('ℹ️  [RESTORE] No hay estados guardados para restaurar');
         return;
       }
       
       let restored = 0;
       let skipped = 0;
+      let notFound = 0;
       
-      // Iterar solo sobre nodos que tienen toggle (pueden expandirse/contraerse)
-      const nodesWithToggle = document.querySelectorAll('.node-content[data-node-id]');
+      // Buscar TODOS los nodos en el DOM actual
+      const allNodes = document.querySelectorAll('.node-content[data-node-id]');
+      console.log(`🌲 [RESTORE] Nodos encontrados en DOM: ${allNodes.length}`);
       
-      nodesWithToggle.forEach((nodeContent) => {
+      // Listar todos los IDs encontrados
+      const foundIds = [];
+      allNodes.forEach(node => {
+        const id = node.getAttribute('data-node-id');
+        if (id) foundIds.push(id);
+      });
+      console.log(`🏷️  [RESTORE] IDs en DOM:`, foundIds);
+      
+      // Verificar coincidencias entre localStorage y DOM
+      const stateIds = Object.keys(state);
+      const missingInDom = stateIds.filter(id => !foundIds.includes(id));
+      const missingInState = foundIds.filter(id => !stateIds.includes(id));
+      
+      let legacyCleanupList = [];
+      if (missingInDom.length > 0) {
+        console.warn(`⚠️  [RESTORE] IDs en localStorage pero NO en DOM:`, missingInDom);
+        legacyCleanupList = missingInDom.filter((id) => this.isLegacyNodeId(id));
+      }
+      if (missingInState.length > 0) {
+        console.log(`ℹ️  [RESTORE] IDs en DOM pero NO en localStorage (nuevos nodos):`, missingInState);
+      }
+      
+      // Restaurar estados
+      let migrated = 0;
+      let stateDirty = false;
+
+      allNodes.forEach((nodeContent, index) => {
         const nodeId = nodeContent.getAttribute('data-node-id');
-        const savedState = state[nodeId];
+        let savedState = state[nodeId];
+        let usedLegacyFallback = false;
+        const legacyNodeId = this.getLegacyIdFromNodeContent(nodeContent);
+        if (savedState === undefined && legacyNodeId && state[legacyNodeId] !== undefined) {
+          savedState = state[legacyNodeId];
+          state[nodeId] = savedState;
+          if (legacyNodeId !== nodeId) {
+            delete state[legacyNodeId];
+            migrated++;
+            stateDirty = true;
+            usedLegacyFallback = true;
+          }
+        }
+        
+        console.log(`🔍 [RESTORE ${index}] Procesando nodo: ${nodeId}`);
         
         // Si no hay estado guardado para este nodo, skip
         if (savedState === undefined) {
+          console.log(`   ⏭️  Sin estado guardado (será expandido por defecto)`);
+          notFound++;
           return;
         }
         
         const treeNode = nodeContent.closest('.tree-node');
         const toggle = nodeContent.querySelector('.node-toggle');
-        const children = treeNode.querySelector(':scope > .tree-children');
+        const children = treeNode ? treeNode.querySelector(':scope > .tree-children') : null;
+        
+        console.log(`   🔎 Toggle: ${toggle ? 'Sí' : 'No'}, Children: ${children ? 'Sí' : 'No'}`);
         
         // Si el nodo no tiene children o toggle, skip silenciosamente (es un nodo hoja)
         if (!children || !toggle) {
+          console.log(`   🍃 Nodo hoja (sin children) - ignorado`);
           skipped++;
           return;
         }
         
         // Restaurar el estado
-        if (savedState) {
+        const willBeExpanded = savedState === true;
+        console.log(`   🎯 Aplicando estado: ${willBeExpanded ? 'EXPANDIDO' : 'CONTRAÍDO'}`);
+        
+        if (willBeExpanded) {
           // Expandido
           children.style.display = 'block';
           toggle.classList.remove('collapsed');
           toggle.classList.add('expanded');
+          console.log(`   ✅ Expandido aplicado`);
         } else {
           // Contraído
           children.style.display = 'none';
           toggle.classList.remove('expanded');
           toggle.classList.add('collapsed');
+          console.log(`   ✅ Contraído aplicado`);
         }
         
         restored++;
+        if (usedLegacyFallback) {
+          console.log('   ♻️ Estado migrado desde ID legacy');
+        }
       });
-      
-      console.log(`✅ Persistencia: ${restored} nodos restaurados de ${stateCount} guardados`);
-      
-      if (skipped > 0) {
-        console.log(`   (${skipped} nodos hoja ignorados)`);
+
+      if (legacyCleanupList.length > 0) {
+        const removed = legacyCleanupList.filter((id) => state[id] !== undefined);
+        removed.forEach((id) => {
+          delete state[id];
+        });
+        if (removed.length > 0) {
+          console.log(`🧹 [RESTORE] Eliminados ${removed.length} IDs legacy huérfanos`);
+          stateDirty = true;
+        }
       }
+
+      if (migrated > 0 || stateDirty) {
+        localStorage.setItem(stateKey, JSON.stringify(state));
+        console.log(`♻️ [RESTORE] Estados sincronizados (migrados: ${migrated}, limpieza: ${stateDirty ? 'sí' : 'no'})`);
+      }
+      
+      console.log(`\n📈 [RESTORE] RESUMEN:`);
+      console.log(`   ✅ Restaurados: ${restored}`);
+      console.log(`   🍃 Hojas ignoradas: ${skipped}`);
+      console.log(`   ⏭️  Sin estado previo: ${notFound}`);
+      console.log(`   📊 Total procesados: ${allNodes.length}`);
+      
     } catch (e) {
-      console.error('❌ Error restaurando estados:', e);
+      console.error('❌ [RESTORE] Error restaurando estados:', e);
+      console.error('Stack:', e.stack);
     }
   }
   
   // Guardar estado de expansión de un nodo
-  saveNodeExpandState(nodeId, isExpanded) {
+  saveNodeExpandState(nodeId, isExpanded, legacyNodeId = null) {
     try {
       const stateKey = 'jerarquia_expand_state';
       let state = JSON.parse(localStorage.getItem(stateKey) || '{}');
       state[nodeId] = isExpanded;
+      if (legacyNodeId && legacyNodeId !== nodeId && state[legacyNodeId] !== undefined) {
+        delete state[legacyNodeId];
+      }
       localStorage.setItem(stateKey, JSON.stringify(state));
+      console.log(`💾 [SAVE] ${nodeId} = ${isExpanded ? 'EXPANDIDO' : 'CONTRAÍDO'} (Total: ${Object.keys(state).length} estados)`);
+      
+      // Verificar que se guardó correctamente
+      const verified = localStorage.getItem(stateKey);
+      if (!verified) {
+        console.error('❌ [SAVE] Error: No se pudo guardar en localStorage');
+      }
     } catch (e) {
       console.error('❌ Error guardando estado de nodo:', e);
     }
@@ -32570,7 +32769,9 @@ class InventarioCompleto {
       const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
       const savedState = state[nodeId];
       // Por defecto, retornar true (expandido) si no hay estado guardado
-      return savedState !== undefined ? savedState : true;
+      const result = savedState !== undefined ? savedState : true;
+      console.log(`📖 [GET] ${nodeId} = ${result ? 'EXPANDIDO' : 'CONTRAÍDO'} (${savedState !== undefined ? 'guardado' : 'default'})`);
+      return result;
     } catch (e) {
       console.error('❌ Error obteniendo estado de nodo:', e);
       return true; // Por defecto expandido
@@ -47161,10 +47362,11 @@ app.expandirTodoJerarquia = function() {
   });
   
   // Guardar todos los nodos como expandidos
-  document.querySelectorAll('[data-node-id]').forEach(node => {
+  document.querySelectorAll('.node-content[data-node-id]').forEach(node => {
     const nodeId = node.getAttribute('data-node-id');
+    const legacyId = this.getLegacyIdFromNodeContent(node);
     if (nodeId) {
-      this.saveNodeExpandState(nodeId, true);
+      this.saveNodeExpandState(nodeId, true, legacyId);
     }
   });
   
@@ -47193,10 +47395,11 @@ app.contraerTodoJerarquia = function() {
   });
   
   // Guardar todos los nodos como contraídos excepto el primero
-  document.querySelectorAll('[data-node-id]').forEach((node, index) => {
+  document.querySelectorAll('.node-content[data-node-id]').forEach((node, index) => {
     const nodeId = node.getAttribute('data-node-id');
+    const legacyId = this.getLegacyIdFromNodeContent(node);
     if (nodeId) {
-      this.saveNodeExpandState(nodeId, index === 0); // Solo el primero expandido
+      this.saveNodeExpandState(nodeId, index === 0, legacyId); // Solo el primero expandido
     }
   });
   
@@ -47835,6 +48038,20 @@ function restoreState(state, operation) {
 }
 
 // ========================================
+// NOTIFICACIONES GENÉRICAS
+// ========================================
+function showNotification(message, type = 'info') {
+  if (window.app && typeof app.showToast === 'function') {
+    app.showToast(message, type);
+    return;
+  }
+
+  const prefix = type ? `[${type.toUpperCase()}]` : '';
+  const logFn = type === 'error' ? console.error : type === 'warning' ? console.warn : console.log;
+  logFn(`${prefix} ${message}`);
+}
+
+// ========================================
 // FUNCIÓN PARA LIMPIAR BÚSQUEDA
 // ========================================
 function clearSearch() {
@@ -47859,6 +48076,86 @@ function clearJerarquiaSearch() {
     const event = new Event('input', { bubbles: true });
     searchInput.dispatchEvent(event);
     showNotification('Búsqueda de jerarquía limpiada', 'info');
+  }
+}
+
+// ========================================
+// DEBUGGING DE PERSISTENCIA
+// ========================================
+function debugPersistencia() {
+  console.log('\n🐛 ===== DEBUG PERSISTENCIA =====');
+  
+  try {
+    const stateKey = 'jerarquia_expand_state';
+    const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
+    const stateCount = Object.keys(state).length;
+    
+    console.log(`📊 Total estados guardados: ${stateCount}`);
+    console.log(`📦 Contenido localStorage:`, state);
+    
+    // Verificar nodos en DOM actual
+    const nodesInDom = document.querySelectorAll('.node-content[data-node-id]');
+    console.log(`🌲 Nodos en DOM actual: ${nodesInDom.length}`);
+    
+    const domIds = [];
+    nodesInDom.forEach(node => {
+      const id = node.getAttribute('data-node-id');
+      if (id) domIds.push(id);
+    });
+    console.log(`🏷️ IDs en DOM:`, domIds);
+    
+    // Comparar
+    const stateIds = Object.keys(state);
+    const inStateNotInDom = stateIds.filter(id => !domIds.includes(id));
+    const inDomNotInState = domIds.filter(id => !stateIds.includes(id));
+    
+    if (inStateNotInDom.length > 0) {
+      console.warn(`⚠️ IDs en localStorage pero NO en DOM:`, inStateNotInDom);
+    }
+    if (inDomNotInState.length > 0) {
+      console.log(`ℹ️ IDs en DOM pero NO en localStorage:`, inDomNotInState);
+    }
+    
+    // Verificar estados actuales en el DOM
+    console.log('\n🔍 Estados actuales en el DOM:');
+    nodesInDom.forEach((nodeContent, index) => {
+      const nodeId = nodeContent.getAttribute('data-node-id');
+      const treeNode = nodeContent.closest('.tree-node');
+      const children = treeNode ? treeNode.querySelector(':scope > .tree-children') : null;
+      const toggle = nodeContent.querySelector('.node-toggle');
+      
+      if (children && toggle) {
+        const isExpanded = children.style.display !== 'none';
+        const savedState = state[nodeId];
+        const match = savedState === isExpanded;
+        
+        console.log(`${match ? '✅' : '❌'} [${index}] ${nodeId}: DOM=${isExpanded ? 'EXPAND' : 'COLLAPSED'}, Storage=${savedState !== undefined ? (savedState ? 'EXPAND' : 'COLLAPSED') : 'N/A'}`);
+      }
+    });
+    
+    console.log('\n✅ Debug completado. Revisa la consola arriba.');
+    showNotification('Debug info en consola', 'info');
+    
+  } catch (e) {
+    console.error('❌ Error en debug:', e);
+  }
+}
+
+function resetPersistencia() {
+  if (confirm('¿Seguro que quieres borrar todos los estados guardados de la jerarquía?')) {
+    try {
+      localStorage.removeItem('jerarquia_expand_state');
+      console.log('🗑️ Estados de persistencia eliminados');
+      showNotification('Estados limpiados. Recarga la página para ver cambios.', 'success');
+      
+      // Re-renderizar para aplicar estados por defecto
+      if (app && typeof app.renderJerarquiaTree === 'function') {
+        app.renderJerarquiaTree();
+      }
+    } catch (e) {
+      console.error('❌ Error limpiando estados:', e);
+      showNotification('Error al limpiar estados', 'error');
+    }
   }
 }
 
