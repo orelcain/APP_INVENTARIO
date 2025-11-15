@@ -6838,6 +6838,154 @@
       background: rgba(15, 23, 42, 0.4);
     }
 
+    .map-jerarquia-modal {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .map-jerarquia-summary {
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .map-jerarquia-summary-text {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .map-jerarquia-selected {
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      min-height: 36px;
+    }
+
+    .map-jerarquia-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.65);
+      font-size: 0.78rem;
+      line-height: 1;
+      color: var(--text-primary);
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.4);
+    }
+
+    .map-jerarquia-chip-level {
+      font-size: 0.65rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      opacity: 0.85;
+    }
+
+    .map-jerarquia-chip-name {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .map-jerarquia-chip-arrow {
+      display: inline-flex;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      padding: 0 4px;
+    }
+
+    .map-jerarquia-chip--empty {
+      border-style: dashed;
+      color: var(--text-secondary);
+    }
+
+    .map-jerarquia-selector {
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.65);
+      padding: 16px;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .jerarquia-selector-tree-root,
+    .jerarquia-selector-children {
+      list-style: none;
+      margin: 0;
+      padding-left: 0;
+    }
+
+    .jerarquia-selector-tree-root > .jerarquia-selector-item {
+      padding-left: 0;
+      margin-left: 0;
+      border-left: none;
+    }
+
+    .jerarquia-selector-children {
+      margin-left: 18px;
+      padding-left: 18px;
+      border-left: 1px dashed rgba(148, 163, 184, 0.25);
+    }
+
+    .jerarquia-selector-item {
+      margin: 4px 0;
+      position: relative;
+    }
+
+    .jerarquia-selector-node {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(15, 23, 42, 0.5);
+      color: var(--text-primary);
+      text-align: left;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    .jerarquia-selector-node:hover {
+      border-color: var(--primary-light);
+      background: rgba(59, 130, 246, 0.15);
+      transform: translateX(4px);
+    }
+
+    .jerarquia-selector-node.is-selected {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.18);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25);
+    }
+
+    .jerarquia-selector-level {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .jerarquia-selector-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .map-area-filter-alert {
       padding: 6px 10px;
       border-radius: var(--radius-sm);
@@ -7800,7 +7948,9 @@
     }
 
     #modalJerarquia .modal-content {
-      max-width: 900px;
+      width: min(1150px, 95vw);
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     #jerarquiaForm {
@@ -7835,6 +7985,111 @@
       font-size: 0.95rem;
       line-height: 1.5;
       margin-bottom: 20px;
+    }
+
+    .jerarquia-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 0 20px;
+    }
+
+    .jerarquia-toolbar-text {
+      flex: 1 1 260px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .jerarquia-toolbar-hint {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .jerarquia-toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .jerarquia-toolbar-btn {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .jerarquia-toolbar-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .jerarquia-search {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      min-width: 250px;
+      transition: border-color 0.2s ease;
+    }
+
+    .jerarquia-search:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(91, 139, 180, 0.15);
+    }
+
+    .jerarquia-search-icon {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .jerarquia-search-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .jerarquia-search-clear {
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+
+    .jerarquia-search-clear:hover {
+      color: var(--primary);
+    }
+
+    .jerarquia-search:not(.has-value) .jerarquia-search-clear {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .jerarquia-results {
+      padding: 0 20px 10px 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
     }
 
 /* ================================================================
@@ -13892,10 +14147,27 @@
           <h2 class="sap-header-title">Gestionar Niveles Jerrquicos</h2>
         </div>
       </div>
-      <p class="sap-header-subtitle">Administra los 8 niveles de la estructura organizacional</p>
+      <p class="sap-header-subtitle">Mantn alineados los catlogos por nivel: cada cambio se replica en formularios, sugerencias y rutas en cascada.</p>
     </header>
 
     <div class="jerarquia-manager">
+      <div class="jerarquia-toolbar">
+        <div class="jerarquia-toolbar-text">
+          Ajusta los nombres oficiales por nivel y usa el buscador para saltar directo al registro que necesitas.
+          <div class="jerarquia-toolbar-hint">Consejo: arrastra para reordenar y usa "Subnivel" para clasificar detalles frecuentes.</div>
+        </div>
+        <div class="jerarquia-toolbar-actions">
+          <div class="jerarquia-search" id="jerarquiaSearchWrapper">
+            <span class="jerarquia-search-icon" aria-hidden="true">🔎</span>
+            <input type="search" id="jerarquiaSearchInput" class="jerarquia-search-input" placeholder="Buscar nivel o subnivel..." oninput="app.handleJerarquiaSearch(this.value)" autocomplete="off" />
+            <button type="button" class="jerarquia-search-clear" onclick="app.clearJerarquiaSearch()" title="Limpiar bsqueda">×</button>
+          </div>
+          <button type="button" class="jerarquia-toolbar-btn" onclick="app.expandAllJerarquiaItems()">Expandir todo</button>
+          <button type="button" class="jerarquia-toolbar-btn" onclick="app.collapseAllJerarquiaItems()">Colapsar todo</button>
+        </div>
+      </div>
+      <div class="jerarquia-results" id="jerarquiaResultsSummary"></div>
+
       <!-- Tabs para cada nivel -->
       <div class="jerarquia-tabs">
         <button class="jerarquia-tab active" data-level="1" onclick="app.switchJerarquiaLevel(1)">
@@ -15491,6 +15763,140 @@ const mapController = {
     mapLoadingHideTimeout: null
   },
 
+  viewportState: null,
+  mapViewportStorageKey: 'mapViewportState_v1',
+  viewportPersistDelay: 600,
+  viewportSaveTimer: null,
+  viewportChangedDuringPan: false,
+
+  restoreViewportState() {
+    try {
+      const raw = localStorage.getItem(this.mapViewportStorageKey);
+      if (raw) {
+        this.viewportState = JSON.parse(raw);
+      }
+    } catch (error) {
+      console.warn('No se pudo restaurar el estado visual del mapa:', error);
+    }
+
+    if (!this.viewportState || typeof this.viewportState !== 'object') {
+      this.viewportState = { lastMapId: null, views: {} };
+    } else {
+      this.viewportState.lastMapId = this.viewportState.lastMapId || null;
+      this.viewportState.views = this.viewportState.views || {};
+    }
+  },
+
+  captureCurrentViewportSnapshot() {
+    if (!this.state.currentMapId) return null;
+    const scale = Number(this.state.scale);
+    const offsetX = Number(this.state.offsetX);
+    const offsetY = Number(this.state.offsetY);
+    if (!Number.isFinite(scale) || !Number.isFinite(offsetX) || !Number.isFinite(offsetY)) {
+      return null;
+    }
+
+    const clampedScale = Math.min(this.state.maxScale, Math.max(this.state.minScale, scale));
+    return {
+      mapId: this.state.currentMapId,
+      scale: clampedScale,
+      offsetX,
+      offsetY
+    };
+  },
+
+  getLastViewedMapId() {
+    return this.viewportState?.lastMapId || null;
+  },
+
+  getPersistedViewportForMap(mapId) {
+    if (!mapId || !this.viewportState || !this.viewportState.views) {
+      return null;
+    }
+    return this.viewportState.views[mapId] || null;
+  },
+
+  sanitizeViewportSnapshot(snapshot) {
+    if (!snapshot || typeof snapshot !== 'object') {
+      return null;
+    }
+    const scale = Number(snapshot.scale);
+    const offsetX = Number(snapshot.offsetX);
+    const offsetY = Number(snapshot.offsetY);
+    if (!Number.isFinite(scale) || !Number.isFinite(offsetX) || !Number.isFinite(offsetY)) {
+      return null;
+    }
+    return {
+      scale: Math.min(this.state.maxScale, Math.max(this.state.minScale, scale)),
+      offsetX,
+      offsetY
+    };
+  },
+
+  applyViewportSnapshot(snapshot) {
+    const sanitized = this.sanitizeViewportSnapshot(snapshot);
+    if (!sanitized) return false;
+    this.state.scale = sanitized.scale;
+    this.state.offsetX = sanitized.offsetX;
+    this.state.offsetY = sanitized.offsetY;
+    return true;
+  },
+
+  queueViewportPersist(reason = 'auto') {
+    if (!this.state.currentMapId) return;
+    if (this.viewportSaveTimer) {
+      clearTimeout(this.viewportSaveTimer);
+    }
+    this.viewportSaveTimer = setTimeout(() => {
+      this.persistViewportState(reason);
+    }, this.viewportPersistDelay);
+  },
+
+  persistViewportState(reason = 'auto') {
+    if (!this.state.currentMapId) {
+      return;
+    }
+
+    const snapshot = this.captureCurrentViewportSnapshot();
+    if (!snapshot) {
+      return;
+    }
+
+    if (!this.viewportState || typeof this.viewportState !== 'object') {
+      this.viewportState = { lastMapId: null, views: {} };
+    }
+
+    this.viewportState.lastMapId = snapshot.mapId;
+    const entry = {
+      scale: snapshot.scale,
+      offsetX: snapshot.offsetX,
+      offsetY: snapshot.offsetY,
+      updatedAt: Date.now()
+    };
+    this.viewportState.views[snapshot.mapId] = entry;
+
+    const viewEntries = Object.entries(this.viewportState.views);
+    const maxEntries = 25;
+    if (viewEntries.length > maxEntries) {
+      viewEntries
+        .sort((a, b) => (a[1]?.updatedAt || 0) - (b[1]?.updatedAt || 0))
+        .slice(0, viewEntries.length - maxEntries)
+        .forEach(([key]) => delete this.viewportState.views[key]);
+    }
+
+    try {
+      localStorage.setItem(this.mapViewportStorageKey, JSON.stringify(this.viewportState));
+    } catch (error) {
+      console.warn('No se pudo guardar el estado visual del mapa:', error, reason);
+    }
+
+    if (this.viewportSaveTimer) {
+      clearTimeout(this.viewportSaveTimer);
+      this.viewportSaveTimer = null;
+    }
+  },
+
+
   init() {
     //  Cargar categoras personalizadas desde localStorage
     const savedCategories = localStorage.getItem('mapCategories');
@@ -15501,6 +15907,14 @@ const mapController = {
       } catch (e) {
         console.warn(' Error al cargar categoras personalizadas:', e);
       }
+    }
+
+    this.restoreViewportState();
+
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      window.addEventListener('beforeunload', () => {
+        this.persistViewportState('beforeunload');
+      });
     }
 
     this.elements = {
@@ -15774,11 +16188,24 @@ const mapController = {
         return;
       }
 
-      if (!this.state.currentMapId || !maps.some(m => m.id === this.state.currentMapId)) {
-        await this.selectMap(maps[0].id);
-      } else {
-        await this.selectMap(this.state.currentMapId, { keepViewport: true });
+      const hasMap = (mapId) => maps.some((m) => Number(m.id) === Number(mapId));
+      let targetMapId = this.state.currentMapId && hasMap(this.state.currentMapId)
+        ? this.state.currentMapId
+        : null;
+
+      if (!targetMapId) {
+        const persistedId = this.getLastViewedMapId();
+        if (persistedId && hasMap(persistedId)) {
+          targetMapId = persistedId;
+        }
       }
+
+      if (!targetMapId) {
+        targetMapId = maps[0].id;
+      }
+
+      const keepViewport = Boolean(this.state.currentMapId && this.state.currentMapId === targetMapId);
+      await this.selectMap(targetMapId, { keepViewport });
 
       await this.refreshLog();
     } catch (error) {
@@ -16239,6 +16666,7 @@ const mapController = {
     
     // Redibujar para mostrar el resaltado
     this.draw();
+    this.queueViewportPersist('focus-marker');
   },
   
   //  NUEVO: Iniciar animacin continua para marcador resaltado
@@ -17476,19 +17904,26 @@ const mapController = {
     this.state.areas = mapStorage.getAreasByMap(map.id);
     this.state.highlightAreaId = null;
 
-    if (!options.keepViewport) {
+    const viewportOverride = !options.keepViewport
+      ? this.getPersistedViewportForMap(map.id)
+      : null;
+
+    if (!options.keepViewport && !viewportOverride) {
       this.state.scale = 1;
       this.state.offsetX = 0;
       this.state.offsetY = 0;
+    } else if (viewportOverride) {
+      this.applyViewportSnapshot(viewportOverride);
     }
 
     this.showMapLoadingOverlay(map);
-    await this.loadMapImage(map, options);
+    await this.loadMapImage(map, { ...options, viewportOverride });
     this.renderMapList(mapStorage.maps);
     this.renderAreaList(this.state.areas);
     this.updateMetaBadge();
     this.updateMapJerarquiaBadge();
     this.syncButtonStates(); //  Sincronizar estado visual de botones
+    this.queueViewportPersist('select-map');
   },
 
   async loadMapImage(map, options = {}) {
@@ -17674,7 +18109,9 @@ const mapController = {
       canvas.height = img.height;
     }
 
-    if (!options.keepViewport) {
+    if (options.viewportOverride) {
+      this.applyViewportSnapshot(options.viewportOverride);
+    } else if (!options.keepViewport) {
       this.state.scale = 1;
       this.state.offsetX = 0;
       this.state.offsetY = 0;
@@ -19808,12 +20245,17 @@ dibujarUbicacionesResaltadas(ctx) {
     this.state.offsetX = canvasX - this.state.panStartX;
     this.state.offsetY = canvasY - this.state.panStartY;
     this.scheduleRender();
+    this.viewportChangedDuringPan = true;
   },
 
   endPan() {
     if (this.state.isPanning) {
       this.state.isPanning = false;
       this.elements.canvas.style.cursor = this.state.drawing ? 'crosshair' : 'grab';
+      if (this.viewportChangedDuringPan) {
+        this.viewportChangedDuringPan = false;
+        this.queueViewportPersist('pan');
+      }
     }
   },
 
@@ -20119,6 +20561,7 @@ dibujarUbicacionesResaltadas(ctx) {
     this.state.offsetY = canvasY - worldY * newScale;
     this.updateZoomBadge(); //  Actualizar badge de zoom
     this.draw();
+    this.queueViewportPersist('zoom');
   },
 
   handleToolbarAction(action) {
@@ -20175,6 +20618,7 @@ dibujarUbicacionesResaltadas(ctx) {
     this.state.offsetY = 0;
     this.updateZoomBadge(); //  Actualizar badge de zoom
     this.draw();
+    this.queueViewportPersist('reset-view');
   },
 
   recenter() {
@@ -20185,6 +20629,7 @@ dibujarUbicacionesResaltadas(ctx) {
     this.state.offsetX = canvas.width / 2 - centerX;
     this.state.offsetY = canvas.height / 2 - centerY;
     this.draw();
+    this.queueViewportPersist('recenter');
   },
 
   toggleGrid() {
@@ -20309,6 +20754,7 @@ dibujarUbicacionesResaltadas(ctx) {
     this.state.offsetY = -worldY * this.state.scale + mainCanvas.height / 2;
 
     this.draw();
+    this.queueViewportPersist('minimap');
   },
 
   toggleRulers() {
@@ -21535,6 +21981,7 @@ dibujarUbicacionesResaltadas(ctx) {
     this.state.offsetY = canvas.height / 2 - centerY * this.state.scale;
 
     this.draw();
+    this.queueViewportPersist('focus-area');
   },
 
   updateMetaBadge() {
@@ -22021,6 +22468,8 @@ dibujarUbicacionesResaltadas(ctx) {
 
       if (progress < 1) {
         requestAnimationFrame(animate);
+      } else {
+        this.queueViewportPersist('animate-zoom');
       }
     };
 
@@ -22043,32 +22492,9 @@ dibujarUbicacionesResaltadas(ctx) {
     }, 300);
   },
 
-  loadMap(mapId) {
+  async loadMap(mapId) {
     console.log(' Cargando mapa:', mapId);
-    const maps = mapStorage.maps || [];
-    const map = maps.find(m => String(m.id) === String(mapId));
-    
-    if (!map) {
-      console.warn(' Mapa no encontrado:', mapId);
-      return;
-    }
-
-    this.state.currentMapId = map.id;
-    this.state.currentMap = map;
-    
-    // Cargar imagen del mapa
-    if (map.imagePath) {
-      this.showMapLoadingOverlay(map);
-      this.loadMapImageFromStorage(map.imagePath);
-    } else {
-      this.hideMapLoadingOverlay(true, 'El mapa seleccionado no tiene imagen asociada.');
-    }
-
-    // Cargar reas del mapa
-    this.loadAreasForMap(map.id);
-    
-    this.updateMetaBadge();
-    this.draw();
+    await this.selectMap(mapId);
   },
 
   async loadMapImageFromStorage(imagePath) {
@@ -22690,6 +23116,7 @@ dibujarUbicacionesResaltadas(ctx) {
       }));
       
       this.draw();
+      this.queueViewportPersist('multi-ubicaciones');
       
       app.showToast(` ${ubicacionesEnMapa.length} ubicaciones resaltadas en el mapa`, 'success');
     }, 500);
@@ -24791,13 +25218,20 @@ dibujarUbicacionesResaltadas(ctx) {
 
     const path = this.state.tempJerarquiaAssignment?.path || [];
     if (!Array.isArray(path) || !path.length) {
-      preview.innerHTML = '<span style="color: var(--text-secondary);">Sin asignacin.</span>';
+      preview.innerHTML = '<span class="map-jerarquia-chip map-jerarquia-chip--empty">Sin asignacin</span>';
       return;
     }
 
+    const arrow = '<span class="map-jerarquia-chip-arrow">›</span>';
     preview.innerHTML = path
-      .map(node => this.escapeHtml(node.nombre || node.id))
-      .join('  ›  ');
+      .map((node) => {
+        const levelConfig = node?.nivel ? this.jerarquiaLevelConfig[node.nivel] : null;
+        const levelLabel = levelConfig?.label || node?.nivel || '';
+        const safeLevel = levelLabel ? `<span class="map-jerarquia-chip-level">${this.escapeHtml(levelLabel)}</span>` : '';
+        const safeName = `<span class="map-jerarquia-chip-name">${this.escapeHtml(node?.nombre || node?.id || 'Sin nombre')}</span>`;
+        return `<span class="map-jerarquia-chip">${safeLevel}${safeName}</span>`;
+      })
+      .join(arrow);
   },
 
   clearJerarquiaAssignment() {
@@ -30864,22 +31298,43 @@ class InventarioCompleto {
     } else if (tab === 'mapa') {
       // Dar tiempo para que el canvas se renderice antes de dibujar
       setTimeout(() => {
+        //  Restaurar estado de secciones colapsadas independientemente del modo
+        this.restoreMapSectionsState();
+
+        const hasMapController = typeof window !== 'undefined'
+          && window.mapController
+          && mapController.elements
+          && mapController.elements.canvas;
+
+        if (hasMapController) {
+          try {
+            // Ajustar canvas y volver a dibujar con el nuevo controlador
+            if (typeof mapController.handleResize === 'function') {
+              mapController.handleResize();
+            } else if (typeof mapController.resizeCanvas === 'function') {
+              mapController.resizeCanvas();
+            }
+
+            if (!mapController.state.currentMapId) {
+              const loadPromise = mapController.loadData?.();
+              if (loadPromise && typeof loadPromise.catch === 'function') {
+                loadPromise.catch((err) => console.warn('mapController.loadData() falló al volver a la pestaña mapa:', err));
+              }
+            } else if (typeof mapController.draw === 'function') {
+              mapController.draw();
+            }
+          } catch (error) {
+            console.warn('Error reactivando mapController al volver a la pestaña mapa:', error);
+          }
+          return;
+        }
+
+        //  MODO LEGACY: usar el renderizador original solo si mapController no existe
         if (!this.canvas || !this.ctx) {
-          console.log('Inicializando canvas del mapa...');
+          console.log('Inicializando canvas del mapa (legacy)...');
           this.setupCanvas();
         }
         this.renderMap();
-        
-        //  Restaurar estado de secciones colapsadas
-        this.restoreMapSectionsState();
-        
-        //  NUEVO: Cargar automticamente el primer mapa si existe
-        const mapStorage = JSON.parse(localStorage.getItem('mapStorage') || '{"maps":[],"areas":[]}');
-        if (mapStorage.maps && mapStorage.maps.length > 0 && !this.state.currentMapId) {
-          console.log(' Cargando automticamente el primer mapa disponible...');
-          const firstMap = mapStorage.maps[0];
-          this.selectMap(firstMap.id);
-        }
       }, 100);
     } else if (tab === 'conteo') {
       this.renderConteo();
@@ -38387,6 +38842,8 @@ class InventarioCompleto {
 
   jerarquiaCurrentLevel = 1;
   jerarquiaEditingId = null;
+  jerarquiaSearchTerm = '';
+  jerarquiaCollapsedState = {};
 
   /**
    * Abre el modal de gestin de jerarqua
@@ -38405,6 +38862,17 @@ class InventarioCompleto {
     // Mostrar modal
     const modal = document.getElementById('modalJerarquia');
     modal.style.display = 'flex';
+
+    this.jerarquiaSearchTerm = '';
+    const searchInput = document.getElementById('jerarquiaSearchInput');
+    if (searchInput) {
+      searchInput.value = '';
+    }
+    this.updateJerarquiaSearchVisualState();
+    const summaryEl = document.getElementById('jerarquiaResultsSummary');
+    if (summaryEl) {
+      summaryEl.textContent = '';
+    }
 
     // Cargar primer nivel por defecto
     this.switchJerarquiaLevel(1);
@@ -38462,14 +38930,73 @@ class InventarioCompleto {
    */
   renderJerarquiaList() {
     const level = this.jerarquiaCurrentLevel;
-    const items = this.jerarquiaData[`nivel${level}`] || [];
+    const levelKey = `nivel${level}`;
+    const items = this.jerarquiaData[levelKey] || [];
     const listContainer = document.getElementById('jerarquiaList');
+    if (!listContainer) return;
 
-    if (items.length === 0) {
+    const searchTerm = (this.jerarquiaSearchTerm || '').trim().toLowerCase();
+
+    const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    const highlightMatch = (text = '') => {
+      const safeText = this.escapeHtml(text || '');
+      if (!searchTerm) {
+        return safeText;
+      }
+      try {
+        const regex = new RegExp(escapeRegex(searchTerm), 'gi');
+        return safeText.replace(regex, (match) => `<mark>${match}</mark>`);
+      } catch (error) {
+        console.warn('Regex highlight fall:', error);
+        return safeText;
+      }
+    };
+
+    const matchesSearch = (item, term) => {
+      if (!term) return true;
+      const base = `${item.name || ''} ${item.description || ''}`.toLowerCase();
+      if (base.includes(term)) {
+        return true;
+      }
+      if (Array.isArray(item.subitems)) {
+        return item.subitems.some(sub => matchesSearch(sub, term));
+      }
+      return false;
+    };
+
+    const getVisibleSubitems = (item) => {
+      if (!Array.isArray(item.subitems)) {
+        return [];
+      }
+      if (!searchTerm) {
+        return item.subitems;
+      }
+      return item.subitems.filter(sub => matchesSearch(sub, searchTerm));
+    };
+
+    const filteredItems = searchTerm
+      ? items.filter(item => matchesSearch(item, searchTerm))
+      : items;
+
+    this.updateJerarquiaResultsSummary({
+      total: items.length,
+      filtered: filteredItems.length,
+      searchTerm
+    });
+
+    if (filteredItems.length === 0) {
+      const emptyMessage = searchTerm
+        ? `No encontramos resultados para "${this.escapeHtml(this.jerarquiaSearchTerm)}" en este nivel.`
+        : 'No hay elementos en este nivel';
       listContainer.innerHTML = `
         <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-          <p>No hay elementos en este nivel</p>
-          <p style="font-size: 0.9rem; margin-top: 8px;">Haz clic en " Agregar Nuevo" para crear el primero</p>
+          <p>${emptyMessage}</p>
+          ${searchTerm ? `
+            <button class="jerarquia-toolbar-btn" style="margin-top: 12px;" onclick="app.clearJerarquiaSearch()">Limpiar bsqueda</button>
+          ` : `
+            <p style="font-size: 0.9rem; margin-top: 8px;">Haz clic en " Agregar Nuevo" para crear el primero</p>
+          `}
         </div>
       `;
       return;
@@ -38484,10 +39011,14 @@ class InventarioCompleto {
         minute: '2-digit'
       });
 
-      const hasSubitems = item.subitems && item.subitems.length > 0;
+      const visibleSubitems = getVisibleSubitems(item);
+      const hasSubitems = visibleSubitems.length > 0;
       const itemClass = isSubitem ? 'jerarquia-subitem' : 'jerarquia-item';
       const headerClass = isSubitem ? 'jerarquia-subitem-header' : 'jerarquia-item-header';
       const nameClass = isSubitem ? 'jerarquia-subitem-name' : 'jerarquia-item-name';
+      const isCollapsed = searchTerm ? false : this.isJerarquiaItemCollapsed(level, item.id);
+      const subitemsExpanded = searchTerm ? true : !isCollapsed;
+      const toggleTitle = isCollapsed ? 'Expandir subniveles' : 'Colapsar subniveles';
 
       let html = `
         <div class="${itemClass}" draggable="true" data-item-id="${item.id}"
@@ -38499,13 +39030,13 @@ class InventarioCompleto {
           <div class="${headerClass}">
             <div class="jerarquia-item-info">
               ${hasSubitems ? `
-                <button class="jerarquia-item-toggle" onclick="app.toggleSubitems('${item.id}')">
+                <button class="jerarquia-item-toggle ${isCollapsed ? 'collapsed' : ''}" data-toggle-id="${item.id}" onclick="app.toggleSubitems('${item.id}', event)" title="${toggleTitle}" aria-expanded="${subitemsExpanded}">
                   ▼
                 </button>
               ` : '<span style="width: 28px;"></span>'}
               <div class="jerarquia-item-content">
-                <div class="${nameClass}" onclick="app.toggleSubitems('${item.id}')">${this.escapeHtml(item.name)}</div>
-                ${item.description ? `<div class="jerarquia-item-desc">${this.escapeHtml(item.description)}</div>` : ''}
+                <div class="${nameClass}" onclick="app.toggleSubitems('${item.id}', event)">${highlightMatch(item.name)}</div>
+                ${item.description ? `<div class="jerarquia-item-desc">${highlightMatch(item.description)}</div>` : ''}
                 ${!isSubitem ? `<div class="jerarquia-item-meta">Creado: ${timestamp}</div>` : ''}
               </div>
             </div>
@@ -38527,8 +39058,8 @@ class InventarioCompleto {
 
       // Renderizar subitems si existen
       if (hasSubitems) {
-        html += `<div class="jerarquia-subitems expanded" id="subitems-${item.id}">`;
-        item.subitems.forEach(subitem => {
+        html += `<div class="jerarquia-subitems ${subitemsExpanded ? 'expanded' : ''}" id="subitems-${item.id}">`;
+        visibleSubitems.forEach(subitem => {
           html += renderItem(subitem, true);
         });
         html += `</div>`;
@@ -38538,12 +39069,7 @@ class InventarioCompleto {
       return html;
     };
 
-    let html = '';
-    items.forEach(item => {
-      html += renderItem(item, false);
-    });
-
-    listContainer.innerHTML = html;
+    listContainer.innerHTML = filteredItems.map(item => renderItem(item, false)).join('');
   }
 
   /**
