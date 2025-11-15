@@ -6205,10 +6205,6 @@
       }
     }
 
-    /* 
-        ESTILOS DEL SISTEMA DE MAPAS AVANZADO - INTEGRADOS DESDE APP_BASE (FASE 2)
-        */
-    
     /* MAPA - SECCION INTEGRADA */
     .map-shell {
       display: grid;
@@ -6432,6 +6428,163 @@
     .map-card-btn--delete:hover {
       background: rgba(239, 68, 68, 0.2);
       border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .map-card-btn--link {
+      background: transparent;
+      border-color: rgba(59, 130, 246, 0.2);
+      color: var(--primary-light);
+    }
+
+    .map-card-btn--link:hover {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--text-primary);
+    }
+
+    .map-jerarquia-badge {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: rgba(15, 23, 42, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .map-jerarquia-badge--empty {
+      border-style: dashed;
+      opacity: 0.85;
+    }
+
+    .map-jerarquia-badge strong {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+    }
+
+    .map-jerarquia-badge__path {
+      color: var(--text-secondary);
+      display: block;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .map-jerarquia-badge button {
+      flex-shrink: 0;
+      padding: 6px 10px;
+      font-size: 0.7rem;
+    }
+
+    .map-jerarquia-inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px;
+      background: rgba(148, 163, 184, 0.08);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .map-jerarquia-inline-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      flex: 1;
+      min-height: 1.5em;
+    }
+
+    .map-jerarquia-branch {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .map-jerarquia-branch-node {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .map-jerarquia-branch-node.is-active {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.12);
+    }
+
+    .map-jerarquia-branch-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+    }
+
+    .map-jerarquia-branch-level {
+      font-weight: 600;
+      color: var(--primary-light);
+      font-size: 0.7rem;
+      letter-spacing: 0.02em;
+    }
+
+    .map-jerarquia-branch-name {
+      flex: 1;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .map-jerarquia-branch-stats {
+      display: flex;
+      gap: 12px;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    .map-jerarquia-branch-stats strong {
+      color: var(--text-primary);
+      margin-right: 4px;
+    }
+
+    .map-jerarquia-branch-empty {
+      padding: 10px;
+      border: 1px dashed rgba(148, 163, 184, 0.3);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .map-area-filter-alert {
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      font-size: 0.75rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .map-area-filter-alert button {
+      border: none;
+      background: transparent;
+      color: var(--primary-light);
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
     }
 
     .map-area-list {
@@ -12499,6 +12652,14 @@
                  Componente
               </button>
             </div>
+            <div id='mapJerarquiaBadge' class='map-jerarquia-badge map-jerarquia-badge--empty'>
+              <div>
+                <strong>Sin jerarqua asignada</strong>
+                <span class='map-jerarquia-badge__path'>Asigna la rama para sincronizar las reas.</span>
+              </div>
+              <button type='button' class='map-btn map-btn--ghost' data-action='badge-assign-jerarquia'>Asignar</button>
+            </div>
+            <div id='mapJerarquiaBranch' class='map-jerarquia-branch'></div>
             <div id='areaList' class='map-area-list'></div>
           </section>
           <!--  ELIMINADO: Historial - No se le dar uso funcional -->
@@ -14151,6 +14312,52 @@ if (!('showDirectoryPicker' in window)) {
 
 const globalBlobCache = new Map();
 
+// ============================================================
+//  BUS DE EVENTOS GLOBAL - SINCRONIZAR PESTAÑAS
+// ============================================================
+const appEvents = (() => {
+  const listeners = new Map();
+
+  return {
+    on(eventName, handler) {
+      if (!eventName || typeof handler !== 'function') {
+        return () => {};
+      }
+
+      if (!listeners.has(eventName)) {
+        listeners.set(eventName, new Set());
+      }
+
+      const eventListeners = listeners.get(eventName);
+      eventListeners.add(handler);
+
+      return () => {
+        eventListeners.delete(handler);
+        if (eventListeners.size === 0) {
+          listeners.delete(eventName);
+        }
+      };
+    },
+
+    emit(eventName, payload = {}) {
+      const eventListeners = listeners.get(eventName);
+      if (!eventListeners || eventListeners.size === 0) {
+        return;
+      }
+
+      eventListeners.forEach((handler) => {
+        try {
+          handler(payload);
+        } catch (error) {
+          console.error('appEvents handler error:', eventName, error);
+        }
+      });
+    }
+  };
+})();
+
+window.appEvents = appEvents;
+
 // Funcin para obtener o crear Blob URL con cach global
 async function getCachedBlobUrl(filename, loadFunction) {
   if (globalBlobCache.has(filename)) {
@@ -14387,7 +14594,44 @@ class MapStorageService {
       if (raw) {
         parsed = JSON.parse(raw);
       }
-      this.maps = Array.isArray(parsed) ? parsed : [];
+      const normalizeJerarquiaPath = (path) => {
+        if (!Array.isArray(path)) return [];
+        return path
+          .map((node) => {
+            if (!node) return null;
+            if (typeof node === 'string') {
+              return { id: node, nivel: null };
+            }
+
+            if (typeof node === 'object') {
+              const id = node.id ?? node.value ?? null;
+              if (!id) return null;
+              return {
+                id,
+                nivel: node.nivel ?? node.level ?? null
+              };
+            }
+
+            return null;
+          })
+          .filter(Boolean);
+      };
+
+      this.maps = Array.isArray(parsed)
+        ? parsed.map((map) => {
+            if (!map || typeof map !== 'object') {
+              return {
+                id: Date.now(),
+                name: 'Mapa sin nombre',
+                jerarquiaPath: []
+              };
+            }
+
+            const normalized = { ...map };
+            normalized.jerarquiaPath = normalizeJerarquiaPath(map.jerarquiaPath);
+            return normalized;
+          })
+        : [];
     } catch (error) {
       console.warn('No se pudieron cargar los mapas:', error);
       this.maps = [];
@@ -14684,6 +14928,9 @@ console.log(' MapStorage inicializado');
 
 const mapController = {
   elements: {},
+  cachedJerarquiaOptions: null,
+  cachedJerarquiaStructure: null,
+  cachedJerarquiaVersion: 0,
   
   // 
   //  SISTEMA DE CATEGORAS PARA REAS (Etapa 1.2)
@@ -14720,6 +14967,17 @@ const mapController = {
       description: 'Pieza o elemento menor'
     }
   },
+
+  jerarquiaLevelConfig: {
+    empresa: { label: 'Empresa', childKey: 'areas', childNivel: 'area' },
+    area: { label: 'rea', childKey: 'subAreas', childNivel: 'subArea' },
+    subArea: { label: 'Sub-rea', childKey: 'sistemas', childNivel: 'sistema' },
+    sistema: { label: 'Sistema', childKey: 'subSistemas', childNivel: 'subSistema' },
+    subSistema: { label: 'Sub-Sistema', childKey: 'secciones', childNivel: 'seccion' },
+    seccion: { label: 'Seccin', childKey: 'subSecciones', childNivel: 'subSeccion' },
+    subSeccion: { label: 'Sub-Seccin', childKey: null, childNivel: null }
+  },
+  areaJerarquiaFieldOrder: ['planta', 'areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion', 'detalle'],
   
   state: {
     currentMapId: null,
@@ -14754,6 +15012,7 @@ const mapController = {
     areas: [], // Antes zones
     categoryFilter: null, // NUEVO: filtro activo por categora
     
+    jerarquiaBranchFilter: null,
     //  ETAPA 3.1: Seleccin mltiple
     selectedAreaIds: [], // IDs de reas seleccionadas
     isMultiSelectMode: false, // Modo seleccin mltiple activo
@@ -14774,7 +15033,16 @@ const mapController = {
     isDraggingPoint: false,
     // Performance optimization
     animationFrameId: null,
-    needsRedraw: false
+    needsRedraw: false,
+
+    // Sincronizacin con jerarqua/inventario
+    pendingJerarquiaRefresh: false,
+    pendingCatalogRefresh: false,
+    lastJerarquiaSync: null,
+    lastCatalogSync: null,
+
+    // Asignacin temporal de jerarqua para mapas
+    tempJerarquiaAssignment: null
   },
 
   init() {
@@ -14797,6 +15065,8 @@ const mapController = {
       saveBtn: document.getElementById('mapSaveAreasBtn'), // Antes mapSaveZonesBtn
       mapList: document.getElementById('mapList'),
       areaList: document.getElementById('areaList'), // Antes zoneList
+      jerarquiaBadge: document.getElementById('mapJerarquiaBadge'),
+      jerarquiaBranch: document.getElementById('mapJerarquiaBranch'),
       logList: document.getElementById('mapLogList'),
       logRefreshBtn: document.getElementById('mapLogRefreshBtn'),
       connectionBadge: document.getElementById('mapConnectionBadge'),
@@ -14843,6 +15113,15 @@ const mapController = {
       this.drawMessage('Conecta la carpeta INVENTARIO_STORAGE para comenzar.');
       this.renderMapList([]);
       this.renderAreaList([]);
+      this.updateMapJerarquiaBadge();
+    }
+
+    if (this.state.pendingJerarquiaRefresh) {
+      this.handleJerarquiaStructureUpdate({ silent: true, reason: 'pending-refresh' });
+    }
+
+    if (this.state.pendingCatalogRefresh) {
+      this.handleJerarquiaCatalogUpdate({ silent: true, reason: 'pending-refresh' });
     }
   },
 
@@ -14915,6 +15194,47 @@ const mapController = {
       });
     }
 
+    if (this.elements.jerarquiaBadge) {
+      this.elements.jerarquiaBadge.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const actionBtn = target.closest('[data-action="badge-assign-jerarquia"]');
+        if (!actionBtn) return;
+        event.preventDefault();
+        event.stopPropagation();
+        if (this.state.currentMapId) {
+          this.openAssignJerarquiaModal(this.state.currentMapId);
+        } else {
+          this.showToast('Selecciona un mapa primero.', 'info');
+        }
+      });
+    }
+
+    if (this.elements.jerarquiaBranch) {
+      this.elements.jerarquiaBranch.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+
+        const clearBtn = target.closest('[data-action="branch-clear-filter"]');
+        if (clearBtn) {
+          event.preventDefault();
+          event.stopPropagation();
+          this.clearJerarquiaBranchFilter();
+          return;
+        }
+
+        const nodeBtn = target.closest('[data-branch-index]');
+        if (!nodeBtn) return;
+
+        const index = parseInt(nodeBtn.getAttribute('data-branch-index'), 10);
+        if (Number.isNaN(index)) {
+          return;
+        }
+        event.preventDefault();
+        this.toggleJerarquiaBranchFilter(index);
+      });
+    }
+
     //  NUEVO: Event listener para clic en minimap
     if (this.elements.minimap) {
       this.elements.minimap.addEventListener('click', (event) => {
@@ -14976,6 +15296,7 @@ const mapController = {
       this.renderMapList([]);
       this.renderAreaList([]);
       this.drawMessage('Conecta la carpeta INVENTARIO_STORAGE para comenzar.');
+      this.updateMapJerarquiaBadge();
       return;
     }
 
@@ -14991,9 +15312,12 @@ const mapController = {
       if (!maps.length) {
         this.state.currentMapId = null;
         this.state.currentMap = null;
+        this.state.jerarquiaBranchFilter = null;
+        this.state.areas = [];
         this.cleanupImage();
         this.renderAreaList([]);
         this.drawMessage('Crea un mapa para comenzar a dibujar zonas.');
+        this.updateMapJerarquiaBadge();
         return;
       }
 
@@ -15034,6 +15358,9 @@ const mapController = {
             ${createdAt ? `<div class="map-card-meta">Creado: ${createdAt}</div>` : ''}
           </div>
           <div class="map-card-actions">
+              <button class="map-card-btn map-card-btn--link" data-action="assign-jerarquia" data-map-id="${map.id}" title="Asignar jerarqua">
+                Jerarqua
+              </button>
             <button class="map-card-btn map-card-btn--edit" data-action="edit-map" data-map-id="${map.id}" title="Editar mapa">
               
             </button>
@@ -15061,6 +15388,15 @@ const mapController = {
         e.stopPropagation();
         const mapId = btn.getAttribute('data-map-id');
         await this.openEditMapModal(mapId);
+      });
+    });
+
+    // Event listeners para asignar jerarqua
+    Array.from(mapList.querySelectorAll('[data-action="assign-jerarquia"]')).forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const mapId = btn.getAttribute('data-map-id');
+        await this.openAssignJerarquiaModal(mapId);
       });
     });
 
@@ -15469,10 +15805,17 @@ const mapController = {
     const { areaList } = this.elements;
     if (!areaList) return;
 
+    this.renderMapJerarquiaBranch();
+
     //  Aplicar filtro de categora si est activo
-    let filteredAreas = areas;
+    let filteredAreas = Array.isArray(areas) ? areas : [];
+
+    if (this.state.jerarquiaBranchFilter) {
+      filteredAreas = this.applyActiveBranchFilter(filteredAreas);
+    }
+
     if (this.state.categoryFilter) {
-      filteredAreas = areas.filter(area => (area.category || 'area') === this.state.categoryFilter);
+      filteredAreas = filteredAreas.filter(area => (area.category || 'area') === this.state.categoryFilter);
     }
 
     //  NUEVO: Aplicar filtro de bsqueda si existe texto
@@ -15486,17 +15829,46 @@ const mapController = {
       });
     }
 
+    const filterLabel = this.getActiveBranchFilterLabel();
+    const filterNoticeHtml = filterLabel
+      ? `<div class="map-area-filter-alert">Filtrando por jerarqua: <strong>${this.escapeHtml(filterLabel)}</strong> <button type="button" data-action="branch-clear-filter">Limpiar</button></div>`
+      : '';
+
     if (!Array.isArray(filteredAreas) || !filteredAreas.length) {
-      const mensaje = this.state.categoryFilter 
+      let mensaje = this.state.categoryFilter 
         ? `No hay reas de la categora seleccionada.`
         : (searchInput && searchInput.value.trim() ? `No se encontraron reas con "${searchInput.value.trim()}".` : `No hay reas registradas para este mapa.`);
-      areaList.innerHTML = `<div style="padding: 12px; border: 1px dashed var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 0.8rem;">${mensaje}</div>`;
+      if (filterLabel) {
+        mensaje = `No se encontraron reas para el nivel "${filterLabel}".`;
+      }
+      areaList.innerHTML = `${filterNoticeHtml}<div style="padding: 12px; border: 1px dashed var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 0.8rem;">${mensaje}</div>`;
+      if (filterLabel) {
+        const clearBtn = areaList.querySelector('[data-action="branch-clear-filter"]');
+        if (clearBtn) {
+          clearBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            this.clearJerarquiaBranchFilter();
+          });
+        }
+      }
       return;
     }
 
     //  Construir rbol jerrquico completo (6 niveles)
     const tree = this.buildHierarchyTree(filteredAreas);
-    areaList.innerHTML = this.renderHierarchyTree(tree);
+    areaList.innerHTML = `${filterNoticeHtml}${this.renderHierarchyTree(tree)}`;
+
+    if (filterLabel) {
+      const clearBtn = areaList.querySelector('[data-action="branch-clear-filter"]');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          this.clearJerarquiaBranchFilter();
+        });
+      }
+    }
 
     // Event listeners para enfocar zona
     Array.from(areaList.querySelectorAll('[data-action="focus-area"]')).forEach(content => {
@@ -15531,6 +15903,71 @@ const mapController = {
         const areaId = btn.getAttribute('data-area-id');
         await this.deleteArea(areaId);
       });
+    });
+  },
+
+  handleJerarquiaStructureUpdate(eventDetail = {}) {
+    this.state.lastJerarquiaSync = Date.now();
+    this.cachedJerarquiaStructure = app?.jerarquiaAnidada || null;
+
+    if (!this.elements || !this.elements.areaList) {
+      this.state.pendingJerarquiaRefresh = true;
+      return;
+    }
+
+    this.state.pendingJerarquiaRefresh = false;
+
+    if (Array.isArray(this.state.areas) && this.state.areas.length) {
+      this.renderAreaList(this.state.areas);
+    }
+
+    if (!eventDetail?.silent) {
+      console.log(' mapController: Jerarquia actualizada', eventDetail);
+    }
+  },
+
+  handleJerarquiaCatalogUpdate(eventDetail = {}) {
+    this.state.lastCatalogSync = Date.now();
+    this.cachedJerarquiaOptions = app?.opcionesJerarquia || null;
+
+    if (!this.elements || !this.elements.areaList) {
+      this.state.pendingCatalogRefresh = true;
+      return;
+    }
+
+    this.state.pendingCatalogRefresh = false;
+
+    if (Array.isArray(this.state.areas) && this.state.areas.length) {
+      this.renderAreaList(this.state.areas);
+    }
+
+    this.refreshAreaMetadataFormOptions();
+
+    if (!eventDetail?.silent) {
+      console.log(' mapController: Catalogos de jerarquia actualizados', eventDetail);
+    }
+  },
+
+  refreshAreaMetadataFormOptions() {
+    const form = document.getElementById('editAreaForm');
+    if (!form) return;
+
+    const jerarquiaOptions = app?.opcionesJerarquia || {};
+    const datalistConfig = [
+      { id: 'plantaList', key: 'planta' },
+      { id: 'areaGeneralList', key: 'areaGeneral' },
+      { id: 'subAreaList', key: 'subArea' },
+      { id: 'sistemaEquipoList', key: 'sistemaEquipo' },
+      { id: 'subSistemaList', key: 'subSistema' },
+      { id: 'seccionList', key: 'seccion' }
+    ];
+
+    datalistConfig.forEach(({ id, key }) => {
+      const listElement = document.getElementById(id);
+      if (!listElement) return;
+
+      const values = Array.isArray(jerarquiaOptions[key]) ? jerarquiaOptions[key] : [];
+      listElement.innerHTML = values.map((value) => `<option value="${this.escapeHtml(value)}"></option>`).join('');
     });
   },
 
@@ -16361,6 +16798,10 @@ const mapController = {
       return;
     }
 
+    if (this.state.currentMapId !== map.id) {
+      this.state.jerarquiaBranchFilter = null;
+    }
+
     this.state.currentMapId = map.id;
     this.state.currentMap = map;
     this.state.areas = mapStorage.getAreasByMap(map.id);
@@ -16376,6 +16817,7 @@ const mapController = {
     this.renderMapList(mapStorage.maps);
     this.renderAreaList(this.state.areas);
     this.updateMetaBadge();
+    this.updateMapJerarquiaBadge();
     this.syncButtonStates(); //  Sincronizar estado visual de botones
   },
 
@@ -20170,6 +20612,262 @@ dibujarUbicacionesResaltadas(ctx) {
     badge.textContent = `${map.name}  ${dimensions}  ${areasCount} rea(s)`;
   },
 
+  updateMapJerarquiaBadge() {
+    const badge = this.elements?.jerarquiaBadge;
+    if (!badge) return;
+
+    const map = this.state.currentMap;
+    if (!map) {
+      badge.classList.add('map-jerarquia-badge--empty');
+      badge.innerHTML = `
+        <div>
+          <strong>Sin mapa activo</strong>
+          <span class="map-jerarquia-badge__path">Selecciona un mapa para ver su jerarquia.</span>
+        </div>
+        <button type="button" class="map-btn map-btn--ghost" data-action="badge-assign-jerarquia">Asignar</button>
+      `;
+      this.renderMapJerarquiaBranch();
+      return;
+    }
+
+    const path = Array.isArray(map.jerarquiaPath) ? map.jerarquiaPath : [];
+    if (!path.length) {
+      badge.classList.add('map-jerarquia-badge--empty');
+      badge.innerHTML = `
+        <div>
+          <strong>${this.escapeHtml(map.name || 'Mapa sin nombre')}</strong>
+          <span class="map-jerarquia-badge__path">Sin jerarquia asignada.</span>
+        </div>
+        <button type="button" class="map-btn map-btn--ghost" data-action="badge-assign-jerarquia">Asignar</button>
+      `;
+      this.renderMapJerarquiaBranch();
+      return;
+    }
+
+    const label = this.getJerarquiaPathLabel(path);
+    badge.classList.remove('map-jerarquia-badge--empty');
+    badge.innerHTML = `
+      <div>
+        <strong>Rama asignada</strong>
+        <span class="map-jerarquia-badge__path">${this.escapeHtml(label)}</span>
+      </div>
+        <button type="button" class="map-btn map-btn--ghost" data-action="badge-assign-jerarquia">Editar</button>
+    `;
+    this.renderMapJerarquiaBranch();
+  },
+
+  normalizeMapJerarquiaPath(path = []) {
+    if (!Array.isArray(path) || !path.length) {
+      return [];
+    }
+
+    return path.map((node) => {
+      if (!node || !node.id) {
+        return null;
+      }
+      const resolved = this.findJerarquiaNodeInTree(node.id, node.nivel);
+      const label = resolved?.nombre || node.nombre || node.id;
+      return {
+        id: node.id,
+        nivel: node.nivel || resolved?.nivel || null,
+        label,
+        labelLower: (label || '').toString().trim().toLowerCase()
+      };
+    }).filter(Boolean);
+  },
+
+  getAreasMatchingBranch(pathSegments, depth, areasSource = null) {
+    if (!Array.isArray(pathSegments) || !pathSegments.length) {
+      return Array.isArray(areasSource) ? areasSource : (this.state.areas || []);
+    }
+
+    const areasList = Array.isArray(areasSource) ? areasSource : (this.state.areas || []);
+    if (!areasList.length) {
+      return [];
+    }
+
+    const baseIndex = pathSegments[0]?.nivel === 'empresa' ? 1 : 0;
+    const targetDepth = typeof depth === 'number' ? depth : pathSegments.length - 1;
+    if (targetDepth < baseIndex) {
+      return areasList;
+    }
+
+    const fieldOrder = this.areaJerarquiaFieldOrder;
+    return areasList.filter((area) => {
+      const jerarquia = area.jerarquia || {};
+      for (let i = baseIndex; i <= targetDepth; i++) {
+        const orderIndex = i - baseIndex;
+        if (orderIndex < 0) continue;
+        const field = fieldOrder[orderIndex];
+        if (!field) continue;
+        const expected = pathSegments[i]?.labelLower;
+        if (!expected) {
+          return false;
+        }
+        const value = (jerarquia[field] || '').toString().trim().toLowerCase();
+        if (!value || value !== expected) {
+          return false;
+        }
+      }
+      return true;
+    });
+  },
+
+  countMarkersForAreas(areaList = []) {
+    if (!Array.isArray(areaList) || !areaList.length) {
+      return 0;
+    }
+
+    const areaIds = new Set(areaList.map((area) => String(area.id)));
+    if (!areaIds.size) {
+      return 0;
+    }
+
+    const repuestos = app?.repuestos || [];
+    let count = 0;
+    repuestos.forEach((repuesto) => {
+      if (!Array.isArray(repuesto.ubicaciones)) {
+        return;
+      }
+      repuesto.ubicaciones.forEach((ubicacion) => {
+        if (String(ubicacion.mapId) !== String(this.state.currentMapId)) {
+          return;
+        }
+        if (areaIds.has(String(ubicacion.areaId))) {
+          count++;
+        }
+      });
+    });
+    return count;
+  },
+
+  renderMapJerarquiaBranch() {
+    const container = this.elements?.jerarquiaBranch;
+    if (!container) return;
+
+    const map = this.state.currentMap;
+    if (!map) {
+      container.innerHTML = '<div class="map-jerarquia-branch-empty">Selecciona un mapa para ver su ruta jerarquica.</div>';
+      return;
+    }
+
+    if (!app || !app.jerarquiaAnidada) {
+      container.innerHTML = '<div class="map-jerarquia-branch-empty">Configura la jerarqua para habilitar esta vista.</div>';
+      return;
+    }
+
+    const path = Array.isArray(map.jerarquiaPath) ? map.jerarquiaPath : [];
+    if (!path.length) {
+      container.innerHTML = '<div class="map-jerarquia-branch-empty">Este mapa an no tiene jerarqua asignada.</div>';
+      return;
+    }
+
+    const normalizedPath = this.normalizeMapJerarquiaPath(path);
+    if (!normalizedPath.length) {
+      container.innerHTML = '<div class="map-jerarquia-branch-empty">No se pudo interpretar la jerarqua asignada.</div>';
+      return;
+    }
+
+    const activeFilter = this.state.jerarquiaBranchFilter;
+    const baseIndex = normalizedPath[0]?.nivel === 'empresa' ? 1 : 0;
+    const nodesForRender = normalizedPath
+      .map((segment, index) => ({ segment, index }))
+      .filter(({ index }) => index >= baseIndex);
+
+    if (!nodesForRender.length) {
+      container.innerHTML = '<div class="map-jerarquia-branch-empty">La jerarqua asignada no tiene niveles descendentes configurados.</div>';
+      return;
+    }
+
+    const nodesHtml = nodesForRender.map(({ segment, index }) => {
+      const areasAtLevel = this.getAreasMatchingBranch(normalizedPath, index);
+      const markersCount = this.countMarkersForAreas(areasAtLevel);
+      const levelLabel = this.jerarquiaLevelConfig[segment.nivel]?.label || `Nivel ${index + 1}`;
+      const isActive = activeFilter && activeFilter.mapId === this.state.currentMapId && activeFilter.index === index;
+      const stateHint = isActive ? 'Filtro aplicado. Click para limpiar.' : 'Click para filtrar las reas de este nivel.';
+      return `
+        <div class="map-jerarquia-branch-node ${isActive ? 'is-active' : ''}" data-branch-index="${index}">
+          <div class="map-jerarquia-branch-header">
+            <span class="map-jerarquia-branch-level">N${index + 1} · ${this.escapeHtml(levelLabel)}</span>
+            <span class="map-jerarquia-branch-name">${this.escapeHtml(segment.label)}</span>
+          </div>
+          <div class="map-jerarquia-branch-stats">
+            <span><strong>${areasAtLevel.length}</strong> ${areasAtLevel.length === 1 ? 'rea' : 'reas'}</span>
+            <span><strong>${markersCount}</strong> ${markersCount === 1 ? 'marcador' : 'marcadores'}</span>
+          </div>
+          <div style="font-size: 0.68rem; color: var(--text-muted);">${stateHint}</div>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = nodesHtml;
+  },
+
+  getActiveBranchFilterLabel() {
+    const filter = this.state.jerarquiaBranchFilter;
+    if (!filter || !Array.isArray(filter.pathSnapshot)) {
+      return '';
+    }
+    const node = filter.pathSnapshot[filter.index];
+    return node?.label || '';
+  },
+
+  toggleJerarquiaBranchFilter(index) {
+    const map = this.state.currentMap;
+    if (!map) {
+      this.showToast('Selecciona un mapa primero.', 'info');
+      return;
+    }
+
+    const normalizedPath = this.normalizeMapJerarquiaPath(map.jerarquiaPath || []);
+    if (!normalizedPath.length) {
+      this.showToast('Este mapa an no tiene jerarqua asignada.', 'info');
+      return;
+    }
+
+    const currentFilter = this.state.jerarquiaBranchFilter;
+    if (currentFilter && currentFilter.mapId === this.state.currentMapId && currentFilter.index === index) {
+      this.state.jerarquiaBranchFilter = null;
+    } else {
+      this.state.jerarquiaBranchFilter = {
+        mapId: this.state.currentMapId,
+        index,
+        pathSnapshot: normalizedPath
+      };
+    }
+
+    this.renderAreaList(this.state.areas);
+  },
+
+  clearJerarquiaBranchFilter() {
+    if (!this.state.jerarquiaBranchFilter) return;
+    this.state.jerarquiaBranchFilter = null;
+    this.renderAreaList(this.state.areas);
+  },
+
+  applyActiveBranchFilter(areas) {
+    const filter = this.state.jerarquiaBranchFilter;
+    if (!filter) {
+      return areas;
+    }
+
+    if (filter.mapId !== this.state.currentMapId) {
+      this.state.jerarquiaBranchFilter = null;
+      return areas;
+    }
+
+    const pathSnapshot = Array.isArray(filter.pathSnapshot)
+      ? filter.pathSnapshot
+      : this.normalizeMapJerarquiaPath(this.state.currentMap?.jerarquiaPath || []);
+
+    if (!pathSnapshot.length || filter.index >= pathSnapshot.length) {
+      this.state.jerarquiaBranchFilter = null;
+      return areas;
+    }
+
+    return this.getAreasMatchingBranch(pathSnapshot, filter.index, areas);
+  },
+
   updateZoomBadge() {
     const badge = this.elements.zoomBadge;
     if (!badge) return;
@@ -22708,7 +23406,8 @@ dibujarUbicacionesResaltadas(ctx) {
         width: dimensions.width,
         height: dimensions.height,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
+        jerarquiaPath: []
       };
 
       const updatedMaps = [...(mapStorage.maps || []), mapRecord];
@@ -22718,6 +23417,9 @@ dibujarUbicacionesResaltadas(ctx) {
       await this.loadData();
       await this.selectMap(mapRecord.id);
       this.showToast('Mapa creado correctamente.', 'success');
+      if (app && app.jerarquiaAnidada) {
+        this.openAssignJerarquiaModal(mapRecord.id);
+      }
     } catch (error) {
       console.error('Error creando mapa:', error);
       this.showToast('No se pudo crear el mapa. Revisa la consola.', 'error');
@@ -22768,6 +23470,13 @@ dibujarUbicacionesResaltadas(ctx) {
             Imagen actual: ${map.width}  ${map.height}px
           </small>
         </div>
+        <div class="form-group">
+          <label>Jerarqua asignada</label>
+          <div class="map-jerarquia-inline">
+            <span class="map-jerarquia-inline-label">${this.escapeHtml(this.getJerarquiaPathLabel(map.jerarquiaPath))}</span>
+            <button type="button" class="map-btn map-btn--ghost" data-action="open-assign-jerarquia">Editar jerarqua</button>
+          </div>
+        </div>
         <div class="form-actions">
           <button type="button" class="map-btn map-btn--ghost" data-action="cancel">Cancelar</button>
           <button type="submit" class="map-btn map-btn--primary">Guardar cambios</button>
@@ -22779,8 +23488,15 @@ dibujarUbicacionesResaltadas(ctx) {
 
     const form = body.querySelector('#mapEditForm');
     const cancelBtn = body.querySelector('[data-action="cancel"]');
+    const assignBtn = body.querySelector('[data-action="open-assign-jerarquia"]');
 
     if (cancelBtn) cancelBtn.addEventListener('click', () => this.closeModal());
+    if (assignBtn) {
+      assignBtn.addEventListener('click', () => {
+        this.closeModal();
+        this.openAssignJerarquiaModal(map.id);
+      });
+    }
     if (form) {
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -22849,6 +23565,321 @@ dibujarUbicacionesResaltadas(ctx) {
     }
   },
 
+  openAssignJerarquiaModal(mapId) {
+    const numericId = typeof mapId === 'string' ? parseInt(mapId, 10) : mapId;
+    const map = mapStorage.getMapById(numericId);
+
+    if (!map) {
+      this.showToast('Mapa no encontrado.', 'warning');
+      return;
+    }
+
+    if (!app || !app.jerarquiaAnidada) {
+      this.showToast('Configura la jerarqua en su pestaña antes de asignarla.', 'warning');
+      return;
+    }
+
+    const modal = this.elements.modal;
+    const body = this.elements.modalBody;
+    if (!modal || !body) return;
+
+    this.state.tempJerarquiaAssignment = {
+      mapId: numericId,
+      path: Array.isArray(map.jerarquiaPath) ? [...map.jerarquiaPath] : []
+    };
+
+    this.elements.modalTitle.textContent = 'Asignar jerarqua al mapa';
+    body.innerHTML = `
+      <div class="map-jerarquia-modal">
+        <div class="map-jerarquia-summary">
+          <p><strong>Mapa:</strong> ${this.escapeHtml(map.name || 'Mapa sin nombre')}</p>
+          <p class="map-jerarquia-summary-text">Selecciona el nivel exacto dentro de la jerarqua corporativa. Servir para mantener sincronizadas las reas dibujadas y los marcadores.</p>
+          <div class="map-jerarquia-selected" id="mapJerarquiaSelectedPath"></div>
+        </div>
+        <div id="mapJerarquiaSelectorContainer" class="map-jerarquia-selector"></div>
+        <div class="form-actions" style="justify-content: flex-end; gap: 8px;">
+          <button type="button" class="map-btn map-btn--ghost" data-action="cancel-jerarquia">Cancelar</button>
+          <button type="button" class="map-btn map-btn--ghost" data-action="clear-jerarquia">Quitar asignacin</button>
+          <button type="button" class="map-btn map-btn--primary" data-action="confirm-jerarquia">Guardar</button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.remove('hidden');
+
+    this.renderJerarquiaSelectorTree({
+      containerId: 'mapJerarquiaSelectorContainer',
+      selectedPath: this.state.tempJerarquiaAssignment.path
+    });
+    this.updateJerarquiaAssignPreview();
+
+    const cancelBtn = body.querySelector('[data-action="cancel-jerarquia"]');
+    const clearBtn = body.querySelector('[data-action="clear-jerarquia"]');
+    const confirmBtn = body.querySelector('[data-action="confirm-jerarquia"]');
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        this.state.tempJerarquiaAssignment = null;
+        this.closeModal();
+      });
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => this.clearJerarquiaAssignment());
+    }
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', () => this.applyJerarquiaAssignment());
+    }
+  },
+
+  renderJerarquiaSelectorTree({ containerId, selectedPath = [] } = {}) {
+    const container = typeof containerId === 'string' ? document.getElementById(containerId) : containerId;
+    if (!container) return;
+
+    if (!app || !app.jerarquiaAnidada) {
+      container.innerHTML = '<p style="color: var(--text-secondary);">Configura la jerarqua en la pestaña correspondiente.</p>';
+      return;
+    }
+
+    const jerarquia = app.jerarquiaAnidada;
+    if (!jerarquia.empresa) {
+      container.innerHTML = '<p style="color: var(--text-secondary);">No se encontr empresa en la jerarqua.</p>';
+      return;
+    }
+
+    const normalizedPath = Array.isArray(selectedPath) ? selectedPath : [];
+    const treeHtml = `
+      <ul class="jerarquia-selector-tree-root">
+        ${this.buildJerarquiaSelectorHTML({
+          node: jerarquia.empresa,
+          nivel: 'empresa',
+          path: [],
+          selectedPath: normalizedPath,
+          childrenOverride: jerarquia.areas || []
+        })}
+      </ul>
+    `;
+
+    container.innerHTML = treeHtml;
+
+    Array.from(container.querySelectorAll('[data-jerarquia-node]')).forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        const payload = event.currentTarget.getAttribute('data-path');
+        if (!payload) return;
+        try {
+          const decoded = JSON.parse(decodeURIComponent(payload));
+          this.handleJerarquiaNodeSelection(decoded);
+        } catch (error) {
+          console.error('No se pudo interpretar la seleccin de jerarqua:', error);
+        }
+      });
+    });
+  },
+
+  buildJerarquiaSelectorHTML({ node, nivel, path = [], selectedPath = [], childrenOverride = null }) {
+    if (!node) {
+      return '';
+    }
+
+    const nodeId = node.id || `${nivel}-${Math.random().toString(36).slice(2, 7)}`;
+    const nodeNombre = node.nombre || node.name || 'Sin nombre';
+    const currentPath = [...path, { id: nodeId, nivel, nombre: nodeNombre }];
+    const isSelected = this.compareJerarquiaPaths(currentPath, selectedPath);
+    const config = this.jerarquiaLevelConfig[nivel] || null;
+    const childKey = config?.childKey;
+    const childNivel = config?.childNivel;
+    const children = Array.isArray(childrenOverride)
+      ? childrenOverride
+      : (childKey && Array.isArray(node[childKey]) ? node[childKey] : []);
+
+    const childrenHtml = childNivel && Array.isArray(children) && children.length
+      ? `<ul class="jerarquia-selector-children">
+          ${children.map(child => this.buildJerarquiaSelectorHTML({
+            node: child,
+            nivel: childNivel,
+            path: currentPath,
+            selectedPath
+          })).join('')}
+        </ul>`
+      : '';
+
+    const pathPayload = encodeURIComponent(JSON.stringify(currentPath));
+    const label = this.jerarquiaLevelConfig[nivel]?.label || nivel;
+
+    return `
+      <li class="jerarquia-selector-item">
+        <button type="button" class="jerarquia-selector-node ${isSelected ? 'is-selected' : ''}" data-jerarquia-node="true" data-path="${pathPayload}">
+          <span class="jerarquia-selector-level">${this.escapeHtml(label)}</span>
+          <span class="jerarquia-selector-name">${this.escapeHtml(nodeNombre)}</span>
+        </button>
+        ${childrenHtml}
+      </li>
+    `;
+  },
+
+  compareJerarquiaPaths(pathA, pathB) {
+    if (!Array.isArray(pathA) || !Array.isArray(pathB)) return false;
+    if (pathA.length !== pathB.length) return false;
+    return pathA.every((node, index) => {
+      const compareNode = pathB[index];
+      return node.id === compareNode.id && (node.nivel || null) === (compareNode.nivel || null);
+    });
+  },
+
+  handleJerarquiaNodeSelection(pathNodes) {
+    if (!Array.isArray(pathNodes)) return;
+    if (!this.state.tempJerarquiaAssignment) {
+      this.state.tempJerarquiaAssignment = { mapId: null, path: [] };
+    }
+    this.state.tempJerarquiaAssignment.path = pathNodes;
+    this.updateJerarquiaAssignPreview();
+    this.renderJerarquiaSelectorTree({
+      containerId: 'mapJerarquiaSelectorContainer',
+      selectedPath: pathNodes
+    });
+  },
+
+  updateJerarquiaAssignPreview() {
+    const preview = document.getElementById('mapJerarquiaSelectedPath');
+    if (!preview) return;
+
+    const path = this.state.tempJerarquiaAssignment?.path || [];
+    if (!Array.isArray(path) || !path.length) {
+      preview.innerHTML = '<span style="color: var(--text-secondary);">Sin asignacin.</span>';
+      return;
+    }
+
+    preview.innerHTML = path
+      .map(node => this.escapeHtml(node.nombre || node.id))
+      .join('  ›  ');
+  },
+
+  clearJerarquiaAssignment() {
+    if (!this.state.tempJerarquiaAssignment) {
+      this.state.tempJerarquiaAssignment = { mapId: null, path: [] };
+    } else {
+      this.state.tempJerarquiaAssignment.path = [];
+    }
+
+    this.updateJerarquiaAssignPreview();
+    this.renderJerarquiaSelectorTree({
+      containerId: 'mapJerarquiaSelectorContainer',
+      selectedPath: []
+    });
+  },
+
+  async applyJerarquiaAssignment() {
+    const assignment = this.state.tempJerarquiaAssignment;
+    if (!assignment) {
+      this.showToast('No hay cambios por guardar.', 'info');
+      return;
+    }
+
+    if (typeof assignment.mapId === 'undefined' || assignment.mapId === null) {
+      this.showToast('Selecciona un mapa antes de guardar.', 'warning');
+      return;
+    }
+
+    const map = mapStorage.getMapById(assignment.mapId);
+    if (!map) {
+      this.showToast('Mapa no encontrado.', 'warning');
+      return;
+    }
+
+    const sanitizedPath = Array.isArray(assignment.path)
+      ? assignment.path
+          .filter(node => node && node.id)
+          .map(node => ({ id: node.id, nivel: node.nivel || null }))
+      : [];
+
+    const updatedMap = { ...map, jerarquiaPath: sanitizedPath, updatedAt: new Date().toISOString() };
+    const updatedMaps = (mapStorage.maps || []).map(existing => existing.id === assignment.mapId ? updatedMap : existing);
+
+    try {
+      await mapStorage.saveMaps(updatedMaps, { action: 'assign_jerarquia', mapId: assignment.mapId, detail: map.name });
+
+      if (this.state.currentMapId === assignment.mapId) {
+        this.state.currentMap = updatedMap;
+        this.state.jerarquiaBranchFilter = null;
+      }
+
+      this.state.tempJerarquiaAssignment = null;
+      this.closeModal();
+      this.showToast('Jerarqua asignada correctamente.', 'success');
+
+      if (window.appEvents && typeof window.appEvents.emit === 'function') {
+        window.appEvents.emit('mapa:jerarquia-asignada', {
+          mapId: assignment.mapId,
+          jerarquiaPath: sanitizedPath,
+          mapName: map.name
+        });
+      }
+
+      this.renderMapList(updatedMaps);
+      await this.selectMap(assignment.mapId, { keepViewport: true });
+    } catch (error) {
+      console.error('Error guardando la jerarqua del mapa:', error);
+      this.showToast('No se pudo guardar la jerarqua. Revisa la consola.', 'error');
+    }
+  },
+
+  getJerarquiaRootNode() {
+    if (!app || !app.jerarquiaAnidada || !app.jerarquiaAnidada.empresa) {
+      return null;
+    }
+    const root = { ...app.jerarquiaAnidada.empresa };
+    root.areas = app.jerarquiaAnidada.areas || [];
+    return root;
+  },
+
+  findJerarquiaNodeInTree(targetId, targetNivel) {
+    if (!targetId) return null;
+    const root = this.getJerarquiaRootNode();
+    if (!root) return null;
+
+    const visit = (node, nivel) => {
+      if (!node) return null;
+      if (node.id === targetId && (!targetNivel || targetNivel === nivel)) {
+        return node;
+      }
+
+      const config = this.jerarquiaLevelConfig[nivel];
+      if (!config?.childKey || !config?.childNivel) {
+        return null;
+      }
+
+      const children = node[config.childKey];
+      if (!Array.isArray(children)) {
+        return null;
+      }
+
+      for (const child of children) {
+        const found = visit(child, config.childNivel);
+        if (found) {
+          return found;
+        }
+      }
+
+      return null;
+    };
+
+    return visit(root, 'empresa');
+  },
+
+  getJerarquiaPathLabel(path) {
+    if (!Array.isArray(path) || !path.length) {
+      return 'Sin asignacin';
+    }
+
+    const labels = path.map((node) => {
+      const resolved = this.findJerarquiaNodeInTree(node.id, node.nivel);
+      return resolved?.nombre || node.nombre || node.id;
+    }).filter(Boolean);
+
+    return labels.length ? labels.join(' > ') : path.map(node => node.id).join(' > ');
+  },
+
   //  ELIMINAR MAPA
   async deleteMap(mapId) {
     const numericId = typeof mapId === 'string' ? parseInt(mapId, 10) : mapId;
@@ -22885,6 +23916,7 @@ dibujarUbicacionesResaltadas(ctx) {
         this.state.currentMapId = null;
         this.state.currentMap = null;
         this.state.areas = [];
+        this.state.jerarquiaBranchFilter = null;
         this.cleanupImage();
       }
 
@@ -23647,6 +24679,18 @@ dibujarUbicacionesResaltadas(ctx) {
     }
   }
 };
+
+if (window.appEvents && typeof window.appEvents.on === 'function') {
+  window.appEvents.on('jerarquia:structure-updated', (detail) => {
+    mapController.handleJerarquiaStructureUpdate(detail || {});
+  });
+
+  window.appEvents.on('jerarquia:catalogs-updated', (detail) => {
+    mapController.handleJerarquiaCatalogUpdate(detail || {});
+  });
+} else {
+  console.warn(' appEvents no disponible todavia para mapController');
+}
 
 console.log(' MapController definido');
 
@@ -24516,7 +25560,10 @@ class InventarioCompleto {
       } else {
         // Primera vez: usar valores predefinidos y guardarlos
         this.opcionesJerarquia = JSON.parse(JSON.stringify(this.opcionesJerarquiaPredefinidas));
-        this.saveOpcionesPersonalizadas();
+        this.saveOpcionesPersonalizadas({
+          reason: 'bootstrap-opciones',
+          meta: { origen: 'loadOpcionesPersonalizadas' }
+        });
         console.log(' Opciones inicializadas con valores predefinidos');
       }
     } catch (error) {
@@ -24526,7 +25573,7 @@ class InventarioCompleto {
     }
   }
   
-  saveOpcionesPersonalizadas() {
+  saveOpcionesPersonalizadas(context = {}) {
     try {
       // Guardar todas las opciones actuales
       const toSave = {};
@@ -24535,6 +25582,18 @@ class InventarioCompleto {
       });
       localStorage.setItem('inventarioOpcionesJerarquia', JSON.stringify(toSave));
       console.log(' Opciones personalizadas guardadas');
+
+      const detail = {
+        scope: 'opcionesJerarquia',
+        ...context,
+        catalogs: this.opcionesJerarquia
+      };
+
+      if (!detail.reason) {
+        detail.reason = 'save';
+      }
+
+      this.emitAppEvent('jerarquia:catalogs-updated', detail);
     } catch (error) {
       console.error(' Error guardando opciones personalizadas:', error);
     }
@@ -24554,20 +25613,29 @@ class InventarioCompleto {
           console.log(' Migrando "plantas"  "areas"');
           this.jerarquiaAnidada.areas = this.jerarquiaAnidada.plantas;
           delete this.jerarquiaAnidada.plantas;
-          this.saveJerarquiaAnidada();
+          this.saveJerarquiaAnidada({
+            reason: 'migracion-plantas',
+            meta: { origen: 'legacy-planta' }
+          });
         }
         
         //  Alinear claves usadas por la demo Visual 2.0
         if (!stored) {
           console.log(' Sincronizando jerarquiaAnidada legado hacia inventarioJerarquiaAnidada');
-          this.saveJerarquiaAnidada();
+          this.saveJerarquiaAnidada({
+            reason: 'sincronizacion-legado',
+            meta: { origen: 'legacy-sync' }
+          });
         }
 
         console.log(' Jerarqua anidada cargada desde localStorage');
       } else {
         // Primera vez: crear estructura base
         this.jerarquiaAnidada = this.crearEstructuraJerarquicaBase();
-        this.saveJerarquiaAnidada();
+        this.saveJerarquiaAnidada({
+          reason: 'crear-estructura-base',
+          meta: { origen: 'init' }
+        });
         console.log(' Jerarqua anidada inicializada con estructura base');
       }
     } catch (error) {
@@ -24660,13 +25728,46 @@ class InventarioCompleto {
       ]
     };
   }
+
+  emitAppEvent(eventName, detail = {}) {
+    if (!eventName || !window.appEvents || typeof window.appEvents.emit !== 'function') {
+      return;
+    }
+
+    const payload = {
+      source: 'inventario',
+      ...detail
+    };
+
+    if (!('timestamp' in payload)) {
+      payload.timestamp = Date.now();
+    }
+
+    try {
+      window.appEvents.emit(eventName, payload);
+    } catch (error) {
+      console.error(' Error emitiendo evento global', eventName, error);
+    }
+  }
   
   //  NUEVA FUNCIN: Guardar jerarqua anidada
-  saveJerarquiaAnidada() {
+  saveJerarquiaAnidada(context = {}) {
     try {
       localStorage.setItem('inventarioJerarquiaAnidada', JSON.stringify(this.jerarquiaAnidada));
       localStorage.setItem('jerarquiaAnidada', JSON.stringify(this.jerarquiaAnidada));
       console.log(' Jerarqua anidada guardada');
+
+      const detail = {
+        scope: 'jerarquiaAnidada',
+        ...context,
+        jerarquia: this.jerarquiaAnidada
+      };
+
+      if (!detail.reason) {
+        detail.reason = 'save';
+      }
+
+      this.emitAppEvent('jerarquia:structure-updated', detail);
     } catch (error) {
       console.error(' Error guardando jerarqua anidada:', error);
     }
@@ -24685,7 +25786,13 @@ class InventarioCompleto {
     
     // Agregar nueva opcin
     this.opcionesJerarquia[nivel].push(valorTrimmed);
-    this.saveOpcionesPersonalizadas();
+    this.saveOpcionesPersonalizadas({
+      reason: 'aprender-opcion',
+      meta: {
+        nivel,
+        valor: valorTrimmed
+      }
+    });
     console.log(` Nueva opcin aprendida: ${valorTrimmed} en ${nivel}`);
     
     //  SINCRONIZACIN: Si la pestaa de configuracin est visible, actualizar UI en tiempo real
@@ -24703,7 +25810,13 @@ class InventarioCompleto {
     const index = this.opcionesJerarquia[nivel].indexOf(valor);
     if (index > -1) {
       this.opcionesJerarquia[nivel].splice(index, 1);
-      this.saveOpcionesPersonalizadas();
+      this.saveOpcionesPersonalizadas({
+        reason: 'eliminar-opcion',
+        meta: {
+          nivel,
+          valor
+        }
+      });
       
       // Limpiar esta opcin de todos los repuestos que la usen
       this.limpiarOpcionDeRepuestos(nivel, valor);
@@ -24755,7 +25868,13 @@ class InventarioCompleto {
     
     this.opcionesJerarquia[nivel].push(valorTrimmed);
     this.opcionesJerarquia[nivel].sort();
-    this.saveOpcionesPersonalizadas();
+    this.saveOpcionesPersonalizadas({
+      reason: 'agregar-opcion',
+      meta: {
+        nivel,
+        valor: valorTrimmed
+      }
+    });
     console.log(` Opcin agregada: ${valorTrimmed} a ${nivel}`);
     this.showToast(` "${valorTrimmed}" agregado correctamente`, 'success');
     return true;
@@ -31813,7 +32932,15 @@ class InventarioCompleto {
       // Actualizar en la lista
       this.opcionesJerarquia[tipo][index] = valorTrim;
       this.opcionesJerarquia[tipo].sort();
-      this.saveOpcionesPersonalizadas();
+      this.saveOpcionesPersonalizadas({
+        reason: 'editar-opcion',
+        meta: {
+          nivel: tipo,
+          index,
+          valorAnterior: valorActual,
+          valorNuevo: valorTrim
+        }
+      });
       
       if (modificados > 0) {
         this.guardarDatos();
@@ -33235,7 +34362,12 @@ class InventarioCompleto {
     });
 
     if (cambiosRealizados) {
-      this.saveJerarquiaAnidada();
+      this.saveJerarquiaAnidada({
+        reason: 'sincronizar-desde-ubicaciones',
+        meta: {
+          origen: 'sincronizarJerarquiaDesdeUbicaciones'
+        }
+      });
       console.log('[SAVE] Jerarquia sincronizada y guardada');
 
       if (this.currentTab === 'configuracion') {
@@ -33863,7 +34995,13 @@ class InventarioCompleto {
         this.jerarquiaAnidada.areas[aIdx].subAreas[saIdx].sistemas[sIdx].subSistemas[ssIdx].secciones[secIdx].subSecciones.push(nuevoNodo);
       }
       
-      this.saveJerarquiaAnidada();
+      this.saveJerarquiaAnidada({
+        reason: 'agregar-nodo',
+        meta: {
+          tipo,
+          indices
+        }
+      });
       this.renderJerarquiaTree();
       this.showToast(` ${label} agregado: ${resultado.input2}`, 'success');
     } catch (error) {
@@ -33947,7 +35085,13 @@ class InventarioCompleto {
       
       nodo.id = resultado.input1.trim().toUpperCase();
       nodo.nombre = resultado.input2.trim();
-      this.saveJerarquiaAnidada();
+      this.saveJerarquiaAnidada({
+        reason: 'editar-nodo',
+        meta: {
+          tipo,
+          indices
+        }
+      });
       this.renderJerarquiaTree();
       this.showToast(` ${label} actualizado`, 'success');
       
@@ -34034,7 +35178,14 @@ class InventarioCompleto {
         this.jerarquiaAnidada.areas[aIdx].subAreas[saIdx].sistemas[sIdx].subSistemas[ssIdx].secciones[secIdx].subSecciones.splice(subSecIdx, 1);
       }
       
-      this.saveJerarquiaAnidada();
+      this.saveJerarquiaAnidada({
+        reason: 'eliminar-nodo',
+        meta: {
+          tipo,
+          indices,
+          nombre: nodo?.nombre || null
+        }
+      });
       this.renderJerarquiaTree();
       this.showToast(` ${label} eliminado: ${nodo.nombre}`, 'success');
       
@@ -34045,7 +35196,12 @@ class InventarioCompleto {
   }
   
   guardarCambiosJerarquia() {
-    this.saveJerarquiaAnidada();
+    this.saveJerarquiaAnidada({
+      reason: 'guardar-manual',
+      meta: {
+        origen: 'boton-guardar-jerarquia'
+      }
+    });
     this.showToast(' Jerarqua guardada correctamente', 'success');
     document.getElementById('btnGuardarJerarquia').style.display = 'none';
   }

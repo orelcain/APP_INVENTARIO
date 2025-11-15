@@ -25,12 +25,7 @@
     "width": 2401,
     "height": 3151,
     "createdAt": "2025-11-15T01:26:44.047Z",
-    "updatedAt": "2025-11-15T01:26:49.423Z",
-    "jerarquiaPath": [
-      {
-        "id": "AQ-IN",
-        "nivel": "empresa"
-      }
-    ]
+    "updatedAt": "2025-11-15T01:26:44.047Z",
+    "jerarquiaPath": []
   }
 ]
