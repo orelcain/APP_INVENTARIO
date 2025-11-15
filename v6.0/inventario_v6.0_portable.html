@@ -7948,9 +7948,12 @@
     }
 
     #modalJerarquia .modal-content {
-      width: min(1150px, 95vw);
-      max-height: 90vh;
+      width: min(1380px, 96vw);
+      max-height: 92vh;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     #jerarquiaForm {
@@ -7988,19 +7991,22 @@
     }
 
     .jerarquia-toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      align-items: center;
-      justify-content: space-between;
+      display: grid;
+      gap: 18px;
       padding: 16px 20px 0 20px;
     }
 
+    .jerarquia-toolbar-top {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) auto;
+      gap: 20px;
+      align-items: center;
+    }
+
     .jerarquia-toolbar-text {
-      flex: 1 1 260px;
       color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.4;
+      font-size: 0.92rem;
+      line-height: 1.5;
     }
 
     .jerarquia-toolbar-hint {
@@ -8015,6 +8021,40 @@
       gap: 10px;
       align-items: center;
       justify-content: flex-end;
+    }
+
+    .jerarquia-toolbar-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .jerarquia-stat-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      min-width: 150px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+
+    .jerarquia-stat-pill .pill-label {
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .jerarquia-stat-pill strong {
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 1rem;
     }
 
     .jerarquia-toolbar-btn {
@@ -8090,6 +8130,73 @@
       padding: 0 20px 10px 20px;
       font-size: 0.85rem;
       color: var(--text-muted);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .jerarquia-results-tag {
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+    }
+
+    .jerarquia-results-highlight {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .jerarquia-tabs-wrapper {
+      padding: 0 20px;
+    }
+
+    .jerarquia-tabs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin: 0;
+    }
+
+    .jerarquia-tab {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      background: var(--bg-tertiary);
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .jerarquia-tab.active {
+      border-color: var(--primary);
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.15);
+    }
+
+    .jerarquia-tab .tab-chevron {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      transition: transform 0.2s ease;
+    }
+
+    .jerarquia-tab.active .tab-chevron {
+      transform: rotate(90deg);
+      color: var(--primary);
+    }
+
+    .jerarquia-content {
+      margin-top: 10px;
+      border-top: 1px solid var(--border-color);
+      padding: 20px;
+      background: var(--bg-primary);
+      border-radius: 16px 16px 0 0;
     }
 
 /* ================================================================
@@ -13150,7 +13257,7 @@
           <span class="jerarquia-search-icon">🔍</span>
           <input 
             type="text" 
-            id="jerarquiaSearchInput" 
+            id="jerarquiaTreeSearchInput" 
             class="jerarquia-search-input"
             placeholder="Buscar en la jerarquía..."
             autocomplete="off"
@@ -14019,7 +14126,7 @@
 </div>
 
 <!-- MODAL JERARQUA VISUAL CASCADA -->
-<div id="modalJerarquia" class="modal-overlay" onclick="if(event.target.id === 'modalJerarquia') this.style.display='none'">
+<div id="modalJerarquiaVisual" class="modal-overlay" onclick="if(event.target.id === 'modalJerarquiaVisual') this.style.display='none'">
   <div class="modal-container" onclick="event.stopPropagation()">
     
     <!-- Header con gradiente -->
@@ -14028,7 +14135,7 @@
         <span class="modal-icon"></span>
         <span>Ubicacin del Repuesto</span>
       </h3>
-      <button onclick="document.getElementById('modalJerarquia').style.display='none'" 
+      <button onclick="document.getElementById('modalJerarquiaVisual').style.display='none'" 
         class="modal-close-btn" title="Cerrar dialogo" aria-label="Cerrar dialogo">
         
       </button>
@@ -14152,55 +14259,68 @@
 
     <div class="jerarquia-manager">
       <div class="jerarquia-toolbar">
-        <div class="jerarquia-toolbar-text">
-          Ajusta los nombres oficiales por nivel y usa el buscador para saltar directo al registro que necesitas.
-          <div class="jerarquia-toolbar-hint">Consejo: arrastra para reordenar y usa "Subnivel" para clasificar detalles frecuentes.</div>
-        </div>
-        <div class="jerarquia-toolbar-actions">
-          <div class="jerarquia-search" id="jerarquiaSearchWrapper">
-            <span class="jerarquia-search-icon" aria-hidden="true">🔎</span>
-            <input type="search" id="jerarquiaSearchInput" class="jerarquia-search-input" placeholder="Buscar nivel o subnivel..." oninput="app.handleJerarquiaSearch(this.value)" autocomplete="off" />
-            <button type="button" class="jerarquia-search-clear" onclick="app.clearJerarquiaSearch()" title="Limpiar bsqueda">×</button>
+        <div class="jerarquia-toolbar-top">
+          <div class="jerarquia-toolbar-text">
+            Ajusta los nombres oficiales por nivel y usa el buscador para saltar directo al registro que necesitas.
+            <div class="jerarquia-toolbar-hint">Tip: reordena arrastrando, crea subniveles para ramificaciones frecuentes y todo quedará disponible en formularios y mapas.</div>
           </div>
-          <button type="button" class="jerarquia-toolbar-btn" onclick="app.expandAllJerarquiaItems()">Expandir todo</button>
-          <button type="button" class="jerarquia-toolbar-btn" onclick="app.collapseAllJerarquiaItems()">Colapsar todo</button>
+          <div class="jerarquia-toolbar-actions">
+            <div class="jerarquia-search" id="jerarquiaSearchWrapper">
+              <span class="jerarquia-search-icon" aria-hidden="true">🔎</span>
+              <input type="search" id="jerarquiaModalSearchInput" class="jerarquia-search-input" placeholder="Buscar nivel o subnivel..." oninput="app.handleJerarquiaModalSearch(this.value)" autocomplete="off" aria-label="Buscar en jerarquía" />
+              <button type="button" class="jerarquia-search-clear" onclick="app.clearJerarquiaModalSearch()" title="Limpiar bsqueda">×</button>
+            </div>
+            <button type="button" class="jerarquia-toolbar-btn" onclick="app.expandAllJerarquiaItems()">Expandir todo</button>
+            <button type="button" class="jerarquia-toolbar-btn" onclick="app.collapseAllJerarquiaItems()">Colapsar todo</button>
+          </div>
+        </div>
+        <div class="jerarquia-toolbar-stats" id="jerarquiaStatsPills">
+          <!-- pills dinámicos -->
         </div>
       </div>
       <div class="jerarquia-results" id="jerarquiaResultsSummary"></div>
 
       <!-- Tabs para cada nivel -->
-      <div class="jerarquia-tabs">
+      <div class="jerarquia-tabs jerarquia-tabs-wrapper">
         <button class="jerarquia-tab active" data-level="1" onclick="app.switchJerarquiaLevel(1)">
           <span class="tab-icon"></span>
           <span class="tab-label">Nivel 1<br><small>Planta</small></span>
+          <span class="tab-chevron">›</span>
         </button>
         <button class="jerarquia-tab" data-level="2" onclick="app.switchJerarquiaLevel(2)">
           <span class="tab-icon"></span>
           <span class="tab-label">Nivel 2<br><small>rea</small></span>
+          <span class="tab-chevron">›</span>
         </button>
         <button class="jerarquia-tab" data-level="3" onclick="app.switchJerarquiaLevel(3)">
           <span class="tab-icon"></span>
           <span class="tab-label">Nivel 3<br><small>Sub-rea</small></span>
+          <span class="tab-chevron">›</span>
         </button>
         <button class="jerarquia-tab" data-level="4" onclick="app.switchJerarquiaLevel(4)">
           <span class="tab-icon"></span>
           <span class="tab-label">Nivel 4<br><small>Sistema</small></span>
+          <span class="tab-chevron">›</span>
         </button>
         <button class="jerarquia-tab" data-level="5" onclick="app.switchJerarquiaLevel(5)">
           <span class="tab-icon"></span>
           <span class="tab-label">Nivel 5<br><small>Sub-Sistema</small></span>
+          <span class="tab-chevron">›</span>
         </button>
         <button class="jerarquia-tab" data-level="6" onclick="app.switchJerarquiaLevel(6)">
           <span class="tab-icon"></span>
           <span class="tab-label">Nivel 6<br><small>Seccin</small></span>
+          <span class="tab-chevron">›</span>
         </button>
         <button class="jerarquia-tab" data-level="7" onclick="app.switchJerarquiaLevel(7)">
           <span class="tab-icon"></span>
           <span class="tab-label">Nivel 7<br><small>Detalle</small></span>
+          <span class="tab-chevron">›</span>
         </button>
         <button class="jerarquia-tab" data-level="8" onclick="app.switchJerarquiaLevel(8)">
           <span class="tab-icon"></span>
           <span class="tab-label">Nivel 8<br><small>Componente</small></span>
+          <span class="tab-chevron">›</span>
         </button>
       </div>
 
@@ -34694,7 +34814,7 @@ class InventarioCompleto {
         this.buildJerarquiaSearchIndex();
         
         // Mantener búsqueda activa si había una
-        const searchInput = document.getElementById('jerarquiaSearchInput');
+        const searchInput = document.getElementById('jerarquiaTreeSearchInput');
         const currentQuery = searchInput ? searchInput.value.trim() : '';
         if (currentQuery) {
           const hadFilter = this.jerarquiaSearchState?.isFilterActive;
@@ -38935,17 +39055,18 @@ class InventarioCompleto {
     const listContainer = document.getElementById('jerarquiaList');
     if (!listContainer) return;
 
-    const searchTerm = (this.jerarquiaSearchTerm || '').trim().toLowerCase();
+    const searchTermRaw = (this.jerarquiaSearchTerm || '').trim();
+    const searchTerm = searchTermRaw.toLowerCase();
 
     const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
     const highlightMatch = (text = '') => {
       const safeText = this.escapeHtml(text || '');
-      if (!searchTerm) {
+      if (!searchTermRaw) {
         return safeText;
       }
       try {
-        const regex = new RegExp(escapeRegex(searchTerm), 'gi');
+        const regex = new RegExp(escapeRegex(searchTermRaw), 'gi');
         return safeText.replace(regex, (match) => `<mark>${match}</mark>`);
       } catch (error) {
         console.warn('Regex highlight fall:', error);
@@ -38982,7 +39103,8 @@ class InventarioCompleto {
     this.updateJerarquiaResultsSummary({
       total: items.length,
       filtered: filteredItems.length,
-      searchTerm
+      searchTerm: searchTermRaw,
+      level
     });
 
     if (filteredItems.length === 0) {
@@ -39070,6 +39192,63 @@ class InventarioCompleto {
     };
 
     listContainer.innerHTML = filteredItems.map(item => renderItem(item, false)).join('');
+  }
+
+  updateJerarquiaResultsSummary({ total, filtered, searchTerm, level }) {
+    const summary = document.getElementById('jerarquiaResultsSummary');
+    const pills = document.getElementById('jerarquiaStatsPills');
+    if (!summary) return;
+
+    const levelLabels = [
+      'Nivel 1 · Planta',
+      'Nivel 2 · rea general',
+      'Nivel 3 · Sub rea',
+      'Nivel 4 · Sistema/Equipo',
+      'Nivel 5 · Sub Sistema',
+      'Nivel 6 · Seccin',
+      'Nivel 7 · Detalle',
+      'Nivel 8 · Componente'
+    ];
+    const levelLabel = levelLabels[level - 1] || `Nivel ${level}`;
+
+    const matchesText = total === 0
+      ? 'Sin registros'
+      : filtered === total
+        ? `${total} registro${total !== 1 ? 's' : ''}`
+        : `${filtered} coincidencia${filtered !== 1 ? 's' : ''} de ${total}`;
+
+    const tag = searchTerm ? 'Bsqueda activa' : 'Explorando';
+    const parts = [`<span class="jerarquia-results-tag">${tag} · ${levelLabel}</span>`];
+
+    if (searchTerm) {
+      parts.push(`<span class="jerarquia-results-highlight">“${this.escapeHtml(searchTerm)}”</span>`);
+    }
+
+    parts.push(`<span>${matchesText}</span>`);
+    summary.innerHTML = parts.join('');
+
+    if (!pills) return;
+
+    const levelKey = `nivel${level}`;
+    const items = this.jerarquiaData[levelKey] || [];
+
+    const withChildren = items.filter(item => Array.isArray(item.subitems) && item.subitems.length > 0).length;
+    const withoutDescription = items.filter(item => !(item.description || '').trim()).length;
+
+    pills.innerHTML = `
+      <div class="jerarquia-stat-pill" title="Registros totales en ${levelLabel}">
+        <span class="pill-label">Registros</span>
+        <strong>${items.length}</strong>
+      </div>
+      <div class="jerarquia-stat-pill" title="Elementos que ya tienen subniveles">
+        <span class="pill-label">Con subniveles</span>
+        <strong>${withChildren}</strong>
+      </div>
+      <div class="jerarquia-stat-pill" title="Elementos sin descripcin">
+        <span class="pill-label">Sin descripcin</span>
+        <strong>${withoutDescription}</strong>
+      </div>
+    `;
   }
 
   /**
@@ -50337,7 +50516,7 @@ app.jerarquiaSearchState = {
 };
 
 app.initJerarquiaSearch = function() {
-  const searchInput = document.getElementById('jerarquiaSearchInput');
+  const searchInput = document.getElementById('jerarquiaTreeSearchInput');
   const suggestionsContainer = document.getElementById('jerarquiaSearchSuggestions');
 
   if (!searchInput || !suggestionsContainer) {
@@ -50718,7 +50897,7 @@ app.focusJerarquiaSearchResult = function(match) {
 
   this.jerarquiaSearchState.activeMatch = match;
 
-  const searchInput = document.getElementById('jerarquiaSearchInput');
+  const searchInput = document.getElementById('jerarquiaTreeSearchInput');
   if (searchInput) {
     searchInput.value = match.nombre || match.id || '';
   }
@@ -50797,7 +50976,7 @@ app.expandJerarquiaPath = function(indices) {
 
 app.clearJerarquiaSearch = function(context = {}) {
   const suggestionsContainer = document.getElementById('jerarquiaSearchSuggestions');
-  const input = document.getElementById('jerarquiaSearchInput');
+  const input = document.getElementById('jerarquiaTreeSearchInput');
 
   if (input && !context.preserveInput) {
     input.value = '';
