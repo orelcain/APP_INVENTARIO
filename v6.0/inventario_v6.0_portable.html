@@ -14984,6 +14984,9 @@ const mapController = {
     currentMap: null,
     currentImage: null,
     currentImageUrl: null,
+    imageLODs: [],
+    imageDimensions: { width: 0, height: 0 },
+    usingBitmapRenderer: false,
     scale: 1,
     minScale: 0.05,
     maxScale: 20,
@@ -16836,23 +16839,119 @@ const mapController = {
         return;
       }
 
-      const url = URL.createObjectURL(file);
-      const img = new Image();
-      img.onload = () => {
-        this.state.currentImage = img;
-        this.state.currentImageUrl = url;
-        this.configureCanvasForImage(img, options);
-        this.draw();
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        this.drawMessage('Error cargando la imagen del mapa.');
-      };
-      img.src = url;
+      if (typeof window !== 'undefined' && typeof window.createImageBitmap === 'function') {
+        await this.loadMapImageFromBitmaps(file, map, options);
+      } else {
+        await this.loadMapImageLegacy(file, options);
+      }
     } catch (error) {
       console.error('Error cargando imagen del mapa:', error);
       this.drawMessage('No se pudo cargar la imagen del mapa.');
     }
+  },
+
+  async loadMapImageFromBitmaps(file, map, options = {}) {
+    const dimensions = {
+      width: Number(map?.width) || 0,
+      height: Number(map?.height) || 0
+    };
+
+    if (!dimensions.width || !dimensions.height) {
+      const fallback = await this.getImageDimensions(file);
+      dimensions.width = fallback.width;
+      dimensions.height = fallback.height;
+    }
+
+    if (!dimensions.width || !dimensions.height) {
+      this.drawMessage('No se pudo determinar el tamao del mapa.');
+      return;
+    }
+
+    this.state.imageDimensions = { ...dimensions };
+
+    const lods = await this.buildImageLODs(file, dimensions);
+    if (!lods.length) {
+      this.drawMessage('No se pudo preparar la imagen del mapa.');
+      return;
+    }
+
+    this.state.imageLODs = lods;
+    this.state.currentImage = lods[lods.length - 1].bitmap;
+    this.state.currentImageUrl = null;
+    this.state.usingBitmapRenderer = true;
+
+    this.configureCanvasForImage({ width: dimensions.width, height: dimensions.height }, options);
+    this.draw();
+  },
+
+  async loadMapImageLegacy(file, options = {}) {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      this.state.currentImage = img;
+      this.state.currentImageUrl = url;
+      this.state.imageDimensions = { width: img.width, height: img.height };
+      this.state.usingBitmapRenderer = false;
+      this.state.imageLODs = [];
+      this.configureCanvasForImage(img, options);
+      this.draw();
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      this.drawMessage('Error cargando la imagen del mapa.');
+    };
+    img.src = url;
+  },
+
+  async buildImageLODs(file, dimensions) {
+    const originalWidth = dimensions.width;
+    const originalHeight = dimensions.height;
+    const targetWidths = this.getLODTargetWidths(originalWidth);
+    const lods = [];
+
+    let baseBitmap = null;
+
+    for (const targetWidth of targetWidths) {
+      const ratio = targetWidth / originalWidth;
+      const targetHeight = Math.max(1, Math.round(originalHeight * ratio));
+
+      try {
+        if (!baseBitmap) {
+          baseBitmap = await createImageBitmap(file);
+        }
+
+        const bitmap = targetWidth === originalWidth && targetHeight === originalHeight
+          ? baseBitmap
+          : await createImageBitmap(baseBitmap, {
+              resizeWidth: targetWidth,
+              resizeHeight: targetHeight,
+              resizeQuality: 'high'
+            });
+
+        lods.push({
+          width: targetWidth,
+          height: targetHeight,
+          scale: ratio,
+          bitmap
+        });
+      } catch (error) {
+        console.warn(`No se pudo generar LOD ${targetWidth}px:`, error);
+      }
+    }
+
+    lods.sort((a, b) => a.scale - b.scale);
+    return lods;
+  },
+
+  getLODTargetWidths(originalWidth) {
+    const presets = [1024, 2048, 4096, 6144, 8192];
+    const targets = presets
+      .filter((size) => originalWidth > size * 1.05)
+      .concat(originalWidth);
+
+    const uniqueTargets = [...new Set(targets.map((value) => Math.round(value)))];
+    uniqueTargets.sort((a, b) => a - b);
+    return uniqueTargets;
   },
 
   configureCanvasForImage(img, options = {}) {
@@ -16895,6 +16994,20 @@ const mapController = {
       }
     }
     this.state.currentImageUrl = null;
+
+    if (Array.isArray(this.state.imageLODs) && this.state.imageLODs.length) {
+      this.state.imageLODs.forEach((lod) => {
+        try {
+          lod?.bitmap?.close?.();
+        } catch (error) {
+          console.debug('No se pudo liberar LOD:', error);
+        }
+      });
+    }
+
+    this.state.imageLODs = [];
+    this.state.imageDimensions = { width: 0, height: 0 };
+    this.state.usingBitmapRenderer = false;
     this.state.currentImage = null;
   },
 
@@ -16945,6 +17058,112 @@ const mapController = {
     ctx.restore();
   },
 
+  getVisibleMapBounds() {
+    const canvas = this.elements.canvas;
+    const dimensions = this.state.imageDimensions || {};
+    if (!canvas || !dimensions.width || !dimensions.height) {
+      return null;
+    }
+
+    const scale = this.state.scale;
+    const offsetX = this.state.offsetX;
+    const offsetY = this.state.offsetY;
+    const viewWidth = canvas.width / scale;
+    const viewHeight = canvas.height / scale;
+    const viewX = (-offsetX) / scale;
+    const viewY = (-offsetY) / scale;
+
+    return {
+      x: viewX,
+      y: viewY,
+      width: viewWidth,
+      height: viewHeight,
+      maxWidth: dimensions.width,
+      maxHeight: dimensions.height
+    };
+  },
+
+  getMapDimensionsSafe() {
+    if (this.state.imageDimensions?.width && this.state.imageDimensions?.height) {
+      return { ...this.state.imageDimensions };
+    }
+
+    if (this.state.currentImage) {
+      return { width: this.state.currentImage.width, height: this.state.currentImage.height };
+    }
+
+    return { width: 0, height: 0 };
+  },
+
+  getMinimapBitmap() {
+    if (this.state.imageLODs?.length) {
+      return this.state.imageLODs[0]?.bitmap || null;
+    }
+    return this.state.currentImage;
+  },
+
+  pickLODForScale(scale) {
+    const lods = this.state.imageLODs;
+    if (!Array.isArray(lods) || lods.length === 0) {
+      return null;
+    }
+
+    let chosen = lods[0];
+    for (const lod of lods) {
+      if (scale >= lod.scale || lod.scale === 1) {
+        chosen = lod;
+      } else {
+        break;
+      }
+    }
+    return chosen;
+  },
+
+  drawBaseImage(ctx) {
+    if (this.state.usingBitmapRenderer && this.state.imageLODs.length) {
+      const lod = this.pickLODForScale(this.state.scale);
+      const bounds = this.getVisibleMapBounds();
+      if (!lod || !bounds) {
+        return;
+      }
+
+      const startX = Math.max(0, bounds.x);
+      const startY = Math.max(0, bounds.y);
+      const endX = Math.min(bounds.maxWidth, bounds.x + bounds.width);
+      const endY = Math.min(bounds.maxHeight, bounds.y + bounds.height);
+
+      const visibleWidth = Math.max(0, endX - startX);
+      const visibleHeight = Math.max(0, endY - startY);
+
+      if (visibleWidth <= 0 || visibleHeight <= 0) {
+        return;
+      }
+
+      const ratio = lod.scale;
+      const sourceX = startX * ratio;
+      const sourceY = startY * ratio;
+      const sourceWidth = visibleWidth * ratio;
+      const sourceHeight = visibleHeight * ratio;
+
+      ctx.drawImage(
+        lod.bitmap,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        startX,
+        startY,
+        visibleWidth,
+        visibleHeight
+      );
+      return;
+    }
+
+    if (this.state.currentImage) {
+      ctx.drawImage(this.state.currentImage, 0, 0);
+    }
+  },
+
   draw() {
     const canvas = this.elements.canvas;
     if (!canvas || !this.ctx) return;
@@ -16959,10 +17178,7 @@ const mapController = {
     ctx.translate(this.state.offsetX, this.state.offsetY);
     ctx.scale(this.state.scale, this.state.scale);
     
-    if (this.state.currentImage) {
-      //  SIMPLE: Dibujar imagen en tamao nativo (el CSS maneja el escalado visual)
-      ctx.drawImage(this.state.currentImage, 0, 0);
-    }
+    this.drawBaseImage(ctx);
 
     if (this.state.showGrid) {
       this.drawGrid(ctx);
@@ -16992,7 +17208,7 @@ const mapController = {
     }
     
     //  NUEVO: Dibujar minimap si est activado
-    if (this.state.showMinimap && this.state.currentImage) {
+    if (this.state.showMinimap && this.getMinimapBitmap()) {
       this.drawMinimap();
     }
   },
@@ -17014,10 +17230,12 @@ const mapController = {
   },
 
   drawGrid(ctx) {
-    if (!this.state.currentImage) return;
+    const dimensions = this.getMapDimensionsSafe();
+    if (!dimensions.width || !dimensions.height) return;
+
     const step = this.state.gridSize || 50; //  Usar gridSize configurable
-    const width = this.state.currentImage.width;
-    const height = this.state.currentImage.height;
+    const width = dimensions.width;
+    const height = dimensions.height;
     ctx.save();
     ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
     ctx.lineWidth = 1 / this.state.scale;
@@ -17040,7 +17258,10 @@ const mapController = {
 
   //  NUEVO: Dibujar reglas laterales con medidas
   drawRulers() {
-    if (!this.state.showRulers || !this.state.currentImage) return;
+    if (!this.state.showRulers) return;
+
+    const dimensions = this.getMapDimensionsSafe();
+    if (!dimensions.width || !dimensions.height) return;
 
     const canvas = this.elements.canvas;
     const ctx = this.ctx;
@@ -18225,7 +18446,10 @@ dibujarUbicacionesResaltadas(ctx) {
 
   //  NUEVO: Renderizar minimap con vista general
   drawMinimap() {
-    if (!this.minimapCtx || !this.elements.minimap || !this.state.currentImage) return;
+    if (!this.minimapCtx || !this.elements.minimap) return;
+
+    const image = this.getMinimapBitmap();
+    if (!image) return;
 
     const minimap = this.elements.minimap;
     const ctx = this.minimapCtx;
@@ -18246,8 +18470,11 @@ dibujarUbicacionesResaltadas(ctx) {
     ctx.fillRect(0, 0, minimap.width, minimap.height);
 
     // Calcular escala para que la imagen completa quepa en el minimap
-    const imgWidth = this.state.currentImage.width;
-    const imgHeight = this.state.currentImage.height;
+    const dimensions = this.getMapDimensionsSafe();
+    if (!dimensions.width || !dimensions.height) return;
+
+    const imgWidth = dimensions.width;
+    const imgHeight = dimensions.height;
     const scaleX = minimap.width / imgWidth;
     const scaleY = minimap.height / imgHeight;
     const minimapScale = Math.min(scaleX, scaleY) * 0.95; // 95% para dejar margen
@@ -18263,7 +18490,7 @@ dibujarUbicacionesResaltadas(ctx) {
     ctx.translate(offsetX, offsetY);
     ctx.scale(minimapScale, minimapScale);
     ctx.globalAlpha = 0.6;
-    ctx.drawImage(this.state.currentImage, 0, 0);
+    ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, imgWidth, imgHeight);
     ctx.globalAlpha = 1;
 
     // Dibujar reas en minimap
@@ -23396,7 +23623,6 @@ dibujarUbicacionesResaltadas(ctx) {
       const writable = await fileHandle.createWritable();
       await writable.write(file);
       await writable.close();
-
       const dimensions = await this.getImageDimensions(file);
 
       const mapRecord = {
@@ -23544,7 +23770,6 @@ dibujarUbicacionesResaltadas(ctx) {
         const writable = await fileHandle.createWritable();
         await writable.write(file);
         await writable.close();
-
         const dimensions = await this.getImageDimensions(file);
         
         updatedMap.imagePath = `${mapStorage.mapImagesPath.join('/')}/${fileName}`;
