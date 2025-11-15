@@ -19,13 +19,13 @@
     ]
   },
   {
-    "id": 1763170003909,
-    "name": "Recinto Completo",
-    "imagePath": "imagenes/mapas/map_1763170003909.png",
-    "width": 2401,
-    "height": 3151,
-    "createdAt": "2025-11-15T01:26:44.047Z",
-    "updatedAt": "2025-11-15T01:26:49.423Z",
+    "id": 1763209400991,
+    "name": "Recinto Aquachile Antarfood",
+    "imagePath": "imagenes/mapas/map_1763209400991.png",
+    "width": 18725,
+    "height": 13245,
+    "createdAt": "2025-11-15T12:23:21.221Z",
+    "updatedAt": "2025-11-15T12:23:38.348Z",
     "jerarquiaPath": [
       {
         "id": "AQ-IN",

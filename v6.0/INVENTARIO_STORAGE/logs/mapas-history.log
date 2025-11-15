@@ -1,3 +1,24 @@
 {"scope":"maps","action":"assign_jerarquia","mapId":1760411932641,"areaId":null,"detail":"Planta Principal","timestamp":"2025-11-15T00:21:05.565Z"}
 {"scope":"maps","action":"create","mapId":1763170003909,"areaId":null,"detail":"Recinto Completo","timestamp":"2025-11-15T01:26:44.419Z"}
 {"scope":"maps","action":"assign_jerarquia","mapId":1763170003909,"areaId":null,"detail":"Recinto Completo","timestamp":"2025-11-15T01:26:49.670Z"}
+{"scope":"maps","action":"create","mapId":1763172743757,"areaId":null,"detail":"test","timestamp":"2025-11-15T02:12:24.172Z"}
+{"scope":"maps","action":"assign_jerarquia","mapId":1763172743757,"areaId":null,"detail":"test","timestamp":"2025-11-15T02:12:32.890Z"}
+{"scope":"maps","action":"delete","mapId":1763172743757,"areaId":null,"detail":"test","timestamp":"2025-11-15T02:13:23.845Z"}
+{"scope":"maps","action":"delete","mapId":1763170003909,"areaId":null,"detail":"Recinto Completo","timestamp":"2025-11-15T12:01:09.326Z"}
+{"scope":"maps","action":"create","mapId":1763208806558,"areaId":null,"detail":"Recinto Empresa","timestamp":"2025-11-15T12:13:29.797Z"}
+{"scope":"maps","action":"create","mapId":1763208809628,"areaId":null,"detail":"Recinto Empresa","timestamp":"2025-11-15T12:13:31.272Z"}
+{"scope":"maps","action":"assign_jerarquia","mapId":1763208809628,"areaId":null,"detail":"Recinto Empresa","timestamp":"2025-11-15T12:13:35.923Z"}
+{"scope":"maps","action":"delete","mapId":1763208806558,"areaId":null,"detail":"Recinto Empresa","timestamp":"2025-11-15T12:14:04.232Z"}
+{"scope":"maps","action":"delete","mapId":1763208809628,"areaId":null,"detail":"Recinto Empresa","timestamp":"2025-11-15T12:14:07.022Z"}
+{"scope":"maps","action":"create","mapId":1763209353369,"areaId":null,"detail":"Recinto Antarfood","timestamp":"2025-11-15T12:22:39.197Z"}
+{"scope":"maps","action":"create","mapId":1763209356832,"areaId":null,"detail":"Recinto Antarfood","timestamp":"2025-11-15T12:22:41.642Z"}
+{"scope":"maps","action":"assign_jerarquia","mapId":1763209356832,"areaId":null,"detail":"Recinto Antarfood","timestamp":"2025-11-15T12:22:45.711Z"}
+{"scope":"maps","action":"delete","mapId":1763209356832,"areaId":null,"detail":"Recinto Antarfood","timestamp":"2025-11-15T12:22:59.246Z"}
+{"scope":"maps","action":"delete","mapId":1763209353369,"areaId":null,"detail":"Recinto Antarfood","timestamp":"2025-11-15T12:23:01.387Z"}
+{"scope":"maps","action":"create","mapId":1763209400991,"areaId":null,"detail":"Recinto Aquachile Antarfood","timestamp":"2025-11-15T12:23:21.452Z"}
+{"scope":"maps","action":"assign_jerarquia","mapId":1763209400991,"areaId":null,"detail":"Recinto Aquachile Antarfood","timestamp":"2025-11-15T12:23:38.870Z"}
+{"scope":"maps","action":"create","mapId":1763209497890,"areaId":null,"detail":"1","timestamp":"2025-11-15T12:25:00.746Z"}
+{"scope":"maps","action":"assign_jerarquia","mapId":1763209497890,"areaId":null,"detail":"1","timestamp":"2025-11-15T12:25:08.408Z"}
+{"scope":"maps","action":"delete","mapId":1763209497890,"areaId":null,"detail":"1","timestamp":"2025-11-15T12:26:42.620Z"}
+{"scope":"areas","action":"create","mapId":1763209400991,"areaId":1763214742793,"detail":"Estanque 3 Agua Salada","timestamp":"2025-11-15T13:52:23.411Z"}
+{"scope":"areas","action":"create","mapId":1763209400991,"areaId":1763214846127,"detail":"Estanque 2 Agua Duilce","timestamp":"2025-11-15T13:54:06.447Z"}

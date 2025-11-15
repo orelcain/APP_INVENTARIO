@@ -6264,6 +6264,37 @@
       align-items: flex-end;
     }
 
+    .map-storage-banner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      margin: 4px 2px 6px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .map-storage-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .map-storage-clean-btn {
+      font-size: 0.7rem;
+      padding: 6px 10px;
+      border: 1px dashed rgba(148, 163, 184, 0.4);
+    }
+
+    .map-storage-clean-btn:hover {
+      border-color: rgba(59, 130, 246, 0.7);
+      color: var(--text-primary);
+    }
+
     .map-status-badge {
       display: inline-flex;
       align-items: center;
@@ -6352,6 +6383,245 @@
       padding: 0;
     }
 
+    .map-card-list.map-hierarchy-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .map-hierarchy-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .map-hierarchy-group {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 4px;
+    }
+
+    .map-hierarchy-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 8px;
+      cursor: pointer;
+      position: relative;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .map-hierarchy-header--clickable {
+      cursor: pointer;
+    }
+
+    .map-hierarchy-header--static {
+      cursor: default;
+    }
+
+    .map-hierarchy-header--static .map-hierarchy-chevron {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .map-hierarchy-header--map {
+      cursor: pointer;
+    }
+
+    .map-hierarchy-header:hover .map-hierarchy-label {
+      color: var(--primary-light);
+    }
+
+    .map-hierarchy-header--active {
+      background: rgba(59, 130, 246, 0.15);
+    }
+
+    .map-hierarchy-header-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .map-hierarchy-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .map-hierarchy-path {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+    }
+
+    .map-hierarchy-count {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .map-hierarchy-actions {
+      display: inline-flex;
+      gap: 4px;
+      margin-right: 4px;
+    }
+
+    .map-hierarchy-actions .map-card-btn {
+      padding: 2px 6px;
+    }
+
+    .map-hierarchy-tooltip {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 6px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(59, 130, 246, 0.45);
+      border-radius: 8px;
+      padding: 8px 10px;
+      box-shadow: 0 12px 32px rgba(2, 6, 23, 0.55);
+      font-size: 0.65rem;
+      color: var(--text-primary);
+      min-width: 240px;
+      max-width: 320px;
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .map-hierarchy-header:hover .map-hierarchy-tooltip,
+    .map-hierarchy-leaf:hover .map-hierarchy-tooltip {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .map-hierarchy-tooltip-line {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text-secondary);
+    }
+
+    .map-hierarchy-tooltip-line strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .map-hierarchy-tooltip-line:last-child {
+      margin-bottom: 0;
+    }
+
+    .map-hierarchy-chevron {
+      display: inline-flex;
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .map-hierarchy-chevron::before {
+      content: '\25BC';
+    }
+
+    .map-hierarchy-group--collapsed .map-hierarchy-chevron {
+      transform: rotate(-90deg);
+    }
+
+    .map-hierarchy-body {
+      padding: 4px 4px 8px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .map-hierarchy-leaf-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .map-hierarchy-leaf {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 8px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.45);
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .map-hierarchy-leaf:hover {
+      border-color: rgba(59, 130, 246, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(2, 6, 23, 0.45);
+    }
+
+    .map-hierarchy-leaf--active {
+      border-color: rgba(59, 130, 246, 0.8);
+      box-shadow: 0 12px 28px rgba(59, 130, 246, 0.2);
+    }
+
+    .map-hierarchy-leaf-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .map-hierarchy-leaf-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .map-hierarchy-leaf-meta {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+    }
+
+    .map-hierarchy-leaf-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .map-hierarchy-children {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .map-hierarchy-group--collapsed .map-hierarchy-body {
+      display: none;
+    }
+
+    .map-hierarchy-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
     .map-card {
       border-radius: 5px;
       padding: 5px 6px;
@@ -6380,10 +6650,14 @@
       line-height: 1.2;
     }
 
-    .map-card-meta {
-      font-size: 0.6rem; /*  Reducido de 0.65rem a 0.6rem */
+    .map-card-path {
+      font-size: 0.6rem;
       color: var(--text-secondary);
-      line-height: 1.2;
+      margin-top: 2px;
+    }
+
+    .map-card-path--empty {
+      color: rgba(248, 113, 113, 0.9);
     }
 
     /*  NUEVO: Contenedor y botones de acciones en tarjetas */
@@ -7183,6 +7457,93 @@
       overflow-y: auto;
       display: grid;
       gap: 16px;
+    }
+
+    /* Overlay de carga para mapas pesados */
+    .map-loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 20, 0.88);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 9998;
+    }
+
+    .map-loading-modal {
+      width: min(420px, 92vw);
+      background: var(--bg-primary);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .map-loading-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .map-loading-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+
+    .map-loading-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .map-loading-status {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .map-loading-bar {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-loading-bar-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: width 0.2s ease;
+    }
+
+    .map-loading-percent {
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .map-loading-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
     }
 
     @media (max-width: 1180px) {
@@ -9432,6 +9793,41 @@
   padding: 12px;
   border-radius: 6px;
   border: 1px solid var(--border-color);
+}
+
+.lista-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jerarquia-note-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jerarquia-note-text {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.jerarquia-note-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.jerarquia-note-tip {
+  border: 1px dashed var(--border-color);
+  border-radius: 6px;
+  padding: 12px;
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 .lista-title {
@@ -12595,12 +12991,15 @@
             <h2>Mapas de planta</h2>
             <p>Gestiona mapas, zonas y jerarquas</p>
           </div>
-          <div class='map-connection'>
-            <span id='mapConnectionBadge' class='map-status-badge map-status-badge--off'>Sin carpeta</span>
-            <button id='mapConnectBtn' class='map-btn map-btn--primary'>Conectar carpeta</button>
-          </div>
         </div>
         <div class='map-panel-scroll'>
+          <div class='map-storage-banner'>
+            <div class='map-storage-status'>
+              <span id='mapConnectionBadge' class='map-status-badge map-status-badge--off'>Sin carpeta</span>
+              <button id='mapConnectBtn' class='map-btn map-btn--primary'>Conectar carpeta</button>
+            </div>
+            <button id='mapCleanImagesBtn' class='map-btn map-btn--ghost map-storage-clean-btn'>Limpiar hurfanas</button>
+          </div>
           <section class='map-section'>
             <div class='map-section-header map-section-header-custom' onclick='app.toggleMapSection(this)'>
               <h3><span class='map-section-collapse-icon'></span> Mapas disponibles</h3>
@@ -12734,6 +13133,23 @@
           <button id='mapModalClose' class='map-icon-btn'>X</button>
         </div>
         <div id='mapModalBody' class='map-modal-body'></div>
+      </div>
+    </div>
+
+    <div id="mapLoadingOverlay" class="map-loading-overlay hidden">
+      <div class="map-loading-modal">
+        <div class="map-loading-header">
+          <div class="map-loading-icon">🗺️</div>
+          <div>
+            <div id="mapLoadingTitle" class="map-loading-title">Preparando mapa</div>
+            <div id="mapLoadingStatus" class="map-loading-status">Inicializando...</div>
+          </div>
+        </div>
+        <div class="map-loading-bar">
+          <div id="mapLoadingBar" class="map-loading-bar-fill"></div>
+        </div>
+        <div id="mapLoadingPercent" class="map-loading-percent">0%</div>
+        <div class="map-loading-hint">Algunos mapas pesan bastante, aguarda mientras optimizamos la imagen.</div>
       </div>
     </div>
   </div>
@@ -12950,105 +13366,22 @@
           </div>
         </div>
 
-        <!-- REA GENERAL - NIVEL 2 -->
-        <div class="lista-card">
-          <h4 class="lista-title">
-            <span class="lista-badge lista-badge-n2">N2</span>
-            reas Generales
+        <!-- JERARQUIA REDIRIGIDA -->
+        <div class="lista-card lista-card-info">
+          <h4 class="lista-title jerarquia-note-title">
+            <span class="lista-badge lista-badge-n2">N2-N7</span>
+            Jerarquia corporativa
           </h4>
-          <div id="listaAreaGeneral" class="lista-content">
-            <!-- Se llenar dinmicamente -->
-          </div>
-          <div class="lista-input-group">
-            <input type="text" id="nuevoAreaGeneral" placeholder="Nueva rea..." class="lista-input">
-            <button onclick="app.agregarItemLista('areaGeneral')" class="btn btn-success lista-add-btn">
-              +
-            </button>
-          </div>
-        </div>
-
-        <!-- SUB-REA - NIVEL 3 -->
-        <div class="lista-card">
-          <h4 class="lista-title">
-            <span class="lista-badge lista-badge-n3">N3</span>
-            Sub-reas
-          </h4>
-          <div id="listaSubArea" class="lista-content">
-            <!-- Se llenar dinmicamente -->
-          </div>
-          <div class="lista-input-group">
-            <input type="text" id="nuevoSubArea" placeholder="Nueva sub-rea..." class="lista-input">
-            <button onclick="app.agregarItemLista('subArea')" class="btn btn-success lista-add-btn">
-              +
-            </button>
-          </div>
-        </div>
-
-        <!-- SISTEMA/EQUIPO - NIVEL 4 -->
-        <div class="lista-card">
-          <h4 class="lista-title">
-            <span class="lista-badge lista-badge-n4">N4</span>
-            Sistemas/Equipos
-          </h4>
-          <div id="listaSistemaEquipo" class="lista-content">
-            <!-- Se llenar dinmicamente -->
-          </div>
-          <div class="lista-input-group">
-            <input type="text" id="nuevoSistemaEquipo" placeholder="Nuevo sistema..." class="lista-input">
-            <button onclick="app.agregarItemLista('sistemaEquipo')" class="btn btn-success lista-add-btn">
-              +
-            </button>
-          </div>
-        </div>
-
-        <!-- SUB-SISTEMA - NIVEL 5 -->
-        <div class="lista-card">
-          <h4 class="lista-title">
-            <span class="lista-badge lista-badge-n5">N5</span>
-            Sub-Sistemas
-          </h4>
-          <div id="listaSubSistema" class="lista-content">
-            <!-- Se llenar dinmicamente -->
-          </div>
-          <div class="lista-input-group">
-            <input type="text" id="nuevoSubSistema" placeholder="Nuevo sub-sistema..." class="lista-input">
-            <button onclick="app.agregarItemLista('subSistema')" class="btn btn-success lista-add-btn">
-              +
-            </button>
-          </div>
-        </div>
-
-        <!-- SECCIN - NIVEL 6 -->
-        <div class="lista-card">
-          <h4 class="lista-title">
-            <span class="lista-badge lista-badge-n6">N6</span>
-            Secciones
-          </h4>
-          <div id="listaSeccion" class="lista-content">
-            <!-- Se llenar dinmicamente -->
-          </div>
-          <div class="lista-input-group">
-            <input type="text" id="nuevoSeccion" placeholder="Nueva seccin..." class="lista-input">
-            <button onclick="app.agregarItemLista('seccion')" class="btn btn-success lista-add-btn">
-              +
-            </button>
-          </div>
-        </div>
-
-        <!-- SUB-SECCIN - NIVEL 7 -->
-        <div class="lista-card">
-          <h4 class="lista-title">
-            <span class="lista-badge lista-badge-n7">N7</span>
-            Sub-Secciones
-          </h4>
-          <div id="listaSubSeccion" class="lista-content">
-            <!-- Se llenar dinmicamente -->
-          </div>
-          <div class="lista-input-group">
-            <input type="text" id="nuevoSubSeccion" placeholder="Nueva sub-seccin..." class="lista-input">
-            <button onclick="app.agregarItemLista('subSeccion')" class="btn btn-success lista-add-btn">
-              +
-            </button>
+          <p class="jerarquia-note-text">
+            Los niveles Empresa, area, Sub-area, Sistema y Seccion se sincronizan ahora desde la pestana Jerarquia. Edita el arbol y los catalogos se actualizaran automaticamente en los formularios.
+          </p>
+          <ul class="jerarquia-note-list">
+            <li>Usa <strong>Jerarquia &gt; Arbol corporativo</strong> para agregar niveles.</li>
+            <li>Las areas y repuestos toman sugerencias directo del arbol.</li>
+            <li>Esta tarjeta es solo informativa; no hay mas listas manuales.</li>
+          </ul>
+          <div class="jerarquia-note-tip">
+            Consejo: mantn la jerarquia limpia y anidada para que la busqueda y los badges N1..N6 se sincronicen con tus mapas.
           </div>
         </div>
 
@@ -14883,6 +15216,111 @@ class MapStorageService {
     }
   }
   
+  async listMapImageFiles() {
+    if (!this.fsManager || !this.fsManager.isConnected) {
+      return [];
+    }
+
+    await this.ensureStructure();
+    if (!this.mapImagesDir) {
+      return [];
+    }
+
+    const files = [];
+    try {
+      for await (const entry of this.mapImagesDir.values()) {
+        if (entry.kind === 'file') {
+          files.push(entry.name);
+        }
+      }
+    } catch (error) {
+      console.warn('No se pudieron enumerar las imgenes de mapas:', error);
+    }
+
+    return files;
+  }
+
+  async deleteMapImage(target) {
+    if (!this.fsManager || !this.fsManager.isConnected) {
+      return { success: false, reason: 'fs-offline' };
+    }
+
+    const imagePath = typeof target === 'string'
+      ? target
+      : (target && target.imagePath) ? target.imagePath : null;
+
+    if (!imagePath) {
+      return { success: false, reason: 'no-path' };
+    }
+
+    const segments = String(imagePath).split('/').filter(Boolean);
+    if (!segments.length || !this.rootHandle) {
+      return { success: false, reason: 'invalid-path' };
+    }
+
+    try {
+      let currentDir = this.rootHandle;
+      for (let i = 0; i < segments.length - 1; i++) {
+        currentDir = await currentDir.getDirectoryHandle(segments[i], { create: false });
+      }
+      const fileName = segments[segments.length - 1];
+      await currentDir.removeEntry(fileName);
+      return { success: true, reason: 'deleted' };
+    } catch (error) {
+      if (error.name === 'NotFoundError') {
+        return { success: true, reason: 'missing' };
+      }
+      console.warn('No se pudo eliminar imagen del mapa:', imagePath, error);
+      return { success: false, reason: 'fs-error', error };
+    }
+  }
+
+  async cleanupOrphanMapImages() {
+    if (!this.fsManager || !this.fsManager.isConnected) {
+      return { scanned: 0, referenced: 0, orphans: 0, removed: 0, failed: [] };
+    }
+
+    await this.ensureStructure();
+    const files = await this.listMapImageFiles();
+    if (!files.length) {
+      return { scanned: 0, referenced: 0, orphans: 0, removed: 0, failed: [] };
+    }
+
+    const referenced = new Set(
+      (this.maps || [])
+        .map(map => {
+          if (!map || !map.imagePath) {
+            return null;
+          }
+          const parts = map.imagePath.split('/').filter(Boolean);
+          return parts.length ? parts[parts.length - 1] : null;
+        })
+        .filter(Boolean)
+    );
+
+    const orphans = files.filter(name => !referenced.has(name));
+    const failed = [];
+    let removed = 0;
+
+    for (const fileName of orphans) {
+      try {
+        await this.mapImagesDir.removeEntry(fileName);
+        removed++;
+      } catch (error) {
+        failed.push({ fileName, error: error?.message || 'unknown' });
+        console.warn('No se pudo eliminar mapa hurfano:', fileName, error);
+      }
+    }
+
+    return {
+      scanned: files.length,
+      referenced: referenced.size,
+      orphans: orphans.length,
+      removed,
+      failed
+    };
+  }
+  
   getMapById(mapId) {
     return this.maps.find(map => map.id === mapId) || null;
   }
@@ -15045,7 +15483,12 @@ const mapController = {
     lastCatalogSync: null,
 
     // Asignacin temporal de jerarqua para mapas
-    tempJerarquiaAssignment: null
+    tempJerarquiaAssignment: null,
+
+    // Overlay de carga de mapas
+    mapLoadingActive: false,
+    mapLoadingProgress: 0,
+    mapLoadingHideTimeout: null
   },
 
   init() {
@@ -15063,6 +15506,7 @@ const mapController = {
     this.elements = {
       shell: document.querySelector('.map-shell'),
       connectBtn: document.getElementById('mapConnectBtn'),
+      cleanImagesBtn: document.getElementById('mapCleanImagesBtn'),
       newBtn: document.getElementById('mapNewBtn'),
       drawBtn: document.getElementById('mapDrawAreaBtn'), // Antes mapDrawZoneBtn
       saveBtn: document.getElementById('mapSaveAreasBtn'), // Antes mapSaveZonesBtn
@@ -15087,7 +15531,12 @@ const mapController = {
       modal: document.getElementById('mapModalOverlay'),
       modalBody: document.getElementById('mapModalBody'),
       modalTitle: document.getElementById('mapModalTitle'),
-      modalClose: document.getElementById('mapModalClose')
+      modalClose: document.getElementById('mapModalClose'),
+      mapLoadingOverlay: document.getElementById('mapLoadingOverlay'),
+      mapLoadingTitle: document.getElementById('mapLoadingTitle'),
+      mapLoadingStatus: document.getElementById('mapLoadingStatus'),
+      mapLoadingBar: document.getElementById('mapLoadingBar'),
+      mapLoadingPercent: document.getElementById('mapLoadingPercent')
     };
 
     if (!this.elements.canvas) {
@@ -15129,9 +15578,10 @@ const mapController = {
   },
 
   bindEvents() {
-    const { connectBtn, newBtn, drawBtn, toolbar, logRefreshBtn, modalClose, modal } = this.elements;
+    const { connectBtn, cleanImagesBtn, newBtn, drawBtn, toolbar, logRefreshBtn, modalClose, modal } = this.elements;
 
     if (connectBtn) connectBtn.addEventListener('click', () => this.handleConnect());
+    if (cleanImagesBtn) cleanImagesBtn.addEventListener('click', () => this.cleanOrphanMapImages());
     if (newBtn) newBtn.addEventListener('click', () => this.openNewMapModal());
     if (drawBtn) drawBtn.addEventListener('click', () => this.toggleDrawingMode());
     
@@ -15342,40 +15792,243 @@ const mapController = {
     if (!mapList) return;
 
     if (!Array.isArray(maps) || !maps.length) {
+      mapList.classList.remove('map-hierarchy-list');
       mapList.innerHTML = `<div style="padding: 16px; border: 1px dashed var(--border-color); border-radius: 10px; color: var(--text-secondary); font-size: 0.85rem;">An no hay mapas registrados.</div>`;
       return;
     }
 
-    const activeId = this.state.currentMapId;
-    mapList.innerHTML = maps.map(map => {
-      const isActive = activeId === map.id;
-      const createdAt = map.createdAt ? new Date(map.createdAt).toLocaleDateString('es-CL') : '';
-      const dimensions = map.width && map.height ? `${map.width}  ${map.height}px` : 'Dimensiones pendientes';
-      const areasCount = (mapStorage.areas || []).filter(z => z.mapId === map.id).length;
+    const tree = this.buildMapHierarchyTree(maps);
+    const hierarchyHtml = this.renderMapHierarchyGroups(tree.children, 0);
+    mapList.classList.add('map-hierarchy-list');
+    mapList.innerHTML = hierarchyHtml;
+
+    this.attachMapHierarchyEvents();
+    this.attachMapCardEvents();
+  },
+
+  getMapHierarchyPath(map) {
+    if (map && Array.isArray(map.jerarquiaPath) && map.jerarquiaPath.length) {
+      return map.jerarquiaPath.map(node => ({
+        id: node.id || null,
+        nivel: node.nivel || null,
+        nombre: node.nombre || null
+      }));
+    }
+
+    return [{ id: 'sin-jerarquia', nivel: 'sin-nivel', nombre: 'Sin jerarqua asignada' }];
+  },
+
+  getJerarquiaNodeName(node) {
+    if (!node) {
+      return 'Sin nombre';
+    }
+
+    const found = this.findJerarquiaNodeInTree(node.id, node.nivel);
+    return found?.nombre || node.nombre || node.id || 'Nivel sin nombre';
+  },
+
+  buildMapHierarchyTree(maps) {
+    const root = { key: 'root', label: 'root', fullPath: '', children: new Map(), maps: [] };
+
+    maps.forEach(map => {
+      const path = this.getMapHierarchyPath(map);
+      let current = root;
+
+      path.forEach((node, index) => {
+        const key = `${node.id || 'nivel'}-${node.nivel || index}`;
+        if (!current.children.has(key)) {
+          const partialPath = path.slice(0, index + 1);
+          current.children.set(key, {
+            key,
+            label: this.getJerarquiaNodeName(node),
+            fullPath: this.getJerarquiaPathLabel(partialPath),
+            nivel: node.nivel || null,
+            children: new Map(),
+            maps: []
+          });
+        }
+
+        current = current.children.get(key);
+      });
+
+      current.maps.push(map);
+    });
+
+    return root;
+  },
+
+  sortHierarchyChildren(childrenMap) {
+    return Array.from(childrenMap.values()).sort((a, b) => a.label.localeCompare(b.label || '', 'es', { sensitivity: 'base' }));
+  },
+
+  countMapsInGroup(group) {
+    let total = Array.isArray(group.maps) ? group.maps.length : 0;
+    if (group.children && group.children.size) {
+      total += Array.from(group.children.values()).reduce((acc, child) => acc + this.countMapsInGroup(child), 0);
+    }
+    return total;
+  },
+
+  renderMapHierarchyGroups(childrenMap, depth = 0) {
+    if (!childrenMap || !childrenMap.size) {
+      return '';
+    }
+
+    return this.sortHierarchyChildren(childrenMap).map(group => {
+      const totalMaps = this.countMapsInGroup(group);
+      const hasChildren = !!(group.children && group.children.size);
+      const mapCount = Array.isArray(group.maps) ? group.maps.length : 0;
+      const mapRef = mapCount === 1 ? group.maps[0] : null;
+      const headerClasses = `map-hierarchy-header ${hasChildren ? 'map-hierarchy-header--clickable' : 'map-hierarchy-header--static'} ${mapRef ? 'map-hierarchy-header--map' : ''} ${mapRef && String(this.state.currentMapId) === String(mapRef.id) ? 'map-hierarchy-header--active' : ''}`;
+      const headerAttributes = mapRef ? `data-map-id="${mapRef.id}"` : '';
+      const tooltip = mapRef ? this.renderGroupTooltip(mapRef) : '';
+      const actionsHtml = mapRef ? this.renderGroupActions(mapRef) : '';
+      const nestedHtml = group.children?.size ? `<div class="map-hierarchy-children">${this.renderMapHierarchyGroups(group.children, depth + 1)}</div>` : '';
+      const mapList = mapRef ? [] : (group.maps || []);
+      const mapsHtml = mapList.length ? `<div class="map-hierarchy-leaf-list">${mapList.map((map) => this.renderMapHierarchyLeaf(map)).join('')}</div>` : '';
+
       return `
-        <article class="map-card ${isActive ? 'map-card--active' : ''}" data-map-id="${map.id}">
-          <div class="map-card-content" data-action="select-map">
-            <div class="map-card-title">${this.escapeHtml(map.name || 'Mapa sin nombre')}</div>
-            <div class="map-card-meta">${dimensions}</div>
-            <div class="map-card-meta">${areasCount} rea(s) registradas</div>
-            ${createdAt ? `<div class="map-card-meta">Creado: ${createdAt}</div>` : ''}
+        <div class="map-hierarchy-group" data-depth="${depth}">
+          <div class="${headerClasses}" ${headerAttributes}>
+            <div class="map-hierarchy-header-main">
+              <span class="map-hierarchy-chevron" data-action="toggle-group"></span>
+              <div>
+                <div class="map-hierarchy-label">${this.escapeHtml(group.label)}</div>
+                ${group.fullPath ? `<div class="map-hierarchy-path">${this.escapeHtml(group.fullPath)}</div>` : ''}
+              </div>
+            </div>
+            <span class="map-hierarchy-count">
+              ${actionsHtml}
+              ${totalMaps} mapa${totalMaps === 1 ? '' : 's'}
+            </span>
+            ${tooltip}
           </div>
-          <div class="map-card-actions">
-              <button class="map-card-btn map-card-btn--link" data-action="assign-jerarquia" data-map-id="${map.id}" title="Asignar jerarqua">
-                Jerarqua
-              </button>
-            <button class="map-card-btn map-card-btn--edit" data-action="edit-map" data-map-id="${map.id}" title="Editar mapa">
-              
-            </button>
-            <button class="map-card-btn map-card-btn--delete" data-action="delete-map" data-map-id="${map.id}" title="Eliminar mapa">
-              
-            </button>
+          <div class="map-hierarchy-body">
+            ${mapsHtml}
+            ${nestedHtml}
           </div>
-        </article>
+        </div>
       `;
     }).join('');
+  },
 
-    // Event listeners para seleccionar mapa
+  renderMapCard(map) {
+    const isActive = this.state.currentMapId === map.id;
+    const hasJerarquia = Array.isArray(map.jerarquiaPath) && map.jerarquiaPath.length > 0;
+    const pathLabel = hasJerarquia ? this.getJerarquiaPathLabel(map.jerarquiaPath) : 'Sin jerarqua asignada';
+
+    return `
+      <article class="map-card ${isActive ? 'map-card--active' : ''}" data-map-id="${map.id}">
+        <div class="map-card-content" data-action="select-map">
+          <div class="map-card-title">${this.escapeHtml(map.name || 'Mapa sin nombre')}</div>
+          <div class="map-card-path ${hasJerarquia ? '' : 'map-card-path--empty'}">${this.escapeHtml(pathLabel)}</div>
+        </div>
+      </article>
+    `;
+  },
+
+  getAreasCountForMap(mapId) {
+    if (!mapStorage || !Array.isArray(mapStorage.areas)) {
+      return 0;
+    }
+    return mapStorage.areas.filter(z => z.mapId === mapId).length;
+  },
+
+  renderGroupTooltip(map) {
+    if (!map) {
+      return '';
+    }
+
+    const createdAt = map.createdAt ? new Date(map.createdAt).toLocaleDateString('es-CL') : '';
+    const dimensions = map.width && map.height ? `${map.width}  ${map.height}px` : 'Dimensiones pendientes';
+    const areasCount = this.getAreasCountForMap(map.id);
+    const pathLabel = Array.isArray(map.jerarquiaPath) && map.jerarquiaPath.length
+      ? this.getJerarquiaPathLabel(map.jerarquiaPath)
+      : '';
+
+    const rows = [
+      `<span class="map-hierarchy-tooltip-line"><strong>${this.escapeHtml(map.name || 'Mapa sin nombre')}</strong></span>`,
+      pathLabel ? `<span class="map-hierarchy-tooltip-line">Ruta: ${this.escapeHtml(pathLabel)}</span>` : null,
+      `<span class="map-hierarchy-tooltip-line">${areasCount} rea(s) registradas</span>`,
+      dimensions ? `<span class="map-hierarchy-tooltip-line">Resolucin: ${this.escapeHtml(dimensions)}</span>` : null,
+      createdAt ? `<span class="map-hierarchy-tooltip-line">Creado: ${this.escapeHtml(createdAt)}</span>` : null
+    ].filter(Boolean).join('');
+
+    return `<div class="map-hierarchy-tooltip">${rows}</div>`;
+  },
+
+  renderGroupActions(map) {
+    return `
+      <span class="map-hierarchy-actions">
+        <button class="map-card-btn map-card-btn--link" data-action="assign-jerarquia" data-map-id="${map.id}" title="Asignar jerarqua">Jerarqua</button>
+        <button class="map-card-btn map-card-btn--edit" data-action="edit-map" data-map-id="${map.id}" title="Editar mapa"></button>
+        <button class="map-card-btn map-card-btn--delete" data-action="delete-map" data-map-id="${map.id}" title="Eliminar mapa"></button>
+      </span>
+    `;
+  },
+
+  renderMapHierarchyLeaf(map) {
+    if (!map) return '';
+
+    const isActive = String(this.state.currentMapId) === String(map.id);
+    const areasCount = this.getAreasCountForMap(map.id);
+
+    return `
+      <div class="map-hierarchy-leaf ${isActive ? 'map-hierarchy-leaf--active' : ''}" data-map-id="${map.id}">
+        <div class="map-hierarchy-leaf-main">
+          <span class="map-hierarchy-leaf-label">${this.escapeHtml(map.name || 'Mapa sin nombre')}</span>
+          <span class="map-hierarchy-leaf-meta">${areasCount} rea${areasCount === 1 ? '' : 's'}</span>
+        </div>
+        <div class="map-hierarchy-leaf-right">
+          ${this.renderGroupActions(map)}
+        </div>
+        ${this.renderGroupTooltip(map)}
+      </div>
+    `;
+  },
+
+  attachMapHierarchyEvents() {
+    const { mapList } = this.elements;
+    if (!mapList) return;
+
+    Array.from(mapList.querySelectorAll('.map-hierarchy-chevron[data-action="toggle-group"]')).forEach(toggle => {
+      toggle.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const groupEl = toggle.closest('.map-hierarchy-group');
+        if (!groupEl) return;
+        groupEl.classList.toggle('map-hierarchy-group--collapsed');
+      });
+    });
+
+    Array.from(mapList.querySelectorAll('.map-hierarchy-header--clickable:not([data-map-id])')).forEach(header => {
+      header.addEventListener('click', () => {
+        const groupEl = header.closest('.map-hierarchy-group');
+        if (!groupEl) return;
+        groupEl.classList.toggle('map-hierarchy-group--collapsed');
+      });
+    });
+
+    Array.from(mapList.querySelectorAll('.map-hierarchy-header[data-map-id]')).forEach(header => {
+      header.addEventListener('click', async () => {
+        const mapId = header.getAttribute('data-map-id');
+        if (!mapId) return;
+        await this.selectMap(mapId);
+      });
+    });
+
+    Array.from(mapList.querySelectorAll('.map-hierarchy-leaf[data-map-id]')).forEach(leaf => {
+      leaf.addEventListener('click', async () => {
+        const mapId = leaf.getAttribute('data-map-id');
+        if (!mapId) return;
+        await this.selectMap(mapId);
+      });
+    });
+  },
+
+  attachMapCardEvents() {
+    const { mapList } = this.elements;
+    if (!mapList) return;
+
     Array.from(mapList.querySelectorAll('[data-action="select-map"]')).forEach(content => {
       content.addEventListener('click', async (e) => {
         const card = e.target.closest('.map-card');
@@ -15385,7 +16038,6 @@ const mapController = {
       });
     });
 
-    // Event listeners para editar mapa
     Array.from(mapList.querySelectorAll('[data-action="edit-map"]')).forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
@@ -15394,7 +16046,6 @@ const mapController = {
       });
     });
 
-    // Event listeners para asignar jerarqua
     Array.from(mapList.querySelectorAll('[data-action="assign-jerarquia"]')).forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
@@ -15403,7 +16054,6 @@ const mapController = {
       });
     });
 
-    // Event listeners para eliminar mapa
     Array.from(mapList.querySelectorAll('[data-action="delete-map"]')).forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
@@ -15643,7 +16293,8 @@ const mapController = {
     let nivelSugerido = 'N8'; // Por defecto N8 (Detalle)
     let razonSugerencia = '';
     
-    if (area && area.jerarquia) {
+    const areaJerarquia = area ? this.normalizeAreaJerarquia(area.jerarquia) : null;
+    if (areaJerarquia) {
       // Mapeo de niveles: planta  N2, areaGeneral  N3, subArea  N4, etc.
       const mapaJerarquia = {
         'planta': 'N2',
@@ -15658,9 +16309,9 @@ const mapController = {
       // Encontrar el nivel ms profundo definido en el rea
       const nivelesDefinidos = ['detalle', 'seccion', 'subSistema', 'sistemaEquipo', 'subArea', 'areaGeneral', 'planta'];
       for (const nivel of nivelesDefinidos) {
-        if (area.jerarquia[nivel]) {
+        if (areaJerarquia[nivel]) {
           nivelSugerido = mapaJerarquia[nivel];
-          razonSugerencia = `Basado en ${area.jerarquia[nivel]}`;
+          razonSugerencia = `Basado en ${areaJerarquia[nivel]}`;
           break;
         }
       }
@@ -15827,7 +16478,8 @@ const mapController = {
       const searchTerm = searchInput.value.trim().toLowerCase();
       filteredAreas = filteredAreas.filter(area => {
         const areaName = (area.name || '').toLowerCase();
-        const jerarquia = area.jerarquia ? Object.values(area.jerarquia).filter(Boolean).join(' ').toLowerCase() : '';
+        const normalized = this.normalizeAreaJerarquia(area.jerarquia);
+        const jerarquia = Object.values(normalized).filter(Boolean).join(' ').toLowerCase();
         return areaName.includes(searchTerm) || jerarquia.includes(searchTerm);
       });
     }
@@ -15899,6 +16551,15 @@ const mapController = {
       });
     });
 
+    // Event listeners para editar la jerarqua desde la lista principal
+    Array.from(areaList.querySelectorAll('[data-action="edit-area-hierarchy"]')).forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const areaId = btn.getAttribute('data-area-id');
+        this.openEditAreaHierarchyModal(areaId);
+      });
+    });
+
     // Event listeners para eliminar zona
     Array.from(areaList.querySelectorAll('[data-action="delete-area"]')).forEach(btn => {
       btn.addEventListener('click', async (e) => {
@@ -15912,6 +16573,9 @@ const mapController = {
   handleJerarquiaStructureUpdate(eventDetail = {}) {
     this.state.lastJerarquiaSync = Date.now();
     this.cachedJerarquiaStructure = app?.jerarquiaAnidada || null;
+    this.cachedJerarquiaOptions = this.mergeWithFallbackJerarquiaOptions(
+      this.buildJerarquiaOptionSetsFromStructure(this.cachedJerarquiaStructure)
+    );
 
     if (!this.elements || !this.elements.areaList) {
       this.state.pendingJerarquiaRefresh = true;
@@ -15931,7 +16595,9 @@ const mapController = {
 
   handleJerarquiaCatalogUpdate(eventDetail = {}) {
     this.state.lastCatalogSync = Date.now();
-    this.cachedJerarquiaOptions = app?.opcionesJerarquia || null;
+    this.cachedJerarquiaOptions = this.mergeWithFallbackJerarquiaOptions(
+      this.buildJerarquiaOptionSetsFromStructure(app?.jerarquiaAnidada)
+    );
 
     if (!this.elements || !this.elements.areaList) {
       this.state.pendingCatalogRefresh = true;
@@ -15955,7 +16621,7 @@ const mapController = {
     const form = document.getElementById('editAreaForm');
     if (!form) return;
 
-    const jerarquiaOptions = app?.opcionesJerarquia || {};
+    const jerarquiaOptions = this.getJerarquiaOptionCatalog();
     const datalistConfig = [
       { id: 'plantaList', key: 'planta' },
       { id: 'areaGeneralList', key: 'areaGeneral' },
@@ -16112,11 +16778,11 @@ const mapController = {
     // Filtrar reas por trmino de bsqueda
     const filtered = searchTerm.trim() 
       ? areas.filter(area => {
-          const jerarquia = area.jerarquia || {};
+          const normalized = this.normalizeAreaJerarquia(area.jerarquia);
           const searchLower = searchTerm.toLowerCase();
           return (
             (area.name || '').toLowerCase().includes(searchLower) ||
-            Object.values(jerarquia).some(val => 
+            Object.values(normalized).some(val => 
               (val || '').toLowerCase().includes(searchLower)
             )
           );
@@ -16182,8 +16848,8 @@ const mapController = {
       return;
     }
 
-    const jerarquia = area.jerarquia || {};
-    const appJerarquia = app?.opcionesJerarquia || {};
+    const jerarquia = this.normalizeAreaJerarquia(area.jerarquia);
+    const jerarquiaOptions = this.getJerarquiaOptionCatalog();
     
     const buildDatalist = (id, values) => {
       if (!Array.isArray(values) || !values.length) return '';
@@ -16207,39 +16873,39 @@ const mapController = {
           
           <form id="formEditHierarchy" style="display: flex; flex-direction: column; gap: 12px;">
             <div style="display: flex; flex-direction: column; gap: 4px;">
-              <label style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">N1 - Planta</label>
-              <input type="text" name="planta" list="plantaList" placeholder="Ej: Planta Principal" value="${this.escapeHtml(jerarquia.planta || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
-              ${buildDatalist('plantaList', appJerarquia.planta || [])}
+              <label style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">N1 - Empresa / Planta</label>
+              <input type="text" name="planta" list="plantaList" placeholder="Ej: Aquachile Antarfood" value="${this.escapeHtml(jerarquia.planta || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
+              ${buildDatalist('plantaList', jerarquiaOptions.planta || [])}
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <label style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">N2 - rea General</label>
-              <input type="text" name="areaGeneral" list="areaGeneralList" placeholder="Ej: Filete" value="${this.escapeHtml(jerarquia.areaGeneral || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
-              ${buildDatalist('areaGeneralList', appJerarquia.areaGeneral || [])}
+              <input type="text" name="areaGeneral" list="areaGeneralList" placeholder="Ej: Planta Principal" value="${this.escapeHtml(jerarquia.areaGeneral || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
+              ${buildDatalist('areaGeneralList', jerarquiaOptions.areaGeneral || [])}
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <label style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">N3 - Sub-rea</label>
-              <input type="text" name="subArea" list="subAreaList" placeholder="Ej: Cinta Curva Filete" value="${this.escapeHtml(jerarquia.subArea || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
-              ${buildDatalist('subAreaList', appJerarquia.subArea || [])}
+              <input type="text" name="subArea" list="subAreaList" placeholder="Ej: Estanques" value="${this.escapeHtml(jerarquia.subArea || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
+              ${buildDatalist('subAreaList', jerarquiaOptions.subArea || [])}
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <label style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">N4 - Sistema/Equipo</label>
               <input type="text" name="sistemaEquipo" list="sistemaEquipoList" placeholder="Ej: Grader Baader" value="${this.escapeHtml(jerarquia.sistemaEquipo || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
-              ${buildDatalist('sistemaEquipoList', appJerarquia.sistemaEquipo || [])}
+              ${buildDatalist('sistemaEquipoList', jerarquiaOptions.sistemaEquipo || [])}
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <label style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">N5 - Sub-Sistema</label>
               <input type="text" name="subSistema" list="subSistemaList" placeholder="Ej: Motor Principal" value="${this.escapeHtml(jerarquia.subSistema || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
-              ${buildDatalist('subSistemaList', appJerarquia.subSistema || [])}
+              ${buildDatalist('subSistemaList', jerarquiaOptions.subSistema || [])}
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <label style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">N6 - Seccin</label>
               <input type="text" name="seccion" list="seccionList" placeholder="Ej: Mdulo 1" value="${this.escapeHtml(jerarquia.seccion || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
-              ${buildDatalist('seccionList', appJerarquia.seccion || [])}
+              ${buildDatalist('seccionList', jerarquiaOptions.seccion || [])}
             </div>
             
             <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -16423,13 +17089,13 @@ const mapController = {
     }
     
     areasToProcess.forEach(area => {
-      const jerarquia = area.jerarquia || {};
-      const planta = jerarquia.planta || 'Sin planta';
-      const areaGeneral = jerarquia.areaGeneral || 'Sin rea';
-      const subArea = jerarquia.subArea || null;
-      const sistema = jerarquia.sistemaEquipo || null;
-      const subSistema = jerarquia.subSistema || null;
-      const seccion = jerarquia.seccion || null;
+      const normalizedJerarquia = this.normalizeAreaJerarquia(area.jerarquia);
+      const planta = normalizedJerarquia.planta || 'Sin empresa';
+      const areaGeneral = normalizedJerarquia.areaGeneral || 'Sin rea';
+      const subArea = normalizedJerarquia.subArea || null;
+      const sistema = normalizedJerarquia.sistemaEquipo || null;
+      const subSistema = normalizedJerarquia.subSistema || null;
+      const seccion = normalizedJerarquia.seccion || null;
       
       //  DETECTAR NIVEL MS PROFUNDO - El rea solo se agrega UNA VEZ en su nivel ms especfico
       let nivelMasProfundo = null;
@@ -16543,7 +17209,7 @@ const mapController = {
           font-family: monospace;
           min-width: 22px;
           text-align: center;
-        ">N${level}</span>`;
+        ">N${Math.max(1, level + 1)}</span>`;
         
         html += `
           <div style="margin-bottom: 1px;">
@@ -16594,7 +17260,7 @@ const mapController = {
       font-weight: 600;
       font-family: monospace;
       margin-left: 4px;
-    ">N${level + 1}</span>`;
+    ">N${Math.max(1, level + 1)}</span>`;
 
     // Generar HTML para las categoras y marcadores
     let categoriasHTML = '';
@@ -16816,6 +17482,7 @@ const mapController = {
       this.state.offsetY = 0;
     }
 
+    this.showMapLoadingOverlay(map);
     await this.loadMapImage(map, options);
     this.renderMapList(mapStorage.maps);
     this.renderAreaList(this.state.areas);
@@ -16829,16 +17496,24 @@ const mapController = {
 
     if (!map.imagePath) {
       this.drawMessage('El mapa seleccionado no tiene imagen asociada.');
+      this.hideMapLoadingOverlay(true, 'Sin imagen asociada.');
       return;
     }
 
+    if (!this.state.mapLoadingActive) {
+      this.showMapLoadingOverlay(map);
+    }
+
+    this.updateMapLoadingProgress(10, 'Buscando imagen en la carpeta...');
     try {
       const file = await mapStorage.getMapImage(map);
       if (!file) {
         this.drawMessage('No se encontr la imagen del mapa.');
+        this.hideMapLoadingOverlay(true, 'No se encontr la imagen del mapa.');
         return;
       }
 
+      this.updateMapLoadingProgress(25, 'Procesando imagen...');
       if (typeof window !== 'undefined' && typeof window.createImageBitmap === 'function') {
         await this.loadMapImageFromBitmaps(file, map, options);
       } else {
@@ -16847,6 +17522,7 @@ const mapController = {
     } catch (error) {
       console.error('Error cargando imagen del mapa:', error);
       this.drawMessage('No se pudo cargar la imagen del mapa.');
+      this.hideMapLoadingOverlay(true, 'No se pudo cargar la imagen.');
     }
   },
 
@@ -16864,14 +17540,19 @@ const mapController = {
 
     if (!dimensions.width || !dimensions.height) {
       this.drawMessage('No se pudo determinar el tamao del mapa.');
+      this.hideMapLoadingOverlay(true, 'No se pudo determinar el tamao del mapa.');
       return;
     }
 
     this.state.imageDimensions = { ...dimensions };
 
-    const lods = await this.buildImageLODs(file, dimensions);
+    this.updateMapLoadingProgress(40, 'Optimizando resoluciones...');
+    const lods = await this.buildImageLODs(file, dimensions, (value, label) => {
+      this.updateMapLoadingProgress(value, label);
+    });
     if (!lods.length) {
       this.drawMessage('No se pudo preparar la imagen del mapa.');
+      this.hideMapLoadingOverlay(true, 'No se pudo preparar la imagen del mapa.');
       return;
     }
 
@@ -16880,14 +17561,19 @@ const mapController = {
     this.state.currentImageUrl = null;
     this.state.usingBitmapRenderer = true;
 
+    this.updateMapLoadingProgress(90, 'Aplicando mapa al lienzo...');
     this.configureCanvasForImage({ width: dimensions.width, height: dimensions.height }, options);
     this.draw();
+    this.completeMapLoadingProgress();
+      this.completeMapLoadingProgress();
   },
 
   async loadMapImageLegacy(file, options = {}) {
     const url = URL.createObjectURL(file);
     const img = new Image();
+      this.hideMapLoadingOverlay(true, 'Error cargando la imagen del mapa.');
     img.onload = () => {
+      this.updateMapLoadingProgress(85, 'Aplicando mapa al lienzo...');
       this.state.currentImage = img;
       this.state.currentImageUrl = url;
       this.state.imageDimensions = { width: img.width, height: img.height };
@@ -16903,13 +17589,24 @@ const mapController = {
     img.src = url;
   },
 
-  async buildImageLODs(file, dimensions) {
+  async buildImageLODs(file, dimensions, progressCallback = null) {
     const originalWidth = dimensions.width;
     const originalHeight = dimensions.height;
     const targetWidths = this.getLODTargetWidths(originalWidth);
     const lods = [];
 
     let baseBitmap = null;
+    const totalTargets = targetWidths.length || 1;
+    const reportProgress = (index, width) => {
+      if (typeof progressCallback !== 'function') {
+        return;
+      }
+      const base = 45;
+      const span = 40;
+      const ratio = (index + 1) / totalTargets;
+      const percent = Math.min(90, Math.round(base + span * ratio));
+      progressCallback(percent, `Escala ${width}px optimizada`);
+    };
 
     for (const targetWidth of targetWidths) {
       const ratio = targetWidth / originalWidth;
@@ -16934,6 +17631,7 @@ const mapController = {
           scale: ratio,
           bitmap
         });
+        reportProgress(lods.length - 1, targetWidth);
       } catch (error) {
         console.warn(`No se pudo generar LOD ${targetWidth}px:`, error);
       }
@@ -20587,7 +21285,8 @@ dibujarUbicacionesResaltadas(ctx) {
 
     this.elements.modalTitle.textContent = 'Definir nueva rea';
 
-    const jerarquia = app?.opcionesJerarquia || {};
+    const jerarquia = this.getJerarquiaOptionCatalog();
+    const mapJerarquiaDefaults = this.getCurrentMapJerarquiaDefaults();
     const buildDatalist = (id, values) => {
       if (!Array.isArray(values) || !values.length) return '';
       return `<datalist id="${id}">${values.map(v => `<option value="${this.escapeHtml(v)}"></option>`).join('')}</datalist>`;
@@ -20647,29 +21346,34 @@ dibujarUbicacionesResaltadas(ctx) {
         </div>
         
         <div class="form-group">
-          <label>Nivel 1  rea general</label>
-          <input type="text" name="nivel1" list="nivel1List" placeholder="Ej: Planta Principal" />
-          ${buildDatalist('nivel1List', jerarquia.areaGeneral)}
+          <label>Nivel 1  Empresa / Planta</label>
+          <input type="text" name="planta" list="plantaList" placeholder="Ej: Aquachile Antarfood" value="${this.escapeHtml(mapJerarquiaDefaults.planta || '')}" />
+          ${buildDatalist('plantaList', jerarquia.planta)}
         </div>
         <div class="form-group">
-          <label>Nivel 2  Sub-rea</label>
-          <input type="text" name="nivel2" list="nivel2List" placeholder="Ej: Lnea de Eviscerado" />
-          ${buildDatalist('nivel2List', jerarquia.subArea)}
+          <label>Nivel 2  rea general</label>
+          <input type="text" name="areaGeneral" list="areaGeneralList" placeholder="Ej: Planta Principal" value="${this.escapeHtml(mapJerarquiaDefaults.areaGeneral || '')}" />
+          ${buildDatalist('areaGeneralList', jerarquia.areaGeneral)}
         </div>
         <div class="form-group">
-          <label>Nivel 3  Sistema / Equipo</label>
-          <input type="text" name="nivel3" list="nivel3List" placeholder="Ej: Grader Baader" />
-          ${buildDatalist('nivel3List', jerarquia.sistemaEquipo)}
+          <label>Nivel 3  Sub-rea</label>
+          <input type="text" name="subArea" list="subAreaList" placeholder="Ej: Estanques" value="${this.escapeHtml(mapJerarquiaDefaults.subArea || '')}" />
+          ${buildDatalist('subAreaList', jerarquia.subArea)}
         </div>
         <div class="form-group">
-          <label>Nivel 4  Sub-sistema</label>
-          <input type="text" name="nivel4" list="nivel4List" placeholder="Ej: Cinta Zeta" />
-          ${buildDatalist('nivel4List', jerarquia.subSistema)}
+          <label>Nivel 4  Sistema / Equipo</label>
+          <input type="text" name="sistemaEquipo" list="sistemaEquipoList" placeholder="Ej: Grader Baader" value="${this.escapeHtml(mapJerarquiaDefaults.sistemaEquipo || '')}" />
+          ${buildDatalist('sistemaEquipoList', jerarquia.sistemaEquipo)}
         </div>
         <div class="form-group">
-          <label>Nivel 5  Seccin</label>
-          <input type="text" name="nivel5" list="nivel5List" placeholder="Ej: Mdulo 1" />
-          ${buildDatalist('nivel5List', jerarquia.seccion)}
+          <label>Nivel 5  Sub-sistema</label>
+          <input type="text" name="subSistema" list="subSistemaList" placeholder="Ej: Cinta Zeta" value="${this.escapeHtml(mapJerarquiaDefaults.subSistema || '')}" />
+          ${buildDatalist('subSistemaList', jerarquia.subSistema)}
+        </div>
+        <div class="form-group">
+          <label>Nivel 6  Seccin</label>
+          <input type="text" name="seccion" list="seccionList" placeholder="Ej: Mdulo 1" value="${this.escapeHtml(mapJerarquiaDefaults.seccion || '')}" />
+          ${buildDatalist('seccionList', jerarquia.seccion)}
         </div>
         <div class="form-group">
           <label>Equipos / mquinas (uno por lnea)</label>
@@ -20739,13 +21443,20 @@ dibujarUbicacionesResaltadas(ctx) {
     const labelOffsetX = parseInt(formData.get('labelOffsetX'), 10) || 0;
     const labelOffsetY = parseInt(formData.get('labelOffsetY'), 10) || 0;
 
-    const jerarquia = {
-      nivel1: (formData.get('nivel1') || '').toString().trim() || null,
-      nivel2: (formData.get('nivel2') || '').toString().trim() || null,
-      nivel3: (formData.get('nivel3') || '').toString().trim() || null,
-      nivel4: (formData.get('nivel4') || '').toString().trim() || null,
-      nivel5: (formData.get('nivel5') || '').toString().trim() || null
-    };
+    const jerarquia = {};
+    const planta = (formData.get('planta') || '').toString().trim();
+    const areaGeneral = (formData.get('areaGeneral') || '').toString().trim();
+    const subArea = (formData.get('subArea') || '').toString().trim();
+    const sistemaEquipo = (formData.get('sistemaEquipo') || '').toString().trim();
+    const subSistema = (formData.get('subSistema') || '').toString().trim();
+    const seccion = (formData.get('seccion') || '').toString().trim();
+
+    if (planta) jerarquia.planta = planta;
+    if (areaGeneral) jerarquia.areaGeneral = areaGeneral;
+    if (subArea) jerarquia.subArea = subArea;
+    if (sistemaEquipo) jerarquia.sistemaEquipo = sistemaEquipo;
+    if (subSistema) jerarquia.subSistema = subSistema;
+    if (seccion) jerarquia.seccion = seccion;
 
     const equiposRaw = (formData.get('equipos') || '').toString();
     const equipos = equiposRaw
@@ -20881,6 +21592,101 @@ dibujarUbicacionesResaltadas(ctx) {
         <button type="button" class="map-btn map-btn--ghost" data-action="badge-assign-jerarquia">Editar</button>
     `;
     this.renderMapJerarquiaBranch();
+  },
+
+  showMapLoadingOverlay(map) {
+    const overlay = this.elements.mapLoadingOverlay;
+    if (!overlay) return;
+
+    clearTimeout(this.state.mapLoadingHideTimeout);
+    this.state.mapLoadingActive = true;
+    this.state.mapLoadingProgress = 0;
+
+    const title = map?.name ? `Cargando ${map.name}` : 'Preparando mapa';
+    if (this.elements.mapLoadingTitle) {
+      this.elements.mapLoadingTitle.textContent = title;
+    }
+    if (this.elements.mapLoadingStatus) {
+      this.elements.mapLoadingStatus.textContent = 'Buscando imagen en la carpeta...';
+    }
+    if (this.elements.mapLoadingPercent) {
+      this.elements.mapLoadingPercent.textContent = '0%';
+    }
+    if (this.elements.mapLoadingBar) {
+      this.elements.mapLoadingBar.style.width = '0%';
+    }
+
+    overlay.classList.remove('hidden');
+  },
+
+  updateMapLoadingProgress(percent, message = null) {
+    if (!this.state.mapLoadingActive) {
+      return;
+    }
+    const overlay = this.elements.mapLoadingOverlay;
+    if (!overlay) {
+      return;
+    }
+
+    const clamped = Math.max(this.state.mapLoadingProgress, Math.min(99, Math.round(percent)));
+    this.state.mapLoadingProgress = clamped;
+
+    if (this.elements.mapLoadingBar) {
+      this.elements.mapLoadingBar.style.width = `${clamped}%`;
+    }
+    if (this.elements.mapLoadingPercent) {
+      this.elements.mapLoadingPercent.textContent = `${clamped}%`;
+    }
+    if (message && this.elements.mapLoadingStatus) {
+      this.elements.mapLoadingStatus.textContent = message;
+    }
+  },
+
+  completeMapLoadingProgress(message = 'Mapa listo') {
+    if (!this.state.mapLoadingActive) {
+      return;
+    }
+
+    this.state.mapLoadingProgress = 100;
+    if (this.elements.mapLoadingBar) {
+      this.elements.mapLoadingBar.style.width = '100%';
+    }
+    if (this.elements.mapLoadingPercent) {
+      this.elements.mapLoadingPercent.textContent = '100%';
+    }
+    if (this.elements.mapLoadingStatus && message) {
+      this.elements.mapLoadingStatus.textContent = message;
+    }
+
+    clearTimeout(this.state.mapLoadingHideTimeout);
+    this.state.mapLoadingHideTimeout = setTimeout(() => {
+      this.hideMapLoadingOverlay();
+    }, 450);
+  },
+
+  hideMapLoadingOverlay(force = false, message = null) {
+    if (!this.elements.mapLoadingOverlay) {
+      return;
+    }
+    if (!this.state.mapLoadingActive && !force) {
+      return;
+    }
+
+    if (message && this.elements.mapLoadingStatus) {
+      this.elements.mapLoadingStatus.textContent = message;
+    }
+
+    clearTimeout(this.state.mapLoadingHideTimeout);
+    this.state.mapLoadingHideTimeout = null;
+    this.state.mapLoadingActive = false;
+    this.state.mapLoadingProgress = 0;
+    this.elements.mapLoadingOverlay.classList.add('hidden');
+    if (this.elements.mapLoadingBar) {
+      this.elements.mapLoadingBar.style.width = '0%';
+    }
+    if (this.elements.mapLoadingPercent) {
+      this.elements.mapLoadingPercent.textContent = '0%';
+    }
   },
 
   normalizeMapJerarquiaPath(path = []) {
@@ -21252,7 +22058,10 @@ dibujarUbicacionesResaltadas(ctx) {
     
     // Cargar imagen del mapa
     if (map.imagePath) {
+      this.showMapLoadingOverlay(map);
       this.loadMapImageFromStorage(map.imagePath);
+    } else {
+      this.hideMapLoadingOverlay(true, 'El mapa seleccionado no tiene imagen asociada.');
     }
 
     // Cargar reas del mapa
@@ -21264,9 +22073,14 @@ dibujarUbicacionesResaltadas(ctx) {
 
   async loadMapImageFromStorage(imagePath) {
     try {
+      if (!this.state.mapLoadingActive) {
+        this.showMapLoadingOverlay(this.state.currentMap);
+      }
+      this.updateMapLoadingProgress(15, 'Leyendo imagen desde la carpeta...');
       const blob = await fsManager.readFile(imagePath);
       if (!blob) {
         console.warn(' No se pudo cargar la imagen del mapa');
+        this.hideMapLoadingOverlay(true, 'No se encontr el archivo de imagen.');
         return;
       }
 
@@ -21274,19 +22088,25 @@ dibujarUbicacionesResaltadas(ctx) {
       const img = new Image();
       
       img.onload = () => {
+        this.updateMapLoadingProgress(85, 'Aplicando mapa al lienzo...');
         this.state.currentImage = img;
         this.state.currentImageUrl = url;
         this.configureCanvasForImage(img, { keepViewport: false }); //  FIX: Configurar canvas con imagen escalada
         this.draw();
+        this.completeMapLoadingProgress();
+        URL.revokeObjectURL(url);
       };
 
       img.onerror = () => {
         console.error(' Error cargando imagen del mapa');
+        URL.revokeObjectURL(url);
+        this.hideMapLoadingOverlay(true, 'Error cargando la imagen del mapa.');
       };
 
       img.src = url;
     } catch (error) {
       console.error(' Error leyendo imagen:', error);
+      this.hideMapLoadingOverlay(true, 'Error leyendo la imagen.');
     }
   },
 
@@ -24105,6 +24925,161 @@ dibujarUbicacionesResaltadas(ctx) {
     return labels.length ? labels.join(' > ') : path.map(node => node.id).join(' > ');
   },
 
+  getJerarquiaOptionCatalog() {
+    if (this.cachedJerarquiaOptions) {
+      return this.cachedJerarquiaOptions;
+    }
+
+    const structureOptions = this.buildJerarquiaOptionSetsFromStructure(app?.jerarquiaAnidada);
+    const mergedOptions = this.mergeWithFallbackJerarquiaOptions(structureOptions);
+    this.cachedJerarquiaOptions = mergedOptions;
+    return mergedOptions;
+  },
+
+  buildJerarquiaOptionSetsFromStructure(structure) {
+    const empty = {
+      planta: [],
+      areaGeneral: [],
+      subArea: [],
+      sistemaEquipo: [],
+      subSistema: [],
+      seccion: [],
+      subSeccion: []
+    };
+
+    if (!structure || !structure.empresa) {
+      return empty;
+    }
+
+    const sets = Object.fromEntries(Object.keys(empty).map(key => [key, new Set()]));
+    const addValue = (key, value) => {
+      if (!key || !value) return;
+      sets[key].add(value);
+    };
+
+    const traverse = (node, nivel) => {
+      if (!node) return;
+      const nombre = node.nombre || node.name || node.label || node.id;
+      switch (nivel) {
+        case 'empresa':
+          addValue('planta', nombre);
+          break;
+        case 'area':
+          addValue('areaGeneral', nombre);
+          break;
+        case 'subArea':
+          addValue('subArea', nombre);
+          break;
+        case 'sistema':
+          addValue('sistemaEquipo', nombre);
+          break;
+        case 'subSistema':
+          addValue('subSistema', nombre);
+          break;
+        case 'seccion':
+          addValue('seccion', nombre);
+          break;
+        case 'subSeccion':
+          addValue('subSeccion', nombre);
+          break;
+        default:
+          break;
+      }
+
+      const config = this.jerarquiaLevelConfig[nivel];
+      if (!config?.childKey || !config?.childNivel) {
+        return;
+      }
+
+      const children = node[config.childKey];
+      if (Array.isArray(children)) {
+        children.forEach(child => traverse(child, config.childNivel));
+      }
+    };
+
+    traverse(structure.empresa, 'empresa');
+
+    return Object.fromEntries(Object.entries(sets).map(([key, set]) => {
+      const values = Array.from(set);
+      values.sort((a, b) => a.localeCompare(b || '', 'es', { sensitivity: 'base' }));
+      return [key, values];
+    }));
+  },
+
+  mergeWithFallbackJerarquiaOptions(baseOptions = {}) {
+    const clone = JSON.parse(JSON.stringify({
+      planta: [],
+      areaGeneral: [],
+      subArea: [],
+      sistemaEquipo: [],
+      subSistema: [],
+      seccion: [],
+      subSeccion: [],
+      ...baseOptions
+    }));
+
+    const pushUnique = (key, value) => {
+      if (!value) return;
+      if (!Array.isArray(clone[key])) clone[key] = [];
+      if (!clone[key].includes(value)) {
+        clone[key].push(value);
+      }
+    };
+
+    const fallbackSources = [app?.opcionesJerarquia];
+    fallbackSources.forEach(source => {
+      if (!source) return;
+      Object.entries(source).forEach(([key, values]) => {
+        if (!Array.isArray(values)) return;
+        values.forEach(value => pushUnique(key, value));
+      });
+    });
+
+    Object.keys(clone).forEach(key => {
+      if (Array.isArray(clone[key])) {
+        clone[key].sort((a, b) => a.localeCompare(b || '', 'es', { sensitivity: 'base' }));
+      }
+    });
+
+    return clone;
+  },
+
+  normalizeAreaJerarquia(jerarquia = {}) {
+    const safe = jerarquia || {};
+    return {
+      planta: safe.planta || safe.nivel1 || safe.empresa || '',
+      areaGeneral: safe.areaGeneral || safe.nivel2 || '',
+      subArea: safe.subArea || safe.nivel3 || '',
+      sistemaEquipo: safe.sistemaEquipo || safe.nivel4 || '',
+      subSistema: safe.subSistema || safe.nivel5 || '',
+      seccion: safe.seccion || safe.nivel6 || '',
+      subSeccion: safe.subSeccion || safe.nivel7 || '',
+      detalle: safe.detalle || ''
+    };
+  },
+
+  getCurrentMapJerarquiaDefaults() {
+    if (!this.state.currentMap || !Array.isArray(this.state.currentMap.jerarquiaPath)) {
+      return {};
+    }
+
+    const path = this.state.currentMap.jerarquiaPath;
+    const getLabel = (index) => {
+      const node = path[index];
+      if (!node) return '';
+      return this.getJerarquiaNodeName(node);
+    };
+
+    return {
+      planta: getLabel(0),
+      areaGeneral: getLabel(1),
+      subArea: getLabel(2),
+      sistemaEquipo: getLabel(3),
+      subSistema: getLabel(4),
+      seccion: getLabel(5)
+    };
+  },
+
   //  ELIMINAR MAPA
   async deleteMap(mapId) {
     const numericId = typeof mapId === 'string' ? parseInt(mapId, 10) : mapId;
@@ -24136,6 +25111,14 @@ dibujarUbicacionesResaltadas(ctx) {
       const updatedMaps = (mapStorage.maps || []).filter(m => m.id !== numericId);
       await mapStorage.saveMaps(updatedMaps, { action: 'delete', mapId: numericId, detail: map.name });
 
+      let imageDeleteWarning = null;
+      if (map.imagePath) {
+        const deleteResult = await mapStorage.deleteMapImage(map.imagePath);
+        if (!deleteResult.success && deleteResult.reason !== 'fs-offline' && deleteResult.reason !== 'no-path') {
+          imageDeleteWarning = 'El mapa se elimin, pero la imagen no pudo borrarse. Revisa la consola para ms detalles.';
+        }
+      }
+
       // Limpiar estado actual si era el mapa activo
       if (this.state.currentMapId === numericId) {
         this.state.currentMapId = null;
@@ -24147,9 +25130,35 @@ dibujarUbicacionesResaltadas(ctx) {
 
       await this.loadData({ force: true });
       this.showToast(`Mapa "${map.name}" eliminado correctamente.`, 'success');
+      if (imageDeleteWarning) {
+        this.showToast(imageDeleteWarning, 'warning');
+      }
     } catch (error) {
       console.error('Error eliminando mapa:', error);
       this.showToast('No se pudo eliminar el mapa. Revisa la consola.', 'error');
+    }
+  },
+
+  async cleanOrphanMapImages() {
+    if (!mapStorage.initialized) {
+      this.showToast('Conecta la carpeta antes de limpiar mapas.', 'info');
+      return;
+    }
+
+    try {
+      const stats = await mapStorage.cleanupOrphanMapImages();
+      if (!stats.orphans) {
+        this.showToast('No hay imgenes hurfanas en la carpeta de mapas.', 'success');
+        return;
+      }
+
+      const message = stats.removed === stats.orphans
+        ? `${stats.removed} imagen(es) hurfana(s) eliminada(s).`
+        : `Se eliminaron ${stats.removed} de ${stats.orphans} imgenes hurfanas. Revisa la consola para los errores.`;
+      this.showToast(message, stats.removed === stats.orphans ? 'success' : 'warning');
+    } catch (error) {
+      console.error('Error limpiando imgenes de mapas:', error);
+      this.showToast('No se pudo limpiar la carpeta de mapas.', 'error');
     }
   },
 
@@ -24398,10 +25407,10 @@ dibujarUbicacionesResaltadas(ctx) {
 
     this.elements.modalTitle.textContent = 'editar rea';
 
-    const jerarquia = area.jerarquia || {};
+    const jerarquia = this.normalizeAreaJerarquia(area.jerarquia);
     const equiposText = Array.isArray(area.equipos) ? area.equipos.join('\n') : '';
     
-    const appJerarquia = app?.opcionesJerarquia || {};
+    const jerarquiaOptions = this.getJerarquiaOptionCatalog();
     const buildDatalist = (id, values) => {
       if (!Array.isArray(values) || !values.length) return '';
       return `<datalist id="${id}">${values.map(v => `<option value="${this.escapeHtml(v)}"></option>`).join('')}</datalist>`;
@@ -24471,34 +25480,34 @@ dibujarUbicacionesResaltadas(ctx) {
         </div>
         
         <div class="form-group">
-          <label>Planta</label>
-          <input type="text" name="planta" list="plantaList" placeholder="Ej: Planta Principal" value="${this.escapeHtml(jerarquia.planta || '')}" />
-          ${buildDatalist('plantaList', appJerarquia.planta || [])}
+          <label>Empresa / Planta (N1)</label>
+          <input type="text" name="planta" list="plantaList" placeholder="Ej: Aquachile Antarfood" value="${this.escapeHtml(jerarquia.planta || '')}" />
+          ${buildDatalist('plantaList', jerarquiaOptions.planta)}
         </div>
         <div class="form-group">
-          <label>Area General</label>
-          <input type="text" name="areaGeneral" list="areaGeneralList" placeholder="Ej: Filete" value="${this.escapeHtml(jerarquia.areaGeneral || '')}" />
-          ${buildDatalist('areaGeneralList', appJerarquia.areaGeneral)}
+          <label>rea General (N2)</label>
+          <input type="text" name="areaGeneral" list="areaGeneralList" placeholder="Ej: Planta Principal" value="${this.escapeHtml(jerarquia.areaGeneral || '')}" />
+          ${buildDatalist('areaGeneralList', jerarquiaOptions.areaGeneral)}
         </div>
         <div class="form-group">
-          <label>Sub-area</label>
-          <input type="text" name="subArea" list="subAreaList" placeholder="Ej: Cinta Curva Filete" value="${this.escapeHtml(jerarquia.subArea || '')}" />
-          ${buildDatalist('subAreaList', appJerarquia.subArea)}
+          <label>Sub-rea (N3)</label>
+          <input type="text" name="subArea" list="subAreaList" placeholder="Ej: Estanques" value="${this.escapeHtml(jerarquia.subArea || '')}" />
+          ${buildDatalist('subAreaList', jerarquiaOptions.subArea)}
         </div>
         <div class="form-group">
-          <label>Sistema / Equipo</label>
+          <label>Sistema / Equipo (N4)</label>
           <input type="text" name="sistemaEquipo" list="sistemaEquipoList" placeholder="Ej: Grader Baader" value="${this.escapeHtml(jerarquia.sistemaEquipo || '')}" />
-          ${buildDatalist('sistemaEquipoList', appJerarquia.sistemaEquipo)}
+          ${buildDatalist('sistemaEquipoList', jerarquiaOptions.sistemaEquipo)}
         </div>
         <div class="form-group">
-          <label>Sub-sistema</label>
+          <label>Sub-sistema (N5)</label>
           <input type="text" name="subSistema" list="subSistemaList" placeholder="Ej: Motor Principal" value="${this.escapeHtml(jerarquia.subSistema || '')}" />
-          ${buildDatalist('subSistemaList', appJerarquia.subSistema)}
+          ${buildDatalist('subSistemaList', jerarquiaOptions.subSistema)}
         </div>
         <div class="form-group">
-          <label>Seccion</label>
-          <input type="text" name="seccion" list="seccionList" placeholder="Ej: Modulo 1" value="${this.escapeHtml(jerarquia.seccion || '')}" />
-          ${buildDatalist('seccionList', appJerarquia.seccion)}
+          <label>Seccin (N6)</label>
+          <input type="text" name="seccion" list="seccionList" placeholder="Ej: Mdulo 1" value="${this.escapeHtml(jerarquia.seccion || '')}" />
+          ${buildDatalist('seccionList', jerarquiaOptions.seccion)}
         </div>
         <div class="form-group">
           <label>Equipos / maquinas (uno por linea)</label>
@@ -32958,14 +33967,7 @@ class InventarioCompleto {
 
   renderListasGestion() {
     const listas = [
-      { id: 'tipo', nombre: 'Tipo', field: 'tipo', esJerarquia: false },
-      { id: 'areaGeneral', nombre: 'rea General', field: 'areaGeneral', esJerarquia: true },
-      { id: 'subArea', nombre: 'Sub-rea', field: 'subArea', esJerarquia: true },
-      { id: 'sistemaEquipo', nombre: 'Sistema/Equipo', field: 'sistemaEquipo', esJerarquia: true },
-      { id: 'subSistema', nombre: 'Sub-Sistema', field: 'subSistema', esJerarquia: true },
-      { id: 'seccion', nombre: 'Seccin', field: 'seccion', esJerarquia: true },
-      { id: 'subSeccion', nombre: 'Sub-Seccin', field: 'subSeccion', esJerarquia: true }
-      // Nota: 'detalle' se omite porque es campo de texto libre
+      { id: 'tipo', nombre: 'Tipo', field: 'tipo', esJerarquia: false }
     ];
 
     listas.forEach(lista => {
@@ -33083,6 +34085,12 @@ class InventarioCompleto {
       'seccion': 'Seccion',
       'detalle': 'Detalle'
     };
+
+    const jerarquiaManaged = ['areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion', 'subSeccion'];
+    if (jerarquiaManaged.includes(tipo)) {
+      this.showToast(' Administra este nivel desde la pestana Jerarquia > Arbol corporativo.', 'info');
+      return;
+    }
     
     const inputId = 'nuevo' + nombres[tipo];
     const input = document.getElementById(inputId);
@@ -33092,16 +34100,6 @@ class InventarioCompleto {
     const valor = input.value.trim();
     if (!valor) {
       this.showToast(' Ingresa un valor', 'error');
-      return;
-    }
-
-    // Si es un nivel de jerarqua (excepto detalle), usar las nuevas funciones
-    if (['areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion'].includes(tipo)) {
-      const result = this.agregarOpcionJerarquia(tipo, valor);
-      if (result) {
-        input.value = '';
-        this.renderListasGestion();
-      }
       return;
     }
 
@@ -33133,48 +34131,10 @@ class InventarioCompleto {
     }
 
     const valorTrim = nuevoValor.trim();
+    const jerarquiaManaged = ['areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion', 'subSeccion'];
     
-    // Si es un nivel de jerarqua (excepto detalle), usar opcionesJerarquia
-    if (['areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion'].includes(tipo)) {
-      if (this.opcionesJerarquia[tipo].includes(valorTrim) && valorTrim !== valorActual) {
-        this.showToast(' Este valor ya existe', 'warning');
-        return;
-      }
-      
-      // Actualizar en repuestos existentes
-      let modificados = 0;
-      this.repuestos.forEach(repuesto => {
-        if (repuesto.ubicaciones && Array.isArray(repuesto.ubicaciones)) {
-          repuesto.ubicaciones.forEach(ubicacion => {
-            if (ubicacion[tipo] === valorActual) {
-              ubicacion[tipo] = valorTrim;
-              modificados++;
-            }
-          });
-        }
-      });
-      
-      // Actualizar en la lista
-      this.opcionesJerarquia[tipo][index] = valorTrim;
-      this.opcionesJerarquia[tipo].sort();
-      this.saveOpcionesPersonalizadas({
-        reason: 'editar-opcion',
-        meta: {
-          nivel: tipo,
-          index,
-          valorAnterior: valorActual,
-          valorNuevo: valorTrim
-        }
-      });
-      
-      if (modificados > 0) {
-        this.guardarDatos();
-        this.showToast(` Valor actualizado en ${modificados} ubicacin(es)`, 'success');
-      } else {
-        this.showToast(` Valor actualizado: ${valorTrim}`, 'success');
-      }
-      
-      this.renderListasGestion();
+    if (jerarquiaManaged.includes(tipo)) {
+      this.showToast(' Este nivel se edita desde Jerarquia > Arbol corporativo.', 'info');
       return;
     }
     
@@ -33208,12 +34168,9 @@ class InventarioCompleto {
       return;
     }
 
-    // Si es un nivel de jerarqua (excepto detalle), usar las nuevas funciones
-    if (['areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion'].includes(tipo)) {
-      const result = this.eliminarOpcionJerarquia(tipo, valor);
-      if (result) {
-        this.renderListasGestion();
-      }
+    const jerarquiaManaged = ['areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion', 'subSeccion'];
+    if (jerarquiaManaged.includes(tipo)) {
+      this.showToast(' Este nivel se elimina desde la pestana Jerarquia.', 'info');
       return;
     }
 

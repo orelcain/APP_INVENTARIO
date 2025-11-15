@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1760411932641,
+    "name": "Planta Principal",
+    "imagePath": "imagenes/mapas/map_1760411932641.png",
+    "width": 9362,
+    "height": 6623,
+    "createdAt": "2025-10-14T03:18:52.886Z",
+    "updatedAt": "2025-11-15T00:21:05.263Z",
+    "jerarquiaPath": [
+      {
+        "id": "AQ-IN",
+        "nivel": "empresa"
+      },
+      {
+        "id": "PCHO",
+        "nivel": "area"
+      }
+    ]
+  },
+  {
+    "id": 1763209400991,
+    "name": "Recinto Aquachile Antarfood",
+    "imagePath": "imagenes/mapas/map_1763209400991.png",
+    "width": 18725,
+    "height": 13245,
+    "createdAt": "2025-11-15T12:23:21.221Z",
+    "updatedAt": "2025-11-15T12:23:38.348Z",
+    "jerarquiaPath": [
+      {
+        "id": "AQ-IN",
+        "nivel": "empresa"
+      }
+    ]
+  }
+]
