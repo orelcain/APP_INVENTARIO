@@ -45,18 +45,45 @@
     "ubicaciones": [
       {
         "areaGeneral": "Planta Principal",
-        "subArea": "Filete"
+        "subArea": "Filete",
+        "sistemaEquipo": "Cinta Curva",
+        "jerarquiaPath": [
+          {
+            "id": "nivel1-1763271919614-119e",
+            "name": "Aquachile Antarfood Chonchi",
+            "level": "planta",
+            "storageKey": "nivel1"
+          },
+          {
+            "id": "nivel2-1763271919614-d544",
+            "name": "Planta Principal",
+            "level": "areaGeneral",
+            "storageKey": "nivel2"
+          },
+          {
+            "id": "nivel3-1763271919614-2a0b",
+            "name": "Filete",
+            "level": "subArea",
+            "storageKey": "nivel3"
+          },
+          {
+            "id": "nivel4-1763271919614-3662",
+            "name": "Cinta Curva",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4"
+          }
+        ]
       }
     ],
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Filete",
-    "sistemaEquipo": "",
+    "sistemaEquipo": "Cinta Curva",
     "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "",
+    "equipo": "Cinta Curva",
     "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 0,
@@ -65,30 +92,8 @@
     "optimo": 1,
     "precio": 0,
     "datosTecnicos": "",
-    "multimedia": [
-      {
-        "tipo": "image",
-        "filename": "1762032176113_cinta curva.webp",
-        "originalName": "cinta curva.jpg",
-        "size": 118859,
-        "mimeType": "image/webp",
-        "uploadDate": "2025-11-01T21:22:56.113Z",
-        "compressed": true,
-        "originalSize": 430009,
-        "url": "./imagenes/1762032176113_cinta curva.webp",
-        "type": "image",
-        "name": "1762032176113_cinta curva.webp",
-        "isFileSystem": true
-      },
-      {
-        "type": "image",
-        "url": "./imagenes/1762029687717_cinta curva.webp",
-        "name": "1762029687717_cinta curva.webp",
-        "size": 64892,
-        "isFileSystem": true
-      }
-    ],
-    "ultimaModificacion": "2025-11-08T23:41:37.851Z",
+    "multimedia": [],
+    "ultimaModificacion": "2025-11-16T05:45:19.630Z",
     "ultimoConteo": "2025-11-01T21:06:55.897Z"
   },
   {
@@ -123,15 +128,7 @@
     "optimo": 8,
     "precio": 0,
     "datosTecnicos": "",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/1762032176113_cinta curva.webp",
-        "name": "1762032176113_cinta curva.webp",
-        "size": 118840,
-        "isFileSystem": true
-      }
-    ],
+    "multimedia": [],
     "ultimaModificacion": "2025-10-31T06:21:06.323Z",
     "ultimoConteo": "2025-11-01T21:07:05.139Z"
   },
@@ -159,15 +156,7 @@
     "detalle": "",
     "precio": 0,
     "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/1762032176113_cinta curva.webp",
-        "name": "1762032176113_cinta curva.webp",
-        "size": 118840,
-        "isFileSystem": true
-      }
-    ],
+    "multimedia": [],
     "ultimaModificacion": "2025-10-31T06:34:17.781Z",
     "ultimoConteo": null
   },
@@ -245,15 +234,7 @@
     "optimo": 10,
     "precio": 0,
     "datosTecnicos": "",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PARADA EMERGENCIA.webp",
-        "name": "PARADA EMERGENCIA.webp",
-        "size": 458902,
-        "isFileSystem": true
-      }
-    ],
+    "multimedia": [],
     "ultimaModificacion": "2025-10-26T05:21:56.417Z",
     "ultimoConteo": "2025-10-25T19:09:09.791Z"
   },
@@ -268,15 +249,7 @@
     "cantidad": 20,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PERNO HEX M8X60 INOX.webp",
-        "name": "PERNO HEX M8X60 INOX.webp",
-        "size": 599988,
-        "isFileSystem": true
-      }
-    ],
+    "multimedia": [],
     "ultimoConteo": "2025-10-23T11:55:25.926Z",
     "ultimaModificacion": "2025-10-23T11:55:25.926Z"
   },
@@ -291,15 +264,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp",
-        "name": "PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp",
-        "size": 40748,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592199400670.7478335076421804",
@@ -312,15 +277,7 @@
     "cantidad": 10,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/DESOXIDANTE WURTH.webp",
-        "name": "DESOXIDANTE WURTH.webp",
-        "size": 677952,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592206005860.9394235640437687",
@@ -346,15 +303,7 @@
     "cantidad": 10,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp",
-        "name": "PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp",
-        "size": 45008,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592209229850.5499875719973021",
@@ -367,15 +316,7 @@
     "cantidad": 10,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp",
-        "name": "PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp",
-        "size": 28896,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592213904480.9935691841166233",
@@ -388,15 +329,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp",
-        "name": "EQUIPO ESTANCO FLUORECENTE 2X18W.webp",
-        "size": 162636,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592227103960.9902849805827032",
@@ -409,15 +342,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/DIFERENCIAL 2P 230V 30MA.webp",
-        "name": "DIFERENCIAL 2P 230V 30MA.webp",
-        "size": 146728,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592228408360.8467621375869214",
@@ -430,15 +355,7 @@
     "cantidad": 10,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/CAJA HIDROBOX 3 MODULOS.webp",
-        "name": "CAJA HIDROBOX 3 MODULOS.webp",
-        "size": 106964,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592232458430.04028172247165196",
@@ -451,15 +368,7 @@
     "cantidad": 10,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/ADAPTADOR PUNTA DADO 8MM.webp",
-        "name": "ADAPTADOR PUNTA DADO 8MM.webp",
-        "size": 93628,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592233569320.7176829466600226",
@@ -472,15 +381,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/TORNILLO VOLCANITA 6X1.webp",
-        "name": "TORNILLO VOLCANITA 6X1.webp",
-        "size": 73346,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592236133150.23595482184124117",
@@ -493,15 +394,7 @@
     "cantidad": 40,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/TORNILLO AUTOPERFORANTE C GOLILLA 516X3.webp",
-        "name": "TORNILLO AUTOPERFORANTE C GOLILLA 516X3.webp",
-        "size": 108140,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592237669010.37761878010908057",
@@ -514,15 +407,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/MODULOS ENCHUFE 10-16 A .webp",
-        "name": "MODULOS ENCHUFE 10-16 A .webp",
-        "size": 68398,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592238661610.4367944240184073",
@@ -535,15 +420,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/CORDON ELECTRICO 3X1,5MM.webp",
-        "name": "CORDON ELECTRICO 3X1,5MM.webp",
-        "size": 74942,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592239751610.9658832513928665",
@@ -556,15 +433,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/CAJA ESTANCA 100X100X80.webp",
-        "name": "CAJA ESTANCA 100X100X80.webp",
-        "size": 73358,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592240702720.16100438760262037",
@@ -577,15 +446,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/AUTOMATICO 1P 16 A.webp",
-        "name": "AUTOMATICO 1P 16 A.webp",
-        "size": 77120,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592242628090.9795950822105788",
@@ -598,15 +459,7 @@
     "cantidad": 100,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PLANTA_PRINCIPAL__3100027202_MANGUERA_ALTA_PRESION_MALLAFLEX_34_1760288974266_2.webp",
-        "name": "PLANTA_PRINCIPAL__3100027202_MANGUERA_ALTA_PRESION_MALLAFLEX_34_1760288974266_2.webp",
-        "size": 50530,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592243370880.4504385743033742",
@@ -639,15 +492,7 @@
     "optimo": 10,
     "precio": 0,
     "datosTecnicos": "",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/RESORTE PALPADOR.webp",
-        "name": "RESORTE PALPADOR.webp",
-        "size": 58054,
-        "isFileSystem": true
-      }
-    ],
+    "multimedia": [],
     "ultimaModificacion": "2025-10-26T17:55:12.620Z",
     "ultimoConteo": null
   },
@@ -682,15 +527,7 @@
     "optimo": 10,
     "precio": 0,
     "datosTecnicos": "",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/RESORTE CARRO.webp",
-        "name": "RESORTE CARRO.webp",
-        "size": 115738,
-        "isFileSystem": true
-      }
-    ],
+    "multimedia": [],
     "ultimaModificacion": "2025-10-26T17:55:03.173Z",
     "ultimoConteo": null
   },
@@ -725,15 +562,7 @@
     "optimo": 10,
     "precio": 0,
     "datosTecnicos": "",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/RESORTE MEDIDOR LARGO.webp",
-        "name": "RESORTE MEDIDOR LARGO.webp",
-        "size": 78780,
-        "isFileSystem": true
-      }
-    ],
+    "multimedia": [],
     "ultimaModificacion": "2025-10-26T17:54:53.138Z",
     "ultimoConteo": null
   },
@@ -748,15 +577,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/ABRAZADERA CREMALLERA.webp",
-        "name": "ABRAZADERA CREMALLERA.webp",
-        "size": 89462,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592253461110.6945119839993569",
@@ -769,15 +590,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/GOLILLA PLANA 12 INOX.webp",
-        "name": "GOLILLA PLANA 12 INOX.webp",
-        "size": 94768,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592254375900.19890033471066937",
@@ -790,15 +603,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PLANTA_PRINCIPAL__3300105515_PERNO_CABEZA_HEXAGONAL_INOX_M10X60MM_1760289008218.webp",
-        "name": "PLANTA_PRINCIPAL__3300105515_PERNO_CABEZA_HEXAGONAL_INOX_M10X60MM_1760289008218.webp",
-        "size": 40416,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592254986790.5721365294146196",
@@ -811,15 +616,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/GOLILLA PRESION M16.webp",
-        "name": "GOLILLA PRESION M16.webp",
-        "size": 87528,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592259658780.9717516118404113",
@@ -832,15 +629,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PERNO HEX 12X60 MM INOX.webp",
-        "name": "PERNO HEX 12X60 MM INOX.webp",
-        "size": 79832,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592271668920.27099177805021235",
@@ -853,15 +642,7 @@
     "cantidad": 1,
     "minimo": 3,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/BLOQUE VALVULA VTUG.webp",
-        "name": "BLOQUE VALVULA VTUG.webp",
-        "size": 780462,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592274788510.3233448016777972",
@@ -913,15 +694,7 @@
     "cantidad": 10,
     "minimo": 10,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/BLOQUE VALVULA VTUG.webp",
-        "name": "BLOQUE VALVULA VTUG.webp",
-        "size": 780462,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592280848740.9626898345654986",
@@ -960,15 +733,7 @@
     "cantidad": 15,
     "minimo": 20,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/FOCO PROYECTOR 150W.webp",
-        "name": "FOCO PROYECTOR 150W.webp",
-        "size": 64308,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592283637220.6941511398148752",
@@ -981,15 +746,7 @@
     "cantidad": 20,
     "minimo": 10,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/1761249794280_3300105501_PARADA_EMERGENCIA_CON_CAJA_foto2.webp",
-        "name": "1761249794280_3300105501_PARADA_EMERGENCIA_CON_CAJA_foto2.webp",
-        "size": 27506,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "17592284877460.4774899031855503",
@@ -1028,15 +785,7 @@
     "cantidad": 20,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/GRASA ALIMENTARIA BLANCA BEL RAY.webp",
-        "name": "GRASA ALIMENTARIA BLANCA BEL RAY.webp",
-        "size": 612022,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "draft_17592224546130.5056254889369888",
@@ -1049,15 +798,7 @@
     "cantidad": 6,
     "minimo": 5,
     "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/CAJA HIDROBOX 2 MODULOS.webp",
-        "name": "CAJA HIDROBOX 2 MODULOS.webp",
-        "size": 85580,
-        "isFileSystem": true
-      }
-    ]
+    "multimedia": []
   },
   {
     "id": "9001",

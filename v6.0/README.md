@@ -67,3 +67,10 @@ npm run preview
 - Mantener `../INVENTARIO_STORAGE/` para datos
 - Copiar `manifest.json` si necesario
 - La version original sigue en `../v6.0/`
+
+## Contrato de mapas y jerarquía (v6.0)
+
+- Cada mapa se guarda con un único `jerarquiaPath` y el campo derivado `mapLevel`.
+- El campo `allowFreeLevel` permite excepciones puntuales (sin jerarquía obligatoria) y está desactivado por defecto.
+- Durante `mapStorage.saveMaps()` se valida que no existan nodos hoja repetidos salvo en mapas marcados como libres.
+- Ejecuta `mapStorage.auditMapHierarchy()` (una vez conectado el File System) para obtener un resumen de inconsistencias antes de migrar datos.

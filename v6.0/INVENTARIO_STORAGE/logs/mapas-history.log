@@ -23,3 +23,4 @@
 {"scope":"areas","action":"create","mapId":1763209400991,"areaId":1763214742793,"detail":"Estanque 3 Agua Salada","timestamp":"2025-11-15T13:52:23.411Z"}
 {"scope":"areas","action":"create","mapId":1763209400991,"areaId":1763214846127,"detail":"Estanque 2 Agua Duilce","timestamp":"2025-11-15T13:54:06.447Z"}
 {"scope":"areas","action":"create","mapId":1763209400991,"areaId":1763265482139,"detail":"Estanque 1 Agua Dulce","timestamp":"2025-11-16T03:58:03.294Z"}
+{"scope":"maps","action":"assign_jerarquia","mapId":1760411932641,"areaId":null,"detail":"Planta Principal","timestamp":"2025-11-16T06:15:18.175Z"}
