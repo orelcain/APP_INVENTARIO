@@ -3,6 +3,9 @@ INVENTARIO_STORAGE/backups/automaticos/
 INVENTARIO_STORAGE/backups/zip/
 INVENTARIO_STORAGE/backups_marcadores/
 
+# Backups del proyecto (no sincronizar)
+backups/
+
 # Logs
 INVENTARIO_STORAGE/logs/
 

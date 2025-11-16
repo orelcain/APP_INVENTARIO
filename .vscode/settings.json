@@ -1,0 +1,37 @@
+﻿{
+    "git.enabled":  true,
+    "search.followSymlinks":  false,
+    "files.autoSave":  "afterDelay",
+    "extensions.autoCheckUpdates":  false,
+    "git.autorefresh":  false,
+    "files.watcherExclude":  {
+                                 "**/node_modules/**":  true,
+                                 "**/.venv/**":  true,
+                                 "**/.qodo/**":  true,
+                                 "**/INVENTARIO_STORAGE/logs/**":  true,
+                                 "**/INVENTARIO_STORAGE/backups_marcadores/**":  true,
+                                 "**/INVENTARIO_STORAGE/backups/**":  true
+                             },
+    "editor.largeFileOptimizations":  true,
+    "search.exclude":  {
+                           "**/.venv":  true,
+                           "**/node_modules":  true,
+                           "**/.qodo":  true,
+                           "**/INVENTARIO_STORAGE/logs/**":  true,
+                           "**/INVENTARIO_STORAGE/backups_marcadores/**":  true,
+                           "**/INVENTARIO_STORAGE/backups/**":  true
+                       },
+    "files.autoSaveDelay":  1000,
+    "files.exclude":  {
+                          "**/.venv":  true,
+                          "**/.qodo":  true,
+                          "**/*.zip":  true,
+                          "**/node_modules":  true,
+                          "**/INVENTARIO_STORAGE/backups_marcadores/**":  true,
+                          "**/INVENTARIO_STORAGE/backups/**":  true
+                      },
+    "extensions.autoUpdate":  false,
+    "search.maxResults":  5000,
+    "files.maxMemoryForLargeFilesMB":  4096,
+    "git.ignoreLimitWarning":  true
+}
