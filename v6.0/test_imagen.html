@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Carga Imágenes</title>
+</head>
+<body style="background: #1a1d23; color: white; padding: 20px; font-family: Arial;">
+  <h1>🧪 Test de Carga de Imágenes</h1>
+  
+  <h2>Prueba 1: Ruta relativa</h2>
+  <p>URL: <code>INVENTARIO_STORAGE/imagenes/1762032176113_cinta curva.webp</code></p>
+  <img src="INVENTARIO_STORAGE/imagenes/1762032176113_cinta curva.webp" 
+       style="max-width: 300px; border: 2px solid lime;" 
+       onerror="this.style.border='2px solid red'; this.nextElementSibling.textContent='❌ ERROR'">
+  <p style="font-weight: bold; color: lime;">✓ Cargando...</p>
+  
+  <hr style="margin: 30px 0;">
+  
+  <h2>Prueba 2: Ruta con espacios codificados</h2>
+  <p>URL: <code>INVENTARIO_STORAGE/imagenes/1762032176113_cinta%20curva.webp</code></p>
+  <img src="INVENTARIO_STORAGE/imagenes/1762032176113_cinta%20curva.webp" 
+       style="max-width: 300px; border: 2px solid lime;" 
+       onerror="this.style.border='2px solid red'; this.nextElementSibling.textContent='❌ ERROR'">
+  <p style="font-weight: bold; color: lime;">✓ Cargando...</p>
+  
+  <hr style="margin: 30px 0;">
+  
+  <h2>Prueba 3: Lista de archivos disponibles</h2>
+  <div id="fileList"></div>
+  
+  <script>
+    // Cargar listado de archivos
+    fetch('INVENTARIO_STORAGE/imagenes/')
+      .then(r => r.text())
+      .then(html => {
+        document.getElementById('fileList').innerHTML = '<pre>' + html.substring(0, 500) + '...</pre>';
+      })
+      .catch(e => {
+        document.getElementById('fileList').innerHTML = '❌ No se pudo listar: ' + e.message;
+      });
+  </script>
+</body>
+</html>
