@@ -22,7 +22,34 @@
                                                   "areaGeneral":  "Planta Principal",
                                                   "subArea":  "Filete",
                                                   "sistemaEquipo":  "Cintas Filete",
-                                                  "subSistema":  "Cinta Curva"
+                                                  "subSistema":  "Cinta Curva",
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-filete-10671259",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Filete"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel4-cintas-filete-2a5e69a9",
+                                                                            "nivel":  "sistemaEquipo",
+                                                                            "storageKey":  "nivel4",
+                                                                            "name":  "Cintas Filete"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel5-cinta-curva-511d7308",
+                                                                            "nivel":  "subSistema",
+                                                                            "storageKey":  "nivel5",
+                                                                            "name":  "Cinta Curva"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subSistema"
                                               }
                                           ],
                           "planta":  "Aquachile Antarfood Chonchi",
@@ -46,7 +73,40 @@
 
                                          ],
                           "ultimaModificacion":  "2025-10-31T06:22:00.415Z",
-                          "ultimoConteo":  null
+                          "ultimoConteo":  null,
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-planta-principal-79821939",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Planta Principal"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-filete-10671259",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Filete"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-cintas-filete-2a5e69a9",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Cintas Filete"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel5-cinta-curva-511d7308",
+                                                    "nivel":  "subSistema",
+                                                    "storageKey":  "nivel5",
+                                                    "name":  "Cinta Curva"
+                                                }
+                                            ],
+                          "mapLevel":  "subSistema"
                       },
                       {
                           "id":  "17613839439910.7621910459836108",
@@ -60,7 +120,34 @@
                                                   "areaGeneral":  "Planta Principal",
                                                   "subArea":  "Filete",
                                                   "sistemaEquipo":  "Cintas Filete",
-                                                  "subSistema":  "Cinta Curva"
+                                                  "subSistema":  "Cinta Curva",
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-filete-10671259",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Filete"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel4-cintas-filete-2a5e69a9",
+                                                                            "nivel":  "sistemaEquipo",
+                                                                            "storageKey":  "nivel4",
+                                                                            "name":  "Cintas Filete"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel5-cinta-curva-511d7308",
+                                                                            "nivel":  "subSistema",
+                                                                            "storageKey":  "nivel5",
+                                                                            "name":  "Cinta Curva"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subSistema"
                                               }
                                           ],
                           "planta":  "Aquachile Antarfood Chonchi",
@@ -84,7 +171,40 @@
 
                                          ],
                           "ultimaModificacion":  "2025-10-31T06:21:32.453Z",
-                          "ultimoConteo":  null
+                          "ultimoConteo":  null,
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-planta-principal-79821939",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Planta Principal"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-filete-10671259",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Filete"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-cintas-filete-2a5e69a9",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Cintas Filete"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel5-cinta-curva-511d7308",
+                                                    "nivel":  "subSistema",
+                                                    "storageKey":  "nivel5",
+                                                    "name":  "Cinta Curva"
+                                                }
+                                            ],
+                          "mapLevel":  "subSistema"
                       },
                       {
                           "id":  "17613752737800.26683069476947185",
@@ -98,7 +218,34 @@
                                                   "areaGeneral":  "Planta Principal",
                                                   "subArea":  "Filete",
                                                   "sistemaEquipo":  "Cintas Filete",
-                                                  "subSistema":  "Cinta Curva"
+                                                  "subSistema":  "Cinta Curva",
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-filete-10671259",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Filete"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel4-cintas-filete-2a5e69a9",
+                                                                            "nivel":  "sistemaEquipo",
+                                                                            "storageKey":  "nivel4",
+                                                                            "name":  "Cintas Filete"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel5-cinta-curva-511d7308",
+                                                                            "nivel":  "subSistema",
+                                                                            "storageKey":  "nivel5",
+                                                                            "name":  "Cinta Curva"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subSistema"
                                               }
                                           ],
                           "planta":  "Aquachile Antarfood Chonchi",
@@ -122,7 +269,40 @@
 
                                          ],
                           "ultimaModificacion":  "2025-10-31T06:21:06.323Z",
-                          "ultimoConteo":  null
+                          "ultimoConteo":  null,
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-planta-principal-79821939",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Planta Principal"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-filete-10671259",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Filete"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-cintas-filete-2a5e69a9",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Cintas Filete"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel5-cinta-curva-511d7308",
+                                                    "nivel":  "subSistema",
+                                                    "storageKey":  "nivel5",
+                                                    "name":  "Cinta Curva"
+                                                }
+                                            ],
+                          "mapLevel":  "subSistema"
                       },
                       {
                           "id":  "17613705032580.9346793152482653",
@@ -136,7 +316,34 @@
                                                   "areaGeneral":  "Planta Principal",
                                                   "subArea":  "Filete",
                                                   "sistemaEquipo":  "Cintas Filete",
-                                                  "subSistema":  "Cinta Curva"
+                                                  "subSistema":  "Cinta Curva",
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-filete-10671259",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Filete"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel4-cintas-filete-2a5e69a9",
+                                                                            "nivel":  "sistemaEquipo",
+                                                                            "storageKey":  "nivel4",
+                                                                            "name":  "Cintas Filete"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel5-cinta-curva-511d7308",
+                                                                            "nivel":  "subSistema",
+                                                                            "storageKey":  "nivel5",
+                                                                            "name":  "Cinta Curva"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subSistema"
                                               }
                                           ],
                           "planta":  "Aquachile Antarfood Chonchi",
@@ -160,7 +367,40 @@
 
                                          ],
                           "ultimaModificacion":  "2025-10-31T06:34:17.781Z",
-                          "ultimoConteo":  null
+                          "ultimoConteo":  null,
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-planta-principal-79821939",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Planta Principal"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-filete-10671259",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Filete"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-cintas-filete-2a5e69a9",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Cintas Filete"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel5-cinta-curva-511d7308",
+                                                    "nivel":  "subSistema",
+                                                    "storageKey":  "nivel5",
+                                                    "name":  "Cinta Curva"
+                                                }
+                                            ],
+                          "mapLevel":  "subSistema"
                       },
                       {
                           "id":  "17592183372830.3565633314252028",
@@ -174,49 +414,217 @@
                                                   "mapId":  1760411932641,
                                                   "areaId":  1761084793013,
                                                   "markerX":  3676.054905287181,
-                                                  "markerY":  2252.3299479652474
+                                                  "markerY":  2252.3299479652474,
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                                            "nivel":  "planta",
+                                                                            "storageKey":  "nivel1",
+                                                                            "name":  "Aquachile Antarfood Chonchi"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subArea"
                                               },
                                               {
                                                   "mapId":  1760411932641,
                                                   "areaId":  1761084793013,
                                                   "markerX":  3678.2433696950716,
-                                                  "markerY":  3272.6524874275146
+                                                  "markerY":  3272.6524874275146,
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                                            "nivel":  "planta",
+                                                                            "storageKey":  "nivel1",
+                                                                            "name":  "Aquachile Antarfood Chonchi"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subArea"
                                               },
                                               {
                                                   "mapId":  1760411932641,
                                                   "areaId":  1761369700833,
                                                   "markerX":  2403.274380529348,
-                                                  "markerY":  2439.3918423193163
+                                                  "markerY":  2439.3918423193163,
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                                            "nivel":  "planta",
+                                                                            "storageKey":  "nivel1",
+                                                                            "name":  "Aquachile Antarfood Chonchi"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subArea"
                                               },
                                               {
                                                   "mapId":  1760411932641,
                                                   "areaId":  1761369700833,
                                                   "markerX":  2656.3108767303697,
-                                                  "markerY":  2434.727575108238
+                                                  "markerY":  2434.727575108238,
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                                            "nivel":  "planta",
+                                                                            "storageKey":  "nivel1",
+                                                                            "name":  "Aquachile Antarfood Chonchi"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subArea"
                                               },
                                               {
                                                   "mapId":  1760411932641,
                                                   "areaId":  1761369700833,
                                                   "markerX":  2839.38336476521,
-                                                  "markerY":  2437.642742115162
+                                                  "markerY":  2437.642742115162,
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                                            "nivel":  "planta",
+                                                                            "storageKey":  "nivel1",
+                                                                            "name":  "Aquachile Antarfood Chonchi"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subArea"
                                               },
                                               {
                                                   "mapId":  1760411932641,
                                                   "areaId":  1761369700833,
                                                   "markerX":  2901.1849053120036,
-                                                  "markerY":  2469.1265457899435
+                                                  "markerY":  2469.1265457899435,
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                                            "nivel":  "planta",
+                                                                            "storageKey":  "nivel1",
+                                                                            "name":  "Aquachile Antarfood Chonchi"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subArea"
                                               },
                                               {
                                                   "mapId":  1760411932641,
                                                   "areaId":  1761364821364,
                                                   "markerX":  2255.7441889633587,
-                                                  "markerY":  1736.0404973545783
+                                                  "markerY":  1736.0404973545783,
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                                            "nivel":  "planta",
+                                                                            "storageKey":  "nivel1",
+                                                                            "name":  "Aquachile Antarfood Chonchi"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subArea"
                                               },
                                               {
                                                   "mapId":  1760411932641,
                                                   "areaId":  1761364821364,
                                                   "markerX":  2876.6235564226704,
-                                                  "markerY":  1708.6829884789697
+                                                  "markerY":  1708.6829884789697,
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                                            "nivel":  "planta",
+                                                                            "storageKey":  "nivel1",
+                                                                            "name":  "Aquachile Antarfood Chonchi"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "subArea"
                                               }
                                           ],
                           "planta":  "Aquachile Antarfood Chonchi",
@@ -242,11 +650,33 @@
                                                  "url":  "./imagenes/PARADA EMERGENCIA.webp",
                                                  "name":  "PARADA EMERGENCIA.webp",
                                                  "size":  458902,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
                                          ],
                           "ultimaModificacion":  "2025-10-26T05:21:56.417Z",
-                          "ultimoConteo":  "2025-10-25T19:09:09.791Z"
+                          "ultimoConteo":  "2025-10-25T19:09:09.791Z",
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-planta-principal-79821939",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Planta Principal"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Eviscerado"
+                                                }
+                                            ],
+                          "mapLevel":  "subArea"
                       },
                       {
                           "id":  "17592196064450.2748990470030177",
@@ -265,11 +695,27 @@
                                                  "url":  "./imagenes/PERNO HEX M8X60 INOX.webp",
                                                  "name":  "PERNO HEX M8X60 INOX.webp",
                                                  "size":  599988,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
                                          ],
                           "ultimoConteo":  "2025-10-23T11:55:25.926Z",
-                          "ultimaModificacion":  "2025-10-23T11:55:25.926Z"
+                          "ultimaModificacion":  "2025-10-23T11:55:25.926Z",
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592197776760.8602758964398768",
@@ -288,9 +734,25 @@
                                                  "url":  "./imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp",
                                                  "name":  "PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp",
                                                  "size":  40748,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-pintura-83238606",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "PINTURA"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592199400670.7478335076421804",
@@ -309,9 +771,25 @@
                                                  "url":  "./imagenes/DESOXIDANTE WURTH.webp",
                                                  "name":  "DESOXIDANTE WURTH.webp",
                                                  "size":  677952,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592206005860.9394235640437687",
@@ -326,7 +804,22 @@
                           "precio":  0,
                           "multimedia":  [
 
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592207705610.3506175212502286",
@@ -345,9 +838,25 @@
                                                  "url":  "./imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp",
                                                  "name":  "PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp",
                                                  "size":  45008,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592209229850.5499875719973021",
@@ -366,9 +875,25 @@
                                                  "url":  "./imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp",
                                                  "name":  "PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp",
                                                  "size":  28896,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592213904480.9935691841166233",
@@ -387,9 +912,25 @@
                                                  "url":  "./imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp",
                                                  "name":  "EQUIPO ESTANCO FLUORECENTE 2X18W.webp",
                                                  "size":  162636,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-iluminacion-e5698a1d",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "ILUMINACION"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-equipo-fluorecente-3c2b829c",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "EQUIPO FLUORECENTE"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592227103960.9902849805827032",
@@ -408,9 +949,25 @@
                                                  "url":  "./imagenes/DIFERENCIAL 2P 230V 30MA.webp",
                                                  "name":  "DIFERENCIAL 2P 230V 30MA.webp",
                                                  "size":  146728,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592228408360.8467621375869214",
@@ -429,9 +986,25 @@
                                                  "url":  "./imagenes/CAJA HIDROBOX 3 MODULOS.webp",
                                                  "name":  "CAJA HIDROBOX 3 MODULOS.webp",
                                                  "size":  106964,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-interruptor-enchufe-85e73b75",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "INTERRUPTOR / ENCHUFE"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592232458430.04028172247165196",
@@ -450,9 +1023,25 @@
                                                  "url":  "./imagenes/ADAPTADOR PUNTA DADO 8MM.webp",
                                                  "name":  "ADAPTADOR PUNTA DADO 8MM.webp",
                                                  "size":  93628,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592233569320.7176829466600226",
@@ -471,9 +1060,25 @@
                                                  "url":  "./imagenes/TORNILLO VOLCANITA 6X1.webp",
                                                  "name":  "TORNILLO VOLCANITA 6X1.webp",
                                                  "size":  73346,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592236133150.23595482184124117",
@@ -492,9 +1097,25 @@
                                                  "url":  "./imagenes/TORNILLO AUTOPERFORANTE C GOLILLA 516X3.webp",
                                                  "name":  "TORNILLO AUTOPERFORANTE C GOLILLA 516X3.webp",
                                                  "size":  108140,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592237669010.37761878010908057",
@@ -513,9 +1134,25 @@
                                                  "url":  "./imagenes/MODULOS ENCHUFE 10-16 A .webp",
                                                  "name":  "MODULOS ENCHUFE 10-16 A .webp",
                                                  "size":  68398,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-enchufe-4a508845",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "ENCHUFE"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592238661610.4367944240184073",
@@ -534,9 +1171,25 @@
                                                  "url":  "./imagenes/CORDON ELECTRICO 3X1,5MM.webp",
                                                  "name":  "CORDON ELECTRICO 3X1,5MM.webp",
                                                  "size":  74942,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592239751610.9658832513928665",
@@ -555,9 +1208,25 @@
                                                  "url":  "./imagenes/CAJA ESTANCA 100X100X80.webp",
                                                  "name":  "CAJA ESTANCA 100X100X80.webp",
                                                  "size":  73358,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592240702720.16100438760262037",
@@ -576,9 +1245,25 @@
                                                  "url":  "./imagenes/AUTOMATICO 1P 16 A.webp",
                                                  "name":  "AUTOMATICO 1P 16 A.webp",
                                                  "size":  77120,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592242628090.9795950822105788",
@@ -597,9 +1282,25 @@
                                                  "url":  "./imagenes/PLANTA_PRINCIPAL__3100027202_MANGUERA_ALTA_PRESION_MALLAFLEX_34_1760288974266_2.webp",
                                                  "name":  "PLANTA_PRINCIPAL__3100027202_MANGUERA_ALTA_PRESION_MALLAFLEX_34_1760288974266_2.webp",
                                                  "size":  50530,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592243370880.4504385743033742",
@@ -612,7 +1313,28 @@
                                               {
                                                   "areaGeneral":  "Planta Principal",
                                                   "subArea":  "Eviscerado",
-                                                  "sistemaEquipo":  "Baader 142"
+                                                  "sistemaEquipo":  "Baader 142",
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel4-baader-142-cc8c4bd0",
+                                                                            "nivel":  "sistemaEquipo",
+                                                                            "storageKey":  "nivel4",
+                                                                            "name":  "Baader 142"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "sistemaEquipo"
                                               }
                                           ],
                           "planta":  "Aquachile Antarfood Chonchi",
@@ -638,11 +1360,39 @@
                                                  "url":  "./imagenes/RESORTE PALPADOR.webp",
                                                  "name":  "RESORTE PALPADOR.webp",
                                                  "size":  58054,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
                                          ],
                           "ultimaModificacion":  "2025-10-26T17:55:12.620Z",
-                          "ultimoConteo":  null
+                          "ultimoConteo":  null,
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-planta-principal-79821939",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Planta Principal"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Eviscerado"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-baader-142-cc8c4bd0",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Baader 142"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592246676480.20247968913222425",
@@ -655,7 +1405,28 @@
                                               {
                                                   "areaGeneral":  "Planta Principal",
                                                   "subArea":  "Eviscerado",
-                                                  "sistemaEquipo":  "Baader 142"
+                                                  "sistemaEquipo":  "Baader 142",
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel4-baader-142-cc8c4bd0",
+                                                                            "nivel":  "sistemaEquipo",
+                                                                            "storageKey":  "nivel4",
+                                                                            "name":  "Baader 142"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "sistemaEquipo"
                                               }
                                           ],
                           "planta":  "Aquachile Antarfood Chonchi",
@@ -681,11 +1452,39 @@
                                                  "url":  "./imagenes/RESORTE CARRO.webp",
                                                  "name":  "RESORTE CARRO.webp",
                                                  "size":  115738,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
                                          ],
                           "ultimaModificacion":  "2025-10-26T17:55:03.173Z",
-                          "ultimoConteo":  null
+                          "ultimoConteo":  null,
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-planta-principal-79821939",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Planta Principal"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Eviscerado"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-baader-142-cc8c4bd0",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Baader 142"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592247584390.12047762731464762",
@@ -698,7 +1497,28 @@
                                               {
                                                   "areaGeneral":  "Planta Principal",
                                                   "subArea":  "Eviscerado",
-                                                  "sistemaEquipo":  "Baader 142"
+                                                  "sistemaEquipo":  "Baader 142",
+                                                  "jerarquiaPath":  [
+                                                                        {
+                                                                            "id":  "auto-nivel2-planta-principal-79821939",
+                                                                            "nivel":  "areaGeneral",
+                                                                            "storageKey":  "nivel2",
+                                                                            "name":  "Planta Principal"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                                            "nivel":  "subArea",
+                                                                            "storageKey":  "nivel3",
+                                                                            "name":  "Eviscerado"
+                                                                        },
+                                                                        {
+                                                                            "id":  "auto-nivel4-baader-142-cc8c4bd0",
+                                                                            "nivel":  "sistemaEquipo",
+                                                                            "storageKey":  "nivel4",
+                                                                            "name":  "Baader 142"
+                                                                        }
+                                                                    ],
+                                                  "mapLevel":  "sistemaEquipo"
                                               }
                                           ],
                           "planta":  "Aquachile Antarfood Chonchi",
@@ -724,11 +1544,39 @@
                                                  "url":  "./imagenes/RESORTE MEDIDOR LARGO.webp",
                                                  "name":  "RESORTE MEDIDOR LARGO.webp",
                                                  "size":  78780,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
                                          ],
                           "ultimaModificacion":  "2025-10-26T17:54:53.138Z",
-                          "ultimoConteo":  null
+                          "ultimoConteo":  null,
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-planta-principal-79821939",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Planta Principal"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-eviscerado-297f3db5",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Eviscerado"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-baader-142-cc8c4bd0",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Baader 142"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592252449590.45116786103948137",
@@ -747,9 +1595,25 @@
                                                  "url":  "./imagenes/ABRAZADERA CREMALLERA.webp",
                                                  "name":  "ABRAZADERA CREMALLERA.webp",
                                                  "size":  89462,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592253461110.6945119839993569",
@@ -768,9 +1632,25 @@
                                                  "url":  "./imagenes/GOLILLA PLANA 12 INOX.webp",
                                                  "name":  "GOLILLA PLANA 12 INOX.webp",
                                                  "size":  94768,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592254375900.19890033471066937",
@@ -789,9 +1669,25 @@
                                                  "url":  "./imagenes/PLANTA_PRINCIPAL__3300105515_PERNO_CABEZA_HEXAGONAL_INOX_M10X60MM_1760289008218.webp",
                                                  "name":  "PLANTA_PRINCIPAL__3300105515_PERNO_CABEZA_HEXAGONAL_INOX_M10X60MM_1760289008218.webp",
                                                  "size":  40416,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592254986790.5721365294146196",
@@ -810,9 +1706,25 @@
                                                  "url":  "./imagenes/GOLILLA PRESION M16.webp",
                                                  "name":  "GOLILLA PRESION M16.webp",
                                                  "size":  87528,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592259658780.9717516118404113",
@@ -831,9 +1743,25 @@
                                                  "url":  "./imagenes/PERNO HEX 12X60 MM INOX.webp",
                                                  "name":  "PERNO HEX 12X60 MM INOX.webp",
                                                  "size":  79832,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592271668920.27099177805021235",
@@ -852,9 +1780,25 @@
                                                  "url":  "./imagenes/BLOQUE VALVULA VTUG.webp",
                                                  "name":  "BLOQUE VALVULA VTUG.webp",
                                                  "size":  780462,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-grader-fishken-acopio-ba2caf71",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GRADER / FISHKEN / ACOPIO"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592274788510.3233448016777972",
@@ -869,7 +1813,22 @@
                           "precio":  0,
                           "multimedia":  [
 
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-eviscerado-14723741",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "EVISCERADO"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-baader-142-cc8c4bd0",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "BAADER 142"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592277289800.1772346770272124",
@@ -884,7 +1843,22 @@
                           "precio":  0,
                           "multimedia":  [
 
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592278355150.024459299564461134",
@@ -899,7 +1873,22 @@
                           "precio":  0,
                           "multimedia":  [
 
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592279443630.3354994649979087",
@@ -918,9 +1907,25 @@
                                                  "url":  "./imagenes/BLOQUE VALVULA VTUG.webp",
                                                  "name":  "BLOQUE VALVULA VTUG.webp",
                                                  "size":  780462,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592280848740.9626898345654986",
@@ -935,7 +1940,22 @@
                           "precio":  0,
                           "multimedia":  [
 
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592281960580.15990716754164203",
@@ -950,7 +1970,22 @@
                           "precio":  0,
                           "multimedia":  [
 
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592282869940.3306010413203925",
@@ -969,9 +2004,25 @@
                                                  "url":  "./imagenes/FOCO PROYECTOR 150W.webp",
                                                  "name":  "FOCO PROYECTOR 150W.webp",
                                                  "size":  64308,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592283637220.6941511398148752",
@@ -990,9 +2041,25 @@
                                                  "url":  "./imagenes/1761249794280_3300105501_PARADA_EMERGENCIA_CON_CAJA_foto2.webp",
                                                  "name":  "1761249794280_3300105501_PARADA_EMERGENCIA_CON_CAJA_foto2.webp",
                                                  "size":  27506,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592284877460.4774899031855503",
@@ -1007,7 +2074,22 @@
                           "precio":  0,
                           "multimedia":  [
 
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "17592286151940.7847843186043624",
@@ -1022,7 +2104,22 @@
                           "precio":  0,
                           "multimedia":  [
 
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "draft_17592210906030.8920785418427316",
@@ -1041,9 +2138,25 @@
                                                  "url":  "./imagenes/GRASA ALIMENTARIA BLANCA BEL RAY.webp",
                                                  "name":  "GRASA ALIMENTARIA BLANCA BEL RAY.webp",
                                                  "size":  612022,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-general-6cf4552d",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "GENERAL"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "draft_17592224546130.5056254889369888",
@@ -1062,9 +2175,25 @@
                                                  "url":  "./imagenes/CAJA HIDROBOX 2 MODULOS.webp",
                                                  "name":  "CAJA HIDROBOX 2 MODULOS.webp",
                                                  "size":  85580,
+                                                 "mimeType":  "image",
                                                  "isFileSystem":  true
                                              }
-                                         ]
+                                         ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel2-general-18d8d9ac",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "GENERAL"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-interruptor-enchufe-85e73b75",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "INTERRUPTOR / ENCHUFE"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "9001",
@@ -1078,15 +2207,20 @@
                           "planta":  "Aquachile Antarfood Chonchi",
                           "descripcion":  "🧪 TEST - Extintor tipo ABC para fuegos clase A, B y C",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/FF6B35/FFFFFF?text=Extintor+ABC",
-                                                 "nombre":  "extintor_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                }
+                                            ],
+                          "mapLevel":  "planta"
                       },
                       {
                           "id":  "9002",
@@ -1100,15 +2234,20 @@
                           "planta":  "Aquachile Antarfood Chonchi",
                           "descripcion":  "🧪 TEST - Botiquín con elementos básicos de primeros auxilios",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/4ECDC4/FFFFFF?text=Botiquin",
-                                                 "nombre":  "botiquin_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                }
+                                            ],
+                          "mapLevel":  "planta"
                       },
                       {
                           "id":  "9003",
@@ -1123,15 +2262,26 @@
                           "areaGeneral":  "Área de Producción",
                           "descripcion":  "🧪 TEST - Válvula mariposa para control de flujo",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/F7B731/FFFFFF?text=Valvula+Mariposa",
-                                                 "nombre":  "valvula_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                }
+                                            ],
+                          "mapLevel":  "areaGeneral"
                       },
                       {
                           "id":  "9004",
@@ -1146,15 +2296,26 @@
                           "areaGeneral":  "Área de Producción",
                           "descripcion":  "🧪 TEST - Sensor PT100 rango -50°C a +200°C",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/5F27CD/FFFFFF?text=Sensor+PT100",
-                                                 "nombre":  "sensor_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                }
+                                            ],
+                          "mapLevel":  "areaGeneral"
                       },
                       {
                           "id":  "9005",
@@ -1170,15 +2331,32 @@
                           "subArea":  "Sistema de Agua",
                           "descripcion":  "🧪 TEST - Cartucho de filtro de 5 micras",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/00B894/FFFFFF?text=Filtro+5um",
-                                                 "nombre":  "filtro_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-sistema-de-agua-58d15b40",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Sistema de Agua"
+                                                }
+                                            ],
+                          "mapLevel":  "subArea"
                       },
                       {
                           "id":  "9006",
@@ -1194,15 +2372,32 @@
                           "subArea":  "Sistema de Agua",
                           "descripcion":  "🧪 TEST - Bomba centrífuga 5HP",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/0984E3/FFFFFF?text=Bomba+5HP",
-                                                 "nombre":  "bomba_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-sistema-de-agua-58d15b40",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Sistema de Agua"
+                                                }
+                                            ],
+                          "mapLevel":  "subArea"
                       },
                       {
                           "id":  "9007",
@@ -1219,15 +2414,38 @@
                           "sistemaEquipo":  "Bomba Principal BP-01",
                           "descripcion":  "🧪 TEST - Rodamiento rígido de bolas",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/6C5CE7/FFFFFF?text=Rodamiento+SKF",
-                                                 "nombre":  "rodamiento_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-sistema-de-agua-58d15b40",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Sistema de Agua"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-bomba-principal-bp-01-90fb2f8f",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Bomba Principal BP-01"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "9008",
@@ -1244,15 +2462,38 @@
                           "sistemaEquipo":  "Bomba Principal BP-01",
                           "descripcion":  "🧪 TEST - Sello mecánico para eje 25mm",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/FD79A8/FFFFFF?text=Sello+Mecanico",
-                                                 "nombre":  "sello_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-sistema-de-agua-58d15b40",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Sistema de Agua"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-bomba-principal-bp-01-90fb2f8f",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Bomba Principal BP-01"
+                                                }
+                                            ],
+                          "mapLevel":  "sistemaEquipo"
                       },
                       {
                           "id":  "9009",
@@ -1270,15 +2511,44 @@
                           "subSistema":  "Sistema Hidráulico",
                           "descripcion":  "🧪 TEST - Impulsor acero inoxidable 316L",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/A29BFE/FFFFFF?text=Impulsor+Inox",
-                                                 "nombre":  "impulsor_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-sistema-de-agua-58d15b40",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Sistema de Agua"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-bomba-principal-bp-01-90fb2f8f",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Bomba Principal BP-01"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel5-sistema-hidraulico-bd96a87c",
+                                                    "nivel":  "subSistema",
+                                                    "storageKey":  "nivel5",
+                                                    "name":  "Sistema Hidráulico"
+                                                }
+                                            ],
+                          "mapLevel":  "subSistema"
                       },
                       {
                           "id":  "9010",
@@ -1296,15 +2566,44 @@
                           "subSistema":  "Sistema Hidráulico",
                           "descripcion":  "🧪 TEST - Carcasa con bridas de conexión",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/74B9FF/FFFFFF?text=Carcasa+Bomba",
-                                                 "nombre":  "carcasa_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-sistema-de-agua-58d15b40",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Sistema de Agua"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-bomba-principal-bp-01-90fb2f8f",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Bomba Principal BP-01"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel5-sistema-hidraulico-bd96a87c",
+                                                    "nivel":  "subSistema",
+                                                    "storageKey":  "nivel5",
+                                                    "name":  "Sistema Hidráulico"
+                                                }
+                                            ],
+                          "mapLevel":  "subSistema"
                       },
                       {
                           "id":  "9011",
@@ -1323,15 +2622,50 @@
                           "seccion":  "Sección de Sellado",
                           "descripcion":  "🧪 TEST - O-Ring Viton alta temperatura",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/55EFC4/000000?text=O-Ring+Viton",
-                                                 "nombre":  "oring_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-sistema-de-agua-58d15b40",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Sistema de Agua"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-bomba-principal-bp-01-90fb2f8f",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Bomba Principal BP-01"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel5-sistema-hidraulico-bd96a87c",
+                                                    "nivel":  "subSistema",
+                                                    "storageKey":  "nivel5",
+                                                    "name":  "Sistema Hidráulico"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel6-seccion-de-sellado-5fec8ad0",
+                                                    "nivel":  "seccion",
+                                                    "storageKey":  "nivel6",
+                                                    "name":  "Sección de Sellado"
+                                                }
+                                            ],
+                          "mapLevel":  "seccion"
                       },
                       {
                           "id":  "9012",
@@ -1350,15 +2684,50 @@
                           "seccion":  "Sección de Sellado",
                           "descripcion":  "🧪 TEST - Junta de teflón para tapa",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/FFEAA7/000000?text=Junta+Teflon",
-                                                 "nombre":  "junta_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-sistema-de-agua-58d15b40",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Sistema de Agua"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-bomba-principal-bp-01-90fb2f8f",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Bomba Principal BP-01"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel5-sistema-hidraulico-bd96a87c",
+                                                    "nivel":  "subSistema",
+                                                    "storageKey":  "nivel5",
+                                                    "name":  "Sistema Hidráulico"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel6-seccion-de-sellado-5fec8ad0",
+                                                    "nivel":  "seccion",
+                                                    "storageKey":  "nivel6",
+                                                    "name":  "Sección de Sellado"
+                                                }
+                                            ],
+                          "mapLevel":  "seccion"
                       },
                       {
                           "id":  "9013",
@@ -1378,15 +2747,56 @@
                           "detalle":  "Conjunto de Fijación",
                           "descripcion":  "🧪 TEST - Tornillo allen M8x40mm inox A4-70",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/DFE6E9/000000?text=Tornillo+M8x40",
-                                                 "nombre":  "tornillo_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-sistema-de-agua-58d15b40",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Sistema de Agua"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-bomba-principal-bp-01-90fb2f8f",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Bomba Principal BP-01"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel5-sistema-hidraulico-bd96a87c",
+                                                    "nivel":  "subSistema",
+                                                    "storageKey":  "nivel5",
+                                                    "name":  "Sistema Hidráulico"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel6-seccion-de-sellado-5fec8ad0",
+                                                    "nivel":  "seccion",
+                                                    "storageKey":  "nivel6",
+                                                    "name":  "Sección de Sellado"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel8-conjunto-de-fijacion-d62ae742",
+                                                    "nivel":  "detalle",
+                                                    "storageKey":  "nivel8",
+                                                    "name":  "Conjunto de Fijación"
+                                                }
+                                            ],
+                          "mapLevel":  "detalle"
                       },
                       {
                           "id":  "9014",
@@ -1406,15 +2816,56 @@
                           "detalle":  "Conjunto de Fijación",
                           "descripcion":  "🧪 TEST - Arandela grower M8 inoxidable",
                           "multimedia":  [
-                                             {
-                                                 "tipo":  "imagen",
-                                                 "url":  "https://via.placeholder.com/400x300/B2BEC3/000000?text=Arandela+M8",
-                                                 "nombre":  "arandela_test.jpg"
-                                             }
+
                                          ],
                           "ubicaciones":  [
 
-                                          ]
+                                          ],
+                          "jerarquiaPath":  [
+                                                {
+                                                    "id":  "auto-nivel1-aquachile-antarfood-chonchi-dea9c6a2",
+                                                    "nivel":  "planta",
+                                                    "storageKey":  "nivel1",
+                                                    "name":  "Aquachile Antarfood Chonchi"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel2-area-de-produccion-4933795b",
+                                                    "nivel":  "areaGeneral",
+                                                    "storageKey":  "nivel2",
+                                                    "name":  "Área de Producción"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel3-sistema-de-agua-58d15b40",
+                                                    "nivel":  "subArea",
+                                                    "storageKey":  "nivel3",
+                                                    "name":  "Sistema de Agua"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel4-bomba-principal-bp-01-90fb2f8f",
+                                                    "nivel":  "sistemaEquipo",
+                                                    "storageKey":  "nivel4",
+                                                    "name":  "Bomba Principal BP-01"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel5-sistema-hidraulico-bd96a87c",
+                                                    "nivel":  "subSistema",
+                                                    "storageKey":  "nivel5",
+                                                    "name":  "Sistema Hidráulico"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel6-seccion-de-sellado-5fec8ad0",
+                                                    "nivel":  "seccion",
+                                                    "storageKey":  "nivel6",
+                                                    "name":  "Sección de Sellado"
+                                                },
+                                                {
+                                                    "id":  "auto-nivel8-conjunto-de-fijacion-d62ae742",
+                                                    "nivel":  "detalle",
+                                                    "storageKey":  "nivel8",
+                                                    "name":  "Conjunto de Fijación"
+                                                }
+                                            ],
+                          "mapLevel":  "detalle"
                       }
                   ],
     "mapas":  [

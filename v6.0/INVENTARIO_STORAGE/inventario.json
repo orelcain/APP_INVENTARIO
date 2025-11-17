@@ -49,25 +49,25 @@
         "sistemaEquipo": "Cinta Curva",
         "jerarquiaPath": [
           {
-            "id": "nivel1-1763271919614-119e",
+            "id": "nivel1-1763351937062-d768",
             "name": "Aquachile Antarfood Chonchi",
             "level": "planta",
             "storageKey": "nivel1"
           },
           {
-            "id": "nivel2-1763271919614-d544",
+            "id": "nivel2-1763351937062-672c",
             "name": "Planta Principal",
             "level": "areaGeneral",
             "storageKey": "nivel2"
           },
           {
-            "id": "nivel3-1763271919614-2a0b",
+            "id": "nivel3-1763351937062-7ae4",
             "name": "Filete",
             "level": "subArea",
             "storageKey": "nivel3"
           },
           {
-            "id": "nivel4-1763271919614-3662",
+            "id": "nivel4-1763351937062-19c6",
             "name": "Cinta Curva",
             "level": "sistemaEquipo",
             "storageKey": "nivel4"
@@ -92,8 +92,16 @@
     "optimo": 1,
     "precio": 0,
     "datosTecnicos": "",
-    "multimedia": [],
-    "ultimaModificacion": "2025-11-16T05:45:19.630Z",
+    "multimedia": [
+      {
+        "type": "image",
+        "url": "./imagenes/1763305105035_Pendiente_Cinta_Curva_foto1.webp",
+        "name": "cinta curva.jpg",
+        "size": 216372,
+        "isFileSystem": true
+      }
+    ],
+    "ultimaModificacion": "2025-11-17T03:58:57.066Z",
     "ultimoConteo": "2025-11-01T21:06:55.897Z"
   },
   {
@@ -107,20 +115,38 @@
       {
         "areaGeneral": "Planta Principal",
         "subArea": "Filete",
-        "sistemaEquipo": "Cintas Filete",
-        "subSistema": "Cinta Curva"
+        "jerarquiaPath": [
+          {
+            "id": "nivel1-1763305108630-4dee",
+            "name": "Aquachile Antarfood Chonchi",
+            "level": "planta",
+            "storageKey": "nivel1"
+          },
+          {
+            "id": "nivel2-1763305108630-fe87",
+            "name": "Planta Principal",
+            "level": "areaGeneral",
+            "storageKey": "nivel2"
+          },
+          {
+            "id": "nivel3-1763305108630-7c3b",
+            "name": "Filete",
+            "level": "subArea",
+            "storageKey": "nivel3"
+          }
+        ]
       }
     ],
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Filete",
-    "sistemaEquipo": "Cintas Filete",
-    "subSistema": "Cinta Curva",
+    "sistemaEquipo": "",
+    "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Cintas Filete",
-    "sistema": "Cinta Curva",
+    "equipo": "",
+    "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 0,
     "cantidadInstalada": 8,
@@ -129,7 +155,7 @@
     "precio": 0,
     "datosTecnicos": "",
     "multimedia": [],
-    "ultimaModificacion": "2025-10-31T06:21:06.323Z",
+    "ultimaModificacion": "2025-11-16T14:58:53.017Z",
     "ultimoConteo": "2025-11-01T21:07:05.139Z"
   },
   {
