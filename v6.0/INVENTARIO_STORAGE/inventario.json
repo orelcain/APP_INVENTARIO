@@ -291,64 +291,54 @@
     "nombre": "PARADA EMERGENCIA CON CAJA",
     "ubicaciones": [
       {
-        "mapId": 1760411932641,
-        "areaId": 1761084793013,
-        "markerX": 3676.054905287181,
-        "markerY": 2252.3299479652474
-      },
-      {
-        "mapId": 1760411932641,
-        "areaId": 1761084793013,
-        "markerX": 3678.2433696950716,
-        "markerY": 3272.6524874275146
-      },
-      {
-        "mapId": 1760411932641,
-        "areaId": 1761369700833,
-        "markerX": 2403.274380529348,
-        "markerY": 2439.3918423193163
-      },
-      {
-        "mapId": 1760411932641,
-        "areaId": 1761369700833,
-        "markerX": 2656.3108767303697,
-        "markerY": 2434.727575108238
-      },
-      {
-        "mapId": 1760411932641,
-        "areaId": 1761369700833,
-        "markerX": 2839.38336476521,
-        "markerY": 2437.642742115162
-      },
-      {
-        "mapId": 1760411932641,
-        "areaId": 1761369700833,
-        "markerX": 2901.1849053120036,
-        "markerY": 2469.1265457899435
-      },
-      {
-        "mapId": 1760411932641,
-        "areaId": 1761364821364,
-        "markerX": 2255.7441889633587,
-        "markerY": 1736.0404973545783
-      },
-      {
-        "mapId": 1760411932641,
-        "areaId": 1761364821364,
-        "markerX": 2876.6235564226704,
-        "markerY": 1708.6829884789697
+        "areaGeneral": "Planta Principal",
+        "subArea": "Eviscerado",
+        "sistemaEquipo": "Grader",
+        "subSistema": "Cinta Larga Grader",
+        "jerarquiaPath": [
+          {
+            "id": "nivel1-1763488345646-3a6f",
+            "name": "Aquachile Antarfood Chonchi",
+            "level": "planta",
+            "storageKey": "nivel1"
+          },
+          {
+            "id": "nivel2-1763488345646-041f",
+            "name": "Planta Principal",
+            "level": "areaGeneral",
+            "storageKey": "nivel2"
+          },
+          {
+            "id": "nivel3-1763488345646-8358",
+            "name": "Eviscerado",
+            "level": "subArea",
+            "storageKey": "nivel3"
+          },
+          {
+            "id": "nivel4-1763488345646-b54f",
+            "name": "Grader",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4"
+          },
+          {
+            "id": "nivel5-1763488345646-45a4",
+            "name": "Cinta Larga Grader",
+            "level": "subSistema",
+            "storageKey": "nivel5"
+          }
+        ]
       }
     ],
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Eviscerado",
-    "sistemaEquipo": "",
-    "subSistema": "",
+    "sistemaEquipo": "Grader",
+    "subSistema": "Cinta Larga Grader",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "",
-    "sistema": "",
+    "equipo": "Grader",
+    "sistema": "Cinta Larga Grader",
     "detalleUbicacion": "",
     "cantidad": 5,
     "cantidadInstalada": 8,
@@ -365,7 +355,7 @@
         "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-10-26T05:21:56.417Z",
+    "ultimaModificacion": "2025-11-18T17:52:25.649Z",
     "ultimoConteo": "2025-10-25T19:09:09.791Z"
   },
   {
