@@ -24,3 +24,7 @@
 {"scope":"areas","action":"create","mapId":1763209400991,"areaId":1763214846127,"detail":"Estanque 2 Agua Duilce","timestamp":"2025-11-15T13:54:06.447Z"}
 {"scope":"areas","action":"create","mapId":1763209400991,"areaId":1763265482139,"detail":"Estanque 1 Agua Dulce","timestamp":"2025-11-16T03:58:03.294Z"}
 {"scope":"maps","action":"assign_jerarquia","mapId":1760411932641,"areaId":null,"detail":"Planta Principal","timestamp":"2025-11-16T06:15:18.175Z"}
+{"scope":"areas","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauracin desde backup","timestamp":"2025-11-18T05:09:40.717Z"}
+{"scope":"maps","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauracin desde backup","timestamp":"2025-11-18T05:13:22.011Z"}
+{"scope":"areas","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauracin desde backup","timestamp":"2025-11-18T05:13:23.145Z"}
+{"scope":"maps","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauracin desde backup","timestamp":"2025-11-18T05:13:45.594Z"}

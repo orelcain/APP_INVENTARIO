@@ -12188,6 +12188,10 @@ class InventarioCompleto {
     this.currentMultimedia = [];
     this.currentDocuments = [];
     this.currentEditingId = null;
+    
+    // 📦 FASE 3: Estado multimedia sincronizado
+    this.pendingDeletions = []; // Archivos marcados para eliminar al guardar
+    this.originalMultimedia = []; // Backup para restaurar al cancelar
     this.currentPage = 1;
     this.itemsPerPage = 'auto'; // Modo automtico responsive por defecto
     this.itemsPerPageManual = 21; // Valor manual cuando no es auto
@@ -14597,24 +14601,24 @@ class InventarioCompleto {
         }
         
         html += `
-          <div style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; transition: all 0.2s; cursor: pointer;" 
-               onclick="app.editRepuesto('${repuesto.id}')"
+          <div style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; transition: all 0.2s; cursor: pointer; position: relative;" 
+               onclick="app.openModal('edit', '${repuesto.id}')"
                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'"
                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
             
             ${imagenPrincipal ? `
-              <div style="height: 180px; background: var(--bg-secondary); position: relative; overflow: hidden;">
+              <div style="height: 180px; background: var(--bg-secondary); position: relative; overflow: hidden; pointer-events: none;">
                 <img src="${imagenPrincipal}" 
-                     style="width: 100%; height: 100%; object-fit: cover;" 
-                     onerror="this.parentElement.innerHTML='<div style=\\'height: 180px; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 3rem; opacity: 0.3;\\'></div>'">
+                     style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" 
+                     onerror="this.parentElement.innerHTML='<div style=\\'height: 180px; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 3rem; opacity: 0.3; pointer-events: none;\\'></div>'">
               </div>
             ` : `
-              <div style="height: 180px; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 3rem; opacity: 0.3;">
+              <div style="height: 180px; background: var(--bg-secondary); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 3rem; opacity: 0.3; pointer-events: none;">
                 
               </div>
             `}
             
-            <div style="padding: 16px;">
+            <div style="padding: 16px; pointer-events: none;">
               <div style="font-weight: 600; font-size: 1rem; color: var(--text-primary); margin-bottom: 8px; line-height: 1.3;">
                 ${repuesto.nombre}
               </div>
@@ -15389,6 +15393,10 @@ class InventarioCompleto {
 
   // Event delegation para manejar todos los clicks en botones con data-action
   setupDelegatedEvents() {
+    // Evitar registrar múltiples veces
+    if (this._delegatedEventsSetup) return;
+    this._delegatedEventsSetup = true;
+    
     // Clicks en botones
     document.addEventListener('click', (e) => {
       const target = e.target.closest('[data-action]');
@@ -18543,36 +18551,15 @@ class InventarioCompleto {
     console.log(`Total repuestos en memoria: ${this.repuestos.length}`);
     
     this.currentEditingId = id;
+    
+    // 📦 FASE 3: Limpiar estado multimedia inicial (se inicializa después)
     this.currentMultimedia = [];
     this.currentDocuments = [];
 
-    const modalEyebrow = document.getElementById('modalEyebrow');
-    const modalSubtitle = document.getElementById('modalSubtitle');
-    const modalLastUpdate = document.getElementById('modalLastUpdate');
-    const modalMultimediaCount = document.getElementById('modalMultimediaCount');
-
-    if (modalEyebrow) {
-      modalEyebrow.textContent = mode === 'edit' ? 'Actualizacin de inventario' : 'Nuevo registro';
-    }
-
-    if (modalSubtitle) {
-      modalSubtitle.textContent = mode === 'edit'
-        ? 'Revisa cantidades, ubicaciones y multimedia antes de confirmar los cambios.'
-        : 'Completa los campos obligatorios marcados con * y define al menos una ubicacin corporativa.';
-    }
-
-    if (modalLastUpdate) {
-      modalLastUpdate.textContent = mode === 'edit' ? 'Sin registro' : 'Se generar al guardar';
-    }
-
-    if (modalMultimediaCount) {
-      modalMultimediaCount.textContent = 'Sin archivos';
-      modalMultimediaCount.classList.add('sap-meta-chip--empty');
-    }
-    
+    // Header eliminado - sin necesidad de actualizar títulos
+    // Actualizar badge multimedia si existe
     this.refreshModalMultimediaBadge();
     
-    document.getElementById('modalTitle').textContent = mode === 'edit' ? 'Editar Repuesto' : 'Agregar Repuesto';
     document.getElementById('repuestoForm').reset();
     this.initWizard({ focusFirstField: false });
     
@@ -18705,53 +18692,12 @@ class InventarioCompleto {
         document.getElementById('precio').value = repuesto.precio || 0;
         document.getElementById('datosTecnicos').value = repuesto.datosTecnicos || '';
         
-        const multimediaOriginal = repuesto.multimedia || [];
-        console.log(` [MODAL EDIT] Multimedia original:`, multimediaOriginal);
+        // 📦 FASE 3: Inicializar estado multimedia con la nueva función
+        this.initMultimediaState(repuesto);
         
-        if (modalLastUpdate) {
-          const formatted = formatDateTime(repuesto.ultimaModificacion || repuesto.fechaActualizacion || repuesto.updatedAt);
-          modalLastUpdate.textContent = formatted || 'Sin registro';
-        }
-        
-        if (multimediaOriginal.length > 0) {
-          const multimediaNormalizada = multimediaOriginal.map((media, index) => this.normalizeMultimediaItem(media, index));
-          repuesto.multimedia = multimediaNormalizada;
-          
-          console.log(` [MODAL EDIT] Multimedia normalizada:`, multimediaNormalizada);
-
-          const isFileSystemMode = fsManager && fsManager.isFileSystemMode;
-          
-          this.currentMultimedia = multimediaNormalizada.filter(m => {
-            if (!m || !m.type) return false;
-            const tipo = m.type.toLowerCase();
-            if (tipo !== 'image' && tipo !== 'video') return false;
-            
-            if (isFileSystemMode && typeof m.url === 'string' && m.url.startsWith('data:image')) {
-              console.log(` Filtrando base64 antiguo de: ${repuesto.nombre}`);
-              return false;
-            }
-            
-            return true;
-          });
-          
-          this.currentDocuments = multimediaNormalizada.filter(m => {
-            if (!m || !m.type) return false;
-            return m.type.toLowerCase() === 'document';
-          });
-          
-          console.log(` Cargados: ${this.currentMultimedia.length} imgenes, ${this.currentDocuments.length} documentos`);
-          console.log(` [MODAL EDIT] currentMultimedia:`, this.currentMultimedia);
-
-          this.refreshModalMultimediaBadge();
-          
-          if (isFileSystemMode && this.currentMultimedia.length === 0 && multimediaNormalizada.some(m => m.type === 'image')) {
-            console.log('INFO Todas las imgenes eran base64 y fueron filtradas. Agrega nuevas imgenes.');
-          }
-          
+        // Actualizar preview si hay multimedia
+        if (this.currentMultimedia.length > 0 || this.currentDocuments.length > 0) {
           await this.updateMultimediaPreview();
-        } else {
-          console.log(' Sin multimedia existente');
-          this.refreshModalMultimediaBadge();
         }
       } else {
         console.error(` REPUESTO NO ENCONTRADO!`);
@@ -18761,6 +18707,10 @@ class InventarioCompleto {
       }
     } else {
       console.log(' Modo AGREGAR nuevo repuesto');
+      
+      // 📦 FASE 3: Inicializar estado multimedia vacío
+      this.initMultimediaState(null);
+      
       // Inicializar con una ubicacin vaca
       this.agregarUbicacion();
       this.refreshModalMultimediaBadge();
@@ -18781,6 +18731,9 @@ class InventarioCompleto {
   }
 
   closeModal() {
+    // 📦 FASE 3: Resetear estado multimedia al cerrar
+    this.resetMultimediaState(false);
+    
     document.getElementById('modal').classList.remove('active');
     this.removeEscapeListener();
     this.removeEnterNavigation();
@@ -19246,6 +19199,9 @@ class InventarioCompleto {
     await this.updateMultimediaPreview();
     this.showToast(`Imagen optimizada agregada (${(blob.size / 1024).toFixed(1)} KB)`, 'success');
     
+    // 📦 FASE 4: Resetear input después de procesar
+    this.resetImageInput();
+    
     if (this.optimizerResolve) {
       this.optimizerResolve();
     }
@@ -19296,6 +19252,9 @@ class InventarioCompleto {
       
       this.updateImagePreview();
       this.showToast('Imagen original agregada', 'info');
+      
+      // 📦 FASE 4: Resetear input después de procesar
+      this.resetImageInput();
       
       if (this.optimizerResolve) {
         this.optimizerResolve();
@@ -19736,25 +19695,208 @@ class InventarioCompleto {
     this.refreshModalMultimediaBadge();
   }
 
+  // 📦 FASE 3: Inicializar estado multimedia al abrir modal
+  initMultimediaState(repuesto = null) {
+    console.log('\n📦 [FASE 3] Inicializando estado multimedia...');
+    
+    // Limpiar estado anterior
+    this.currentMultimedia = [];
+    this.currentDocuments = [];
+    this.pendingDeletions = [];
+    this.originalMultimedia = [];
+    
+    if (repuesto && repuesto.multimedia) {
+      // Cargar multimedia existente
+      const multimediaNormalizada = repuesto.multimedia.map((media, index) => 
+        this.normalizeMultimediaItem(media, index)
+      );
+      
+      // Separar imágenes y documentos
+      const isFileSystemMode = fsManager && fsManager.isFileSystemMode;
+      
+      this.currentMultimedia = multimediaNormalizada.filter(m => {
+        if (!m || !m.type) return false;
+        const tipo = m.type.toLowerCase();
+        if (tipo !== 'image' && tipo !== 'video') return false;
+        
+        // Filtrar base64 antiguo si estamos en modo FileSystem
+        if (isFileSystemMode && typeof m.url === 'string' && m.url.startsWith('data:image')) {
+          console.log(`📦 Filtrando base64 antiguo: ${m.name || 'sin nombre'}`);
+          return false;
+        }
+        
+        return true;
+      });
+      
+      this.currentDocuments = multimediaNormalizada.filter(m => {
+        if (!m || !m.type) return false;
+        return m.type.toLowerCase() === 'document';
+      });
+      
+      // Crear backup para poder cancelar
+      this.originalMultimedia = JSON.parse(JSON.stringify(this.currentMultimedia));
+      
+      console.log(`📦 Estado inicializado: ${this.currentMultimedia.length} imágenes, ${this.currentDocuments.length} documentos`);
+    } else {
+      console.log('📦 Estado inicializado vacío (nuevo repuesto)');
+    }
+  }
+
+  // 📦 FASE 3: Resetear estado multimedia al cerrar modal
+  resetMultimediaState(restore = false) {
+    console.log(`\n📦 [FASE 3] ${restore ? 'Restaurando' : 'Limpiando'} estado multimedia...`);
+    
+    if (restore && this.originalMultimedia.length > 0) {
+      // Restaurar desde backup (al cancelar)
+      this.currentMultimedia = JSON.parse(JSON.stringify(this.originalMultimedia));
+      console.log(`📦 Restaurados ${this.currentMultimedia.length} elementos desde backup`);
+    } else {
+      // Limpiar completamente
+      this.currentMultimedia = [];
+      this.currentDocuments = [];
+    }
+    
+    // Siempre limpiar pending deletions
+    this.pendingDeletions = [];
+    this.originalMultimedia = [];
+    
+    // Limpiar previews del DOM
+    const imagePreview = document.getElementById('imagePreview');
+    const documentsList = document.getElementById('documentsList');
+    
+    if (imagePreview) imagePreview.innerHTML = '';
+    if (documentsList) documentsList.innerHTML = '';
+    
+    console.log('📦 Estado multimedia reseteado');
+  }
+
+  // 📦 FASE 3: Validar integridad de multimedia antes de guardar
+  validateMultimediaIntegrity() {
+    console.log('\n📦 [FASE 3] Validando integridad multimedia...');
+    
+    const errors = [];
+    const warnings = [];
+    
+    // Validar currentMultimedia
+    if (!Array.isArray(this.currentMultimedia)) {
+      errors.push('currentMultimedia no es un array');
+      this.currentMultimedia = [];
+    }
+    
+    // Validar cada elemento
+    this.currentMultimedia.forEach((media, index) => {
+      if (!media) {
+        warnings.push(`Elemento ${index} es null/undefined`);
+        return;
+      }
+      
+      if (!media.type) {
+        warnings.push(`Elemento ${index} no tiene tipo definido`);
+      }
+      
+      if (!media.url && !media.data) {
+        warnings.push(`Elemento ${index} no tiene URL ni datos`);
+      }
+      
+      // Validar que no haya base64 en modo FileSystem
+      if (fsManager?.isFileSystemMode && media.url?.startsWith('data:')) {
+        warnings.push(`Elemento ${index} tiene base64 en modo FileSystem`);
+      }
+    });
+    
+    // Deduplicar por URL
+    const urlsVistas = new Set();
+    const duplicados = [];
+    
+    this.currentMultimedia.forEach((media, index) => {
+      if (media?.url) {
+        if (urlsVistas.has(media.url)) {
+          duplicados.push(index);
+        } else {
+          urlsVistas.add(media.url);
+        }
+      }
+    });
+    
+    if (duplicados.length > 0) {
+      warnings.push(`${duplicados.length} elementos duplicados encontrados`);
+      // Eliminar duplicados
+      this.currentMultimedia = this.currentMultimedia.filter((media, index) => 
+        !duplicados.includes(index)
+      );
+      console.log(`✅ Eliminados ${duplicados.length} duplicados`);
+    }
+    
+    // Validar pendingDeletions
+    if (!Array.isArray(this.pendingDeletions)) {
+      warnings.push('pendingDeletions no es un array');
+      this.pendingDeletions = [];
+    }
+    
+    // Log de resultados
+    if (errors.length > 0) {
+      console.error(`❌ Errores de integridad:`, errors);
+      return { valid: false, errors, warnings };
+    }
+    
+    if (warnings.length > 0) {
+      console.warn(`⚠️ Advertencias de integridad:`, warnings);
+    }
+    
+    console.log(`✅ Validación completada: ${this.currentMultimedia.length} elementos válidos`);
+    return { valid: true, errors: [], warnings };
+  }
+
+  // 📦 FASE 4: Resetear input file de forma robusta
+  resetImageInput() {
+    console.log('🔄 [FASE 4] Reseteando input de imágenes...');
+    
+    const input = document.getElementById('imagenFile');
+    if (!input) {
+      console.warn('⚠️ Input imagenFile no encontrado');
+      return false;
+    }
+    
+    try {
+      // Método 1: Limpiar valor
+      input.value = '';
+      
+      // Método 2: Clonar y reemplazar (más efectivo en algunos navegadores)
+      const newInput = input.cloneNode(true);
+      input.parentNode.replaceChild(newInput, input);
+      
+      // Método 3: Disparar evento change para notificar cambios
+      newInput.dispatchEvent(new Event('change', { bubbles: true }));
+      
+      console.log('✅ Input reseteado correctamente');
+      return true;
+    } catch (error) {
+      console.error('❌ Error reseteando input:', error);
+      return false;
+    }
+  }
+
   async removeMultimedia(index) {
     if (this.currentMultimedia && this.currentMultimedia[index]) {
       const media = this.currentMultimedia[index];
       
-      //  Si es FileSystem, eliminar el archivo fsico
+      // 📦 FASE 3: Marcar para eliminación en lugar de eliminar inmediatamente
       if (media.isFileSystem && media.url && fsManager.isFileSystemMode) {
-        console.log(` Eliminando imagen fsica: ${media.url}`);
-        const deleted = await fsManager.deleteImage(media.url);
-        if (deleted) {
-          console.log(` Imagen eliminada del disco`);
-        } else {
-          console.warn(` No se pudo eliminar la imagen fsica (puede no existir)`);
-        }
+        console.log(`🗑️ [FASE 3] Marcando imagen para eliminación: ${media.url}`);
+        this.pendingDeletions.push(media.url);
+      } else {
+        console.log(`🗑️ [FASE 3] Imagen marcada (no física): ${media.name || 'sin nombre'}`);
       }
       
-      // Eliminar del array
+      // Eliminar del array de preview (NO del disco)
       this.currentMultimedia.splice(index, 1);
       await this.updateMultimediaPreview();
-      this.showToast(' Imagen eliminada', 'success');
+      
+      // 📦 FASE 4: Resetear input de forma robusta
+      this.resetImageInput();
+      
+      this.showToast('🗑️ Imagen marcada para eliminación', 'success');
+      console.log(`📦 Pending deletions: ${this.pendingDeletions.length}, Current multimedia: ${this.currentMultimedia.length}`);
     }
   }
 
@@ -19828,6 +19970,14 @@ class InventarioCompleto {
     try {
       console.log('\n ========== GUARDANDO REPUESTO ==========');
       const id = this.currentEditingId || Date.now().toString() + Math.random();
+      
+      // 📦 FASE 3: Validar integridad multimedia antes de continuar
+      const integrityCheck = this.validateMultimediaIntegrity();
+      if (!integrityCheck.valid) {
+        console.error('❌ Validación de integridad falló:', integrityCheck.errors);
+        this.showToast('⚠️ Error de integridad en multimedia', 'error');
+        throw new Error('Validación de integridad multimedia falló');
+      }
       
       const multimediaTotal = [...(this.currentMultimedia || []), ...(this.currentDocuments || [])];
       console.log(` Multimedia a guardar: ${multimediaTotal.length} items (${this.currentMultimedia?.length || 0} imgenes, ${this.currentDocuments?.length || 0} documentos)`);
@@ -20068,6 +20218,24 @@ class InventarioCompleto {
         ? 'sin adjuntos'
         : `${multimediaTotal.length} adjunto${multimediaTotal.length === 1 ? '' : 's'}`;
       this.showToast(` Repuesto agregado  ${ubicacionesDefinidas}  ${multimediaResumen}`, 'success');
+    }
+
+    // 📦 FASE 3: Procesar eliminaciones pendientes ANTES de guardar
+    if (this.pendingDeletions.length > 0 && fsManager.isFileSystemMode) {
+      console.log(`\n🗑️ [FASE 3] Procesando ${this.pendingDeletions.length} eliminaciones pendientes...`);
+      
+      for (const imageUrl of this.pendingDeletions) {
+        console.log(`🗑️ Eliminando: ${imageUrl}`);
+        const deleted = await fsManager.deleteImage(imageUrl);
+        if (deleted) {
+          console.log(`✅ Eliminado: ${imageUrl}`);
+        } else {
+          console.warn(`⚠️ No se pudo eliminar: ${imageUrl}`);
+        }
+      }
+      
+      console.log(`✅ Eliminaciones completadas: ${this.pendingDeletions.length} archivos procesados`);
+      this.pendingDeletions = []; // Limpiar lista
     }
 
     //  ESPERAR a que se guarde en disco antes de continuar

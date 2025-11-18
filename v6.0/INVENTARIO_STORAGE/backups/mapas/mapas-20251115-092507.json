@@ -7,9 +7,16 @@
     "height": 6623,
     "createdAt": "2025-10-14T03:18:52.886Z",
     "updatedAt": "2025-11-15T00:21:05.263Z",
-    "jerarquiaPath": [],
-    "allowFreeLevel": false,
-    "mapLevel": null
+    "jerarquiaPath": [
+      {
+        "id": "AQ-IN",
+        "nivel": "empresa"
+      },
+      {
+        "id": "PCHO",
+        "nivel": "area"
+      }
+    ]
   },
   {
     "id": 1763209400991,
@@ -19,9 +26,12 @@
     "height": 13245,
     "createdAt": "2025-11-15T12:23:21.221Z",
     "updatedAt": "2025-11-15T12:23:38.348Z",
-    "jerarquiaPath": [],
-    "allowFreeLevel": false,
-    "mapLevel": null
+    "jerarquiaPath": [
+      {
+        "id": "AQ-IN",
+        "nivel": "empresa"
+      }
+    ]
   },
   {
     "id": 1763209497890,
@@ -31,8 +41,6 @@
     "height": 2897,
     "createdAt": "2025-11-15T12:25:00.408Z",
     "updatedAt": "2025-11-15T12:25:00.408Z",
-    "jerarquiaPath": [],
-    "allowFreeLevel": false,
-    "mapLevel": null
+    "jerarquiaPath": []
   }
 ]

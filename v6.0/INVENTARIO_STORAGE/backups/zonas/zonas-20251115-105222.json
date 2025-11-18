@@ -35,41 +35,7 @@
     "updatedAt": "2025-10-21T22:47:43.198Z",
     "category": "maquina",
     "labelOffsetX": 0,
-    "labelOffsetY": 0,
-    "allowFreeLevel": false,
-    "jerarquiaPath": [
-      {
-        "id": "auto-nivel1-planta-principal-102a1447",
-        "nivel": "planta",
-        "storageKey": "nivel1",
-        "name": "Planta Principal"
-      },
-      {
-        "id": "auto-nivel2-eviscerado-14723741",
-        "nivel": "areaGeneral",
-        "storageKey": "nivel2",
-        "name": "Eviscerado"
-      },
-      {
-        "id": "auto-nivel3-grader-92ae2908",
-        "nivel": "subArea",
-        "storageKey": "nivel3",
-        "name": "Grader"
-      },
-      {
-        "id": "auto-nivel4-pocket-1-al-4-7c157169",
-        "nivel": "sistemaEquipo",
-        "storageKey": "nivel4",
-        "name": "Pocket 1 al 4"
-      },
-      {
-        "id": "auto-nivel5-sistema-neumatico-d59e1df5",
-        "nivel": "subSistema",
-        "storageKey": "nivel5",
-        "name": "Sistema Neumático"
-      }
-    ],
-    "mapLevel": "subSistema"
+    "labelOffsetY": 0
   },
   {
     "id": 1761002883472,
@@ -106,35 +72,7 @@
     "updatedAt": "2025-10-21T22:48:06.644Z",
     "category": "cinta",
     "labelOffsetX": 0,
-    "labelOffsetY": 0,
-    "allowFreeLevel": false,
-    "jerarquiaPath": [
-      {
-        "id": "auto-nivel1-planta-principal-102a1447",
-        "nivel": "planta",
-        "storageKey": "nivel1",
-        "name": "Planta Principal"
-      },
-      {
-        "id": "auto-nivel2-eviscerado-14723741",
-        "nivel": "areaGeneral",
-        "storageKey": "nivel2",
-        "name": "Eviscerado"
-      },
-      {
-        "id": "auto-nivel3-grader-92ae2908",
-        "nivel": "subArea",
-        "storageKey": "nivel3",
-        "name": "Grader"
-      },
-      {
-        "id": "auto-nivel4-cinta-z-819be5c5",
-        "nivel": "sistemaEquipo",
-        "storageKey": "nivel4",
-        "name": "Cinta Z"
-      }
-    ],
-    "mapLevel": "sistemaEquipo"
+    "labelOffsetY": 0
   },
   {
     "id": 1761005109491,
@@ -171,35 +109,7 @@
     "updatedAt": "2025-10-21T22:48:20.737Z",
     "category": "cinta",
     "labelOffsetX": 0,
-    "labelOffsetY": 0,
-    "allowFreeLevel": false,
-    "jerarquiaPath": [
-      {
-        "id": "auto-nivel1-planta-principal-102a1447",
-        "nivel": "planta",
-        "storageKey": "nivel1",
-        "name": "Planta Principal"
-      },
-      {
-        "id": "auto-nivel2-eviscerado-14723741",
-        "nivel": "areaGeneral",
-        "storageKey": "nivel2",
-        "name": "Eviscerado"
-      },
-      {
-        "id": "auto-nivel3-grader-92ae2908",
-        "nivel": "subArea",
-        "storageKey": "nivel3",
-        "name": "Grader"
-      },
-      {
-        "id": "auto-nivel4-cinta-aceleracion-1-grader-6ed2a924",
-        "nivel": "sistemaEquipo",
-        "storageKey": "nivel4",
-        "name": "Cinta Aceleración 1 Grader"
-      }
-    ],
-    "mapLevel": "sistemaEquipo"
+    "labelOffsetY": 0
   },
   {
     "id": 1761081773840,
@@ -230,39 +140,12 @@
       "nivel1": "Planta Principal",
       "nivel2": "Eviscerado",
       "nivel3": "Grader",
-      "nivel4": "Cinta Aceleración 2 Grader"
+      "nivel4": "Cinta Aceleración 2 Grader",
+      "nivel5": null
     },
     "equipos": [],
     "createdAt": "2025-10-21T21:22:53.840Z",
-    "updatedAt": "2025-10-21T21:22:53.840Z",
-    "allowFreeLevel": false,
-    "jerarquiaPath": [
-      {
-        "id": "auto-nivel1-planta-principal-102a1447",
-        "nivel": "planta",
-        "storageKey": "nivel1",
-        "name": "Planta Principal"
-      },
-      {
-        "id": "auto-nivel2-eviscerado-14723741",
-        "nivel": "areaGeneral",
-        "storageKey": "nivel2",
-        "name": "Eviscerado"
-      },
-      {
-        "id": "auto-nivel3-grader-92ae2908",
-        "nivel": "subArea",
-        "storageKey": "nivel3",
-        "name": "Grader"
-      },
-      {
-        "id": "auto-nivel4-cinta-aceleracion-2-grader-5f9be5b7",
-        "nivel": "sistemaEquipo",
-        "storageKey": "nivel4",
-        "name": "Cinta Aceleración 2 Grader"
-      }
-    ],
-    "mapLevel": "sistemaEquipo"
+    "updatedAt": "2025-10-21T21:22:53.840Z"
   },
   {
     "id": 1761084793013,
@@ -292,42 +175,14 @@
       }
     ],
     "jerarquia": {
-      "nivel2": "Planta Principal",
-      "nivel3": "Eviscerado",
-      "nivel4": "Grader",
-      "nivel5": "Cinta Larga Grader"
+      "areaGeneral": "Planta Principal",
+      "subArea": "Eviscerado",
+      "sistemaEquipo": "Grader",
+      "subSistema": "Cinta Larga Grader"
     },
     "equipos": [],
     "createdAt": "2025-10-21T22:13:13.014Z",
-    "updatedAt": "2025-10-30T22:35:03.084Z",
-    "allowFreeLevel": false,
-    "jerarquiaPath": [
-      {
-        "id": "auto-nivel2-planta-principal-79821939",
-        "nivel": "areaGeneral",
-        "storageKey": "nivel2",
-        "name": "Planta Principal"
-      },
-      {
-        "id": "auto-nivel3-eviscerado-297f3db5",
-        "nivel": "subArea",
-        "storageKey": "nivel3",
-        "name": "Eviscerado"
-      },
-      {
-        "id": "auto-nivel4-grader-cd77a202",
-        "nivel": "sistemaEquipo",
-        "storageKey": "nivel4",
-        "name": "Grader"
-      },
-      {
-        "id": "auto-nivel5-cinta-larga-grader-c2c68b5a",
-        "nivel": "subSistema",
-        "storageKey": "nivel5",
-        "name": "Cinta Larga Grader"
-      }
-    ],
-    "mapLevel": "subSistema"
+    "updatedAt": "2025-10-30T22:35:03.084Z"
   },
   {
     "id": 1761364821364,
@@ -362,39 +217,12 @@
       "nivel1": "Planta Principal",
       "nivel2": "EVISCERADO",
       "nivel3": "Marel",
-      "nivel4": "Cinta Azul Marel"
+      "nivel4": "Cinta Azul Marel",
+      "nivel5": null
     },
     "equipos": [],
     "createdAt": "2025-10-25T04:00:21.365Z",
-    "updatedAt": "2025-10-25T04:00:21.365Z",
-    "allowFreeLevel": false,
-    "jerarquiaPath": [
-      {
-        "id": "auto-nivel1-planta-principal-102a1447",
-        "nivel": "planta",
-        "storageKey": "nivel1",
-        "name": "Planta Principal"
-      },
-      {
-        "id": "auto-nivel2-eviscerado-14723741",
-        "nivel": "areaGeneral",
-        "storageKey": "nivel2",
-        "name": "EVISCERADO"
-      },
-      {
-        "id": "auto-nivel3-marel-f471d38a",
-        "nivel": "subArea",
-        "storageKey": "nivel3",
-        "name": "Marel"
-      },
-      {
-        "id": "auto-nivel4-cinta-azul-marel-bfddc33b",
-        "nivel": "sistemaEquipo",
-        "storageKey": "nivel4",
-        "name": "Cinta Azul Marel"
-      }
-    ],
-    "mapLevel": "sistemaEquipo"
+    "updatedAt": "2025-10-25T04:00:21.365Z"
   },
   {
     "id": 1761369700833,
@@ -426,28 +254,12 @@
       }
     ],
     "jerarquia": {
-      "nivel2": "Planta Principal",
-      "nivel3": "Eviscerado"
+      "areaGeneral": "Planta Principal",
+      "subArea": "Eviscerado"
     },
     "equipos": [],
     "createdAt": "2025-10-25T05:21:40.833Z",
-    "updatedAt": "2025-10-30T22:36:03.713Z",
-    "allowFreeLevel": false,
-    "jerarquiaPath": [
-      {
-        "id": "auto-nivel2-planta-principal-79821939",
-        "nivel": "areaGeneral",
-        "storageKey": "nivel2",
-        "name": "Planta Principal"
-      },
-      {
-        "id": "auto-nivel3-eviscerado-297f3db5",
-        "nivel": "subArea",
-        "storageKey": "nivel3",
-        "name": "Eviscerado"
-      }
-    ],
-    "mapLevel": "subArea"
+    "updatedAt": "2025-10-30T22:36:03.713Z"
   },
   {
     "id": 1761370288328,
@@ -519,35 +331,13 @@
       }
     ],
     "jerarquia": {
-      "nivel2": "Planta Principal",
-      "nivel3": "Filete",
-      "nivel4": "Cinta Curva Filete"
+      "areaGeneral": "Planta Principal",
+      "subArea": "Filete",
+      "sistemaEquipo": "Cinta Curva Filete"
     },
     "equipos": [],
     "createdAt": "2025-10-25T05:31:28.328Z",
-    "updatedAt": "2025-10-30T22:35:38.755Z",
-    "allowFreeLevel": false,
-    "jerarquiaPath": [
-      {
-        "id": "auto-nivel2-planta-principal-79821939",
-        "nivel": "areaGeneral",
-        "storageKey": "nivel2",
-        "name": "Planta Principal"
-      },
-      {
-        "id": "auto-nivel3-filete-10671259",
-        "nivel": "subArea",
-        "storageKey": "nivel3",
-        "name": "Filete"
-      },
-      {
-        "id": "auto-nivel4-cinta-curva-filete-daf6cd94",
-        "nivel": "sistemaEquipo",
-        "storageKey": "nivel4",
-        "name": "Cinta Curva Filete"
-      }
-    ],
-    "mapLevel": "sistemaEquipo"
+    "updatedAt": "2025-10-30T22:35:38.755Z"
   },
   {
     "id": 1761752088945,
@@ -595,35 +385,13 @@
       }
     ],
     "jerarquia": {
-      "nivel1": "Antarfood Aquachile Chonchi",
-      "nivel2": "Planta Principal",
-      "nivel3": "Filete"
+      "planta": "Antarfood Aquachile Chonchi",
+      "areaGeneral": "Planta Principal",
+      "subArea": "Filete"
     },
     "equipos": [],
     "createdAt": "2025-10-29T15:34:48.945Z",
-    "updatedAt": "2025-10-30T22:36:42.421Z",
-    "allowFreeLevel": false,
-    "jerarquiaPath": [
-      {
-        "id": "auto-nivel1-antarfood-aquachile-chonchi-a08471e8",
-        "nivel": "planta",
-        "storageKey": "nivel1",
-        "name": "Antarfood Aquachile Chonchi"
-      },
-      {
-        "id": "auto-nivel2-planta-principal-79821939",
-        "nivel": "areaGeneral",
-        "storageKey": "nivel2",
-        "name": "Planta Principal"
-      },
-      {
-        "id": "auto-nivel3-filete-10671259",
-        "nivel": "subArea",
-        "storageKey": "nivel3",
-        "name": "Filete"
-      }
-    ],
-    "mapLevel": "subArea"
+    "updatedAt": "2025-10-30T22:36:42.421Z"
   },
   {
     "id": 1761862661720,
@@ -689,9 +457,6 @@
     "jerarquia": {},
     "equipos": [],
     "createdAt": "2025-10-30T22:17:41.720Z",
-    "updatedAt": "2025-10-30T22:18:02.548Z",
-    "allowFreeLevel": false,
-    "jerarquiaPath": [],
-    "mapLevel": null
+    "updatedAt": "2025-10-30T22:18:02.548Z"
   }
 ]

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1500" height="900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .card { fill: #252a33; stroke: #3a4049; stroke-width: 2; }
+      .header { fill: #1e2229; }
+      .text { fill: #e6e9ef; font-family: Arial, sans-serif; font-size: 14px; }
+      .text-small { fill: #b8bec8; font-size: 12px; }
+      .number { fill: #5b8bb4; font-weight: bold; }
+      .grid-line { stroke: #3a4049; stroke-width: 1; stroke-dasharray: 5,5; opacity: 0.3; }
+    </style>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="1500" height="900" fill="#1a1d23"/>
+  
+  <!-- Título -->
+  <text x="750" y="40" class="text" font-size="20" text-anchor="middle" font-weight="bold">
+    Layout Modal - Ubicaciones (760px ancho)
+  </text>
+  
+  <!-- Card de ubicación -->
+  <rect x="50" y="80" width="760" height="750" class="card" rx="10"/>
+  
+  <!-- Header de la card -->
+  <rect x="50" y="80" width="760" height="50" class="header" rx="10"/>
+  <circle cx="80" cy="105" r="12" fill="#5b8bb480"/>
+  <text x="98" y="110" class="text" font-weight="bold">1</text>
+  <text x="120" y="110" class="text" font-weight="600">Ubicacion 1</text>
+  
+  <!-- Botón eliminar -->
+  <rect x="680" y="92" width="100" height="26" fill="#b86b6b" rx="4"/>
+  <text x="730" y="109" class="text" font-size="12" text-anchor="middle">Eliminar</text>
+  
+  <!-- Grid de 2 columnas - línea vertical -->
+  <line x1="430" y1="150" x2="430" y2="810" class="grid-line"/>
+  
+  <!-- Columna 1 - Campos -->
+  <g id="col1">
+    <!-- Campo 1: Empresa -->
+    <circle cx="80" cy="170" r="9" fill="#5b8bb480"/>
+    <text x="80" y="174" class="number" font-size="11" text-anchor="middle">1</text>
+    <text x="100" y="174" class="text-small">Empresa</text>
+    <rect x="70" y="185" width="330" height="32" fill="#1e2229" rx="4"/>
+    <text x="85" y="205" class="text-small" opacity="0.7">Aquachile Antarfood Chonchi</text>
+    
+    <!-- Campo 2: Area General -->
+    <circle cx="80" cy="245" r="9" fill="#5b8bb480"/>
+    <text x="80" y="249" class="number" font-size="11" text-anchor="middle">2</text>
+    <text x="100" y="249" class="text-small">Area General: *</text>
+    <rect x="70" y="260" width="330" height="32" fill="#1e2229" rx="4"/>
+    <text x="85" y="280" class="text-small" opacity="0.5">-- Seleccionar Area --</text>
+    
+    <!-- Campo 3: Sub-Area -->
+    <circle cx="80" cy="320" r="9" fill="#5b8bb480"/>
+    <text x="80" y="324" class="number" font-size="11" text-anchor="middle">3</text>
+    <text x="100" y="324" class="text-small">Sub-Area</text>
+    <rect x="70" y="335" width="330" height="32" fill="#1e222980" rx="4"/>
+    <text x="85" y="355" class="text-small" opacity="0.3">-- Primero selecciona Area --</text>
+    
+    <!-- Campo 4: Sistema/Equipo -->
+    <circle cx="80" cy="395" r="9" fill="#5b8bb480"/>
+    <text x="80" y="399" class="number" font-size="11" text-anchor="middle">4</text>
+    <text x="100" y="399" class="text-small">Sistema/Equipo</text>
+    <rect x="70" y="410" width="330" height="32" fill="#1e222980" rx="4"/>
+    <text x="85" y="430" class="text-small" opacity="0.3">-- Primero selecciona Sub-Area --</text>
+  </g>
+  
+  <!-- Columna 2 - Campos -->
+  <g id="col2">
+    <!-- Campo 5: Sub-Sistema -->
+    <circle cx="460" cy="170" r="9" fill="#5b8bb480"/>
+    <text x="460" y="174" class="number" font-size="11" text-anchor="middle">5</text>
+    <text x="480" y="174" class="text-small">Sub-Sistema</text>
+    <rect x="450" y="185" width="330" height="32" fill="#1e222980" rx="4"/>
+    <text x="465" y="205" class="text-small" opacity="0.3">-- Primero selecciona Sistema --</text>
+    
+    <!-- Campo 6: Seccion -->
+    <circle cx="460" cy="245" r="9" fill="#5b8bb480"/>
+    <text x="460" y="249" class="number" font-size="11" text-anchor="middle">6</text>
+    <text x="480" y="249" class="text-small">Seccion</text>
+    <rect x="450" y="260" width="330" height="32" fill="#1e222980" rx="4"/>
+    <text x="465" y="280" class="text-small" opacity="0.3">-- Primero selecciona Sub-Sistema --</text>
+    
+    <!-- Campo 7: Sub-Seccion -->
+    <circle cx="460" cy="320" r="9" fill="#5b8bb480"/>
+    <text x="460" y="324" class="number" font-size="11" text-anchor="middle">7</text>
+    <text x="480" y="324" class="text-small">Sub-Seccion</text>
+    <rect x="450" y="335" width="330" height="32" fill="#1e222980" rx="4"/>
+    <text x="465" y="355" class="text-small" opacity="0.3">-- Primero selecciona Seccion --</text>
+    
+    <!-- Campo 8: Detalle (full width) -->
+    <circle cx="460" cy="395" r="9" fill="#5b8bb480"/>
+    <text x="460" y="399" class="number" font-size="11" text-anchor="middle">8</text>
+    <text x="480" y="399" class="text-small">Detalle / Ubicacion especifica</text>
+    <rect x="450" y="410" width="330" height="32" fill="#1e2229" rx="4"/>
+    <text x="465" y="430" class="text-small" opacity="0.5">Ej: Lado izquierdo, Estante 2 Nivel 3...</text>
+  </g>
+  
+  <!-- Notas de medidas -->
+  <text x="50" y="860" class="text-small" opacity="0.6">
+    📏 Card width: 760px | Grid: 2 cols | Gap: 14px | Padding: 18px
+  </text>
+  
+  <!-- Vista alternativa - Card más ancha -->
+  <rect x="900" y="80" width="550" height="400" class="card" rx="10"/>
+  <text x="1175" y="110" class="text" text-anchor="middle" font-weight="bold">
+    Alternativa: 550px ancho
+  </text>
+  <text x="1175" y="140" class="text-small" text-anchor="middle" opacity="0.7">
+    (Grid más compacto)
+  </text>
+  
+  <!-- Grid compacto -->
+  <line x1="1175" y1="160" x2="1175" y2="460" class="grid-line"/>
+  
+  <circle cx="940" cy="180" r="9" fill="#5b8bb480"/>
+  <text x="940" y="184" class="number" font-size="11" text-anchor="middle">1</text>
+  <text x="960" y="184" class="text-small">Empresa</text>
+  <rect x="930" y="195" width="220" height="28" fill="#1e2229" rx="4"/>
+  
+  <circle cx="1215" cy="180" r="9" fill="#5b8bb480"/>
+  <text x="1215" y="184" class="number" font-size="11" text-anchor="middle">2</text>
+  <text x="1235" y="184" class="text-small">Area General</text>
+  <rect x="1205" y="195" width="220" height="28" fill="#1e2229" rx="4"/>
+  
+  <text x="1175" y="250" class="text-small" text-anchor="middle" opacity="0.5">
+    ... (resto de campos)
+  </text>
+  
+</svg>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout Playground - Ubicaciones</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a1d23;
+      color: #e6e9ef;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 40px;
+    }
+
+    .playground-header {
+      margin-bottom: 30px;
+      padding: 15px 20px;
+      background: #252a33;
+      border-radius: 10px;
+      border: 2px dashed #5b8bb4;
+    }
+
+    .playground-header h1 {
+      color: #5b8bb4;
+      margin-bottom: 10px;
+    }
+
+    .playground-header p {
+      color: #b8bec8;
+      font-size: 14px;
+    }
+
+    .instructions {
+      background: rgba(91, 139, 180, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      border-left: 4px solid #5b8bb4;
+    }
+
+    .instructions ul {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+
+    .instructions li {
+      margin: 5px 0;
+      color: #7ba5c8;
+    }
+
+    /* CARD DE UBICACIÓN */
+    #ubicacion-card {
+      background: #252a33;
+      border: 1px solid #3a4049;
+      border-radius: 10px;
+      padding: 18px;
+      width: 760px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+      margin: 0 auto;
+      position: relative;
+    }
+
+    #ubicacion-card::before {
+      content: "#ubicacion-card (760px)";
+      position: absolute;
+      top: -25px;
+      left: 0;
+      font-size: 11px;
+      color: #5b8bb4;
+      background: #1a1d23;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* HEADER */
+    #card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #3a4049;
+    }
+
+    #card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    #ubicacion-index {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(91, 139, 180, 0.22);
+      color: #7ba5c8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    #btn-eliminar {
+      background: #b86b6b;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* BODY - GRID 2 COLUMNAS */
+    #card-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 14px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      position: relative;
+    }
+
+    .field-group::before {
+      content: attr(id);
+      position: absolute;
+      top: -18px;
+      left: 0;
+      font-size: 9px;
+      color: rgba(91, 139, 180, 0.5);
+      background: #1a1d23;
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+
+    .field-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.74rem;
+      font-weight: 500;
+    }
+
+    .field-number {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(91, 139, 180, 0.22);
+      color: #7ba5c8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .field-input {
+      background: #1e2229;
+      border: 1px solid #3a4049;
+      border-radius: 4px;
+      padding: 8px 12px;
+      color: #e6e9ef;
+      font-size: 0.75rem;
+    }
+
+    .field-input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .field-input::placeholder {
+      color: #6a7078;
+    }
+
+    .field-hint {
+      font-size: 0.68rem;
+      color: #6a7078;
+      margin-top: 2px;
+    }
+
+    /* FULL WIDTH FIELD */
+    .field-full {
+      grid-column: 1 / -1;
+    }
+
+    /* CONTROL PANEL */
+    .control-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #252a33;
+      border: 2px solid #5b8bb4;
+      border-radius: 10px;
+      padding: 15px;
+      width: 280px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .control-panel h3 {
+      color: #5b8bb4;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .control-btn {
+      width: 100%;
+      background: #3a4049;
+      border: 1px solid #5b8bb4;
+      color: #7ba5c8;
+      padding: 8px;
+      border-radius: 4px;
+      margin: 5px 0;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .control-btn:hover {
+      background: #4a5059;
+    }
+
+    .measure {
+      display: inline-block;
+      background: rgba(91, 139, 180, 0.2);
+      color: #7ba5c8;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      margin: 2px;
+    }
+  </style>
+</head>
+<body>
+  
+
+
+  <!-- CARD PRINCIPAL -->
+  <div id="ubicacion-card">
+    
+    <!-- HEADER -->
+    <div id="card-header">
+      <div id="card-title">
+        <span id="ubicacion-index">1</span>
+        <span>Ubicacion 1</span>
+      </div>
+      <button id="btn-eliminar">Eliminar</button>
+    </div>
+
+    <!-- BODY - GRID DE CAMPOS -->
+    <div id="card-body">
+      
+      <!-- Campo 1: Empresa -->
+      <div id="campo-empresa" class="field-group">
+        <label class="field-label">
+          <span class="field-number">1</span>
+          <span>Empresa</span>
+        </label>
+        <input type="text" class="field-input" value="Aquachile Antarfood Chonchi" readonly>
+      </div>
+
+      <!-- Campo 2: Area General -->
+      <div id="campo-area" class="field-group">
+        <label class="field-label">
+          <span class="field-number">2</span>
+          <span>Area General: *</span>
+        </label>
+        <select class="field-input">
+          <option>-- Seleccionar Area --</option>
+          <option>Planta Principal</option>
+          <option>Acopio</option>
+        </select>
+      </div>
+
+      <!-- Campo 3: Sub-Area -->
+      <div id="campo-subarea" class="field-group">
+        <label class="field-label">
+          <span class="field-number">3</span>
+          <span>Sub-Area</span>
+        </label>
+        <select class="field-input" disabled>
+          <option>-- Primero selecciona Area --</option>
+        </select>
+      </div>
+
+      <!-- Campo 4: Sistema/Equipo -->
+      <div id="campo-sistema" class="field-group">
+        <label class="field-label">
+          <span class="field-number">4</span>
+          <span>Sistema/Equipo</span>
+        </label>
+        <select class="field-input" disabled>
+          <option>-- Primero selecciona Sub-Area --</option>
+        </select>
+      </div>
+
+      <!-- Campo 5: Sub-Sistema -->
+      <div id="campo-subsistema" class="field-group">
+        <label class="field-label">
+          <span class="field-number">5</span>
+          <span>Sub-Sistema</span>
+        </label>
+        <select class="field-input" disabled>
+          <option>-- Primero selecciona Sistema --</option>
+        </select>
+      </div>
+
+      <!-- Campo 6: Seccion -->
+      <div id="campo-seccion" class="field-group">
+        <label class="field-label">
+          <span class="field-number">6</span>
+          <span>Seccion</span>
+        </label>
+        <select class="field-input" disabled>
+          <option>-- Primero selecciona Sub-Sistema --</option>
+        </select>
+      </div>
+
+      <!-- Campo 7: Sub-Seccion -->
+      <div id="campo-subseccion" class="field-group">
+        <label class="field-label">
+          <span class="field-number">7</span>
+          <span>Sub-Seccion</span>
+        </label>
+        <select class="field-input" disabled>
+          <option>-- Primero selecciona Seccion --</option>
+        </select>
+      </div>
+
+      <!-- Campo 8: Detalle (FULL WIDTH) -->
+      <div id="campo-detalle" class="field-group field-full">
+        <label class="field-label">
+          <span class="field-number">8</span>
+          <span>Detalle / Ubicacion especifica</span>
+        </label>
+        <input type="text" class="field-input" placeholder="Ej: Lado izquierdo, Estante 2 Nivel 3, Bastidor superior">
+        <small class="field-hint">Campo libre para precisar la ubicacion exacta en terreno.</small>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PANEL DE CONTROL -->
+  <div class="control-panel">
+    <h3>⚡ Card</h3>
+    <button class="control-btn" onclick="changeWidth(900)">Ancho → 900px</button>
+    <button class="control-btn" onclick="changeWidth(600)">Ancho → 600px</button>
+    <input type="number" id="custom-width" placeholder="Ancho custom" style="width: 100%; padding: 6px; margin: 5px 0; background: #1e2229; border: 1px solid #3a4049; color: #e6e9ef; border-radius: 4px;">
+    <button class="control-btn" onclick="changeWidth(parseInt(document.getElementById('custom-width').value))">Aplicar ancho custom</button>
+    
+    <h3 style="margin-top: 15px;">📐 Grid</h3>
+    <button class="control-btn" onclick="changeColumns(3)">3 columnas</button>
+    <button class="control-btn" onclick="changeColumns(2)">2 columnas</button>
+    <button class="control-btn" onclick="changeColumns(1)">1 columna</button>
+    <button class="control-btn" onclick="changeGap(20)">Gap → 20px</button>
+    <button class="control-btn" onclick="changeGap(8)">Gap → 8px</button>
+    
+    <h3 style="margin-top: 15px;">🎯 Campos</h3>
+    <select id="field-select" style="width: 100%; padding: 6px; margin: 5px 0; background: #1e2229; border: 1px solid #3a4049; color: #e6e9ef; border-radius: 4px;">
+      <option value="">-- Seleccionar campo --</option>
+      <option value="campo-empresa">1. Empresa</option>
+      <option value="campo-area">2. Area General</option>
+      <option value="campo-subarea">3. Sub-Area</option>
+      <option value="campo-sistema">4. Sistema/Equipo</option>
+      <option value="campo-subsistema">5. Sub-Sistema</option>
+      <option value="campo-seccion">6. Seccion</option>
+      <option value="campo-subseccion">7. Sub-Seccion</option>
+      <option value="campo-detalle">8. Detalle</option>
+    </select>
+    <button class="control-btn" onclick="toggleFieldFullWidth()">Toggle full width</button>
+    <button class="control-btn" onclick="moveFieldUp()">↑ Mover arriba</button>
+    <button class="control-btn" onclick="moveFieldDown()">↓ Mover abajo</button>
+    <button class="control-btn" onclick="hideField()">Ocultar campo</button>
+    <button class="control-btn" onclick="showAllFields()">Mostrar todos</button>
+    
+    <h3 style="margin-top: 15px;">🎨 Estilos</h3>
+    <button class="control-btn" onclick="changePadding(24)">Padding → 24px</button>
+    <button class="control-btn" onclick="changePadding(12)">Padding → 12px</button>
+    <button class="control-btn" onclick="changeFieldSize('large')">Campos grandes</button>
+    <button class="control-btn" onclick="changeFieldSize('small')">Campos pequeños</button>
+    
+    <h3 style="margin-top: 15px;">🎭 Bordes & Colores</h3>
+    <button class="control-btn" onclick="changeBorderRadius(12)">Bordes → 12px</button>
+    <button class="control-btn" onclick="changeBorderRadius(6)">Bordes → 6px</button>
+    <button class="control-btn" onclick="changeBorderRadius(0)">Sin bordes</button>
+    <button class="control-btn" onclick="changeCardBg('#252a33')">Fondo normal</button>
+    <button class="control-btn" onclick="changeCardBg('#2a2f38')">Fondo claro</button>
+    <button class="control-btn" onclick="changeCardBg('#1e2229')">Fondo oscuro</button>
+    
+    <h3 style="margin-top: 15px;">📏 Espaciado</h3>
+    <button class="control-btn" onclick="changeFieldGap(16)">Gap campos → 16px</button>
+    <button class="control-btn" onclick="changeFieldGap(10)">Gap campos → 10px</button>
+    <button class="control-btn" onclick="changeFieldGap(6)">Gap campos → 6px</button>
+    <button class="control-btn" onclick="changeLabelMargin(8)">Margen label → 8px</button>
+    <button class="control-btn" onclick="changeLabelMargin(4)">Margen label → 4px</button>
+    
+    <h3 style="margin-top: 15px;">🔢 Números</h3>
+    <button class="control-btn" onclick="toggleNumbers()">Mostrar/Ocultar</button>
+    <button class="control-btn" onclick="changeNumberSize(20)">Números grandes</button>
+    <button class="control-btn" onclick="changeNumberSize(16)">Números pequeños</button>
+    
+    <h3 style="margin-top: 15px;">💾 Acciones</h3>
+    <button class="control-btn" onclick="resetAll()">🔄 Reset todo</button>
+    <button class="control-btn" onclick="exportConfig()">📋 Copiar config</button>
+    
+    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #3a4049;">
+      <strong style="font-size: 12px; color: #7ba5c8;">📊 Medidas:</strong>
+      <div style="margin-top: 8px;">
+        <span class="measure" id="measure-width">760px</span>
+        <span class="measure" id="measure-cols">2 cols</span>
+        <span class="measure" id="measure-gap">14px gap</span>
+      </div>
+      <div style="margin-top: 8px; font-size: 10px; color: #6a7078;">
+        <span id="selected-field-info">Selecciona un campo</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const card = document.getElementById('ubicacion-card');
+    const body = document.getElementById('card-body');
+    const fieldSelect = document.getElementById('field-select');
+    const fieldInfo = document.getElementById('selected-field-info');
+
+    // Actualizar info del campo seleccionado
+    fieldSelect.addEventListener('change', function() {
+      if (this.value) {
+        const field = document.getElementById(this.value);
+        const isFullWidth = field.classList.contains('field-full');
+        fieldInfo.textContent = `Campo: ${this.options[this.selectedIndex].text} | Full: ${isFullWidth ? 'Sí' : 'No'}`;
+        field.style.outline = '2px solid #5b8bb4';
+        setTimeout(() => field.style.outline = '', 2000);
+      } else {
+        fieldInfo.textContent = 'Selecciona un campo';
+      }
+    });
+
+    function changeWidth(width) {
+      card.style.width = width + 'px';
+      document.getElementById('measure-width').textContent = width + 'px';
+      updateCardLabel();
+    }
+
+    function changeColumns(cols) {
+      body.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      document.getElementById('measure-cols').textContent = cols + ' cols';
+    }
+
+    function changeGap(gap) {
+      body.style.gap = `${gap}px`;
+      document.getElementById('measure-gap').textContent = gap + 'px gap';
+    }
+
+    function changePadding(padding) {
+      card.style.padding = padding + 'px';
+    }
+
+    function changeFieldSize(size) {
+      const inputs = document.querySelectorAll('.field-input');
+      if (size === 'large') {
+        inputs.forEach(input => input.style.padding = '12px 16px');
+      } else {
+        inputs.forEach(input => input.style.padding = '6px 10px');
+      }
+    }
+
+    function getSelectedField() {
+      const fieldId = fieldSelect.value;
+      if (!fieldId) {
+        alert('⚠️ Selecciona un campo primero');
+        return null;
+      }
+      return document.getElementById(fieldId);
+    }
+
+    function toggleFieldFullWidth() {
+      const field = getSelectedField();
+      if (!field) return;
+      
+      field.classList.toggle('field-full');
+      const isFullWidth = field.classList.contains('field-full');
+      fieldInfo.textContent = `Campo: ${fieldSelect.options[fieldSelect.selectedIndex].text} | Full: ${isFullWidth ? 'Sí' : 'No'}`;
+    }
+
+    function moveFieldUp() {
+      const field = getSelectedField();
+      if (!field) return;
+      
+      const prev = field.previousElementSibling;
+      if (prev) {
+        body.insertBefore(field, prev);
+        field.style.outline = '2px solid #5b8bb4';
+        setTimeout(() => field.style.outline = '', 1000);
+      }
+    }
+
+    function moveFieldDown() {
+      const field = getSelectedField();
+      if (!field) return;
+      
+      const next = field.nextElementSibling;
+      if (next) {
+        body.insertBefore(next, field);
+        field.style.outline = '2px solid #5b8bb4';
+        setTimeout(() => field.style.outline = '', 1000);
+      }
+    }
+
+    function hideField() {
+      const field = getSelectedField();
+      if (!field) return;
+      
+      field.style.display = 'none';
+      fieldInfo.textContent = 'Campo oculto';
+    }
+
+    function showAllFields() {
+      const fields = document.querySelectorAll('.field-group');
+      fields.forEach(field => field.style.display = 'flex');
+      fieldInfo.textContent = 'Todos visibles';
+    }
+
+    function changeBorderRadius(radius) {
+      card.style.borderRadius = radius + 'px';
+      const inputs = document.querySelectorAll('.field-input');
+      inputs.forEach(input => input.style.borderRadius = radius + 'px');
+    }
+
+    function changeCardBg(color) {
+      card.style.background = color;
+    }
+
+    function changeFieldGap(gap) {
+      const fields = document.querySelectorAll('.field-group');
+      fields.forEach(field => field.style.gap = gap + 'px');
+    }
+
+    function changeLabelMargin(margin) {
+      const labels = document.querySelectorAll('.field-label');
+      labels.forEach(label => label.style.marginBottom = margin + 'px');
+    }
+
+    function toggleNumbers() {
+      const numbers = document.querySelectorAll('.field-number');
+      numbers.forEach(num => {
+        num.style.display = num.style.display === 'none' ? 'flex' : 'none';
+      });
+    }
+
+    function changeNumberSize(size) {
+      const numbers = document.querySelectorAll('.field-number');
+      numbers.forEach(num => {
+        num.style.width = size + 'px';
+        num.style.height = size + 'px';
+        num.style.fontSize = (size - 6) + 'px';
+      });
+    }
+
+    function resetAll() {
+      location.reload();
+    }
+
+    function exportConfig() {
+      const config = {
+        cardWidth: card.style.width || '760px',
+        cardPadding: card.style.padding || '18px',
+        cardBorderRadius: card.style.borderRadius || '10px',
+        cardBackground: card.style.background || '#252a33',
+        gridColumns: body.style.gridTemplateColumns || 'repeat(2, 1fr)',
+        gridGap: body.style.gap || '14px'
+      };
+      
+      const text = `
+/* CONFIG GENERADA */
+.sap-ubicacion-card {
+  width: ${config.cardWidth};
+  padding: ${config.cardPadding};
+  border-radius: ${config.cardBorderRadius};
+  background: ${config.cardBackground};
+}
+
+.sap-ubicacion-body {
+  display: grid;
+  grid-template-columns: ${config.gridColumns};
+  gap: ${config.gridGap};
+}
+      `.trim();
+      
+      navigator.clipboard.writeText(text).then(() => {
+        alert('✅ Configuración CSS copiada al portapapeles');
+      });
+    }
+
+    // Actualizar label del card al cambiar ancho
+    const style = document.createElement('style');
+    document.head.appendChild(style);
+    function updateCardLabel() {
+      const width = card.style.width || '760px';
+      style.textContent = `#ubicacion-card::before { content: "#ubicacion-card (${width})"; }`;
+    }
+    updateCardLabel();
+  </script>
+
+</body>
+</html>
