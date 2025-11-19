@@ -830,7 +830,7 @@
         "subArea": "Eviscerado",
         "sistemaEquipo": "Baader 142 Antigua N1",
         "subSistema": "Carro cinta prisma interior",
-        "cantidadEnUbicacion": 1,
+        "cantidadEnUbicacion": 6,
         "jerarquiaPath": [
           {
             "id": "nivel1-1763574784718-2486",
@@ -869,7 +869,7 @@
         "subArea": "Eviscerado",
         "sistemaEquipo": "Baader 142 Nueva N2",
         "subSistema": "Carro cinta prisma interior",
-        "cantidadEnUbicacion": 1,
+        "cantidadEnUbicacion": 6,
         "jerarquiaPath": [
           {
             "id": "nivel1-1763574784718-2486",
@@ -908,7 +908,7 @@
         "subArea": "Eviscerado",
         "sistemaEquipo": "Baader 142 Nueva N3",
         "subSistema": "Carro cinta prisma interior",
-        "cantidadEnUbicacion": 1,
+        "cantidadEnUbicacion": 6,
         "jerarquiaPath": [
           {
             "id": "nivel1-1763574784718-2486",
@@ -969,7 +969,7 @@
         "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-11-19T17:57:38.309Z",
+    "ultimaModificacion": "2025-11-19T17:57:57.793Z",
     "ultimoConteo": null
   },
   {
