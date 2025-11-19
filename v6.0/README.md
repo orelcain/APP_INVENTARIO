@@ -2,6 +2,36 @@
 
 ## Historial de Versiones
 
+### v50 - Correlativos Globales en Tab Mapas (19-nov-2025)
+**Cambios:**
+- ✅ **Correlativos globales en mapas**: Los marcadores ahora muestran el correlativo global (#1-#N) igual que en el árbol de jerarquía
+- ✅ **Múltiples marcadores por ubicación**: Si una ubicación tiene cantidadEnUbicacion > 1, se muestran múltiples entradas en la lista de áreas
+- ✅ **Consistencia total**: Mismo sistema de numeración en Tab Jerarquía y Tab Mapas
+
+**Ejemplo:**
+```
+Tab Jerarquía:
+  Grader > Cinta Larga → PARADA EMERGENCIA #1, #2
+  Grader > Cinta Transversal → PARADA EMERGENCIA #3, #4, #5, #6
+  Filete > Cinta Curva → PARADA EMERGENCIA #7, #8
+
+Tab Mapas (mismo correlativo):
+  Mapa Planta Principal > Área Grader:
+    - PARADA EMERGENCIA #1 🗺️
+    - PARADA EMERGENCIA #2 🗺️
+  
+  Área Cinta Transversal:
+    - PARADA EMERGENCIA #3 🗺️
+    - PARADA EMERGENCIA #4 🗺️
+    - PARADA EMERGENCIA #5 🗺️
+    - PARADA EMERGENCIA #6 🗺️
+```
+
+**Implementación:**
+- `calcularCorrelativosGlobales()` ahora calcula correlativos del sistema completo (no solo del mapa)
+- `getMarcadoresPorArea()` genera múltiples entradas si `cantidadEnUbicacion > 1`
+- `drawMarkers()` renderiza todos los marcadores con su correlativo global
+
 ### v49 - Correlativos Globales y Toggle de Repuestos (19-nov-2025)
 **Cambios:**
 - ✅ **Correlativos globales**: Los repuestos se numeran globalmente (#1 al #8) independientemente de la ubicación

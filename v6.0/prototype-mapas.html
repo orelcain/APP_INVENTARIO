@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototipo - Estructura Tab Mapas v6.0</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-app: #1a1d23;
+      --bg-primary: #1e2229;
+      --bg-secondary: #252a33;
+      --bg-tertiary: #2d333d;
+      --bg-elevated: #3a4049;
+      --border-color: #2d333d;
+      --border-light: #3a4049;
+      --text-primary: #e6e9ef;
+      --text-secondary: #b8bec8;
+      --text-muted: #8a909a;
+      --primary: #5b8bb4;
+      --primary-light: #7ba5c8;
+      --success: #5b9b7a;
+      --warning: #b8925a;
+      --danger: #b86b6b;
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-app);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* PANEL DE CONTROL FLOTANTE */
+    #controlPanel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 20px;
+      width: 320px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+      z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+
+    #controlPanel.collapsed {
+      transform: translateX(calc(100% + 20px));
+    }
+
+    .control-toggle {
+      position: absolute;
+      left: -40px;
+      top: 20px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      border-radius: 8px 0 0 8px;
+      padding: 10px 8px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background 0.2s;
+    }
+
+    .control-toggle:hover {
+      background: var(--bg-secondary);
+    }
+
+    .control-section {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .control-section:last-child {
+      border-bottom: none;
+    }
+
+    .control-section h3 {
+      font-size: 0.9rem;
+      color: var(--primary-light);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .control-group {
+      margin-bottom: 12px;
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .control-group input[type="range"],
+    .control-group select {
+      width: 100%;
+      padding: 6px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.75rem;
+    }
+
+    .control-group input[type="checkbox"] {
+      margin-right: 8px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .checkbox-label:hover {
+      background: var(--bg-primary);
+    }
+
+    .value-display {
+      display: inline-block;
+      background: var(--bg-primary);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.7rem;
+      color: var(--primary-light);
+      margin-left: 8px;
+    }
+
+    .preset-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .preset-btn {
+      padding: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* LAYOUT PRINCIPAL */
+    .map-shell {
+      display: grid;
+      grid-template-columns: var(--panel-width) 1fr;
+      height: 100vh;
+      gap: var(--layout-gap);
+      padding: var(--layout-gap);
+    }
+
+    .map-panel {
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--panel-shadow);
+      overflow: hidden;
+    }
+
+    .map-panel-header {
+      display: none; /* Ocultar header para ahorrar espacio */
+    }
+
+    .map-panel-header h2 {
+      font-size: 1.1rem;
+      margin: 0 0 4px 0;
+      color: var(--text-primary);
+    }
+
+    .map-panel-header p {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    /* TABS DEL PANEL */
+    .panel-tabs {
+      display: flex;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .panel-tab {
+      flex: 1;
+      min-height: var(--tab-height);
+      padding: 10px var(--tab-padding);
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: var(--tab-font-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      overflow: hidden;
+    }
+
+    .panel-tab-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: font-size 0.2s;
+    }
+
+    .panel-tab-icon {
+      display: none; /* Ocultar iconos */
+    }
+
+    .panel-tab:hover {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-secondary);
+    }
+
+    .panel-tab.active {
+      color: white;
+      border-bottom-color: var(--primary);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.2));
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+    }
+
+    .panel-tab-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      padding: 2px var(--badge-padding);
+      border-radius: 10px;
+      font-size: var(--tab-badge-font-size);
+      font-weight: 700;
+      margin-left: 4px;
+      min-width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .panel-tab.active .panel-tab-badge {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Ocultar badges en paneles estrechos */
+    .panel-narrow .panel-tab-badge,
+    .panel-compact .panel-tab-badge {
+      display: none;
+    }
+
+    /* Responsive tabs adaptativo por ancho del panel */
+    .panel-narrow .panel-tab-text {
+      font-size: 9px;
+      letter-spacing: 0.3px;
+    }
+
+    .panel-compact .panel-tab-text {
+      font-size: 10px;
+      letter-spacing: 0.4px;
+    }
+
+    .panel-standard .panel-tab-text {
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .panel-wide .panel-tab-text {
+      font-size: 12px;
+      letter-spacing: 0.6px;
+    }
+
+    .panel-extra-wide .panel-tab-text {
+      font-size: 13px;
+      letter-spacing: 0.7px;
+    }
+
+    /* CONTENIDO DE TABS */
+    .panel-tab-content {
+      display: none;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .panel-tab-content.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Área fija (botón y stats) */
+    .tab-fixed-header {
+      flex-shrink: 0;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Área con scroll */
+    .tab-scroll-content {
+      flex: 1;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      padding: 10px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Scrollbar personalizado para el contenido de tabs */
+    .tab-scroll-content::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .tab-scroll-content::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-scroll-content::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .tab-scroll-content::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
+    .map-panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: var(--panel-padding);
+      display: flex;
+      flex-direction: column;
+      gap: var(--section-gap);
+    }
+
+    .map-section {
+      background: var(--bg-primary);
+      border-radius: var(--border-radius);
+      padding: var(--section-padding);
+      box-shadow: var(--section-shadow);
+    }
+
+    .map-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .map-section-header h3 {
+      font-size: var(--section-title-size);
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .collapse-icon {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .map-section.collapsed .collapse-icon {
+      transform: rotate(-90deg);
+    }
+
+    .map-section.collapsed .section-content {
+      display: none;
+    }
+
+    /* LISTA JERÁRQUICA DE ÁREAS */
+    .area-tree {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .hierarchy-node {
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 2px solid rgba(100, 100, 100, 0.3);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .node-header {
+      padding: var(--node-padding);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s;
+      font-size: var(--node-font-size);
+    }
+
+    .node-header:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .node-toggle {
+      font-size: 0.7rem;
+      width: 12px;
+      font-family: monospace;
+      color: var(--text-muted);
+    }
+
+    .node-badge {
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      font-family: monospace;
+    }
+
+    .node-label {
+      flex: 1;
+      color: var(--text-secondary);
+    }
+
+    .node-count {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .node-children {
+      padding-left: var(--hierarchy-indent);
+    }
+
+    .node-children.collapsed {
+      display: none;
+    }
+
+    /* ÁREA INDIVIDUAL */
+    .area-item {
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 2px solid var(--primary);
+      padding: var(--node-padding);
+      margin: 2px 0;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-size: var(--node-font-size);
+    }
+
+    .area-item:hover {
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .area-badge {
+      background: rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      font-family: monospace;
+    }
+
+    /* CATEGORÍAS DE MARCADORES */
+    .category-group {
+      margin: 4px 0;
+      border-left: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .category-header {
+      padding: var(--marker-padding);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--marker-font-size);
+      color: var(--text-muted);
+      transition: background 0.15s;
+    }
+
+    .category-header:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .category-toggle {
+      font-size: 0.7rem;
+      width: 10px;
+      font-family: monospace;
+    }
+
+    .category-markers {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .category-markers.collapsed {
+      display: none;
+    }
+
+    /* MARCADOR DE REPUESTO */
+    .marker-item {
+      padding: var(--marker-padding);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+      font-size: var(--marker-font-size);
+      color: var(--text-muted);
+      position: relative;
+    }
+
+    .marker-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
+
+    .marker-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .correlativo-badge {
+      background: #222;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: var(--badge-font-size);
+      font-weight: 600;
+      font-family: monospace;
+      flex-shrink: 0;
+    }
+
+    .correlativo-compact {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: var(--badge-font-size);
+      font-weight: 600;
+      font-family: monospace;
+      flex-shrink: 0;
+      cursor: help;
+    }
+
+    /* CANVAS WORKSPACE */
+    .map-workspace {
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--panel-shadow);
+      overflow: hidden;
+    }
+
+    .map-toolbar {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-light);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .toolbar-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-btn {
+      padding: 6px 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toolbar-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .map-canvas-stage {
+      flex: 1;
+      background: #0f1419;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .canvas-placeholder {
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .canvas-placeholder h3 {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+
+    .canvas-placeholder p {
+      font-size: 0.85rem;
+    }
+
+    /* SCROLLBAR PERSONALIZADO */
+    .map-panel-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .map-panel-scroll::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+      border-radius: 4px;
+    }
+
+    .map-panel-scroll::-webkit-scrollbar-thumb {
+      background: var(--border-light);
+      border-radius: 4px;
+    }
+
+    .map-panel-scroll::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
+    /* BUSCADOR Y FILTROS */
+    .search-container {
+      margin-bottom: 8px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 5px 8px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: var(--text-primary);
+      font-size: 0.7rem;
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+
+    .filter-chip {
+      padding: 3px 6px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      color: var(--text-secondary);
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-chip:hover,
+    .filter-chip.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* BADGE DE JERARQUÍA */
+    .jerarquia-badge {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .jerarquia-info strong {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .jerarquia-info span {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .jerarquia-btn {
+      padding: 6px 12px;
+      background: var(--primary);
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .jerarquia-btn:hover {
+      opacity: 0.8;
+    }
+
+    /* BOTONES DE ACCIÓN */
+    .action-buttons {
+      display: flex;
+      gap: 4px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 5px 4px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: var(--text-secondary);
+      font-size: 0.65rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: var(--success);
+      color: white;
+      border-color: var(--success);
+    }
+
+    /* STATS */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      padding: 6px;
+      border-radius: 4px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+
+    .stat-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary-light);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.55rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- PANEL DE CONTROL -->
+  <div id="controlPanel">
+    <div class="control-toggle" onclick="toggleControlPanel()">⚙️</div>
+    
+    <div class="control-section">
+      <h3>🎨 Diseño General</h3>
+      
+      <div class="control-group">
+        <label>Ancho del panel lateral</label>
+        <input type="range" id="panelWidth" min="240" max="600" value="320" step="10" oninput="updateLayout()">
+        <span class="value-display" id="panelWidthValue">320px</span>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 8px;">
+          <button class="preset-btn" onclick="setPanelWidth(280)" style="padding: 4px; font-size: 0.65rem;">Compacto</button>
+          <button class="preset-btn" onclick="setPanelWidth(320)" style="padding: 4px; font-size: 0.65rem;">Estándar</button>
+          <button class="preset-btn" onclick="setPanelWidth(450)" style="padding: 4px; font-size: 0.65rem;">Ancho</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Padding del panel</label>
+        <input type="range" id="panelPadding" min="4" max="20" value="6" step="2" oninput="updateLayout()">
+        <span class="value-display" id="panelPaddingValue">6px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Gap entre secciones</label>
+        <input type="range" id="sectionGap" min="2" max="20" value="6" step="2" oninput="updateLayout()">
+        <span class="value-display" id="sectionGapValue">6px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Padding de secciones</label>
+        <input type="range" id="sectionPadding" min="6" max="24" value="8" step="2" oninput="updateLayout()">
+        <span class="value-display" id="sectionPaddingValue">8px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Border radius (redondeo)</label>
+        <input type="range" id="borderRadius" min="4" max="16" value="4" step="2" oninput="updateLayout()">
+        <span class="value-display" id="borderRadiusValue">4px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Altura del header del panel</label>
+        <input type="range" id="headerHeight" min="40" max="80" value="50" step="5" oninput="updateLayout()">
+        <span class="value-display" id="headerHeightValue">50px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Altura de las pestañas</label>
+        <input type="range" id="tabHeight" min="32" max="56" value="36" step="2" oninput="updateLayout()">
+        <span class="value-display" id="tabHeightValue">36px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Tamaño fuente pestañas</label>
+        <input type="range" id="tabFontSize" min="9" max="14" value="10" step="0.5" oninput="updateLayout()">
+        <span class="value-display" id="tabFontSizeValue">10px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Padding pestañas (horizontal)</label>
+        <input type="range" id="tabPadding" min="4" max="16" value="6" step="2" oninput="updateLayout()">
+        <span class="value-display" id="tabPaddingValue">6px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Tamaño badges en pestañas</label>
+        <input type="range" id="tabBadgeFontSize" min="8" max="12" value="9" step="0.5" oninput="updateLayout()">
+        <span class="value-display" id="tabBadgeFontSizeValue">10px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Gap del layout principal</label>
+        <input type="range" id="layoutGap" min="4" max="20" value="6" step="2" oninput="updateLayout()">
+        <span class="value-display" id="layoutGapValue">6px</span>
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="showTabBadges" checked onchange="updateLayout()">
+          Mostrar badges en pestañas (contadores)
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="showShadows" checked onchange="updateLayout()">
+          Mostrar sombras (depth)
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="compactMode" onchange="updateLayout()">
+          Modo ultra-compacto (reduce todo)
+        </label>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <h3>📐 Jerarquía</h3>
+      
+      <div class="control-group">
+        <label>Indentación por nivel</label>
+        <input type="range" id="hierarchyIndent" min="8" max="32" value="12" step="2" oninput="updateLayout()">
+        <span class="value-display" id="hierarchyIndentValue">12px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Tamaño fuente nodos</label>
+        <input type="range" id="nodeFontSize" min="10" max="16" value="11" step="1" oninput="updateLayout()">
+        <span class="value-display" id="nodeFontSizeValue">11px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Padding nodos</label>
+        <input type="range" id="nodePadding" min="4" max="12" value="5" step="1" oninput="updateLayout()">
+        <span class="value-display" id="nodePaddingValue">5px</span>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <h3>🎯 Marcadores</h3>
+      
+      <div class="control-group">
+        <label>Tamaño fuente marcadores</label>
+        <input type="range" id="markerFontSize" min="9" max="14" value="10" step="0.5" oninput="updateLayout()">
+        <span class="value-display" id="markerFontSizeValue">10px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Padding marcadores</label>
+        <input type="range" id="markerPadding" min="3" max="10" value="4" step="1" oninput="updateLayout()">
+        <span class="value-display" id="markerPaddingValue">4px</span>
+      </div>
+
+      <div class="control-group">
+        <label>Tamaño badges correlativos</label>
+        <input type="range" id="badgeFontSize" min="8" max="12" value="9" step="0.5" oninput="updateLayout()">
+        <span class="value-display" id="badgeFontSizeValue">9px</span>
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="showCorrelatives" checked onchange="updateLayout()">
+          Mostrar correlativos individuales (#1, #2, #3...)
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="useCompactBadge" onchange="updateLayout()">
+          Usar badge compacto (x8 en lugar de #1-#8)
+        </label>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <h3>📏 Títulos</h3>
+      
+      <div class="control-group">
+        <label>Tamaño títulos de sección</label>
+        <input type="range" id="sectionTitleSize" min="10" max="16" value="11" step="1" oninput="updateLayout()">
+        <span class="value-display" id="sectionTitleSizeValue">11px</span>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <h3>🎭 Presets</h3>
+      <div class="preset-buttons">
+        <button class="preset-btn" onclick="applyPreset('compact')">Compacto</button>
+        <button class="preset-btn" onclick="applyPreset('comfortable')">Cómodo</button>
+        <button class="preset-btn" onclick="applyPreset('spacious')">Espacioso</button>
+        <button class="preset-btn" onclick="applyPreset('minimal')">Minimalista</button>
+        <button class="preset-btn" onclick="applyPreset('ultraMinimal')" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.12)); font-weight: 600;">Ultra Minimal</button>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <h3>💾 Exportar</h3>
+      <button class="preset-btn" onclick="exportCSS()" style="width: 100%">
+        Copiar CSS al portapapeles
+      </button>
+    </div>
+  </div>
+
+  <!-- LAYOUT PRINCIPAL -->
+  <div class="map-shell">
+    <!-- PANEL LATERAL -->
+    <aside class="map-panel">
+      <div class="map-panel-header">
+        <h2>Mapas de planta</h2>
+        <p>Gestiona mapas, zonas y jerarquías</p>
+      </div>
+
+      <!-- TABS DE NAVEGACIÓN -->
+      <div class="panel-tabs">
+        <button class="panel-tab active" onclick="switchPanelTab('mapas')">
+          <span class="panel-tab-text">Mapas</span>
+          <span class="panel-tab-badge">2</span>
+        </button>
+        <button class="panel-tab" onclick="switchPanelTab('areas')">
+          <span class="panel-tab-text">Áreas</span>
+          <span class="panel-tab-badge">12</span>
+        </button>
+        <button class="panel-tab" onclick="switchPanelTab('migracion')">
+          <span class="panel-tab-text">Migración</span>
+          <span class="panel-tab-badge">2</span>
+        </button>
+        <button class="panel-tab" onclick="switchPanelTab('logs')">
+          <span class="panel-tab-text">Logs</span>
+        </button>
+      </div>
+
+      <!-- CONTENIDO: MAPAS -->
+      <div id="tabMapas" class="panel-tab-content active">
+        <!-- Área fija -->
+        <div class="tab-fixed-header">
+          <!-- Botón nuevo mapa -->
+          <button class="action-btn" style="width: 100%; padding: 8px 12px; font-size: 0.75rem; background: var(--success); color: white; border-color: var(--success);">
+            + Crear nuevo mapa
+          </button>
+
+          <!-- Stats generales -->
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-value">2</div>
+              <div class="stat-label">Mapas</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">12</div>
+              <div class="stat-label">Áreas</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">48</div>
+              <div class="stat-label">Marcadores</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Área con scroll -->
+        <div class="tab-scroll-content">
+          <!-- Buscador de mapas -->
+          <div class="search-container">
+            <input type="text" class="search-input" placeholder="🔎 Buscar mapa...">
+          </div>
+
+        <!-- Lista de mapas creados -->
+        <section class="map-section">
+          <div class="map-section-header" onclick="toggleSection(this)">
+            <h3><span class="collapse-icon">▼</span> 🗺️ Mapas creados (2)</h3>
+          </div>
+          <div class="section-content">
+            <!-- Mapa 1: Recinto Completo -->
+            <div class="area-item" style="background: var(--bg-primary); padding: 8px; margin-bottom: 6px; border-radius: 4px; border-left: 3px solid #60a5fa;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span class="area-badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">🗺️</span>
+                <span class="node-label" style="font-weight: 600;">Recinto Completo</span>
+              </div>
+              <div style="font-size: 0.6rem; color: var(--text-muted); margin-left: 22px; margin-bottom: 4px;">
+                Asignado a: <span style="color: var(--text-secondary);">N1 Planta Principal</span>
+              </div>
+              <div style="display: flex; gap: 4px; margin-left: 22px;">
+                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem; background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
+                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem;">Cambiar</button>
+                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem;">✏️</button>
+              </div>
+            </div>
+
+            <!-- Mapa 2: Planta Principal -->
+            <div class="area-item" style="background: var(--bg-primary); padding: 8px; margin-bottom: 6px; border-radius: 4px; border-left: 3px solid #60a5fa;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span class="area-badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">🗺️</span>
+                <span class="node-label" style="font-weight: 600;">Planta Principal</span>
+              </div>
+              <div style="font-size: 0.6rem; color: var(--text-muted); margin-left: 22px; margin-bottom: 4px;">
+                Asignado a: <span style="color: var(--text-secondary);">N1 > N2 Eviscerado</span>
+              </div>
+              <div style="display: flex; gap: 4px; margin-left: 22px;">
+                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem; background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
+                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem;">Cambiar</button>
+                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem;">✏️</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Vista jerárquica sincronizada -->
+        <section class="map-section">
+          <div class="map-section-header" onclick="toggleSection(this)">
+            <h3><span class="collapse-icon">▼</span> 🏢 Jerarquía completa</h3>
+          </div>
+          <div class="section-content">
+            <div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 6px; padding: 4px; background: rgba(59, 130, 246, 0.05); border-radius: 3px;">
+              Sincronizada con pestaña Áreas • Resaltados = con mapa asignado
+            </div>
+
+            <div class="area-tree">
+              <!-- N1: Planta Principal (CON MAPA - DESTACADO) -->
+              <div class="hierarchy-node">
+                <div class="node-header" style="background: rgba(59, 130, 246, 0.08); border-left: 3px solid #60a5fa; padding: 6px 8px;">
+                  <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)">▼</span>
+                  <span class="node-badge" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; font-weight: 600;">N1</span>
+                  <span style="font-size: 0.65rem; color: #60a5fa; margin-right: 3px;">🗺️</span>
+                  <span class="node-label" style="font-weight: 600; color: var(--text-primary);">Planta Principal</span>
+                  <button class="action-btn" style="margin-left: auto; padding: 2px 6px; font-size: 0.6rem; background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
+                </div>
+                <div class="node-children">
+                  <!-- N2: Eviscerado (CON MAPA - DESTACADO) -->
+                  <div class="hierarchy-node">
+                    <div class="node-header" style="background: rgba(59, 130, 246, 0.08); border-left: 3px solid #60a5fa; padding: 6px 8px;">
+                      <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)">▼</span>
+                      <span class="node-badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-weight: 600;">N2</span>
+                      <span style="font-size: 0.65rem; color: #60a5fa; margin-right: 3px;">🗺️</span>
+                      <span class="node-label" style="font-weight: 600; color: var(--text-primary);">Eviscerado</span>
+                      <button class="action-btn" style="margin-left: auto; padding: 2px 6px; font-size: 0.6rem; background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
+                    </div>
+                    <div class="node-children">
+                      <!-- N3: Grader (SIN MAPA - DISCRETO) -->
+                      <div class="hierarchy-node">
+                        <div class="node-header" style="padding: 4px 8px; opacity: 0.5;">
+                          <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▼</span>
+                          <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 4px;">N3</span>
+                          <span class="node-label" style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Grader</span>
+                          <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.55rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
+                        </div>
+                        <div class="node-children">
+                          <!-- N4: Pocket 1 al 4 (SIN MAPA - DISCRETO) -->
+                          <div class="hierarchy-node">
+                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
+                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Pocket 1-4</span>
+                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
+                            </div>
+                            <div class="node-children collapsed"></div>
+                          </div>
+
+                          <!-- N4: Cinta Z (SIN MAPA - DISCRETO) -->
+                          <div class="hierarchy-node">
+                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
+                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Cinta Z</span>
+                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
+                            </div>
+                            <div class="node-children collapsed"></div>
+                          </div>
+
+                          <!-- N4: Cinta Aceleración 1 (SIN MAPA - DISCRETO) -->
+                          <div class="hierarchy-node">
+                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
+                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Cinta Acel. 1</span>
+                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
+                            </div>
+                            <div class="node-children collapsed"></div>
+                          </div>
+
+                          <!-- N4: Cinta Aceleración 2 (SIN MAPA - DISCRETO) -->
+                          <div class="hierarchy-node">
+                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
+                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Cinta Acel. 2</span>
+                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
+                            </div>
+                            <div class="node-children collapsed"></div>
+                          </div>
+
+                          <!-- N4: Cinta Larga (SIN MAPA - DISCRETO) -->
+                          <div class="hierarchy-node">
+                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
+                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Cinta Larga</span>
+                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
+                            </div>
+                            <div class="node-children collapsed"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- N3: Marel (SIN MAPA - DISCRETO) -->
+                      <div class="hierarchy-node">
+                        <div class="node-header" style="padding: 4px 8px; opacity: 0.5;">
+                          <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▼</span>
+                          <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 4px;">N3</span>
+                          <span class="node-label" style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Marel</span>
+                          <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.55rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
+                        </div>
+                        <div class="node-children">
+                          <!-- N4: Cinta Azul Marel (SIN MAPA - DISCRETO) -->
+                          <div class="hierarchy-node">
+                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
+                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
+                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Cinta Azul</span>
+                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
+                            </div>
+                            <div class="node-children collapsed"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- N2: Filete (SIN MAPA - DISCRETO) -->
+                  <div class="hierarchy-node">
+                    <div class="node-header" style="padding: 4px 8px; opacity: 0.5;">
+                      <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
+                      <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 4px;">N2</span>
+                      <span class="node-label" style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Filete</span>
+                      <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.55rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
+                    </div>
+                    <div class="node-children collapsed"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Mapas sin asignar -->
+        <section class="map-section">
+          <div class="map-section-header" onclick="toggleSection(this)">
+            <h3><span class="collapse-icon">▼</span> ⚠️ Mapas sin asignar (0)</h3>
+          </div>
+          <div class="section-content">
+            <div style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 0.65rem; background: rgba(34, 197, 94, 0.05); border-radius: 4px; border: 1px dashed var(--border-color);">
+              <p style="margin: 0;">✓ Todos los mapas están asignados</p>
+              <p style="margin: 4px 0 0 0; font-size: 0.6rem;">Arrastra aquí mapas sin jerarquía</p>
+            </div>
+          </div>
+        </section>
+        </div> <!-- Fin tab-scroll-content -->
+      </div>
+
+      <!-- CONTENIDO: ÁREAS -->
+      <div id="tabAreas" class="panel-tab-content">
+        <!-- Área fija -->
+        <div class="tab-fixed-header">
+          <!-- Botones de acción -->
+          <div class="action-buttons">
+            <button class="action-btn">✏️ Dibujar</button>
+            <button class="action-btn">📍 Marcador</button>
+            <button class="action-btn">🔍 Cascada</button>
+          </div>
+
+          <!-- Buscador -->
+          <div class="search-container">
+            <input type="text" class="search-input" placeholder="🔎 Buscar área...">
+          </div>
+
+          <!-- Filtros de categoría -->
+          <div class="filter-chips">
+            <span class="filter-chip active">Todas</span>
+            <span class="filter-chip">Área</span>
+            <span class="filter-chip">Máquina</span>
+            <span class="filter-chip">Estructura</span>
+          </div>
+        </div>
+
+        <!-- Área con scroll -->
+        <div class="tab-scroll-content">
+
+        <!-- Badge de jerarquía -->
+        <div class="jerarquia-badge">
+          <div class="jerarquia-info">
+            <strong>Planta Grader</strong>
+            <span>Planta / Producción / Sección A</span>
+          </div>
+          <button class="jerarquia-btn">Cambiar</button>
+        </div>
+
+        <!-- Árbol jerárquico de áreas -->
+        <section class="map-section">
+          <div class="map-section-header" onclick="toggleSection(this)">
+            <h3><span class="collapse-icon">▼</span> Áreas del mapa</h3>
+          </div>
+          <div class="section-content">
+            <!-- Árbol jerárquico de áreas -->
+            <div class="area-tree">
+              <!-- Nivel 1 -->
+              <div class="hierarchy-node">
+                <div class="node-header" onclick="toggleNode(this)">
+                  <span class="node-toggle">▼</span>
+                  <span class="node-badge">N1</span>
+                  <span class="node-label">Planta Grader</span>
+                  <span class="node-count">15</span>
+                </div>
+                <div class="node-children">
+                  <!-- Nivel 2 -->
+                  <div class="hierarchy-node">
+                    <div class="node-header" onclick="toggleNode(this)">
+                      <span class="node-toggle">▼</span>
+                      <span class="node-badge">N2</span>
+                      <span class="node-label">Producción</span>
+                      <span class="node-count">8</span>
+                    </div>
+                    <div class="node-children">
+                      <!-- Nivel 3 -->
+                      <div class="hierarchy-node">
+                        <div class="node-header" onclick="toggleNode(this)">
+                          <span class="node-toggle">▼</span>
+                          <span class="node-badge">N3</span>
+                          <span class="node-label">Sección A</span>
+                          <span class="node-count">8</span>
+                        </div>
+                        <div class="node-children">
+                          <!-- Área individual -->
+                          <div class="area-item" onclick="focusArea(this)">
+                            <span class="area-badge">ÁREA</span>
+                            <span class="node-badge">N4</span>
+                            <span class="node-label">Grader Principal</span>
+                            <span class="node-count">8</span>
+                          </div>
+
+                          <!-- Categorías de marcadores -->
+                          <div class="node-children">
+                            <!-- Categoría: Mecánica -->
+                            <div class="category-group">
+                              <div class="category-header" onclick="toggleCategory(this)">
+                                <span class="category-toggle">▼</span>
+                                <span>⚙️ Mecánica</span>
+                                <span class="node-count">3</span>
+                              </div>
+                              <div class="category-markers">
+                                <div class="marker-item">
+                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
+                                  <span class="correlativo-badge" data-correlativo="1">#1</span>
+                                </div>
+                                <div class="marker-item">
+                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
+                                  <span class="correlativo-badge" data-correlativo="2">#2</span>
+                                </div>
+                                <div class="marker-item">
+                                  <span class="marker-name">MOTOR TRIFÁSICO 5HP</span>
+                                  <span class="correlativo-compact" title="Total: 8 instancias (Ver Tab Jerarquía para detalle)">x8</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Categoría: Eléctrica -->
+                            <div class="category-group">
+                              <div class="category-header" onclick="toggleCategory(this)">
+                                <span class="category-toggle">▼</span>
+                                <span>⚡ Eléctrica</span>
+                                <span class="node-count">4</span>
+                              </div>
+                              <div class="category-markers">
+                                <div class="marker-item">
+                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
+                                  <span class="correlativo-badge" data-correlativo="3">#3</span>
+                                </div>
+                                <div class="marker-item">
+                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
+                                  <span class="correlativo-badge" data-correlativo="4">#4</span>
+                                </div>
+                                <div class="marker-item">
+                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
+                                  <span class="correlativo-badge" data-correlativo="5">#5</span>
+                                </div>
+                                <div class="marker-item">
+                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
+                                  <span class="correlativo-badge" data-correlativo="6">#6</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Categoría: Seguridad -->
+                            <div class="category-group">
+                              <div class="category-header" onclick="toggleCategory(this)">
+                                <span class="category-toggle">▼</span>
+                                <span>🛡️ Seguridad</span>
+                                <span class="node-count">2</span>
+                              </div>
+                              <div class="category-markers">
+                                <div class="marker-item">
+                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
+                                  <span class="correlativo-badge" data-correlativo="7">#7</span>
+                                </div>
+                                <div class="marker-item">
+                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
+                                  <span class="correlativo-badge" data-correlativo="8">#8</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        </div> <!-- Fin tab-scroll-content -->
+      </div>
+
+      <!-- CONTENIDO: MIGRACIÓN -->
+      <div id="tabMigracion" class="panel-tab-content">
+        <!-- Área fija -->
+        <div class="tab-fixed-header">
+          <!-- Botón refresh -->
+          <button class="action-btn" style="width: 100%; padding: 8px 12px; font-size: 0.75rem; background: var(--primary); color: white; border-color: var(--primary);">
+            🔄 Re-escanear jerarquías
+          </button>
+        </div>
+
+        <!-- Área con scroll -->
+        <div class="tab-scroll-content">
+
+        <!-- Stats de migración -->
+        <section class="map-section">
+          <div class="map-section-header" onclick="toggleSection(this)">
+            <h3><span class="collapse-icon">▼</span> Resumen de migración</h3>
+          </div>
+          <div class="section-content">
+            <div class="stats-row">
+              <div class="stat-card">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Total</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" style="color: var(--success)">3</div>
+                <div class="stat-label">En regla</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" style="color: var(--warning)">2</div>
+                <div class="stat-label">Pendientes</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value" style="color: var(--danger)">0</div>
+                <div class="stat-label">Conflictos</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Lista de pendientes -->
+        <section class="map-section">
+          <div class="map-section-header" onclick="toggleSection(this)">
+            <h3><span class="collapse-icon">▼</span> Mapas pendientes</h3>
+          </div>
+          <div class="section-content">
+            <div class="area-item" style="border-left-color: var(--warning)">
+              <span class="area-badge" style="background: rgba(184, 146, 90, 0.3); color: var(--warning)">⚠️</span>
+              <span class="node-label">Mapa Antiguo 1</span>
+              <span class="node-count">Sin jerarquía</span>
+            </div>
+            <div class="area-item" style="border-left-color: var(--warning)">
+              <span class="area-badge" style="background: rgba(184, 146, 90, 0.3); color: var(--warning)">⚠️</span>
+              <span class="node-label">Mapa Antiguo 2</span>
+              <span class="node-count">Sin jerarquía</span>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Acciones recomendadas -->
+        <section class="map-section">
+          <div class="map-section-header" onclick="toggleSection(this)">
+            <h3><span class="collapse-icon">▼</span> Acciones recomendadas</h3>
+          </div>
+          <div class="section-content">
+            <div style="font-size: 0.7rem; color: var(--text-secondary); line-height: 1.6;">
+              <div style="padding: 8px; background: rgba(184, 146, 90, 0.1); border-left: 3px solid var(--warning); margin-bottom: 8px; border-radius: 4px;">
+                <strong style="color: var(--warning)">1. Asignar jerarquías</strong>
+                <p style="margin: 4px 0 0 0; font-size: 0.65rem; color: var(--text-muted);">2 mapas necesitan ser asignados a una rama jerárquica</p>
+              </div>
+              <div style="padding: 8px; background: rgba(91, 155, 122, 0.1); border-left: 3px solid var(--success); margin-bottom: 8px; border-radius: 4px;">
+                <strong style="color: var(--success)">2. Verificar áreas</strong>
+                <p style="margin: 4px 0 0 0; font-size: 0.65rem; color: var(--text-muted);">3 mapas tienen jerarquía correcta</p>
+              </div>
+              <div style="padding: 8px; background: rgba(91, 139, 180, 0.1); border-left: 3px solid var(--primary); margin-bottom: 8px; border-radius: 4px;">
+                <strong style="color: var(--primary)">3. Agregar marcadores</strong>
+                <p style="margin: 4px 0 0 0; font-size: 0.65rem; color: var(--text-muted);">Algunos mapas no tienen marcadores de repuestos</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        </div> <!-- Fin tab-scroll-content -->
+      </div>
+
+      <!-- CONTENIDO: LOGS -->
+      <div id="tabLogs" class="panel-tab-content">
+        <!-- Área fija -->
+        <div class="tab-fixed-header">
+          <!-- Botón refresh logs -->
+          <button class="action-btn" style="width: 100%; padding: 8px 12px; font-size: 0.75rem;">
+            🔄 Actualizar logs
+          </button>
+        </div>
+
+        <!-- Área con scroll -->
+        <div class="tab-scroll-content">
+
+        <!-- Logs recientes -->
+        <section class="map-section">
+          <div class="map-section-header" onclick="toggleSection(this)">
+            <h3><span class="collapse-icon">▼</span> Actividad reciente</h3>
+          </div>
+          <div class="section-content">
+            <div style="font-size: 0.7rem; color: var(--text-muted); line-height: 1.6;">
+              <div style="padding: 6px; border-left: 2px solid var(--success); margin-bottom: 4px;">
+                <strong style="color: var(--success)">✓</strong> Área creada: "Grader Principal"
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 5 minutos</div>
+              </div>
+              <div style="padding: 6px; border-left: 2px solid var(--primary); margin-bottom: 4px;">
+                <strong style="color: var(--primary)">📍</strong> Marcador agregado: "PARADA EMERGENCIA"
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 12 minutos</div>
+              </div>
+              <div style="padding: 6px; border-left: 2px solid var(--warning); margin-bottom: 4px;">
+                <strong style="color: var(--warning)">✏️</strong> Área editada: "Cinta Transversal"
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 1 hora</div>
+              </div>
+              <div style="padding: 6px; border-left: 2px solid var(--danger); margin-bottom: 4px;">
+                <strong style="color: var(--danger)">✗</strong> Área eliminada: "Zona Temporal"
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 2 horas</div>
+              </div>
+              <div style="padding: 6px; border-left: 2px solid var(--success); margin-bottom: 4px;">
+                <strong style="color: var(--success)">✓</strong> Mapa creado: "Plano Oficinas"
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 3 horas</div>
+              </div>
+              <div style="padding: 6px; border-left: 2px solid var(--primary); margin-bottom: 4px;">
+                <strong style="color: var(--primary)">📍</strong> Marcador movido: "MOTOR TRIFÁSICO"
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 4 horas</div>
+              </div>
+              <div style="padding: 6px; border-left: 2px solid var(--warning); margin-bottom: 4px;">
+                <strong style="color: var(--warning)">⚠️</strong> Jerarquía modificada: "Planta Grader"
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 5 horas</div>
+              </div>
+              <div style="padding: 6px; border-left: 2px solid var(--success); margin-bottom: 4px;">
+                <strong style="color: var(--success)">✓</strong> Backup automático completado
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 6 horas</div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Filtros de logs -->
+        <section class="map-section">
+          <div class="map-section-header" onclick="toggleSection(this)">
+            <h3><span class="collapse-icon">▼</span> Filtrar por tipo</h3>
+          </div>
+          <div class="section-content">
+            <div class="filter-chips">
+              <span class="filter-chip active">Todos</span>
+              <span class="filter-chip">Creación</span>
+              <span class="filter-chip">Edición</span>
+              <span class="filter-chip">Eliminación</span>
+              <span class="filter-chip">Marcadores</span>
+              <span class="filter-chip">Jerarquía</span>
+            </div>
+          </div>
+        </section>
+        </div> <!-- Fin tab-scroll-content -->
+      </div>
+    </aside>
+
+    <!-- WORKSPACE CANVAS -->
+    <div class="map-workspace">
+      <div class="map-toolbar">
+        <div class="toolbar-section">
+          <button class="toolbar-btn">+ Zoom</button>
+          <button class="toolbar-btn">- Zoom</button>
+          <button class="toolbar-btn">Reset</button>
+        </div>
+        <div class="toolbar-section">
+          <span style="font-size: 0.8rem; color: var(--text-secondary)">100% | Mapa General</span>
+        </div>
+        <div class="toolbar-section">
+          <button class="toolbar-btn">Nombres</button>
+          <button class="toolbar-btn">Puntos</button>
+          <button class="toolbar-btn">Rejilla</button>
+          <button class="toolbar-btn">Minimap</button>
+        </div>
+      </div>
+
+      <div class="map-canvas-stage">
+        <div class="canvas-placeholder">
+          <h3>🗺️ Canvas del Mapa</h3>
+          <p>Aquí se renderizará el mapa con áreas y marcadores</p>
+          <p style="margin-top: 8px; font-size: 0.75rem; color: var(--text-muted)">
+            Usa el panel de control → para ajustar el diseño del panel lateral
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Variables CSS dinámicas
+    function updateLayout() {
+      const root = document.documentElement;
+      
+      // Obtener valores
+      const panelWidth = document.getElementById('panelWidth').value;
+      const panelPadding = document.getElementById('panelPadding').value;
+      const sectionGap = document.getElementById('sectionGap').value;
+      const sectionPadding = document.getElementById('sectionPadding').value;
+      const hierarchyIndent = document.getElementById('hierarchyIndent').value;
+      const nodeFontSize = document.getElementById('nodeFontSize').value;
+      const nodePadding = document.getElementById('nodePadding').value;
+      const markerFontSize = document.getElementById('markerFontSize').value;
+      const markerPadding = document.getElementById('markerPadding').value;
+      const badgeFontSize = document.getElementById('badgeFontSize').value;
+      const sectionTitleSize = document.getElementById('sectionTitleSize').value;
+      const borderRadius = document.getElementById('borderRadius').value;
+      const headerHeight = document.getElementById('headerHeight').value;
+      const tabHeight = document.getElementById('tabHeight').value;
+      const tabFontSize = document.getElementById('tabFontSize').value;
+      const tabPadding = document.getElementById('tabPadding').value;
+      const tabBadgeFontSize = document.getElementById('tabBadgeFontSize').value;
+      const layoutGap = document.getElementById('layoutGap').value;
+      const showCorrelatives = document.getElementById('showCorrelatives').checked;
+      const useCompactBadge = document.getElementById('useCompactBadge').checked;
+      const showShadows = document.getElementById('showShadows').checked;
+      const showTabBadges = document.getElementById('showTabBadges').checked;
+      const compactMode = document.getElementById('compactMode').checked;
+      
+      // Calcular valores adaptativos según ancho del panel
+      const panelWidthNum = parseInt(panelWidth);
+      let adaptiveTabFontSize, adaptiveTabPadding, adaptiveBadgePadding, adaptiveTabBadgeFontSize;
+      let panelSizeClass;
+      
+      if (panelWidthNum <= 280) {
+        // Panel muy estrecho
+        adaptiveTabFontSize = 9;
+        adaptiveTabPadding = Math.max(4, parseInt(tabPadding) - 4);
+        adaptiveBadgePadding = 3;
+        adaptiveTabBadgeFontSize = Math.max(8, parseFloat(tabBadgeFontSize) - 1.5);
+        panelSizeClass = 'panel-narrow';
+      } else if (panelWidthNum <= 320) {
+        // Panel compacto
+        adaptiveTabFontSize = 10;
+        adaptiveTabPadding = Math.max(5, parseInt(tabPadding) - 2);
+        adaptiveBadgePadding = 4;
+        adaptiveTabBadgeFontSize = Math.max(9, parseFloat(tabBadgeFontSize) - 1);
+        panelSizeClass = 'panel-compact';
+      } else if (panelWidthNum <= 380) {
+        // Panel estándar
+        adaptiveTabFontSize = 11;
+        adaptiveTabPadding = tabPadding;
+        adaptiveBadgePadding = 5;
+        adaptiveTabBadgeFontSize = tabBadgeFontSize;
+        panelSizeClass = 'panel-standard';
+      } else if (panelWidthNum <= 480) {
+        // Panel ancho
+        adaptiveTabFontSize = 12;
+        adaptiveTabPadding = parseInt(tabPadding) + 2;
+        adaptiveBadgePadding = 6;
+        adaptiveTabBadgeFontSize = parseFloat(tabBadgeFontSize) + 0.5;
+        panelSizeClass = 'panel-wide';
+      } else {
+        // Panel muy ancho
+        adaptiveTabFontSize = 13;
+        adaptiveTabPadding = parseInt(tabPadding) + 4;
+        adaptiveBadgePadding = 7;
+        adaptiveTabBadgeFontSize = parseFloat(tabBadgeFontSize) + 1;
+        panelSizeClass = 'panel-extra-wide';
+      }
+      
+      // Aplicar clase de tamaño al panel
+      const mapPanel = document.querySelector('.map-panel');
+      if (mapPanel) {
+        mapPanel.className = 'map-panel ' + panelSizeClass;
+      }
+      
+      // Mostrar/ocultar badges según preferencia del usuario y ancho del panel
+      document.querySelectorAll('.panel-tab-badge').forEach(badge => {
+        if (!showTabBadges || panelWidthNum <= 320) {
+          badge.style.display = 'none';
+        } else {
+          badge.style.display = 'inline-block';
+        }
+      });
+      
+      // Modo compacto override
+      if (compactMode) {
+        root.style.setProperty('--panel-width', '280px');
+        root.style.setProperty('--panel-padding', '4px');
+        root.style.setProperty('--section-gap', '4px');
+        root.style.setProperty('--section-padding', '8px');
+        root.style.setProperty('--hierarchy-indent', '10px');
+        root.style.setProperty('--node-font-size', '10px');
+        root.style.setProperty('--node-padding', '3px');
+        root.style.setProperty('--marker-font-size', '9px');
+        root.style.setProperty('--marker-padding', '3px');
+        root.style.setProperty('--badge-font-size', '8px');
+        root.style.setProperty('--section-title-size', '10px');
+        root.style.setProperty('--border-radius', '6px');
+        root.style.setProperty('--header-height', '45px');
+        root.style.setProperty('--tab-height', '34px');
+        root.style.setProperty('--tab-font-size', '9px');
+        root.style.setProperty('--tab-padding', '4px');
+        root.style.setProperty('--tab-badge-font-size', '8px');
+        root.style.setProperty('--badge-padding', '3px');
+        root.style.setProperty('--layout-gap', '4px');
+        
+        // Aplicar clase de tamaño compacto
+        const mapPanel = document.querySelector('.map-panel');
+        if (mapPanel) {
+          mapPanel.className = 'map-panel panel-narrow';
+        }
+      } else {
+        // Aplicar valores normales (con adaptación según ancho)
+        root.style.setProperty('--panel-width', panelWidth + 'px');
+        root.style.setProperty('--panel-padding', panelPadding + 'px');
+        root.style.setProperty('--section-gap', sectionGap + 'px');
+        root.style.setProperty('--section-padding', sectionPadding + 'px');
+        root.style.setProperty('--hierarchy-indent', hierarchyIndent + 'px');
+        root.style.setProperty('--node-font-size', nodeFontSize + 'px');
+        root.style.setProperty('--node-padding', nodePadding + 'px');
+        root.style.setProperty('--marker-font-size', markerFontSize + 'px');
+        root.style.setProperty('--marker-padding', markerPadding + 'px');
+        root.style.setProperty('--badge-font-size', badgeFontSize + 'px');
+        root.style.setProperty('--section-title-size', sectionTitleSize + 'px');
+        root.style.setProperty('--border-radius', borderRadius + 'px');
+        root.style.setProperty('--header-height', headerHeight + 'px');
+        root.style.setProperty('--tab-height', tabHeight + 'px');
+        root.style.setProperty('--tab-font-size', adaptiveTabFontSize + 'px');
+        root.style.setProperty('--tab-padding', adaptiveTabPadding + 'px');
+        root.style.setProperty('--tab-badge-font-size', adaptiveTabBadgeFontSize + 'px');
+        root.style.setProperty('--badge-padding', adaptiveBadgePadding + 'px');
+        root.style.setProperty('--layout-gap', layoutGap + 'px');
+      }
+      
+      // Sombras
+      const shadowValue = showShadows ? 'var(--shadow-md)' : 'none';
+      const sectionShadowValue = showShadows ? 'var(--shadow-sm)' : 'none';
+      root.style.setProperty('--panel-shadow', shadowValue);
+      root.style.setProperty('--section-shadow', sectionShadowValue);
+      
+      // Actualizar displays
+      document.getElementById('panelWidthValue').textContent = (compactMode ? '280' : panelWidth) + 'px';
+      document.getElementById('panelPaddingValue').textContent = (compactMode ? '4' : panelPadding) + 'px';
+      document.getElementById('sectionGapValue').textContent = (compactMode ? '4' : sectionGap) + 'px';
+      document.getElementById('sectionPaddingValue').textContent = (compactMode ? '8' : sectionPadding) + 'px';
+      document.getElementById('hierarchyIndentValue').textContent = (compactMode ? '10' : hierarchyIndent) + 'px';
+      document.getElementById('nodeFontSizeValue').textContent = (compactMode ? '10' : nodeFontSize) + 'px';
+      document.getElementById('nodePaddingValue').textContent = (compactMode ? '3' : nodePadding) + 'px';
+      document.getElementById('markerFontSizeValue').textContent = (compactMode ? '9' : markerFontSize) + 'px';
+      document.getElementById('markerPaddingValue').textContent = (compactMode ? '3' : markerPadding) + 'px';
+      document.getElementById('badgeFontSizeValue').textContent = (compactMode ? '8' : badgeFontSize) + 'px';
+      document.getElementById('sectionTitleSizeValue').textContent = (compactMode ? '10' : sectionTitleSize) + 'px';
+      document.getElementById('borderRadiusValue').textContent = (compactMode ? '6' : borderRadius) + 'px';
+      document.getElementById('headerHeightValue').textContent = (compactMode ? '45' : headerHeight) + 'px';
+      document.getElementById('tabHeightValue').textContent = (compactMode ? '34' : tabHeight) + 'px';
+      document.getElementById('tabFontSizeValue').textContent = (compactMode ? '9' : adaptiveTabFontSize) + 'px';
+      document.getElementById('tabPaddingValue').textContent = (compactMode ? '4' : adaptiveTabPadding) + 'px';
+      document.getElementById('tabBadgeFontSizeValue').textContent = (compactMode ? '8' : adaptiveTabBadgeFontSize) + 'px';
+      document.getElementById('layoutGapValue').textContent = (compactMode ? '4' : layoutGap) + 'px';
+      
+      // Mostrar/ocultar correlativos
+      document.querySelectorAll('.correlativo-badge').forEach(badge => {
+        if (useCompactBadge) {
+          badge.style.display = 'none';
+        } else {
+          badge.style.display = showCorrelatives ? 'inline-block' : 'none';
+        }
+      });
+
+      document.querySelectorAll('.correlativo-compact').forEach(badge => {
+        badge.style.display = useCompactBadge ? 'inline-block' : 'none';
+      });
+    }
+
+    // Quick set panel width
+    function setPanelWidth(width) {
+      document.getElementById('panelWidth').value = width;
+      updateLayout();
+    }
+
+    // Presets
+    function applyPreset(preset) {
+      const presets = {
+        compact: {
+          panelWidth: 300,
+          panelPadding: 6,
+          sectionGap: 6,
+          sectionPadding: 10,
+          hierarchyIndent: 12,
+          nodeFontSize: 11,
+          nodePadding: 4,
+          markerFontSize: 10,
+          markerPadding: 4,
+          badgeFontSize: 9,
+          sectionTitleSize: 11,
+          borderRadius: 8,
+          headerHeight: 55,
+          tabHeight: 40,
+          tabFontSize: 10.5,
+          tabPadding: 7,
+          tabBadgeFontSize: 9.5,
+          layoutGap: 6
+        },
+        comfortable: {
+          panelWidth: 360,
+          panelPadding: 8,
+          sectionGap: 8,
+          sectionPadding: 12,
+          hierarchyIndent: 16,
+          nodeFontSize: 12,
+          nodePadding: 6,
+          markerFontSize: 11,
+          markerPadding: 5,
+          badgeFontSize: 10,
+          sectionTitleSize: 12,
+          borderRadius: 8,
+          headerHeight: 60,
+          tabHeight: 42,
+          tabFontSize: 11,
+          tabPadding: 8,
+          tabBadgeFontSize: 10,
+          layoutGap: 8
+        },
+        spacious: {
+          panelWidth: 450,
+          panelPadding: 12,
+          sectionGap: 12,
+          sectionPadding: 16,
+          hierarchyIndent: 20,
+          nodeFontSize: 13,
+          nodePadding: 8,
+          markerFontSize: 12,
+          markerPadding: 6,
+          badgeFontSize: 11,
+          sectionTitleSize: 13,
+          borderRadius: 12,
+          headerHeight: 70,
+          tabHeight: 48,
+          tabFontSize: 12,
+          tabPadding: 12,
+          tabBadgeFontSize: 11,
+          layoutGap: 12
+        },
+        minimal: {
+          panelWidth: 280,
+          panelPadding: 4,
+          sectionGap: 4,
+          sectionPadding: 8,
+          hierarchyIndent: 10,
+          nodeFontSize: 10,
+          nodePadding: 3,
+          markerFontSize: 9,
+          markerPadding: 3,
+          badgeFontSize: 8,
+          sectionTitleSize: 10,
+          borderRadius: 6,
+          headerHeight: 45,
+          tabHeight: 34,
+          tabFontSize: 9.5,
+          tabPadding: 6,
+          tabBadgeFontSize: 8.5,
+          layoutGap: 4
+        },
+        ultraMinimal: {
+          panelWidth: 320,
+          panelPadding: 4,
+          sectionGap: 2,
+          sectionPadding: 6,
+          hierarchyIndent: 8,
+          nodeFontSize: 10,
+          nodePadding: 4,
+          markerFontSize: 9,
+          markerPadding: 3,
+          badgeFontSize: 8,
+          sectionTitleSize: 10,
+          borderRadius: 4,
+          headerHeight: 40,
+          tabHeight: 32,
+          tabFontSize: 10,
+          tabPadding: 5,
+          tabBadgeFontSize: 9,
+          layoutGap: 4
+        }
+      };
+
+      const config = presets[preset];
+      if (!config) return;
+
+      // Desactivar modo compacto
+      document.getElementById('compactMode').checked = false;
+
+      Object.keys(config).forEach(key => {
+        const input = document.getElementById(key);
+        if (input) {
+          input.value = config[key];
+        }
+      });
+
+      updateLayout();
+    }
+
+    // Export CSS
+    function exportCSS() {
+      const root = document.documentElement;
+      const css = `
+/* Variables CSS personalizadas - Tab Mapas */
+:root {
+  --panel-width: ${root.style.getPropertyValue('--panel-width')};
+  --panel-padding: ${root.style.getPropertyValue('--panel-padding')};
+  --section-gap: ${root.style.getPropertyValue('--section-gap')};
+  --section-padding: ${root.style.getPropertyValue('--section-padding')};
+  --hierarchy-indent: ${root.style.getPropertyValue('--hierarchy-indent')};
+  --node-font-size: ${root.style.getPropertyValue('--node-font-size')};
+  --node-padding: ${root.style.getPropertyValue('--node-padding')};
+  --marker-font-size: ${root.style.getPropertyValue('--marker-font-size')};
+  --marker-padding: ${root.style.getPropertyValue('--marker-padding')};
+  --badge-font-size: ${root.style.getPropertyValue('--badge-font-size')};
+  --section-title-size: ${root.style.getPropertyValue('--section-title-size')};
+  --border-radius: ${root.style.getPropertyValue('--border-radius')};
+  --header-height: ${root.style.getPropertyValue('--header-height')};
+  --tab-height: ${root.style.getPropertyValue('--tab-height')};
+  --tab-font-size: ${root.style.getPropertyValue('--tab-font-size')};
+  --tab-padding: ${root.style.getPropertyValue('--tab-padding')};
+  --tab-badge-font-size: ${root.style.getPropertyValue('--tab-badge-font-size')};
+  --badge-padding: ${root.style.getPropertyValue('--badge-padding')};
+  --layout-gap: ${root.style.getPropertyValue('--layout-gap')};
+  --panel-shadow: ${root.style.getPropertyValue('--panel-shadow')};
+  --section-shadow: ${root.style.getPropertyValue('--section-shadow')};
+}
+      `.trim();
+
+      navigator.clipboard.writeText(css).then(() => {
+        alert('✅ CSS copiado al portapapeles!\n\nPuedes pegarlo en el archivo index.html');
+      }).catch(() => {
+        alert('❌ Error al copiar. Por favor, copia manualmente:\n\n' + css);
+      });
+    }
+
+    // Toggle control panel
+    function toggleControlPanel() {
+      document.getElementById('controlPanel').classList.toggle('collapsed');
+    }
+
+    // Toggle section
+    function toggleSection(header) {
+      header.closest('.map-section').classList.toggle('collapsed');
+    }
+
+    // Toggle node
+    function toggleNode(header) {
+      const children = header.nextElementSibling;
+      const toggle = header.querySelector('.node-toggle');
+      if (children && children.classList.contains('node-children')) {
+        children.classList.toggle('collapsed');
+        toggle.textContent = children.classList.contains('collapsed') ? '▶' : '▼';
+      }
+    }
+
+    // Toggle category
+    function toggleCategory(header) {
+      const markers = header.nextElementSibling;
+      const toggle = header.querySelector('.category-toggle');
+      if (markers && markers.classList.contains('category-markers')) {
+        markers.classList.toggle('collapsed');
+        toggle.textContent = markers.classList.contains('collapsed') ? '▶' : '▼';
+      }
+    }
+
+    // Focus area
+    function focusArea(item) {
+      document.querySelectorAll('.area-item').forEach(a => a.style.background = '');
+      item.style.background = 'rgba(59, 130, 246, 0.2)';
+    }
+
+    // Switch panel tabs
+    function switchPanelTab(tabName) {
+      // Remover active de todos los tabs
+      document.querySelectorAll('.panel-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Ocultar todos los contenidos
+      document.querySelectorAll('.panel-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Activar tab clickeado
+      event.target.classList.add('active');
+      
+      // Mostrar contenido correspondiente
+      const contentMap = {
+        'mapas': 'tabMapas',
+        'areas': 'tabAreas',
+        'migracion': 'tabMigracion',
+        'logs': 'tabLogs'
+      };
+      
+      const contentId = contentMap[tabName];
+      if (contentId) {
+        document.getElementById(contentId).classList.add('active');
+      }
+    }
+
+    // Inicializar
+    updateLayout();
+  </script>
+</body>
+</html>

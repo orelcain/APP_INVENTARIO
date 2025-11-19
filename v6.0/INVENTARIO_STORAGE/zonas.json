@@ -520,16 +520,10 @@
         "y": 8349.137004959786
       }
     ],
-    "jerarquia": {
-      "nivel1": null,
-      "nivel2": null,
-      "nivel3": null,
-      "nivel4": null,
-      "nivel5": null
-    },
+    "jerarquia": {},
     "equipos": [],
     "createdAt": "2025-11-15T13:52:22.793Z",
-    "updatedAt": "2025-11-15T13:52:22.793Z"
+    "updatedAt": "2025-11-19T13:41:19.442Z"
   },
   {
     "id": 1763214846127,

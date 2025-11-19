@@ -28,3 +28,4 @@
 {"scope":"maps","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauracin desde backup","timestamp":"2025-11-18T05:13:22.011Z"}
 {"scope":"areas","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauracin desde backup","timestamp":"2025-11-18T05:13:23.145Z"}
 {"scope":"maps","action":"restore_backup","mapId":null,"areaId":null,"detail":"Restauracin desde backup","timestamp":"2025-11-18T05:13:45.594Z"}
+{"scope":"areas","action":"update","mapId":1763209400991,"areaId":1763214742793,"detail":"Actualizada zona \"Estanque 3 Agua Salada\"","timestamp":"2025-11-19T13:41:21.047Z"}

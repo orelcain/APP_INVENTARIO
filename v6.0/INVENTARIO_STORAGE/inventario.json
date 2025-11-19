@@ -10,29 +10,29 @@
       {
         "areaGeneral": "Planta Principal",
         "subArea": "Filete",
-        "sistemaEquipo": "Cinta Curva",
+        "sistemaEquipo": "Cinta Curva ( Estructura )",
         "jerarquiaPath": [
           {
-            "id": "nivel1-1763483949725-bc17",
+            "id": "nivel1-1763524403524-e313",
             "name": "Aquachile Antarfood Chonchi",
             "level": "planta",
             "storageKey": "nivel1"
           },
           {
-            "id": "nivel2-1763483949726-2a59",
+            "id": "nivel2-1763524403524-ad1a",
             "name": "Planta Principal",
             "level": "areaGeneral",
             "storageKey": "nivel2"
           },
           {
-            "id": "nivel3-1763483949726-22b1",
+            "id": "nivel3-1763524403524-7339",
             "name": "Filete",
             "level": "subArea",
             "storageKey": "nivel3"
           },
           {
-            "id": "nivel4-1763483949726-0285",
-            "name": "Cinta Curva",
+            "id": "nivel4-1763524403524-99d1",
+            "name": "Cinta Curva ( Estructura )",
             "level": "sistemaEquipo",
             "storageKey": "nivel4"
           }
@@ -42,12 +42,12 @@
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Filete",
-    "sistemaEquipo": "Cinta Curva",
+    "sistemaEquipo": "Cinta Curva ( Estructura )",
     "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Cinta Curva",
+    "equipo": "Cinta Curva ( Estructura )",
     "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 0,
@@ -65,7 +65,7 @@
         "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-11-18T16:40:05.155Z",
+    "ultimaModificacion": "2025-11-19T03:53:38.295Z",
     "ultimoConteo": null
   },
   {
@@ -79,29 +79,29 @@
       {
         "areaGeneral": "Planta Principal",
         "subArea": "Filete",
-        "sistemaEquipo": "Cinta Curva",
+        "sistemaEquipo": "Cinta Curva ( Estructura )",
         "jerarquiaPath": [
           {
-            "id": "nivel1-1763483949725-bc17",
+            "id": "nivel1-1763524403524-e313",
             "name": "Aquachile Antarfood Chonchi",
             "level": "planta",
             "storageKey": "nivel1"
           },
           {
-            "id": "nivel2-1763483949726-2a59",
+            "id": "nivel2-1763524403524-ad1a",
             "name": "Planta Principal",
             "level": "areaGeneral",
             "storageKey": "nivel2"
           },
           {
-            "id": "nivel3-1763483949726-22b1",
+            "id": "nivel3-1763524403524-7339",
             "name": "Filete",
             "level": "subArea",
             "storageKey": "nivel3"
           },
           {
-            "id": "nivel4-1763483949726-0285",
-            "name": "Cinta Curva",
+            "id": "nivel4-1763524403524-99d1",
+            "name": "Cinta Curva ( Estructura )",
             "level": "sistemaEquipo",
             "storageKey": "nivel4"
           }
@@ -111,12 +111,12 @@
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Filete",
-    "sistemaEquipo": "Cinta Curva",
+    "sistemaEquipo": "Cinta Curva ( Estructura )",
     "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Cinta Curva",
+    "equipo": "Cinta Curva ( Estructura )",
     "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 0,
@@ -141,7 +141,7 @@
         "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-11-18T16:39:29.506Z",
+    "ultimaModificacion": "2025-11-19T03:53:23.544Z",
     "ultimoConteo": "2025-11-01T21:06:55.897Z"
   },
   {
@@ -155,29 +155,29 @@
       {
         "areaGeneral": "Planta Principal",
         "subArea": "Filete",
-        "sistemaEquipo": "Cinta Curva",
+        "sistemaEquipo": "Cinta Curva ( Estructura )",
         "jerarquiaPath": [
           {
-            "id": "nivel1-1763483949725-bc17",
+            "id": "nivel1-1763524403524-e313",
             "name": "Aquachile Antarfood Chonchi",
             "level": "planta",
             "storageKey": "nivel1"
           },
           {
-            "id": "nivel2-1763483949726-2a59",
+            "id": "nivel2-1763524403524-ad1a",
             "name": "Planta Principal",
             "level": "areaGeneral",
             "storageKey": "nivel2"
           },
           {
-            "id": "nivel3-1763483949726-22b1",
+            "id": "nivel3-1763524403524-7339",
             "name": "Filete",
             "level": "subArea",
             "storageKey": "nivel3"
           },
           {
-            "id": "nivel4-1763483949726-0285",
-            "name": "Cinta Curva",
+            "id": "nivel4-1763524403524-99d1",
+            "name": "Cinta Curva ( Estructura )",
             "level": "sistemaEquipo",
             "storageKey": "nivel4"
           }
@@ -187,12 +187,12 @@
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Filete",
-    "sistemaEquipo": "Cinta Curva",
+    "sistemaEquipo": "Cinta Curva ( Estructura )",
     "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Cinta Curva",
+    "equipo": "Cinta Curva ( Estructura )",
     "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 0,
@@ -210,7 +210,7 @@
         "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-11-18T16:39:41.105Z",
+    "ultimaModificacion": "2025-11-19T03:53:50.811Z",
     "ultimoConteo": "2025-11-01T21:07:05.139Z"
   },
   {
@@ -224,29 +224,29 @@
       {
         "areaGeneral": "Planta Principal",
         "subArea": "Filete",
-        "sistemaEquipo": "Cinta Curva",
+        "sistemaEquipo": "Cinta Curva ( Estructura )",
         "jerarquiaPath": [
           {
-            "id": "nivel1-1763483949725-bc17",
+            "id": "nivel1-1763524403524-e313",
             "name": "Aquachile Antarfood Chonchi",
             "level": "planta",
             "storageKey": "nivel1"
           },
           {
-            "id": "nivel2-1763483949726-2a59",
+            "id": "nivel2-1763524403524-ad1a",
             "name": "Planta Principal",
             "level": "areaGeneral",
             "storageKey": "nivel2"
           },
           {
-            "id": "nivel3-1763483949726-22b1",
+            "id": "nivel3-1763524403524-7339",
             "name": "Filete",
             "level": "subArea",
             "storageKey": "nivel3"
           },
           {
-            "id": "nivel4-1763483949726-0285",
-            "name": "Cinta Curva",
+            "id": "nivel4-1763524403524-99d1",
+            "name": "Cinta Curva ( Estructura )",
             "level": "sistemaEquipo",
             "storageKey": "nivel4"
           }
@@ -256,12 +256,12 @@
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Filete",
-    "sistemaEquipo": "Cinta Curva",
+    "sistemaEquipo": "Cinta Curva ( Estructura )",
     "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Cinta Curva",
+    "equipo": "Cinta Curva ( Estructura )",
     "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 0,
@@ -279,7 +279,7 @@
         "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-11-18T16:39:53.231Z",
+    "ultimaModificacion": "2025-11-19T03:54:01.003Z",
     "ultimoConteo": null
   },
   {
@@ -293,38 +293,103 @@
       {
         "areaGeneral": "Planta Principal",
         "subArea": "Eviscerado",
-        "sistemaEquipo": "Grader",
-        "subSistema": "Cinta Larga Grader",
+        "sistemaEquipo": "Cinta Transversal Salida Baader",
+        "cantidadEnUbicacion": 4,
         "jerarquiaPath": [
           {
-            "id": "nivel1-1763488345646-3a6f",
+            "id": "nivel1-1763558706735-8a84",
             "name": "Aquachile Antarfood Chonchi",
             "level": "planta",
             "storageKey": "nivel1"
           },
           {
-            "id": "nivel2-1763488345646-041f",
+            "id": "nivel2-1763558706735-ce95",
             "name": "Planta Principal",
             "level": "areaGeneral",
             "storageKey": "nivel2"
           },
           {
-            "id": "nivel3-1763488345646-8358",
+            "id": "nivel3-1763558706735-33c3",
             "name": "Eviscerado",
             "level": "subArea",
             "storageKey": "nivel3"
           },
           {
-            "id": "nivel4-1763488345646-b54f",
+            "id": "nivel4-1763558706735-c510",
+            "name": "Cinta Transversal Salida Baader",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4"
+          }
+        ]
+      },
+      {
+        "areaGeneral": "Planta Principal",
+        "subArea": "Eviscerado",
+        "sistemaEquipo": "Grader",
+        "subSistema": "Cinta Larga Grader",
+        "cantidadEnUbicacion": 2,
+        "jerarquiaPath": [
+          {
+            "id": "nivel1-1763558706735-8a84",
+            "name": "Aquachile Antarfood Chonchi",
+            "level": "planta",
+            "storageKey": "nivel1"
+          },
+          {
+            "id": "nivel2-1763558706735-ce95",
+            "name": "Planta Principal",
+            "level": "areaGeneral",
+            "storageKey": "nivel2"
+          },
+          {
+            "id": "nivel3-1763558706735-33c3",
+            "name": "Eviscerado",
+            "level": "subArea",
+            "storageKey": "nivel3"
+          },
+          {
+            "id": "nivel4-1763558706737-897f",
             "name": "Grader",
             "level": "sistemaEquipo",
             "storageKey": "nivel4"
           },
           {
-            "id": "nivel5-1763488345646-45a4",
+            "id": "nivel5-1763558706737-bce5",
             "name": "Cinta Larga Grader",
             "level": "subSistema",
             "storageKey": "nivel5"
+          }
+        ]
+      },
+      {
+        "areaGeneral": "Planta Principal",
+        "subArea": "Eviscerado",
+        "sistemaEquipo": "Cinta Azul Marel (Alimentacion Baader 142)",
+        "cantidadEnUbicacion": 2,
+        "jerarquiaPath": [
+          {
+            "id": "nivel1-1763558706735-8a84",
+            "name": "Aquachile Antarfood Chonchi",
+            "level": "planta",
+            "storageKey": "nivel1"
+          },
+          {
+            "id": "nivel2-1763558706735-ce95",
+            "name": "Planta Principal",
+            "level": "areaGeneral",
+            "storageKey": "nivel2"
+          },
+          {
+            "id": "nivel3-1763558706735-33c3",
+            "name": "Eviscerado",
+            "level": "subArea",
+            "storageKey": "nivel3"
+          },
+          {
+            "id": "nivel4-1763558706738-7236",
+            "name": "Cinta Azul Marel (Alimentacion Baader 142)",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4"
           }
         ]
       }
@@ -332,13 +397,13 @@
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Eviscerado",
-    "sistemaEquipo": "Grader",
-    "subSistema": "Cinta Larga Grader",
+    "sistemaEquipo": "Cinta Transversal Salida Baader",
+    "subSistema": "",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Grader",
-    "sistema": "Cinta Larga Grader",
+    "equipo": "Cinta Transversal Salida Baader",
+    "sistema": "",
     "detalleUbicacion": "",
     "cantidad": 5,
     "cantidadInstalada": 8,
@@ -355,7 +420,7 @@
         "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-11-18T17:52:25.649Z",
+    "ultimaModificacion": "2025-11-19T13:25:06.742Z",
     "ultimoConteo": "2025-10-25T19:09:09.791Z"
   },
   {

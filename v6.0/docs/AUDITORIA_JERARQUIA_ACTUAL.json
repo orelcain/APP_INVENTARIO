@@ -1,0 +1,339 @@
+{
+  "timestamp": "2025-11-19T16:25:45.282Z",
+  "fecha": "19/11/2025, 13:25:45",
+  "archivosAnalizados": [
+    "zonas.json",
+    "repuestos.json",
+    "mapas.json"
+  ],
+  "zonas": {
+    "totalZonas": 12,
+    "conJerarquia": 10,
+    "sinJerarquia": 2,
+    "nivelesEncontrados": [
+      "nivel1",
+      "nivel2",
+      "nivel3",
+      "nivel4",
+      "nivel5"
+    ],
+    "valoresPorNivel": {
+      "nivel1": [
+        "Planta Principal"
+      ],
+      "nivel2": [
+        "EVISCERADO",
+        "Eviscerado"
+      ],
+      "nivel3": [
+        "Grader",
+        "Marel"
+      ],
+      "nivel4": [
+        "Cinta Aceleración 1 Grader",
+        "Cinta Aceleración 2 Grader",
+        "Cinta Azul Marel",
+        "Cinta Z",
+        "Pocket 1 al 4"
+      ],
+      "nivel5": [
+        "Sistema Neumático"
+      ],
+      "nivel6": [],
+      "nivel7": []
+    },
+    "zonasIncompletas": [],
+    "zonasConNull": [
+      {
+        "id": 1761081773840,
+        "name": "Cinta Aceleracion 2 Grader",
+        "nivel": "nivel5"
+      },
+      {
+        "id": 1761364821364,
+        "name": "Cinta Azul Marel",
+        "nivel": "nivel5"
+      },
+      {
+        "id": 1763214846127,
+        "name": "Estanque 2 Agua Duilce",
+        "nivel": "nivel1"
+      },
+      {
+        "id": 1763214846127,
+        "name": "Estanque 2 Agua Duilce",
+        "nivel": "nivel2"
+      },
+      {
+        "id": 1763214846127,
+        "name": "Estanque 2 Agua Duilce",
+        "nivel": "nivel3"
+      },
+      {
+        "id": 1763214846127,
+        "name": "Estanque 2 Agua Duilce",
+        "nivel": "nivel4"
+      },
+      {
+        "id": 1763214846127,
+        "name": "Estanque 2 Agua Duilce",
+        "nivel": "nivel5"
+      }
+    ],
+    "mapasPorZona": {
+      "1760411932641": [
+        {
+          "id": 1761002703272,
+          "name": "Pocket Grader",
+          "jerarquia": {
+            "nivel1": "Planta Principal",
+            "nivel2": "Eviscerado",
+            "nivel3": "Grader",
+            "nivel4": "Pocket 1 al 4",
+            "nivel5": "Sistema Neumático"
+          }
+        },
+        {
+          "id": 1761002883472,
+          "name": "Cinta Zeta",
+          "jerarquia": {
+            "nivel1": "Planta Principal",
+            "nivel2": "Eviscerado",
+            "nivel3": "Grader",
+            "nivel4": "Cinta Z"
+          }
+        },
+        {
+          "id": 1761005109491,
+          "name": "Cinta Aceleracion 1 Grader",
+          "jerarquia": {
+            "nivel1": "Planta Principal",
+            "nivel2": "Eviscerado",
+            "nivel3": "Grader",
+            "nivel4": "Cinta Aceleración 1 Grader"
+          }
+        },
+        {
+          "id": 1761081773840,
+          "name": "Cinta Aceleracion 2 Grader",
+          "jerarquia": {
+            "nivel1": "Planta Principal",
+            "nivel2": "Eviscerado",
+            "nivel3": "Grader",
+            "nivel4": "Cinta Aceleración 2 Grader",
+            "nivel5": null
+          }
+        },
+        {
+          "id": 1761084793013,
+          "name": "Cinta Larga Grader",
+          "jerarquia": {
+            "areaGeneral": "Planta Principal",
+            "subArea": "Eviscerado",
+            "sistemaEquipo": "Grader",
+            "subSistema": "Cinta Larga Grader"
+          }
+        },
+        {
+          "id": 1761364821364,
+          "name": "Cinta Azul Marel",
+          "jerarquia": {
+            "nivel1": "Planta Principal",
+            "nivel2": "EVISCERADO",
+            "nivel3": "Marel",
+            "nivel4": "Cinta Azul Marel",
+            "nivel5": null
+          }
+        },
+        {
+          "id": 1761369700833,
+          "name": "Cinta Transversal Salida Baader 142",
+          "jerarquia": {
+            "areaGeneral": "Planta Principal",
+            "subArea": "Eviscerado"
+          }
+        },
+        {
+          "id": 1761370288328,
+          "name": "Cinta Curva Filete",
+          "jerarquia": {
+            "areaGeneral": "Planta Principal",
+            "subArea": "Filete",
+            "sistemaEquipo": "Cinta Curva Filete"
+          }
+        },
+        {
+          "id": 1761752088945,
+          "name": "Filete",
+          "jerarquia": {
+            "planta": "Antarfood Aquachile Chonchi",
+            "areaGeneral": "Planta Principal",
+            "subArea": "Filete"
+          }
+        }
+      ],
+      "1763209400991": [
+        {
+          "id": 1763214846127,
+          "name": "Estanque 2 Agua Duilce",
+          "jerarquia": {
+            "nivel1": null,
+            "nivel2": null,
+            "nivel3": null,
+            "nivel4": null,
+            "nivel5": null
+          }
+        }
+      ]
+    }
+  },
+  "repuestos": {
+    "totalRepuestos": 57,
+    "conCamposAntiguos": 22,
+    "conJerarquiaUnificada": 0,
+    "sinJerarquia": 35,
+    "camposAntiguosEncontrados": {
+      "planta": 1,
+      "areaGeneral": 2,
+      "subArea": 3,
+      "sistemaEquipo": 3,
+      "subSistema": 2,
+      "seccion": 1,
+      "detalle": 1
+    },
+    "valoresUnicos": {
+      "planta": [
+        "Aquachile Antarfood Chonchi"
+      ],
+      "areaGeneral": [
+        "Planta Principal",
+        "Área de Producción"
+      ],
+      "subArea": [
+        "Eviscerado",
+        "Filete",
+        "Sistema de Agua"
+      ],
+      "sistemaEquipo": [
+        "Baader 142",
+        "Bomba Principal BP-01",
+        "Cintas Filete"
+      ],
+      "subSistema": [
+        "Cinta Curva",
+        "Sistema Hidráulico"
+      ],
+      "seccion": [
+        "Sección de Sellado"
+      ],
+      "detalle": [
+        "Conjunto de Fijación"
+      ]
+    }
+  },
+  "mapas": {
+    "totalMapas": 2,
+    "mapasConJerarquia": 2,
+    "mapasSinJerarquia": 0,
+    "mapasPorId": {
+      "1760411932641": {
+        "id": 1760411932641,
+        "name": "Planta Principal",
+        "imageUrl": null,
+        "jerarquiaPath": [
+          {
+            "id": "AQ-IN",
+            "nivel": "empresa"
+          },
+          {
+            "id": "PCHO",
+            "nivel": "area"
+          }
+        ],
+        "width": 9362,
+        "height": 6623
+      },
+      "1763209400991": {
+        "id": 1763209400991,
+        "name": "Recinto Aquachile Antarfood",
+        "imageUrl": null,
+        "jerarquiaPath": [
+          {
+            "id": "AQ-IN",
+            "nivel": "empresa"
+          }
+        ],
+        "width": 18725,
+        "height": 13245
+      }
+    }
+  },
+  "mapeoMigracion": {
+    "descripcion": "Mapeo para migración de 5 niveles a 7 niveles",
+    "transformaciones": {
+      "zonas": {
+        "nivel1": "→ nivel2 (Planta Principal → Áreas)",
+        "nivel2": "→ nivel3 (Eviscerado/Filete → Sub-áreas)",
+        "nivel3": "→ nivel4 (Grader/Marel → Sistemas)",
+        "nivel4": "→ nivel5 (Cintas → Sub-sistemas)",
+        "nivel5": "→ nivel6 (Componentes → Secciones)",
+        "NUEVO nivel1": "Empresa (valor por defecto)",
+        "NUEVO nivel7": "null (opcional)"
+      },
+      "repuestos": {
+        "planta": "→ jerarquia.nivel2",
+        "areaGeneral": "→ jerarquia.nivel3",
+        "subArea": "→ jerarquia.nivel4",
+        "sistemaEquipo": "→ jerarquia.nivel5",
+        "subSistema": "→ jerarquia.nivel6",
+        "seccion": "→ jerarquia.nivel6 o nivel7 (evaluar)",
+        "detalle": "→ jerarquia.nivel7",
+        "NUEVO nivel1": "→ jerarquia.nivel1 = \"Empresa X\""
+      }
+    },
+    "valoresEjemplo": {
+      "antes": {
+        "zona": {
+          "nivel1": "Planta Principal",
+          "nivel2": "Eviscerado",
+          "nivel3": "Grader",
+          "nivel4": "Pocket 1 al 4",
+          "nivel5": "Sistema Neumático"
+        },
+        "repuesto": {
+          "planta": "Planta Principal",
+          "areaGeneral": "Eviscerado",
+          "subArea": "Grader",
+          "sistemaEquipo": "Pocket 1 al 4",
+          "subSistema": "Sistema Neumático"
+        }
+      },
+      "despues": {
+        "zona": {
+          "nivel1": "Empresa X",
+          "nivel2": "Planta Principal",
+          "nivel3": "Eviscerado",
+          "nivel4": "Grader",
+          "nivel5": "Pocket 1 al 4",
+          "nivel6": "Sistema Neumático",
+          "nivel7": null
+        },
+        "repuesto": {
+          "jerarquia": {
+            "nivel1": "Empresa X",
+            "nivel2": "Planta Principal",
+            "nivel3": "Eviscerado",
+            "nivel4": "Grader",
+            "nivel5": "Pocket 1 al 4",
+            "nivel6": "Sistema Neumático",
+            "nivel7": null
+          }
+        }
+      }
+    },
+    "valorPorDefecto": {
+      "nivel1": "Empresa X",
+      "razon": "Se agregará como raíz a todas las jerarquías existentes"
+    }
+  }
+}
