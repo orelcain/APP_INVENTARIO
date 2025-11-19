@@ -828,19 +828,131 @@
       {
         "areaGeneral": "Planta Principal",
         "subArea": "Eviscerado",
-        "sistemaEquipo": "Baader 142"
+        "sistemaEquipo": "Baader 142 Antigua N1",
+        "subSistema": "Carro cinta prisma interior",
+        "cantidadEnUbicacion": 1,
+        "jerarquiaPath": [
+          {
+            "id": "nivel1-1763574784718-2486",
+            "name": "Aquachile Antarfood Chonchi",
+            "level": "planta",
+            "storageKey": "nivel1"
+          },
+          {
+            "id": "nivel2-1763574784718-f782",
+            "name": "Planta Principal",
+            "level": "areaGeneral",
+            "storageKey": "nivel2"
+          },
+          {
+            "id": "nivel3-1763574784718-47db",
+            "name": "Eviscerado",
+            "level": "subArea",
+            "storageKey": "nivel3"
+          },
+          {
+            "id": "nivel4-1763574967579-e981",
+            "name": "Baader 142 Antigua N1",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4"
+          },
+          {
+            "id": "nivel5-1763575058209-dcd2",
+            "name": "Carro cinta prisma interior",
+            "level": "subSistema",
+            "storageKey": "nivel5"
+          }
+        ]
+      },
+      {
+        "areaGeneral": "Planta Principal",
+        "subArea": "Eviscerado",
+        "sistemaEquipo": "Baader 142 Nueva N2",
+        "subSistema": "Carro cinta prisma interior",
+        "cantidadEnUbicacion": 1,
+        "jerarquiaPath": [
+          {
+            "id": "nivel1-1763574784718-2486",
+            "name": "Aquachile Antarfood Chonchi",
+            "level": "planta",
+            "storageKey": "nivel1"
+          },
+          {
+            "id": "nivel2-1763574784718-f782",
+            "name": "Planta Principal",
+            "level": "areaGeneral",
+            "storageKey": "nivel2"
+          },
+          {
+            "id": "nivel3-1763574784718-47db",
+            "name": "Eviscerado",
+            "level": "subArea",
+            "storageKey": "nivel3"
+          },
+          {
+            "id": "nivel4-1763574967614-24d6",
+            "name": "Baader 142 Nueva N2",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4"
+          },
+          {
+            "id": "nivel5-1763575058209-dcd2",
+            "name": "Carro cinta prisma interior",
+            "level": "subSistema",
+            "storageKey": "nivel5"
+          }
+        ]
+      },
+      {
+        "areaGeneral": "Planta Principal",
+        "subArea": "Eviscerado",
+        "sistemaEquipo": "Baader 142 Nueva N3",
+        "subSistema": "Carro cinta prisma interior",
+        "cantidadEnUbicacion": 1,
+        "jerarquiaPath": [
+          {
+            "id": "nivel1-1763574784718-2486",
+            "name": "Aquachile Antarfood Chonchi",
+            "level": "planta",
+            "storageKey": "nivel1"
+          },
+          {
+            "id": "nivel2-1763574784718-f782",
+            "name": "Planta Principal",
+            "level": "areaGeneral",
+            "storageKey": "nivel2"
+          },
+          {
+            "id": "nivel3-1763574784718-47db",
+            "name": "Eviscerado",
+            "level": "subArea",
+            "storageKey": "nivel3"
+          },
+          {
+            "id": "nivel4-1763574967632-ba75",
+            "name": "Baader 142 Nueva N3",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4"
+          },
+          {
+            "id": "nivel5-1763575058209-dcd2",
+            "name": "Carro cinta prisma interior",
+            "level": "subSistema",
+            "storageKey": "nivel5"
+          }
+        ]
       }
     ],
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "Planta Principal",
     "subArea": "Eviscerado",
-    "sistemaEquipo": "Baader 142",
-    "subSistema": "",
+    "sistemaEquipo": "Baader 142 Antigua N1",
+    "subSistema": "Carro cinta prisma interior",
     "seccion": "",
     "detalle": "",
     "area": "Planta Principal",
-    "equipo": "Baader 142",
-    "sistema": "",
+    "equipo": "Baader 142 Antigua N1",
+    "sistema": "Carro cinta prisma interior",
     "detalleUbicacion": "",
     "cantidad": 6,
     "cantidadInstalada": 0,
@@ -857,7 +969,7 @@
         "isFileSystem": true
       }
     ],
-    "ultimaModificacion": "2025-10-26T17:55:03.173Z",
+    "ultimaModificacion": "2025-11-19T17:57:38.309Z",
     "ultimoConteo": null
   },
   {
