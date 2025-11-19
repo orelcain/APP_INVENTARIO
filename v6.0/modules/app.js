@@ -1012,7 +1012,16 @@ class MapStorageService {
       if (raw) {
         parsed = JSON.parse(raw);
       }
-      this.areas = Array.isArray(parsed) ? parsed : [];
+      
+      // Normalizar jerarquía para compatibilidad dual (5 niveles legacy → 7 niveles unificados)
+      this.areas = Array.isArray(parsed) ? parsed.map(area => {
+        return {
+          ...area,
+          jerarquia: this.normalizeJerarquiaFromObject(area)
+        };
+      }) : [];
+      
+      console.log(`✅ ${this.areas.length} áreas cargadas y normalizadas a 7 niveles`);
     } catch (error) {
       console.warn('No se pudieron cargar las reas:', error);
       this.areas = [];
@@ -1432,15 +1441,77 @@ const mapController = {
   },
 
   jerarquiaLevelConfig: {
-    empresa: { label: 'Empresa', childKey: 'areas', childNivel: 'area' },
-    area: { label: 'rea', childKey: 'subAreas', childNivel: 'subArea' },
-    subArea: { label: 'Sub-rea', childKey: 'sistemas', childNivel: 'sistema' },
-    sistema: { label: 'Sistema', childKey: 'subSistemas', childNivel: 'subSistema' },
-    subSistema: { label: 'Sub-Sistema', childKey: 'secciones', childNivel: 'seccion' },
-    seccion: { label: 'Seccin', childKey: 'subSecciones', childNivel: 'subSeccion' },
-    subSeccion: { label: 'Sub-Seccin', childKey: null, childNivel: null }
+    nivel1: { label: 'Empresa', nivel: 1 },
+    nivel2: { label: 'Área', nivel: 2 },
+    nivel3: { label: 'Sub-área', nivel: 3 },
+    nivel4: { label: 'Sistema', nivel: 4 },
+    nivel5: { label: 'Sub-sistema', nivel: 5 },
+    nivel6: { label: 'Sección', nivel: 6 },
+    nivel7: { label: 'Sub-sección', nivel: 7 }
   },
-  areaJerarquiaFieldOrder: ['planta', 'areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion', 'detalle'],
+  
+  // FUNCIÓN HELPER: Normalizar jerarquía con compatibilidad dual
+  normalizeJerarquiaFromObject(obj) {
+    // Si ya tiene estructura unificada nueva (7 niveles)
+    if (obj.jerarquia && obj.jerarquia.nivel1) {
+      return { ...obj.jerarquia };
+    }
+    
+    // Si tiene estructura legacy en _jerarquiaLegacy
+    if (obj._jerarquiaLegacy) {
+      return {
+        nivel1: 'Aquachile Antarfood',
+        nivel2: obj._jerarquiaLegacy.planta || null,
+        nivel3: obj._jerarquiaLegacy.areaGeneral || null,
+        nivel4: obj._jerarquiaLegacy.subArea || null,
+        nivel5: obj._jerarquiaLegacy.sistemaEquipo || null,
+        nivel6: obj._jerarquiaLegacy.subSistema || obj._jerarquiaLegacy.seccion || null,
+        nivel7: obj._jerarquiaLegacy.detalle || null
+      };
+    }
+    
+    // Si tiene campos antiguos directamente (repuestos sin migrar)
+    if (obj.planta || obj.areaGeneral || obj.subArea) {
+      return {
+        nivel1: 'Aquachile Antarfood',
+        nivel2: obj.planta || null,
+        nivel3: obj.areaGeneral || obj.area || null,
+        nivel4: obj.subArea || null,
+        nivel5: obj.sistemaEquipo || null,
+        nivel6: obj.subSistema || obj.seccion || null,
+        nivel7: obj.detalle || null
+      };
+    }
+    
+    // Si tiene jerarquía de zonas antigua (5 niveles)
+    if (obj.jerarquia && obj.jerarquia.nivel1 && !obj.jerarquia.nivel6) {
+      return {
+        nivel1: 'Aquachile Antarfood',
+        nivel2: obj.jerarquia.nivel1 || null,
+        nivel3: obj.jerarquia.nivel2 || null,
+        nivel4: obj.jerarquia.nivel3 || null,
+        nivel5: obj.jerarquia.nivel4 || null,
+        nivel6: obj.jerarquia.nivel5 || null,
+        nivel7: null
+      };
+    }
+    
+    // Sin jerarquía
+    return {
+      nivel1: null,
+      nivel2: null,
+      nivel3: null,
+      nivel4: null,
+      nivel5: null,
+      nivel6: null,
+      nivel7: null
+    };
+  },
+  // Orden de campos de jerarquía (7 niveles unificados)
+  areaJerarquiaFieldOrder: ['nivel1', 'nivel2', 'nivel3', 'nivel4', 'nivel5', 'nivel6', 'nivel7'],
+  
+  // Campos legacy (deprecated - mantener para compatibilidad temporal)
+  areaJerarquiaFieldOrderLegacy: ['planta', 'areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion', 'detalle'],
   
   state: {
     currentMapId: null,
@@ -3195,12 +3266,10 @@ const mapController = {
     // Contar reas
     const totalAreas = areas.length;
     
-    // Contar reas sin jerarqua definida (todas vacas o "Sin...")
+    // Contar reas sin jerarqua definida (todos los niveles vacíos o sin valor)
     const areasSinJerarquia = areas.filter(area => {
       const j = area.jerarquia || {};
-      return (!j.planta || j.planta === 'Sin planta') && 
-             (!j.areaGeneral || j.areaGeneral === 'Sin rea') &&
-             !j.subArea && !j.sistemaEquipo && !j.subSistema && !j.seccion;
+      return !j.nivel1 && !j.nivel2 && !j.nivel3 && !j.nivel4 && !j.nivel5 && !j.nivel6 && !j.nivel7;
     }).length;
     
     // Contar marcadores
@@ -16036,8 +16105,11 @@ class InventarioCompleto {
           if (!item.multimedia || !Array.isArray(item.multimedia)) {
             item.multimedia = [];
           }
+          // Normalizar jerarquía para compatibilidad dual (campos legacy → 7 niveles unificados)
+          item.jerarquia = this.normalizeJerarquiaFromObject(item);
           return item;
         });
+        console.log(`✅ Repuestos normalizados a jerarquía de 7 niveles`);
         
         //  LIMPIEZA AUTOMTICA: Eliminar formato antiguo de ubicaciones si existe el nuevo
         this.limpiarFormatoAntiguoUbicaciones();
@@ -16076,8 +16148,11 @@ class InventarioCompleto {
           }
           //  IMPORTANTE: Forzar multimedia vaco en mvil
           item.multimedia = [];
+          // Normalizar jerarquía para compatibilidad dual
+          item.jerarquia = this.normalizeJerarquiaFromObject(item);
           return item;
         });
+        console.log(`✅ Repuestos embebidos normalizados a jerarquía de 7 niveles`);
         
         //  LIMPIEZA AUTOMTICA: Eliminar formato antiguo de ubicaciones si existe el nuevo
         this.limpiarFormatoAntiguoUbicaciones();
@@ -16118,8 +16193,12 @@ class InventarioCompleto {
             item.multimedia = [];
           }
           
+          // Normalizar jerarquía para compatibilidad dual (campos legacy → 7 niveles)
+          item.jerarquia = this.normalizeJerarquiaFromObject(item);
+          
           return item;
         });
+        console.log(`✅ Repuestos de localStorage normalizados a jerarquía de 7 niveles`);
         
         console.log(` ${this.repuestos.length} repuestos cargados correctamente`);
         
@@ -17296,23 +17375,35 @@ class InventarioCompleto {
         (r.nombre && r.nombre.toLowerCase().includes(search)) ||
         (r.tipo && r.tipo.toLowerCase().includes(search)) ||
         (r.codProv && r.codProv.toLowerCase().includes(search)) ||
-        // BUSCAR EN NUEVA JERARQUA DE 7 NIVELES
+        // BUSCAR EN JERARQUÍA UNIFICADA DE 7 NIVELES
+        (r.jerarquia?.nivel1 && r.jerarquia.nivel1.toLowerCase().includes(search)) ||
+        (r.jerarquia?.nivel2 && r.jerarquia.nivel2.toLowerCase().includes(search)) ||
+        (r.jerarquia?.nivel3 && r.jerarquia.nivel3.toLowerCase().includes(search)) ||
+        (r.jerarquia?.nivel4 && r.jerarquia.nivel4.toLowerCase().includes(search)) ||
+        (r.jerarquia?.nivel5 && r.jerarquia.nivel5.toLowerCase().includes(search)) ||
+        (r.jerarquia?.nivel6 && r.jerarquia.nivel6.toLowerCase().includes(search)) ||
+        (r.jerarquia?.nivel7 && r.jerarquia.nivel7.toLowerCase().includes(search)) ||
+        // COMPATIBILIDAD CON FORMATO ANTIGUO (para repuestos no migrados)
         (r.planta && r.planta.toLowerCase().includes(search)) ||
         (r.areaGeneral && r.areaGeneral.toLowerCase().includes(search)) ||
-        (r.subArea && r.subArea.toLowerCase().includes(search)) ||
-        (r.sistemaEquipo && r.sistemaEquipo.toLowerCase().includes(search)) ||
-        (r.subSistema && r.subSistema.toLowerCase().includes(search)) ||
-        (r.seccion && r.seccion.toLowerCase().includes(search)) ||
-        (r.detalle && r.detalle.toLowerCase().includes(search)) ||
-        // COMPATIBILIDAD CON FORMATO ANTIGUO
         (r.area && r.area.toLowerCase().includes(search)) ||
         (r.equipo && r.equipo.toLowerCase().includes(search)) ||
         (r.sistema && r.sistema.toLowerCase().includes(search)) ||
         (r.detalleUbicacion && r.detalleUbicacion.toLowerCase().includes(search));
 
-      // Filtros de rea y Equipo con compatibilidad
-      const matchArea = !filterArea || r.areaGeneral === filterArea || r.area === filterArea;
-      const matchEquipo = !filterEquipo || r.sistemaEquipo === filterEquipo || r.equipo === filterEquipo;
+      // Filtros de rea y Equipo con compatibilidad dual
+      const matchArea = !filterArea || 
+        r.jerarquia?.nivel2 === filterArea || 
+        r.jerarquia?.nivel3 === filterArea || 
+        r.areaGeneral === filterArea || 
+        r.area === filterArea;
+      
+      const matchEquipo = !filterEquipo || 
+        r.jerarquia?.nivel4 === filterEquipo || 
+        r.jerarquia?.nivel5 === filterEquipo || 
+        r.sistemaEquipo === filterEquipo || 
+        r.equipo === filterEquipo;
+      
       const matchTipo = !filterTipo || r.tipo === filterTipo;
       
       // Filtros jerrquicos desde pestaa JERARQUA
@@ -20084,15 +20175,26 @@ class InventarioCompleto {
     
     console.log(' UBICACIONES LIMPIAS A GUARDAR:', JSON.stringify(ubicacionesLimpias, null, 2));
     
-    //  APRENDIZAJE AUTOMTICO: Agregar nuevas opciones a las listas
-    // Nota: 'detalle' no se aprende porque es texto libre
+    //  APRENDIZAJE AUTOMÁTICO: Agregar nuevas opciones a las listas desde jerarquía unificada
     ubicacionesLimpias.forEach(ubicacion => {
-      if (ubicacion.areaGeneral) this.aprenderNuevaOpcion('areaGeneral', ubicacion.areaGeneral);
-      if (ubicacion.subArea) this.aprenderNuevaOpcion('subArea', ubicacion.subArea);
-      if (ubicacion.sistemaEquipo) this.aprenderNuevaOpcion('sistemaEquipo', ubicacion.sistemaEquipo);
-      if (ubicacion.subSistema) this.aprenderNuevaOpcion('subSistema', ubicacion.subSistema);
-      if (ubicacion.seccion) this.aprenderNuevaOpcion('seccion', ubicacion.seccion);
-      if (ubicacion.subSeccion) this.aprenderNuevaOpcion('subSeccion', ubicacion.subSeccion);
+      // Si tiene jerarquía unificada (7 niveles), aprender desde ahí
+      if (ubicacion.jerarquia) {
+        if (ubicacion.jerarquia.nivel2) this.aprenderNuevaOpcion('nivel2', ubicacion.jerarquia.nivel2);
+        if (ubicacion.jerarquia.nivel3) this.aprenderNuevaOpcion('nivel3', ubicacion.jerarquia.nivel3);
+        if (ubicacion.jerarquia.nivel4) this.aprenderNuevaOpcion('nivel4', ubicacion.jerarquia.nivel4);
+        if (ubicacion.jerarquia.nivel5) this.aprenderNuevaOpcion('nivel5', ubicacion.jerarquia.nivel5);
+        if (ubicacion.jerarquia.nivel6) this.aprenderNuevaOpcion('nivel6', ubicacion.jerarquia.nivel6);
+        if (ubicacion.jerarquia.nivel7) this.aprenderNuevaOpcion('nivel7', ubicacion.jerarquia.nivel7);
+      }
+      // COMPATIBILIDAD: Si aún tiene campos legacy, aprender desde ahí también
+      else {
+        if (ubicacion.areaGeneral) this.aprenderNuevaOpcion('areaGeneral', ubicacion.areaGeneral);
+        if (ubicacion.subArea) this.aprenderNuevaOpcion('subArea', ubicacion.subArea);
+        if (ubicacion.sistemaEquipo) this.aprenderNuevaOpcion('sistemaEquipo', ubicacion.sistemaEquipo);
+        if (ubicacion.subSistema) this.aprenderNuevaOpcion('subSistema', ubicacion.subSistema);
+        if (ubicacion.seccion) this.aprenderNuevaOpcion('seccion', ubicacion.seccion);
+        if (ubicacion.subSeccion) this.aprenderNuevaOpcion('subSeccion', ubicacion.subSeccion);
+      }
     });
     
     //  SINCRONIZACIN AUTOMTICA: Agregar ubicaciones al rbol de jerarqua
@@ -24507,12 +24609,12 @@ class InventarioCompleto {
     btnLimpiar.style.display = hayFiltros ? 'inline-block' : 'none';
     
     if (nivel === 1 && valor) {
-      // Planta seleccionada  mostrar reas
+      // Nivel1 (Empresa) seleccionado → mostrar Nivel2 (Áreas)
       filtroArea.style.display = 'block';
       const areas = [...new Set(
         this.repuestos
-          .filter(r => r.planta === valor && r.areaGeneral)
-          .map(r => r.areaGeneral)
+          .filter(r => r.jerarquia?.nivel1 === valor && r.jerarquia?.nivel2)
+          .map(r => r.jerarquia.nivel2)
       )].sort();
       
       filtroArea.innerHTML = '<option value=""> Todas las reas</option>';
@@ -24533,12 +24635,12 @@ class InventarioCompleto {
       filtroDetalle.value = '';
       
     } else if (nivel === 2 && valor) {
-      // rea seleccionada  mostrar sub-reas
+      // Nivel2 (Área) seleccionado → mostrar Nivel3 (Sub-áreas)
       filtroSubArea.style.display = 'block';
       const subareas = [...new Set(
         this.repuestos
-          .filter(r => r.planta === filtroPlanta.value && r.areaGeneral === valor && r.subArea)
-          .map(r => r.subArea)
+          .filter(r => r.jerarquia?.nivel1 === filtroPlanta.value && r.jerarquia?.nivel2 === valor && r.jerarquia?.nivel3)
+          .map(r => r.jerarquia.nivel3)
       )].sort();
       
       filtroSubArea.innerHTML = '<option value=""> Todas las sub-reas</option>';
@@ -24557,17 +24659,17 @@ class InventarioCompleto {
       filtroDetalle.value = '';
       
     } else if (nivel === 3 && valor) {
-      // Sub-rea seleccionada  mostrar sistemas
+      // Nivel3 (Sub-área) seleccionado → mostrar Nivel4 (Sistemas)
       filtroSistema.style.display = 'block';
       const sistemas = [...new Set(
         this.repuestos
           .filter(r => 
-            r.planta === filtroPlanta.value && 
-            r.areaGeneral === filtroArea.value && 
-            r.subArea === valor && 
-            r.sistemaEquipo
+            r.jerarquia?.nivel1 === filtroPlanta.value && 
+            r.jerarquia?.nivel2 === filtroArea.value && 
+            r.jerarquia?.nivel3 === valor && 
+            r.jerarquia?.nivel4
           )
-          .map(r => r.sistemaEquipo)
+          .map(r => r.jerarquia.nivel4)
       )].sort();
       
       filtroSistema.innerHTML = '<option value=""> Todos los sistemas</option>';
@@ -24584,18 +24686,18 @@ class InventarioCompleto {
       filtroDetalle.value = '';
       
     } else if (nivel === 4 && valor) {
-      // Sistema seleccionado  mostrar sub-sistemas
+      // Nivel4 (Sistema) seleccionado → mostrar Nivel5 (Sub-sistemas)
       filtroSubSistema.style.display = 'block';
       const subsistemas = [...new Set(
         this.repuestos
           .filter(r => 
-            r.planta === filtroPlanta.value && 
-            r.areaGeneral === filtroArea.value && 
-            r.subArea === filtroSubArea.value && 
-            r.sistemaEquipo === valor && 
-            r.subSistema
+            r.jerarquia?.nivel1 === filtroPlanta.value && 
+            r.jerarquia?.nivel2 === filtroArea.value && 
+            r.jerarquia?.nivel3 === filtroSubArea.value && 
+            r.jerarquia?.nivel4 === valor && 
+            r.jerarquia?.nivel5
           )
-          .map(r => r.subSistema)
+          .map(r => r.jerarquia.nivel5)
       )].sort();
       
       filtroSubSistema.innerHTML = '<option value=""> Todos los sub-sistemas</option>';
@@ -24610,19 +24712,19 @@ class InventarioCompleto {
       filtroDetalle.value = '';
       
     } else if (nivel === 5 && valor) {
-      // Sub-sistema seleccionado  mostrar secciones
+      // Nivel5 (Sub-sistema) seleccionado → mostrar Nivel6 (Secciones)
       filtroSeccion.style.display = 'block';
       const secciones = [...new Set(
         this.repuestos
           .filter(r => 
-            r.planta === filtroPlanta.value && 
-            r.areaGeneral === filtroArea.value && 
-            r.subArea === filtroSubArea.value && 
-            r.sistemaEquipo === filtroSistema.value && 
-            r.subSistema === valor && 
-            r.seccion
+            r.jerarquia?.nivel1 === filtroPlanta.value && 
+            r.jerarquia?.nivel2 === filtroArea.value && 
+            r.jerarquia?.nivel3 === filtroSubArea.value && 
+            r.jerarquia?.nivel4 === filtroSistema.value && 
+            r.jerarquia?.nivel5 === valor && 
+            r.jerarquia?.nivel6
           )
-          .map(r => r.seccion)
+          .map(r => r.jerarquia.nivel6)
       )].sort();
       
       filtroSeccion.innerHTML = '<option value=""> Todas las secciones</option>';
@@ -24635,20 +24737,20 @@ class InventarioCompleto {
       filtroDetalle.value = '';
       
     } else if (nivel === 6 && valor) {
-      // Seccin seleccionada  mostrar detalles
+      // Nivel6 (Sección) seleccionado → mostrar Nivel7 (Sub-secciones)
       filtroDetalle.style.display = 'block';
       const detalles = [...new Set(
         this.repuestos
           .filter(r => 
-            r.planta === filtroPlanta.value && 
-            r.areaGeneral === filtroArea.value && 
-            r.subArea === filtroSubArea.value && 
-            r.sistemaEquipo === filtroSistema.value && 
-            r.subSistema === filtroSubSistema.value && 
-            r.seccion === valor && 
-            r.detalle
+            r.jerarquia?.nivel1 === filtroPlanta.value && 
+            r.jerarquia?.nivel2 === filtroArea.value && 
+            r.jerarquia?.nivel3 === filtroSubArea.value && 
+            r.jerarquia?.nivel4 === filtroSistema.value && 
+            r.jerarquia?.nivel5 === filtroSubSistema.value && 
+            r.jerarquia?.nivel6 === valor && 
+            r.jerarquia?.nivel7
           )
-          .map(r => r.detalle)
+          .map(r => r.jerarquia.nivel7)
       )].sort();
       
       filtroDetalle.innerHTML = '<option value=""> Todos los detalles</option>';
@@ -25432,18 +25534,24 @@ class InventarioCompleto {
   }
   
   /**
-   * Inicializa las opciones de los filtros en cascada (solo plantas al inicio)
+   * Inicializa las opciones de los filtros en cascada (solo nivel1 al inicio)
    */
   inicializarFiltrosJerarquia() {
-    // Cargar plantas disponibles
-    const plantas = [...new Set(this.repuestos.map(r => r.planta).filter(Boolean))].sort();
+    // Cargar valores únicos de nivel1 (Empresa) disponibles
+    const nivel1Values = [...new Set(
+      this.repuestos
+        .map(r => r.jerarquia?.nivel1)
+        .filter(Boolean)
+    )].sort();
+    
     const selectPlanta = document.getElementById('filtro_planta');
     if (selectPlanta) {
-      selectPlanta.innerHTML = '<option value=""> Todas las plantas</option>';
-      plantas.forEach(p => {
-        selectPlanta.innerHTML += `<option value="${p}">${p}</option>`;
+      selectPlanta.innerHTML = '<option value=""> Todas las empresas</option>';
+      nivel1Values.forEach(n1 => {
+        selectPlanta.innerHTML += `<option value="${n1}">${n1}</option>`;
       });
     }
+    console.log(`✅ Filtros jerarquía inicializados: ${nivel1Values.length} empresas`);
   }
   
   // ========================================
@@ -26039,12 +26147,17 @@ class InventarioCompleto {
 
   // Inicializar opciones de filtros escalonados
   inicializarFiltrosJerarquia() {
-    // Cargar opciones de plantas
-    const plantas = [...new Set(this.repuestos.map(r => r.planta).filter(Boolean))].sort();
+    // Cargar opciones de nivel1 (Empresa)
+    const nivel1Values = [...new Set(
+      this.repuestos
+        .map(r => r.jerarquia?.nivel1)
+        .filter(Boolean)
+    )].sort();
+    
     const selectPlanta = document.getElementById('filtro_planta');
-    selectPlanta.innerHTML = '<option value=""> Todas las plantas</option>';
-    plantas.forEach(p => {
-      selectPlanta.innerHTML += `<option value="${p}">${p}</option>`;
+    selectPlanta.innerHTML = '<option value=""> Todas las empresas</option>';
+    nivel1Values.forEach(n1 => {
+      selectPlanta.innerHTML += `<option value="${n1}">${n1}</option>`;
     });
   }
 

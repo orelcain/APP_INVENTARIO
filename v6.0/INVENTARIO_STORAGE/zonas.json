@@ -24,18 +24,29 @@
       }
     ],
     "jerarquia": {
-      "nivel1": "Planta Principal",
-      "nivel2": "Eviscerado",
-      "nivel3": "Grader",
-      "nivel4": "Pocket 1 al 4",
-      "nivel5": "Sistema Neumático"
+      "nivel1": "Aquachile Antarfood",
+      "nivel2": "Planta Principal",
+      "nivel3": "Eviscerado",
+      "nivel4": "Grader",
+      "nivel5": "Pocket 1 al 4",
+      "nivel6": "Sistema Neumático",
+      "nivel7": null
     },
     "equipos": [],
     "createdAt": "2025-10-20T23:25:03.272Z",
     "updatedAt": "2025-10-21T22:47:43.198Z",
     "category": "maquina",
     "labelOffsetX": 0,
-    "labelOffsetY": 0
+    "labelOffsetY": 0,
+    "_jerarquiaLegacy": {
+      "nivel1": "Planta Principal",
+      "nivel2": "Eviscerado",
+      "nivel3": "Grader",
+      "nivel4": "Pocket 1 al 4",
+      "nivel5": "Sistema Neumático"
+    },
+    "_migrated": true,
+    "_migrationDate": "2025-11-19T16:39:25.615Z"
   },
   {
     "id": 1761002883472,
@@ -62,17 +73,28 @@
       }
     ],
     "jerarquia": {
-      "nivel1": "Planta Principal",
-      "nivel2": "Eviscerado",
-      "nivel3": "Grader",
-      "nivel4": "Cinta Z"
+      "nivel1": "Aquachile Antarfood",
+      "nivel2": "Planta Principal",
+      "nivel3": "Eviscerado",
+      "nivel4": "Grader",
+      "nivel5": "Cinta Z",
+      "nivel6": null,
+      "nivel7": null
     },
     "equipos": [],
     "createdAt": "2025-10-20T23:28:03.472Z",
     "updatedAt": "2025-10-21T22:48:06.644Z",
     "category": "cinta",
     "labelOffsetX": 0,
-    "labelOffsetY": 0
+    "labelOffsetY": 0,
+    "_jerarquiaLegacy": {
+      "nivel1": "Planta Principal",
+      "nivel2": "Eviscerado",
+      "nivel3": "Grader",
+      "nivel4": "Cinta Z"
+    },
+    "_migrated": true,
+    "_migrationDate": "2025-11-19T16:39:25.621Z"
   },
   {
     "id": 1761005109491,
@@ -99,17 +121,28 @@
       }
     ],
     "jerarquia": {
-      "nivel1": "Planta Principal",
-      "nivel2": "Eviscerado",
-      "nivel3": "Grader",
-      "nivel4": "Cinta Aceleración 1 Grader"
+      "nivel1": "Aquachile Antarfood",
+      "nivel2": "Planta Principal",
+      "nivel3": "Eviscerado",
+      "nivel4": "Grader",
+      "nivel5": "Cinta Aceleración 1 Grader",
+      "nivel6": null,
+      "nivel7": null
     },
     "equipos": [],
     "createdAt": "2025-10-21T00:05:09.491Z",
     "updatedAt": "2025-10-21T22:48:20.737Z",
     "category": "cinta",
     "labelOffsetX": 0,
-    "labelOffsetY": 0
+    "labelOffsetY": 0,
+    "_jerarquiaLegacy": {
+      "nivel1": "Planta Principal",
+      "nivel2": "Eviscerado",
+      "nivel3": "Grader",
+      "nivel4": "Cinta Aceleración 1 Grader"
+    },
+    "_migrated": true,
+    "_migrationDate": "2025-11-19T16:39:25.624Z"
   },
   {
     "id": 1761081773840,
@@ -137,15 +170,26 @@
       }
     ],
     "jerarquia": {
+      "nivel1": "Aquachile Antarfood",
+      "nivel2": "Planta Principal",
+      "nivel3": "Eviscerado",
+      "nivel4": "Grader",
+      "nivel5": "Cinta Aceleración 2 Grader",
+      "nivel6": null,
+      "nivel7": null
+    },
+    "equipos": [],
+    "createdAt": "2025-10-21T21:22:53.840Z",
+    "updatedAt": "2025-10-21T21:22:53.840Z",
+    "_jerarquiaLegacy": {
       "nivel1": "Planta Principal",
       "nivel2": "Eviscerado",
       "nivel3": "Grader",
       "nivel4": "Cinta Aceleración 2 Grader",
       "nivel5": null
     },
-    "equipos": [],
-    "createdAt": "2025-10-21T21:22:53.840Z",
-    "updatedAt": "2025-10-21T21:22:53.840Z"
+    "_migrated": true,
+    "_migrationDate": "2025-11-19T16:39:25.626Z"
   },
   {
     "id": 1761084793013,
@@ -175,14 +219,25 @@
       }
     ],
     "jerarquia": {
+      "nivel1": "Aquachile Antarfood",
+      "nivel2": null,
+      "nivel3": null,
+      "nivel4": null,
+      "nivel5": null,
+      "nivel6": null,
+      "nivel7": null
+    },
+    "equipos": [],
+    "createdAt": "2025-10-21T22:13:13.014Z",
+    "updatedAt": "2025-10-30T22:35:03.084Z",
+    "_jerarquiaLegacy": {
       "areaGeneral": "Planta Principal",
       "subArea": "Eviscerado",
       "sistemaEquipo": "Grader",
       "subSistema": "Cinta Larga Grader"
     },
-    "equipos": [],
-    "createdAt": "2025-10-21T22:13:13.014Z",
-    "updatedAt": "2025-10-30T22:35:03.084Z"
+    "_migrated": true,
+    "_migrationDate": "2025-11-19T16:39:25.627Z"
   },
   {
     "id": 1761364821364,
@@ -214,15 +269,26 @@
       }
     ],
     "jerarquia": {
+      "nivel1": "Aquachile Antarfood",
+      "nivel2": "Planta Principal",
+      "nivel3": "EVISCERADO",
+      "nivel4": "Marel",
+      "nivel5": "Cinta Azul Marel",
+      "nivel6": null,
+      "nivel7": null
+    },
+    "equipos": [],
+    "createdAt": "2025-10-25T04:00:21.365Z",
+    "updatedAt": "2025-10-25T04:00:21.365Z",
+    "_jerarquiaLegacy": {
       "nivel1": "Planta Principal",
       "nivel2": "EVISCERADO",
       "nivel3": "Marel",
       "nivel4": "Cinta Azul Marel",
       "nivel5": null
     },
-    "equipos": [],
-    "createdAt": "2025-10-25T04:00:21.365Z",
-    "updatedAt": "2025-10-25T04:00:21.365Z"
+    "_migrated": true,
+    "_migrationDate": "2025-11-19T16:39:25.628Z"
   },
   {
     "id": 1761369700833,
@@ -254,12 +320,23 @@
       }
     ],
     "jerarquia": {
-      "areaGeneral": "Planta Principal",
-      "subArea": "Eviscerado"
+      "nivel1": "Aquachile Antarfood",
+      "nivel2": null,
+      "nivel3": null,
+      "nivel4": null,
+      "nivel5": null,
+      "nivel6": null,
+      "nivel7": null
     },
     "equipos": [],
     "createdAt": "2025-10-25T05:21:40.833Z",
-    "updatedAt": "2025-10-30T22:36:03.713Z"
+    "updatedAt": "2025-10-30T22:36:03.713Z",
+    "_jerarquiaLegacy": {
+      "areaGeneral": "Planta Principal",
+      "subArea": "Eviscerado"
+    },
+    "_migrated": true,
+    "_migrationDate": "2025-11-19T16:39:25.630Z"
   },
   {
     "id": 1761370288328,
@@ -331,13 +408,24 @@
       }
     ],
     "jerarquia": {
+      "nivel1": "Aquachile Antarfood",
+      "nivel2": null,
+      "nivel3": null,
+      "nivel4": null,
+      "nivel5": null,
+      "nivel6": null,
+      "nivel7": null
+    },
+    "equipos": [],
+    "createdAt": "2025-10-25T05:31:28.328Z",
+    "updatedAt": "2025-10-30T22:35:38.755Z",
+    "_jerarquiaLegacy": {
       "areaGeneral": "Planta Principal",
       "subArea": "Filete",
       "sistemaEquipo": "Cinta Curva Filete"
     },
-    "equipos": [],
-    "createdAt": "2025-10-25T05:31:28.328Z",
-    "updatedAt": "2025-10-30T22:35:38.755Z"
+    "_migrated": true,
+    "_migrationDate": "2025-11-19T16:39:25.631Z"
   },
   {
     "id": 1761752088945,
@@ -385,13 +473,24 @@
       }
     ],
     "jerarquia": {
+      "nivel1": "Aquachile Antarfood",
+      "nivel2": null,
+      "nivel3": null,
+      "nivel4": null,
+      "nivel5": null,
+      "nivel6": null,
+      "nivel7": null
+    },
+    "equipos": [],
+    "createdAt": "2025-10-29T15:34:48.945Z",
+    "updatedAt": "2025-10-30T22:36:42.421Z",
+    "_jerarquiaLegacy": {
       "planta": "Antarfood Aquachile Chonchi",
       "areaGeneral": "Planta Principal",
       "subArea": "Filete"
     },
-    "equipos": [],
-    "createdAt": "2025-10-29T15:34:48.945Z",
-    "updatedAt": "2025-10-30T22:36:42.421Z"
+    "_migrated": true,
+    "_migrationDate": "2025-11-19T16:39:25.635Z"
   },
   {
     "id": 1761862661720,
@@ -587,14 +686,25 @@
       }
     ],
     "jerarquia": {
+      "nivel1": "Aquachile Antarfood",
+      "nivel2": null,
+      "nivel3": null,
+      "nivel4": null,
+      "nivel5": null,
+      "nivel6": null,
+      "nivel7": null
+    },
+    "equipos": [],
+    "createdAt": "2025-11-15T13:54:06.127Z",
+    "updatedAt": "2025-11-15T13:54:06.127Z",
+    "_jerarquiaLegacy": {
       "nivel1": null,
       "nivel2": null,
       "nivel3": null,
       "nivel4": null,
       "nivel5": null
     },
-    "equipos": [],
-    "createdAt": "2025-11-15T13:54:06.127Z",
-    "updatedAt": "2025-11-15T13:54:06.127Z"
+    "_migrated": true,
+    "_migrationDate": "2025-11-19T16:39:25.639Z"
   }
 ]
