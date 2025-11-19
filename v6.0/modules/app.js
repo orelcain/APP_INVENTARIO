@@ -1452,51 +1452,12 @@ const mapController = {
   
   // FUNCIÓN HELPER: Normalizar jerarquía con compatibilidad dual
   normalizeJerarquiaFromObject(obj) {
-    // Si ya tiene estructura unificada nueva (7 niveles)
+    // Retornar estructura unificada 7 niveles
     if (obj.jerarquia && obj.jerarquia.nivel1) {
       return { ...obj.jerarquia };
     }
     
-    // Si tiene estructura legacy en _jerarquiaLegacy
-    if (obj._jerarquiaLegacy) {
-      return {
-        nivel1: 'Aquachile Antarfood',
-        nivel2: obj._jerarquiaLegacy.planta || null,
-        nivel3: obj._jerarquiaLegacy.areaGeneral || null,
-        nivel4: obj._jerarquiaLegacy.subArea || null,
-        nivel5: obj._jerarquiaLegacy.sistemaEquipo || null,
-        nivel6: obj._jerarquiaLegacy.subSistema || obj._jerarquiaLegacy.seccion || null,
-        nivel7: obj._jerarquiaLegacy.detalle || null
-      };
-    }
-    
-    // Si tiene campos antiguos directamente (repuestos sin migrar)
-    if (obj.planta || obj.areaGeneral || obj.subArea) {
-      return {
-        nivel1: 'Aquachile Antarfood',
-        nivel2: obj.planta || null,
-        nivel3: obj.areaGeneral || obj.area || null,
-        nivel4: obj.subArea || null,
-        nivel5: obj.sistemaEquipo || null,
-        nivel6: obj.subSistema || obj.seccion || null,
-        nivel7: obj.detalle || null
-      };
-    }
-    
-    // Si tiene jerarquía de zonas antigua (5 niveles)
-    if (obj.jerarquia && obj.jerarquia.nivel1 && !obj.jerarquia.nivel6) {
-      return {
-        nivel1: 'Aquachile Antarfood',
-        nivel2: obj.jerarquia.nivel1 || null,
-        nivel3: obj.jerarquia.nivel2 || null,
-        nivel4: obj.jerarquia.nivel3 || null,
-        nivel5: obj.jerarquia.nivel4 || null,
-        nivel6: obj.jerarquia.nivel5 || null,
-        nivel7: null
-      };
-    }
-    
-    // Sin jerarquía
+    // Sin jerarquía válida - retornar estructura vacía
     return {
       nivel1: null,
       nivel2: null,
@@ -1509,9 +1470,6 @@ const mapController = {
   },
   // Orden de campos de jerarquía (7 niveles unificados)
   areaJerarquiaFieldOrder: ['nivel1', 'nivel2', 'nivel3', 'nivel4', 'nivel5', 'nivel6', 'nivel7'],
-  
-  // Campos legacy (deprecated - mantener para compatibilidad temporal)
-  areaJerarquiaFieldOrderLegacy: ['planta', 'areaGeneral', 'subArea', 'sistemaEquipo', 'subSistema', 'seccion', 'detalle'],
   
   state: {
     currentMapId: null,
@@ -20175,9 +20133,8 @@ class InventarioCompleto {
     
     console.log(' UBICACIONES LIMPIAS A GUARDAR:', JSON.stringify(ubicacionesLimpias, null, 2));
     
-    //  APRENDIZAJE AUTOMÁTICO: Agregar nuevas opciones a las listas desde jerarquía unificada
+    //  APRENDIZAJE AUTOMÁTICO: Agregar nuevas opciones desde jerarquía unificada
     ubicacionesLimpias.forEach(ubicacion => {
-      // Si tiene jerarquía unificada (7 niveles), aprender desde ahí
       if (ubicacion.jerarquia) {
         if (ubicacion.jerarquia.nivel2) this.aprenderNuevaOpcion('nivel2', ubicacion.jerarquia.nivel2);
         if (ubicacion.jerarquia.nivel3) this.aprenderNuevaOpcion('nivel3', ubicacion.jerarquia.nivel3);
@@ -20185,15 +20142,6 @@ class InventarioCompleto {
         if (ubicacion.jerarquia.nivel5) this.aprenderNuevaOpcion('nivel5', ubicacion.jerarquia.nivel5);
         if (ubicacion.jerarquia.nivel6) this.aprenderNuevaOpcion('nivel6', ubicacion.jerarquia.nivel6);
         if (ubicacion.jerarquia.nivel7) this.aprenderNuevaOpcion('nivel7', ubicacion.jerarquia.nivel7);
-      }
-      // COMPATIBILIDAD: Si aún tiene campos legacy, aprender desde ahí también
-      else {
-        if (ubicacion.areaGeneral) this.aprenderNuevaOpcion('areaGeneral', ubicacion.areaGeneral);
-        if (ubicacion.subArea) this.aprenderNuevaOpcion('subArea', ubicacion.subArea);
-        if (ubicacion.sistemaEquipo) this.aprenderNuevaOpcion('sistemaEquipo', ubicacion.sistemaEquipo);
-        if (ubicacion.subSistema) this.aprenderNuevaOpcion('subSistema', ubicacion.subSistema);
-        if (ubicacion.seccion) this.aprenderNuevaOpcion('seccion', ubicacion.seccion);
-        if (ubicacion.subSeccion) this.aprenderNuevaOpcion('subSeccion', ubicacion.subSeccion);
       }
     });
     
