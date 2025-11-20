@@ -25621,7 +25621,7 @@ dibujarUbicacionesResaltadas(ctx) {
   detectarClickEnMarcador(mapX, mapY) {
     if (!app || !app.repuestos) return null;
     
-    console.log(` Detectando click en (${mapX.toFixed(0)}, ${mapY.toFixed(0)}) en mapa ${this.state.currentMapId}`);
+    // console.log(` Detectando click en (${mapX.toFixed(0)}, ${mapY.toFixed(0)}) en mapa ${this.state.currentMapId}`); // Silenciado para reducir spam
     
     // Buscar todos los marcadores en el mapa actual
     for (const repuesto of app.repuestos) {
@@ -25684,7 +25684,7 @@ dibujarUbicacionesResaltadas(ctx) {
       }
     }
     
-    console.log('   No se detect click en ningn marcador');
+    // console.log('   No se detectó click en ningún marcador'); // Silenciado para evitar spam en mousemove
     return null;
   },
 
@@ -56590,6 +56590,25 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ MapasUI inicializado');
   }
 });
+
+// 🔗 Exponer funciones globales para onclick en HTML
+function switchPanelTab(tabName) {
+  if (window.MapasUI) {
+    window.MapasUI.switchPanelTab(tabName);
+  }
+}
+
+function scrollToSection(sectionId) {
+  if (window.MapasUI) {
+    window.MapasUI.scrollToSection(sectionId);
+  }
+}
+
+function filterHierarchy(searchTerm) {
+  if (window.MapasUI) {
+    window.MapasUI.filterHierarchy(searchTerm);
+  }
+}
 
 //  FUNCIONES DE ZOOM GLOBAL (zoom CSS puro - estilo navegador)
 let currentZoom = 100;
