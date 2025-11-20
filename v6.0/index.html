@@ -15112,8 +15112,8 @@
                 class='map-search-input'
               />
             </div>
-            <!-- Contenedor del árbol de jerarquía -->
-            <div id='hierarchy-tree-container' class='area-tree'></div>
+            <!-- Contenedor del árbol de jerarquía - FORZAR VISIBLE -->
+            <div id='hierarchy-tree-container' class='area-tree' style='display: block !important; min-height: 300px; background: rgba(255,255,255,0.02); border: 1px solid rgba(91, 139, 180, 0.2);'></div>
           </section>
           
           <section class='map-section'>
@@ -55363,6 +55363,8 @@ function deferHeavyTask(task, { timeout = 1500, label = 'tarea diferida' } = {})
 // ========================================================================
 async function initTabMapas() {
   console.log('🔄 Inicializando jerarquía en Tab Mapas...');
+  console.log('window.HierarchySync disponible:', typeof window.HierarchySync);
+  console.log('window.appEvents disponible:', typeof window.appEvents);
   
   try {
     // 1. Obtener datos de mapas y zonas
@@ -55374,25 +55376,37 @@ async function initTabMapas() {
     // 2. Obtener contenedor HTML
     const container = document.getElementById('hierarchy-tree-container');
     if (!container) {
+      console.error('❌ Contenedor #hierarchy-tree-container NO ENCONTRADO');
       throw new Error('Contenedor #hierarchy-tree-container no encontrado');
     }
+    console.log('✅ Contenedor encontrado:', container);
     
     // 3. Crear instancia de HierarchySync
+    if (typeof window.HierarchySync !== 'function') {
+      console.error('❌ HierarchySync NO está disponible');
+      throw new Error('HierarchySync no está definido');
+    }
+    
     window.hierarchySync = new HierarchySync(container, mapasData, zonasData);
+    console.log('✅ Instancia HierarchySync creada');
     
     // 4. Configurar eventos ANTES de inicializar
     setupHierarchyEvents();
+    console.log('✅ Eventos configurados');
     
     // 5. Inicializar (renderiza el árbol)
     window.hierarchySync.init();
+    console.log('✅ Árbol renderizado');
     
     // 6. Conectar búsqueda global
     setupGlobalSearch();
+    console.log('✅ Búsqueda global conectada');
     
     console.log('✅ Jerarquía de mapas inicializada correctamente');
     
   } catch (error) {
     console.error('❌ Error al inicializar jerarquía de mapas:', error);
+    console.error('Stack:', error.stack);
   }
 }
 
