@@ -35838,11 +35838,8 @@ class InventarioCompleto {
           window.MapasUI.initializeSubsections();
           
           // Renderizar jerarquía si HierarchySync está disponible
-          if (window.HierarchySync) {
-            const container = document.getElementById('hierarchy-tree-container');
-            if (container) {
-              window.HierarchySync.render(container);
-            }
+          if (window.HierarchySync && typeof window.HierarchySync.init === 'function') {
+            window.HierarchySync.init();
           }
           
           // Renderizar lista de mapas
@@ -56593,7 +56590,10 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         const container = document.getElementById('hierarchy-tree-container');
         if (container) {
-          window.HierarchySync.render(container);
+          // Usar init() que es el método público correcto
+          if (typeof window.HierarchySync.init === 'function') {
+            window.HierarchySync.init();
+          }
         }
       }, 500);
     }
