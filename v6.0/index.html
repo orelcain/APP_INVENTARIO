@@ -16846,7 +16846,11 @@ const appEvents = (() => {
   };
 })();
 
-window.appEvents = appEvents;
+// NO sobreescribir window.appEvents si ya es un EventTarget
+// El EventTarget se crea antes en el HTML y es compatible con addEventListener
+if (!(window.appEvents instanceof EventTarget)) {
+  window.appEvents = appEvents;
+}
 
 // Funcin para obtener o crear Blob URL con cach global
 async function getCachedBlobUrl(filename, loadFunction) {
@@ -55365,11 +55369,26 @@ async function initTabMapas() {
   console.log('🔄 Inicializando jerarquía en Tab Mapas...');
   console.log('window.HierarchySync disponible:', typeof window.HierarchySync);
   console.log('window.appEvents disponible:', typeof window.appEvents);
+  console.log('window.appEvents es EventTarget:', window.appEvents instanceof EventTarget);
   
   try {
-    // 1. Obtener datos de mapas y zonas
-    const mapasData = app.mapas || [];
-    const zonasData = app.zonas || [];
+    // 1. Obtener datos de mapas y zonas desde MapStorage
+    let mapasData = [];
+    let zonasData = [];
+    
+    // Intentar cargar desde MapStorage si está disponible
+    if (typeof mapStorage !== 'undefined' && mapStorage.state) {
+      mapasData = mapStorage.state.mapas || [];
+      zonasData = mapStorage.state.zonas || [];
+      console.log(`📦 Datos desde MapStorage: ${mapasData.length} mapas, ${zonasData.length} zonas`);
+    }
+    
+    // Fallback: intentar desde app.mapas/app.zonas
+    if (mapasData.length === 0 && typeof app !== 'undefined') {
+      mapasData = app.mapas || [];
+      zonasData = app.zonas || [];
+      console.log(`📦 Datos desde app: ${mapasData.length} mapas, ${zonasData.length} zonas`);
+    }
     
     console.log(`📦 Datos disponibles: ${mapasData.length} mapas, ${zonasData.length} zonas`);
     
