@@ -722,14 +722,14 @@
 }
 
 .stat-value {
-  font-size: 0.75rem; /* 🔧 Reducido: 1rem → 0.75rem para compactar */
+  font-size: 0.5rem; /* 🔧 Reducido 50%: 0.75rem → 0.5rem */
   font-weight: 700;
   color: var(--primary-light);
   line-height: 1;
 }
 
 .stat-label {
-  font-size: 0.5rem; /* 🔧 Reducido: 0.55rem → 0.5rem */
+  font-size: 0.45rem; /* 🔧 Reducido 50%: 0.5rem → 0.45rem */
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.3px;
