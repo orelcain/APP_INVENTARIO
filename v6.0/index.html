@@ -55412,61 +55412,84 @@ function deferHeavyTask(task, { timeout = 1500, label = 'tarea diferida' } = {})
 // ========================================================================
 async function initTabMapas() {
   console.log('🔄 Inicializando jerarquía en Tab Mapas...');
-  console.log('window.HierarchySync disponible:', typeof window.HierarchySync);
-  console.log('window.appEvents disponible:', typeof window.appEvents);
-  console.log('window.appEvents es EventTarget:', window.appEvents instanceof EventTarget);
   
   try {
-    // 1. Obtener datos de mapas y zonas desde MapStorage
-    let mapasData = [];
-    let zonasData = [];
-    
-    // Intentar cargar desde MapStorage si está disponible
-    if (typeof mapStorage !== 'undefined' && mapStorage.state) {
-      mapasData = mapStorage.state.mapas || [];
-      zonasData = mapStorage.state.zonas || [];
-      console.log(`📦 Datos desde MapStorage: ${mapasData.length} mapas, ${zonasData.length} zonas`);
+    // Función para inicializar con datos
+    function initializeWithData() {
+      let mapasData = [];
+      let zonasData = [];
+      
+      // Obtener datos de mapStorage
+      if (typeof mapStorage !== 'undefined' && mapStorage.state) {
+        mapasData = mapStorage.state.mapas || [];
+        zonasData = mapStorage.state.zonas || [];
+      } 
+      // Fallback a app
+      else if (typeof app !== 'undefined') {
+        mapasData = app.mapas || [];
+        zonasData = app.zonas || [];
+      }
+      
+      console.log('📦 Datos cargados:', mapasData.length, 'mapas,', zonasData.length, 'zonas');
+      
+      // Si ya existe hierarchySync, actualizar datos
+      if (window.hierarchySync && window.hierarchySync.updateData) {
+        console.log('🔄 Actualizando datos en hierarchySync existente');
+        window.hierarchySync.updateData(mapasData, zonasData);
+        return;
+      }
+      
+      // Obtener contenedor HTML
+      const container = document.getElementById('hierarchy-tree-container');
+      if (!container) {
+        console.error('❌ Contenedor #hierarchy-tree-container NO ENCONTRADO');
+        return;
+      }
+      
+      // Crear instancia de HierarchySync
+      if (typeof window.HierarchySync !== 'function') {
+        console.error('❌ HierarchySync NO está disponible');
+        return;
+      }
+      
+      window.hierarchySync = new HierarchySync(container, mapasData, zonasData);
+      console.log('✅ Instancia HierarchySync creada con', mapasData.length, 'mapas');
+      
+      // Configurar eventos y renderizar
+      setupHierarchyEvents();
+      window.hierarchySync.init();
+      setupGlobalSearch();
+      console.log('✅ Jerarquía inicializada correctamente');
     }
     
-    // Fallback: intentar desde app.mapas/app.zonas
-    if (mapasData.length === 0 && typeof app !== 'undefined') {
-      mapasData = app.mapas || [];
-      zonasData = app.zonas || [];
-      console.log(`📦 Datos desde app: ${mapasData.length} mapas, ${zonasData.length} zonas`);
+    // Si mapStorage ya tiene datos, inicializar inmediatamente
+    if (typeof mapStorage !== 'undefined' && mapStorage.state && mapStorage.state.mapas && mapStorage.state.mapas.length > 0) {
+      console.log('✅ mapStorage ya disponible con datos, inicializando...');
+      initializeWithData();
+    } 
+    // De lo contrario, esperar carga de mapStorage
+    else {
+      console.log('⏳ Esperando carga de mapStorage...');
+      
+      let attempts = 0;
+      const maxAttempts = 50; // 5 segundos máximo
+      
+      const checkInterval = setInterval(() => {
+        attempts++;
+        
+        if (typeof mapStorage !== 'undefined' && mapStorage.state && mapStorage.state.mapas && mapStorage.state.mapas.length > 0) {
+          console.log(`✅ mapStorage cargado después de ${attempts * 100}ms, inicializando jerarquía`);
+          clearInterval(checkInterval);
+          initializeWithData();
+        } else if (attempts >= maxAttempts) {
+          console.log('⚠️ Timeout: inicializando con datos disponibles o vacíos');
+          clearInterval(checkInterval);
+          initializeWithData();
+        }
+      }, 100);
     }
     
-    console.log(`📦 Datos disponibles: ${mapasData.length} mapas, ${zonasData.length} zonas`);
-    
-    // 2. Obtener contenedor HTML
-    const container = document.getElementById('hierarchy-tree-container');
-    if (!container) {
-      console.error('❌ Contenedor #hierarchy-tree-container NO ENCONTRADO');
-      throw new Error('Contenedor #hierarchy-tree-container no encontrado');
-    }
-    console.log('✅ Contenedor encontrado:', container);
-    
-    // 3. Crear instancia de HierarchySync
-    if (typeof window.HierarchySync !== 'function') {
-      console.error('❌ HierarchySync NO está disponible');
-      throw new Error('HierarchySync no está definido');
-    }
-    
-    window.hierarchySync = new HierarchySync(container, mapasData, zonasData);
-    console.log('✅ Instancia HierarchySync creada');
-    
-    // 4. Configurar eventos ANTES de inicializar
-    setupHierarchyEvents();
-    console.log('✅ Eventos configurados');
-    
-    // 5. Inicializar (renderiza el árbol)
-    window.hierarchySync.init();
-    console.log('✅ Árbol renderizado');
-    
-    // 6. Conectar búsqueda global
-    setupGlobalSearch();
-    console.log('✅ Búsqueda global conectada');
-    
-    console.log('✅ Jerarquía de mapas inicializada correctamente');
+    console.log('✅ Jerarquía de mapas configurada');
     
   } catch (error) {
     console.error('❌ Error al inicializar jerarquía de mapas:', error);
