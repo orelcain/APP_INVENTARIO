@@ -37297,6 +37297,25 @@ class InventarioCompleto {
     input.value = ''; // Limpiar el input
   }
 
+  /**
+   * Obtiene el nodo jerárquico completo de un repuesto
+   * Prioridad: nivel5 > nivel4 > nivel3 > nivel2 > nivel1
+   */
+  getNodoJerarquicoCompleto(repuesto) {
+    if (!repuesto) return null;
+    
+    // Buscar el nivel más específico no vacío
+    const niveles = ['nivel5', 'nivel4', 'nivel3', 'nivel2', 'nivel1'];
+    for (const nivel of niveles) {
+      const valor = repuesto[nivel];
+      if (valor && valor.trim() !== '') {
+        return valor.trim();
+      }
+    }
+    
+    return null;
+  }
+
   async openModal(mode, id = null) {
     console.log(`\n ========== ABRIENDO MODAL ==========`);
     console.log(`Modo: ${mode}`);
@@ -37525,6 +37544,21 @@ class InventarioCompleto {
       // Inicializar wizard despus de que todo est renderizado
       this.setWizardStep(1, { focusFirstField: false });
     }, 120);
+    
+    // 🔄 SINCRONIZACIÓN: Emitir evento cuando se selecciona un repuesto
+    if (mode === 'edit' && id && repuesto) {
+      const nodoJerarquia = this.getNodoJerarquicoCompleto(repuesto);
+      if (window.appEvents && nodoJerarquia) {
+        window.appEvents.dispatchEvent(new CustomEvent('inventario-item-selected', {
+          detail: { 
+            equipoId: id,
+            nodoJerarquia: nodoJerarquia,
+            repuesto: repuesto
+          }
+        }));
+        console.log(`📤 Evento emitido: inventario-item-selected (${nodoJerarquia})`);
+      }
+    }
     
     console.log('========== MODAL ABIERTO ==========\n');
   }
@@ -44909,11 +44943,36 @@ class InventarioCompleto {
     // path es un objeto con la ruta jerrquica: { planta, areaGeneral, subArea, etc. }
     this.filtrosJerarquicosActivos = path;
     
+    // 🔄 SINCRONIZACIÓN: Emitir evento cuando se selecciona nodo en jerarquía
+    const nodeName = this.getLastNonEmptyLevel(path);
+    if (window.appEvents && nodeName) {
+      window.appEvents.dispatchEvent(new CustomEvent('jerarquia-node-clicked', {
+        detail: { 
+          nodeName: nodeName,
+          path: path
+        }
+      }));
+      console.log(`📤 Evento emitido: jerarquia-node-clicked (${nodeName})`);
+    }
+    
     // Cambiar a pestaa inventario
     this.switchTab('inventario');
     
     // Renderizar inventario filtrado
     this.applyFilters();
+  }
+  
+  /**
+   * Obtiene el último nivel no vacío del path jerárquico
+   */
+  getLastNonEmptyLevel(path) {
+    const niveles = ['nivel5', 'nivel4', 'nivel3', 'nivel2', 'nivel1'];
+    for (const nivel of niveles) {
+      if (path[nivel] && path[nivel].trim() !== '') {
+        return path[nivel].trim();
+      }
+    }
+    return null;
   }
   
   /**
@@ -55356,6 +55415,30 @@ function setupHierarchyEvents() {
     const mapa = event.detail.mapa;
     console.log(`🗺️ Canvas actualizado: ${mapa.name}`);
   });
+  
+  // 📥 SINCRONIZACIÓN: Escuchar eventos desde Tab Inventario
+  if (window.appEvents) {
+    window.appEvents.addEventListener('inventario-item-selected', (event) => {
+      const { nodoJerarquia, equipoId } = event.detail;
+      console.log(`📨 Recibido de Inventario: ${nodoJerarquia} (ID: ${equipoId})`);
+      
+      // Navegar al nodo en la jerarquía
+      if (window.hierarchySync && nodoJerarquia) {
+        window.hierarchySync.navigateToNode(nodoJerarquia);
+      }
+    });
+    
+    // 📥 SINCRONIZACIÓN: Escuchar eventos desde Tab Jerarquía  
+    window.appEvents.addEventListener('jerarquia-node-clicked', (event) => {
+      const { nodeName } = event.detail;
+      console.log(`📨 Recibido de Jerarquía: ${nodeName}`);
+      
+      // Sincronizar con vista de mapas
+      if (window.hierarchySync && nodeName) {
+        window.hierarchySync.navigateToNode(nodeName);
+      }
+    });
+  }
 }
 
 // Configurar búsqueda global
