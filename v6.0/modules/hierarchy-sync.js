@@ -41,6 +41,16 @@ class HierarchySync {
   }
 
   /**
+   * Actualizar datos y re-renderizar
+   */
+  updateData(mapasData, zonasData) {
+    this.mapasData = mapasData || [];
+    this.zonasData = zonasData || [];
+    this.renderTree();
+    console.log(`🔄 Datos actualizados: ${this.mapasData.length} mapas, ${this.zonasData.length} zonas`);
+  }
+
+  /**
    * Configurar listeners de eventos
    */
   setupEventListeners() {
@@ -483,7 +493,7 @@ class HierarchySync {
     
     const mapa = this.mapasData.find(m => m.id == mapId);
     if (!mapa) {
-      console.warn('⚠️ Mapa no encontrado:', mapId);
+      console.warn('⚠️ Mapa no encontrado:', mapId, 'en', this.mapasData.length, 'mapas disponibles');
       return;
     }
     
@@ -492,6 +502,18 @@ class HierarchySync {
       nivel: mapa.mapLevel,
       dimensiones: `${mapa.width}x${mapa.height}`
     });
+    
+    // Intentar cargar el mapa usando mapController
+    if (window.mapController && typeof window.mapController.loadMap === 'function') {
+      try {
+        window.mapController.loadMap(mapId);
+        console.log('✅ Mapa cargado en canvas:', mapa.name);
+      } catch (error) {
+        console.error('❌ Error al cargar mapa en canvas:', error);
+      }
+    } else {
+      console.warn('⚠️ mapController.loadMap no disponible');
+    }
     
     // Emitir evento para que la app actualice el canvas
     this.eventTarget.dispatchEvent(new CustomEvent('map-canvas-update', {

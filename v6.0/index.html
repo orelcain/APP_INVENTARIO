@@ -35839,7 +35839,22 @@ class InventarioCompleto {
           
           // Renderizar jerarquía si HierarchySync está disponible
           if (window.HierarchySync && typeof window.HierarchySync.init === 'function') {
-            window.HierarchySync.init();
+            // Recargar datos desde mapStorage antes de renderizar
+            if (window.hierarchySync && window.mapStorage && window.mapStorage.state) {
+              const mapasData = window.mapStorage.state.mapas || [];
+              const zonasData = window.mapStorage.state.zonas || [];
+              
+              // Actualizar datos en la instancia existente
+              window.hierarchySync.mapasData = mapasData;
+              window.hierarchySync.zonasData = zonasData;
+              
+              // Re-renderizar con datos actualizados
+              window.hierarchySync.renderTree();
+              
+              console.log(`🔄 Jerarquía actualizada: ${mapasData.length} mapas, ${zonasData.length} zonas`);
+            } else {
+              window.HierarchySync.init();
+            }
           }
           
           // Renderizar lista de mapas
