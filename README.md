@@ -3,10 +3,56 @@
 **Repositorio:** APP_INVENTARIO  
 **Owner:** orelcain  
 **Estado:** ✅ v6.0 en desarrollo activo - 95% completado  
-**Última actualización:** 13 de noviembre de 2025
+**Última actualización:** 20 de noviembre de 2025
 
 > **📑 NAVEGACIÓN RÁPIDA:**  
-> [📅 Historial Cronológico](#-historial-cronológico-de-desarrollo) • [🎯 Estructura](#-estructura-del-proyecto) • [🚀 Inicio Rápido](#-inicio-rápido) • [📊 Comparación](#-comparación-de-versiones) • [📈 Métricas](#-métricas-del-proyecto) • [🎨 Características](#-características-v60) • [🐛 Solución Problemas](#-solución-de-problemas) • [✅ Checklist](#-checklist-rápido)
+> [🔄 Sistema Sincronización](#-sistema-de-sincronización-prototipo-mapas) • [📅 Historial Cronológico](#-historial-cronológico-de-desarrollo) • [🎯 Estructura](#-estructura-del-proyecto) • [🚀 Inicio Rápido](#-inicio-rápido) • [📊 Comparación](#-comparación-de-versiones) • [📈 Métricas](#-métricas-del-proyecto) • [🎨 Características](#-características-v60) • [🐛 Solución Problemas](#-solución-de-problemas) • [✅ Checklist](#-checklist-rápido)
+
+---
+
+## 🔄 SISTEMA DE SINCRONIZACIÓN - PROTOTIPO MAPAS
+
+### ⚡ Actualización 20 Nov 2025 - SISTEMA COMPLETO IMPLEMENTADO
+
+**Estado:** ✅ Completado 100%  
+**Archivo:** `v6.0/prototype-mapas.html`  
+**Documentación:** [`docs/SISTEMA_SINCRONIZACION_MAPAS.md`](docs/SISTEMA_SINCRONIZACION_MAPAS.md)
+
+#### 🎯 Características Principales
+
+| Característica | Estado | Descripción |
+|----------------|--------|-------------|
+| **Jerarquía Completa** | ✅ | Componente principal con diseño sobrio |
+| **Búsqueda Global** | ✅ | Filtrado en tiempo real + resaltado de ramas |
+| **Indicadores Visuales** | ✅ | 🗺️ mapa / 📦 área / 📍(n) marcadores |
+| **Sincronización Click** | ✅ | Nodo → Mapa → Rama completa |
+| **Eventos Bidireccionales** | ✅ | CustomEvent + PostMessage |
+| **Panel de Demos** | ✅ | Demos interactivas + documentación |
+
+#### 📡 Sistema de Comunicación
+
+```javascript
+// EMITIR: Prototype → App Principal
+window.dispatchEvent(new CustomEvent('hierarchy-sync', {
+  detail: { source: 'prototype-mapas', action: 'node-selected', data: {...} }
+}));
+
+// RECIBIR: App Principal → Prototype  
+window.postMessage({
+  source: 'app-principal',
+  action: 'navigate-to-node',
+  data: { nodeName: 'Eviscerado' }
+}, '*');
+```
+
+#### 🚀 Cómo Usar
+
+1. **Abrir prototipo:** `http://localhost:8080/v6.0/prototype-mapas.html`
+2. **Click en nodo:** Resalta rama + actualiza mapa + emite evento
+3. **Buscar:** Input global filtra y resalta coincidencias
+4. **Demos:** Panel de control (⚙️) → "Sistema de Sincronización"
+
+**Ver documentación completa:** [SISTEMA_SINCRONIZACION_MAPAS.md](docs/SISTEMA_SINCRONIZACION_MAPAS.md)
 
 ---
 
@@ -54,6 +100,36 @@ Push: 8.46 MB + documentación
 Estado: 95% completado
 Mejoras: Sistema de jerarquía visual completo + paleta de colores profesional
 ```
+
+### 🔄 20 Noviembre 2025 - SISTEMA DE SINCRONIZACIÓN COMPLETO
+```
+Archivo: prototype-mapas.html (3,234 líneas)
+Estado: ✅ COMPLETADO 100%
+Características: Sistema bidireccional + búsqueda + demos
+```
+- ✅ Jerarquía Completa como componente principal
+- ✅ Diseño sobrio con indicadores discretos (🗺️📦📍)
+- ✅ Búsqueda global con filtrado inteligente
+- ✅ Sistema click → mapa → rama completa
+- ✅ Sincronización bidireccional (CustomEvent + PostMessage)
+- ✅ Panel de demos interactivas
+- ✅ Notificaciones visuales animadas
+- ✅ Documentación completa integrada
+- ✅ Log de eventos en tiempo real
+- ✅ Modal de información del sistema
+- 📋 **Documentación:** [SISTEMA_SINCRONIZACION_MAPAS.md](docs/SISTEMA_SINCRONIZACION_MAPAS.md)
+
+**FASE 1 - MIGRACIÓN COMPLETADA:**
+```
+✅ Archivos creados para integración modular
+Estado: Listo para Fase 2
+```
+- ✅ `styles/mapas-hierarchy.css` - Estilos modulares (380 líneas)
+- ✅ `modules/hierarchy-sync.js` - Módulo ES6 completo (650 líneas)
+- ✅ `modules/HIERARCHY_SYNC_API.md` - Documentación API
+- ✅ `modules/integration-example.js` - Ejemplo de integración
+- ✅ **Sin cambios en app principal** - Arquitectura modular lista
+- 🎯 **Próximo paso:** Integrar en Tab Mapas (Fase 2)
 
 #### ✅ Sistema de Jerarquía Visual - COMPLETO 100%
 - ✅ Árbol visual de 7 niveles jerárquicos implementado

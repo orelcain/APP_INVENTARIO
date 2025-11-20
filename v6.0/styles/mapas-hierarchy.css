@@ -1,0 +1,351 @@
+/**
+ * ========================================
+ * MAPAS HIERARCHY - ESTILOS DE JERARQUÍA
+ * ========================================
+ * 
+ * Sistema de estilos para la visualización jerárquica
+ * de áreas en el Tab Mapas
+ * 
+ * Características:
+ * - Diseño sobrio y profesional
+ * - Indicadores visuales discretos
+ * - Sistema de resaltado de ramas
+ * - Estados: normal, hover, selected, search-match, highlighted
+ * - Animaciones suaves
+ * 
+ * Uso:
+ * - Importar en index.html: <link rel="stylesheet" href="styles/mapas-hierarchy.css">
+ * - Aplicar clase .mapas-tab al contenedor principal
+ * 
+ * Última actualización: 20 Nov 2025
+ * ========================================
+ */
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+
+.mapas-tab .area-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Scrollbar personalizado */
+.mapas-tab .area-tree::-webkit-scrollbar {
+  width: 5px;
+}
+
+.mapas-tab .area-tree::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.mapas-tab .area-tree::-webkit-scrollbar-thumb {
+  background: rgba(91, 139, 180, 0.25);
+  border-radius: 3px;
+}
+
+.mapas-tab .area-tree::-webkit-scrollbar-thumb:hover {
+  background: rgba(91, 139, 180, 0.4);
+}
+
+/* ===== NODOS DE JERARQUÍA ===== */
+
+.mapas-tab .hierarchy-node {
+  background: transparent;
+  border-left: 1px solid rgba(100, 100, 100, 0.15);
+  border-radius: 0;
+  overflow: hidden;
+  margin: 1px 0;
+}
+
+/* Estado: Rama resaltada (cuando se selecciona un nodo, toda su rama se resalta) */
+.mapas-tab .hierarchy-node.highlighted {
+  background: rgba(59, 130, 246, 0.05);
+  border-left: 2px solid var(--primary);
+}
+
+/* ===== HEADER DE NODO ===== */
+
+.mapas-tab .node-header {
+  padding: 5px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  font-size: 0.7rem;
+  border-radius: 3px;
+}
+
+/* Estado: Hover */
+.mapas-tab .node-header:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Estado: Seleccionado (click en el nodo) */
+.mapas-tab .node-header.selected {
+  background: rgba(59, 130, 246, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.3);
+}
+
+/* Estado: Coincide con búsqueda */
+.mapas-tab .node-header.search-match {
+  background: rgba(34, 197, 94, 0.15);
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.3);
+}
+
+/* ===== ELEMENTOS DEL NODO ===== */
+
+/* Toggle para expandir/colapsar */
+.mapas-tab .node-toggle {
+  font-size: 0.7rem;
+  width: 12px;
+  font-family: monospace;
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+
+/* Badge de nivel (N1, N2, N3, etc.) */
+.mapas-tab .node-badge {
+  background: linear-gradient(135deg, rgba(91, 139, 180, 0.15) 0%, rgba(91, 139, 180, 0.1) 100%);
+  color: rgba(91, 139, 180, 0.9);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.6rem;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  border: 1px solid rgba(91, 139, 180, 0.15);
+  letter-spacing: 0.2px;
+}
+
+/* ===== INDICADORES VISUALES ===== */
+
+/* Contenedor de indicadores (🗺️ 📦 📍) */
+.mapas-tab .node-indicators {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+/* Indicadores individuales */
+.mapas-tab .node-indicator {
+  font-size: 0.65rem;
+  transition: opacity 0.2s;
+}
+
+/* Aumentar opacidad en hover */
+.mapas-tab .node-header:hover .node-indicator {
+  opacity: 1;
+}
+
+/* Tooltip para indicadores */
+.mapas-tab .node-indicator[title] {
+  cursor: help;
+}
+
+/* ===== LABEL Y CONTENIDO ===== */
+
+.mapas-tab .node-label {
+  flex: 1;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  transition: color 0.2s ease;
+}
+
+.mapas-tab .node-header:hover .node-label {
+  color: var(--text-primary);
+}
+
+.mapas-tab .node-count {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* ===== HIJOS (CHILDREN) ===== */
+
+.mapas-tab .node-children {
+  padding-left: 14px;
+  transition: max-height 0.3s ease;
+}
+
+.mapas-tab .node-children.collapsed {
+  display: none;
+}
+
+/* ===== ANIMACIONES ===== */
+
+@keyframes mapas-slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes mapas-slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes mapas-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mapas-highlight {
+  0% {
+    background: rgba(59, 130, 246, 0.2);
+  }
+  100% {
+    background: rgba(59, 130, 246, 0.05);
+  }
+}
+
+/* ===== NOTIFICACIONES ===== */
+
+/* Estilo para notificaciones toast (se crean dinámicamente) */
+.mapas-hierarchy-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  font-size: 0.85rem;
+  z-index: 10000;
+  animation: mapas-slideIn 0.3s ease-out;
+}
+
+.mapas-hierarchy-notification.closing {
+  animation: mapas-slideOut 0.3s ease-in;
+}
+
+/* ===== BÚSQUEDA GLOBAL ===== */
+
+.mapas-tab .global-search-container {
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mapas-tab .global-search-input {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.mapas-tab .global-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 2px rgba(91, 139, 180, 0.2);
+}
+
+.mapas-tab .global-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ===== ESTADOS ESPECIALES ===== */
+
+/* Nodo sin contenido (sin mapa, sin áreas, sin marcadores) */
+.mapas-tab .hierarchy-node.empty {
+  opacity: 0.6;
+}
+
+.mapas-tab .hierarchy-node.empty:hover {
+  opacity: 0.8;
+}
+
+/* Nodo con mapa asignado */
+.mapas-tab .hierarchy-node[data-has-map="true"] .node-header {
+  font-weight: 600;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .mapas-tab .area-tree {
+    max-height: 400px;
+  }
+  
+  .mapas-tab .node-header {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+  
+  .mapas-tab .node-badge {
+    font-size: 0.65rem;
+  }
+  
+  .mapas-tab .node-indicator {
+    font-size: 0.7rem;
+  }
+}
+
+/* ===== UTILIDADES ===== */
+
+/* Clase helper para ocultar elementos */
+.mapas-tab .hidden {
+  display: none !important;
+}
+
+/* Clase helper para mostrar elementos */
+.mapas-tab .visible {
+  display: block !important;
+}
+
+/* Clase helper para animación de entrada */
+.mapas-tab .fade-in {
+  animation: mapas-fadeIn 0.3s ease-out;
+}
+
+/* ===== ACCESIBILIDAD ===== */
+
+/* Focus visible para navegación con teclado */
+.mapas-tab .node-header:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Reducir movimiento para usuarios que lo prefieren */
+@media (prefers-reduced-motion: reduce) {
+  .mapas-tab .node-header,
+  .mapas-tab .node-toggle,
+  .mapas-tab .node-indicator,
+  .mapas-tab .node-children {
+    transition: none;
+  }
+  
+  .mapas-hierarchy-notification {
+    animation: none;
+  }
+}

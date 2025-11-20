@@ -4,6 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prototipo - Estructura Tab Mapas v6.0</title>
+  <!--
+    ========================================
+    PROTOTIPO TAB MAPAS - SISTEMA DE SINCRONIZACIÓN
+    ========================================
+    
+    CARACTERÍSTICAS PRINCIPALES:
+    1. Jerarquía Completa como componente principal
+    2. Búsqueda global en tiempo real con filtrado inteligente
+    3. Indicadores visuales sobrios: 🗺️ (mapa), 📦 (área), 📍(n) (marcadores)
+    4. Sistema de sincronización bidireccional
+    
+    SISTEMA DE SINCRONIZACIÓN:
+    
+    A. EVENTOS EMITIDOS (Prototype → App Principal):
+       - Evento: 'hierarchy-sync' (CustomEvent)
+       - PostMessage: { source: 'prototype-mapas', action: 'node-selected', data: {...} }
+       - Trigger: Click en cualquier nodo de la jerarquía
+       - Datos: nodeName, mapId, level, hasMap, timestamp
+    
+    B. EVENTOS RECIBIDOS (App Principal → Prototype):
+       - PostMessage con { source: 'app-principal', action: 'navigate-to-node', data: {...} }
+       - Acción automática: scroll + selección + resaltado de rama completa
+    
+    C. FUNCIONALIDAD CLICK EN NODO:
+       1. Limpia selecciones previas
+       2. Resalta nodo seleccionado
+       3. Resalta rama completa (todos los padres)
+       4. Actualiza canvas del mapa (si tiene mapId)
+       5. Emite eventos de sincronización
+       6. Muestra notificación visual temporal
+    
+    D. BÚSQUEDA GLOBAL:
+       - Input: #globalSearch
+       - Función: filterHierarchy(term)
+       - Comportamiento: Filtra nodos, resalta coincidencias, expande ramas, oculta no-coincidentes
+    
+    INTEGRACIÓN CON APP PRINCIPAL:
+    
+    // Desde la app principal, navegar a un nodo:
+    const iframe = document.getElementById('prototype-iframe');
+    iframe.contentWindow.postMessage({
+      source: 'app-principal',
+      action: 'navigate-to-node',
+      data: { nodeName: 'Eviscerado' }
+    }, '*');
+    
+    // Escuchar eventos del prototype:
+    window.addEventListener('message', (event) => {
+      if (event.data.source === 'prototype-mapas') {
+        console.log('Nodo seleccionado:', event.data.data.nodeName);
+        // Sincronizar tabs de Inventario/Jerarquía/Mapas
+      }
+    });
+    
+    ========================================
+  -->
   <style>
     * {
       margin: 0;
@@ -27,8 +83,18 @@
       --success: #5b9b7a;
       --warning: #b8925a;
       --danger: #b86b6b;
-      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.25);
-      --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.25);
+      
+      /* Variables minimalistas */
+      --spacing-xs: 4px;
+      --spacing-sm: 6px;
+      --spacing-md: 8px;
+      --spacing-lg: 10px;
+      --font-xs: 0.65rem;
+      --font-sm: 0.7rem;
+      --font-md: 0.75rem;
+      --font-lg: 0.8rem;
     }
 
     body {
@@ -36,24 +102,37 @@
       background: var(--bg-app);
       color: var(--text-primary);
       height: 100vh;
+      width: 100vw;
       overflow: hidden;
+      margin: 0;
+      padding: 0;
     }
 
     /* PANEL DE CONTROL FLOTANTE */
     #controlPanel {
       position: fixed;
-      top: 20px;
+      bottom: 20px;
       right: 20px;
       background: var(--bg-elevated);
       border: 1px solid var(--border-light);
       border-radius: 12px;
-      padding: 20px;
-      width: 320px;
-      max-height: 90vh;
-      overflow-y: auto;
+      padding: 8px;
+      width: 48px;
+      height: 48px;
+      overflow: hidden;
       box-shadow: var(--shadow-md);
       z-index: 1000;
-      transition: transform 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    #controlPanel.expanded {
+      width: 320px;
+      height: auto;
+      max-height: 85vh;
+      padding: 20px;
+      overflow-y: auto;
+      cursor: default;
     }
 
     #controlPanel.collapsed {
@@ -61,26 +140,26 @@
     }
 
     .control-toggle {
-      position: absolute;
-      left: -40px;
-      top: 20px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-light);
-      border-radius: 8px 0 0 8px;
-      padding: 10px 8px;
-      cursor: pointer;
-      font-size: 18px;
-      transition: background 0.2s;
+      font-size: 24px;
+      text-align: center;
+      line-height: 32px;
+      transition: transform 0.3s;
+      user-select: none;
     }
 
-    .control-toggle:hover {
-      background: var(--bg-secondary);
+    #controlPanel.expanded .control-toggle {
+      display: none;
     }
 
     .control-section {
       margin-bottom: 20px;
       padding-bottom: 20px;
       border-bottom: 1px solid var(--border-color);
+      display: none;
+    }
+
+    #controlPanel.expanded .control-section {
+      display: block;
     }
 
     .control-section:last-child {
@@ -174,19 +253,23 @@
     /* LAYOUT PRINCIPAL */
     .map-shell {
       display: grid;
-      grid-template-columns: var(--panel-width) 1fr;
+      grid-template-columns: 500px 1fr;
       height: 100vh;
-      gap: var(--layout-gap);
-      padding: var(--layout-gap);
+      width: 100vw;
+      margin: 0;
+      padding: 8px;
+      gap: 8px;
+      box-sizing: border-box;
     }
 
     .map-panel {
       background: var(--bg-secondary);
-      border-radius: var(--border-radius);
+      border-radius: 8px;
       display: flex;
       flex-direction: column;
-      box-shadow: var(--panel-shadow);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       overflow: hidden;
+      border: 1px solid var(--border-color);
     }
 
     .map-panel-header {
@@ -250,15 +333,18 @@
     }
 
     .panel-tab:hover {
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+      transition: all 0.2s ease;
     }
 
     .panel-tab.active {
       color: white;
-      border-bottom-color: var(--primary);
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.2));
-      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+      border-bottom-color: var(--primary-light);
+      background: linear-gradient(135deg, rgba(91, 139, 180, 0.35), rgba(91, 139, 180, 0.25));
+      box-shadow: 0 3px 10px rgba(91, 139, 180, 0.25);
+      font-weight: 700;
     }
 
     .panel-tab-badge {
@@ -319,11 +405,84 @@
       flex: 1;
       overflow: hidden;
       min-height: 0;
+      position: relative;
     }
 
     .panel-tab-content.active {
       display: flex;
       flex-direction: column;
+      height: 100%;
+    }
+
+    /* SIDEBAR DE SUBSECCIONES (izquierda del contenido) */
+    .subsections-sidebar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 35px;
+      background: rgba(26, 29, 35, 0.98);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      padding: 10px 2px;
+      gap: 4px;
+      overflow: hidden;
+      z-index: 100;
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .subsection-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 10px 4px;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      flex: 0.6;
+      min-height: 60px;
+    }
+
+    .subsection-icon {
+      display: none;
+    }
+
+    .subsection-label {
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .subsection-item.active {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15));
+      color: #60a5fa;
+      border: 2px solid var(--primary);
+      font-weight: 700;
+    }
+
+    .subsection-pin {
+      display: none;
+    }
+
+    /* Contenedor del contenido de la tab */
+    .tab-content-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+      margin-left: 35px;
     }
 
     /* Área fija (botón y stats) */
@@ -378,35 +537,49 @@
     }
 
     .map-section {
-      background: var(--bg-primary);
+      background: linear-gradient(135deg, rgba(30, 34, 41, 0.9) 0%, rgba(37, 42, 51, 0.85) 100%);
       border-radius: var(--border-radius);
-      padding: var(--section-padding);
-      box-shadow: var(--section-shadow);
+      padding: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(91, 139, 180, 0.1);
+      border: 1px solid rgba(91, 139, 180, 0.08);
+      transition: all 0.2s ease;
+    }
+
+    .map-section:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(91, 139, 180, 0.15);
+      border-color: rgba(91, 139, 180, 0.12);
     }
 
     .map-section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       cursor: pointer;
       user-select: none;
     }
 
     .map-section-header h3 {
-      font-size: var(--section-title-size);
+      font-size: 0.72rem;
       color: var(--text-primary);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      font-weight: 500;
     }
 
     .collapse-icon {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      transition: transform 0.2s;
+      font-size: 0.75rem;
+      color: var(--primary-light);
+      transition: transform 0.2s ease;
+      opacity: 0.7;
+    }
+
+    .map-section-header:hover .collapse-icon {
+      opacity: 1;
+      transform: scale(1.1);
     }
 
     .map-section.collapsed .collapse-icon {
@@ -416,19 +589,52 @@
     .map-section.collapsed .section-content {
       display: none;
     }
+    
+    .section-content {
+      font-size: 0.7rem;
+      line-height: 1.4;
+    }
 
     /* LISTA JERÁRQUICA DE ÁREAS */
     .area-tree {
       display: flex;
       flex-direction: column;
       gap: 2px;
+      min-height: 400px;
+      max-height: 600px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .area-tree::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .area-tree::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 3px;
+    }
+
+    .area-tree::-webkit-scrollbar-thumb {
+      background: rgba(91, 139, 180, 0.25);
+      border-radius: 3px;
+    }
+
+    .area-tree::-webkit-scrollbar-thumb:hover {
+      background: rgba(91, 139, 180, 0.4);
     }
 
     .hierarchy-node {
-      background: rgba(255, 255, 255, 0.02);
-      border-left: 2px solid rgba(100, 100, 100, 0.3);
-      border-radius: 4px;
+      background: transparent;
+      border-left: 1px solid rgba(100, 100, 100, 0.15);
+      border-radius: 0;
       overflow: hidden;
+      margin: 1px 0;
+    }
+
+    .hierarchy-node.highlighted {
+      background: rgba(59, 130, 246, 0.05);
+      border-left: 2px solid var(--primary);
     }
 
     .node-header {
@@ -436,13 +642,24 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
-      transition: background 0.15s;
+      gap: 6px;
+      transition: all 0.2s ease;
       font-size: var(--node-font-size);
+      border-radius: 3px;
     }
 
     .node-header:hover {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .node-header.selected {
+      background: rgba(59, 130, 246, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.3);
+    }
+
+    .node-header.search-match {
+      background: rgba(34, 197, 94, 0.15);
+      box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.3);
     }
 
     .node-toggle {
@@ -453,13 +670,31 @@
     }
 
     .node-badge {
-      background: rgba(34, 197, 94, 0.2);
-      color: #4ade80;
-      padding: 2px 6px;
+      background: linear-gradient(135deg, rgba(91, 139, 180, 0.15) 0%, rgba(91, 139, 180, 0.1) 100%);
+      color: rgba(91, 139, 180, 0.9);
+      padding: 1px 5px;
       border-radius: 3px;
+      font-size: 0.6rem;
+      font-weight: 500;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      border: 1px solid rgba(91, 139, 180, 0.15);
+      letter-spacing: 0.2px;
+    }
+
+    .node-indicators {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      opacity: 0.7;
+    }
+
+    .node-indicator {
       font-size: 0.65rem;
-      font-weight: 600;
-      font-family: monospace;
+      transition: opacity 0.2s;
+    }
+
+    .node-header:hover .node-indicator {
+      opacity: 1;
     }
 
     .node-label {
@@ -481,6 +716,38 @@
 
     .node-children.collapsed {
       display: none;
+    }
+
+    /* ANIMACIONES */
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
 
     /* ÁREA INDIVIDUAL */
@@ -600,11 +867,14 @@
     /* CANVAS WORKSPACE */
     .map-workspace {
       background: var(--bg-secondary);
-      border-radius: var(--border-radius);
+      border-radius: 8px;
       display: flex;
       flex-direction: column;
-      box-shadow: var(--panel-shadow);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       overflow: hidden;
+      height: 100%;
+      width: 100%;
+      border: 1px solid var(--border-color);
     }
 
     .map-toolbar {
@@ -616,6 +886,7 @@
       justify-content: space-between;
       gap: 12px;
       flex-shrink: 0;
+      width: 100%;
     }
 
     .toolbar-section {
@@ -724,6 +995,107 @@
       border-color: var(--primary);
     }
 
+    /* LOG TIMELINE */
+    .log-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .log-item {
+      display: flex;
+      gap: 8px;
+      padding: 8px;
+      background: var(--bg-primary);
+      border-radius: 6px;
+      border-left: 3px solid var(--border-color);
+      transition: all 0.2s;
+    }
+
+    .log-item:hover {
+      background: rgba(59, 130, 246, 0.05);
+      transform: translateX(2px);
+    }
+
+    .log-item.log-success {
+      border-left-color: var(--success);
+    }
+
+    .log-item.log-marker {
+      border-left-color: var(--primary);
+    }
+
+    .log-item.log-edit {
+      border-left-color: var(--warning);
+    }
+
+    .log-item.log-delete {
+      border-left-color: var(--danger);
+    }
+
+    .log-item.log-warning {
+      border-left-color: #f59e0b;
+    }
+
+    .log-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 4px;
+    }
+
+    .log-item.log-success .log-icon {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--success);
+    }
+
+    .log-item.log-marker .log-icon {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--primary);
+    }
+
+    .log-item.log-edit .log-icon {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--warning);
+    }
+
+    .log-item.log-delete .log-icon {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    .log-item.log-warning .log-icon {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+    }
+
+    .log-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .log-message {
+      font-size: 0.7rem;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 2px;
+    }
+
+    .log-message strong {
+      color: var(--primary-light);
+      font-weight: 600;
+    }
+
+    .log-time {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+    }
+
     /* BADGE DE JERARQUÍA */
     .jerarquia-badge {
       background: rgba(139, 92, 246, 0.15);
@@ -818,20 +1190,137 @@
       letter-spacing: 0.3px;
       margin-top: 2px;
     }
+
+    /* ===== MEJORAS UX/UI ADICIONALES ===== */
+    
+    /* Animación suave para elementos que aparecen */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .map-section, .map-card, .stat-card {
+      animation: fadeInUp 0.3s ease-out;
+    }
+
+    /* Scroll suave en area-tree */
+    .area-tree {
+      scroll-behavior: smooth;
+    }
+
+    .area-tree::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .area-tree::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 3px;
+    }
+
+    .area-tree::-webkit-scrollbar-thumb {
+      background: rgba(91, 139, 180, 0.25);
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+
+    .area-tree::-webkit-scrollbar-thumb:hover {
+      background: rgba(91, 139, 180, 0.45);
+    }
+
+    /* Mejorar área items */
+    .area-item {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 4px;
+    }
+
+    .area-item:hover {
+      background: rgba(91, 139, 180, 0.06) !important;
+      transform: translateX(3px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Mejorar map-section-header interactividad */
+    .map-section-header {
+      transition: all 0.2s ease;
+      border-radius: 4px;
+      margin: -4px;
+      padding: 4px;
+    }
+
+    .map-section-header:hover {
+      background: rgba(91, 139, 180, 0.05);
+    }
+
+    /* Focus visible para accesibilidad */
+    button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--primary-light);
+      outline-offset: 2px;
+    }
+
+    /* Mejorar jerarquía visual de nodos según nivel */
+    .hierarchy-node .hierarchy-node {
+      margin-left: 8px;
+      border-left: 1px solid rgba(91, 139, 180, 0.15);
+      padding-left: 6px;
+    }
+
+    /* Tooltip hover effect para badges */
+    .panel-tab-badge:hover {
+      transform: scale(1.1);
+      background: rgba(91, 139, 180, 0.4);
+    }
+
+    /* Loading state para contenedores vacíos */
+    .section-content:empty::after {
+      content: "Cargando...";
+      display: block;
+      text-align: center;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-style: italic;
+    }
+
+    /* Separadores sutiles entre secciones */
+    .map-section + .map-section {
+      position: relative;
+    }
+
+    .map-section + .map-section::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(91, 139, 180, 0.1), transparent);
+    }
+
+    /* Mejorar legibilidad de textos pequeños */
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
   </style>
 </head>
 <body>
   <!-- PANEL DE CONTROL -->
   <div id="controlPanel">
-    <div class="control-toggle" onclick="toggleControlPanel()">⚙️</div>
+    <div class="control-toggle" onclick="toggleControlPanel(event)">⚙️</div>
     
     <div class="control-section">
       <h3>🎨 Diseño General</h3>
       
       <div class="control-group">
         <label>Ancho del panel lateral</label>
-        <input type="range" id="panelWidth" min="240" max="600" value="320" step="10" oninput="updateLayout()">
-        <span class="value-display" id="panelWidthValue">320px</span>
+        <input type="range" id="panelWidth" min="240" max="600" value="500" step="10" oninput="document.getElementById('panelWidthValue').textContent = this.value + 'px'">
+        <span class="value-display" id="panelWidthValue">500px</span>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 8px;">
           <button class="preset-btn" onclick="setPanelWidth(280)" style="padding: 4px; font-size: 0.65rem;">Compacto</button>
           <button class="preset-btn" onclick="setPanelWidth(320)" style="padding: 4px; font-size: 0.65rem;">Estándar</button>
@@ -841,84 +1330,86 @@
 
       <div class="control-group">
         <label>Padding del panel</label>
-        <input type="range" id="panelPadding" min="4" max="20" value="6" step="2" oninput="updateLayout()">
+        <input type="range" id="panelPadding" min="4" max="20" value="6" step="2" oninput="document.getElementById('panelPaddingValue').textContent = this.value + 'px'">
         <span class="value-display" id="panelPaddingValue">6px</span>
       </div>
 
       <div class="control-group">
         <label>Gap entre secciones</label>
-        <input type="range" id="sectionGap" min="2" max="20" value="6" step="2" oninput="updateLayout()">
+        <input type="range" id="sectionGap" min="2" max="20" value="6" step="2" oninput="document.getElementById('sectionGapValue').textContent = this.value + 'px'">
         <span class="value-display" id="sectionGapValue">6px</span>
       </div>
 
       <div class="control-group">
         <label>Padding de secciones</label>
-        <input type="range" id="sectionPadding" min="6" max="24" value="8" step="2" oninput="updateLayout()">
+        <input type="range" id="sectionPadding" min="6" max="24" value="8" step="2" oninput="document.getElementById('sectionPaddingValue').textContent = this.value + 'px'">
         <span class="value-display" id="sectionPaddingValue">8px</span>
       </div>
 
       <div class="control-group">
         <label>Border radius (redondeo)</label>
-        <input type="range" id="borderRadius" min="4" max="16" value="4" step="2" oninput="updateLayout()">
+        <input type="range" id="borderRadius" min="4" max="16" value="4" step="2" oninput="document.getElementById('borderRadiusValue').textContent = this.value + 'px'">
         <span class="value-display" id="borderRadiusValue">4px</span>
       </div>
 
       <div class="control-group">
         <label>Altura del header del panel</label>
-        <input type="range" id="headerHeight" min="40" max="80" value="50" step="5" oninput="updateLayout()">
+        <input type="range" id="headerHeight" min="40" max="80" value="50" step="5" oninput="document.getElementById('headerHeightValue').textContent = this.value + 'px'">
         <span class="value-display" id="headerHeightValue">50px</span>
       </div>
 
       <div class="control-group">
         <label>Altura de las pestañas</label>
-        <input type="range" id="tabHeight" min="32" max="56" value="36" step="2" oninput="updateLayout()">
+        <input type="range" id="tabHeight" min="32" max="56" value="36" step="2" oninput="document.getElementById('tabHeightValue').textContent = this.value + 'px'">
         <span class="value-display" id="tabHeightValue">36px</span>
       </div>
 
       <div class="control-group">
         <label>Tamaño fuente pestañas</label>
-        <input type="range" id="tabFontSize" min="9" max="14" value="10" step="0.5" oninput="updateLayout()">
+        <input type="range" id="tabFontSize" min="9" max="14" value="10" step="0.5" oninput="document.getElementById('tabFontSizeValue').textContent = this.value + 'px'">
         <span class="value-display" id="tabFontSizeValue">10px</span>
       </div>
 
       <div class="control-group">
         <label>Padding pestañas (horizontal)</label>
-        <input type="range" id="tabPadding" min="4" max="16" value="6" step="2" oninput="updateLayout()">
+        <input type="range" id="tabPadding" min="4" max="16" value="6" step="2" oninput="document.getElementById('tabPaddingValue').textContent = this.value + 'px'">
         <span class="value-display" id="tabPaddingValue">6px</span>
       </div>
 
       <div class="control-group">
         <label>Tamaño badges en pestañas</label>
-        <input type="range" id="tabBadgeFontSize" min="8" max="12" value="9" step="0.5" oninput="updateLayout()">
+        <input type="range" id="tabBadgeFontSize" min="8" max="12" value="9" step="0.5" oninput="document.getElementById('tabBadgeFontSizeValue').textContent = this.value + 'px'">
         <span class="value-display" id="tabBadgeFontSizeValue">10px</span>
       </div>
 
       <div class="control-group">
         <label>Gap del layout principal</label>
-        <input type="range" id="layoutGap" min="4" max="20" value="6" step="2" oninput="updateLayout()">
+        <input type="range" id="layoutGap" min="4" max="20" value="6" step="2" oninput="document.getElementById('layoutGapValue').textContent = this.value + 'px'">
         <span class="value-display" id="layoutGapValue">6px</span>
       </div>
 
       <div class="control-group">
         <label class="checkbox-label">
-          <input type="checkbox" id="showTabBadges" checked onchange="updateLayout()">
+          <input type="checkbox" id="showTabBadges" checked>
           Mostrar badges en pestañas (contadores)
         </label>
       </div>
 
       <div class="control-group">
         <label class="checkbox-label">
-          <input type="checkbox" id="showShadows" checked onchange="updateLayout()">
+          <input type="checkbox" id="showShadows" checked>
           Mostrar sombras (depth)
         </label>
       </div>
 
       <div class="control-group">
         <label class="checkbox-label">
-          <input type="checkbox" id="compactMode" onchange="updateLayout()">
+          <input type="checkbox" id="compactMode">
           Modo ultra-compacto (reduce todo)
         </label>
       </div>
+
+      <button class="preset-btn" onclick="updateLayout()" style="width: 100%; margin-top: 12px; padding: 8px; background: var(--primary); color: white; font-weight: 600;">✓ Aplicar cambios</button>
     </div>
 
     <div class="control-section">
@@ -1001,6 +1492,122 @@
     </div>
 
     <div class="control-section">
+      <h3>🔄 Sistema de Sincronización</h3>
+      <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4;">
+        Prueba el sistema de sincronización bidireccional con la app principal
+      </div>
+      <div class="preset-buttons">
+        <button class="preset-btn" onclick="demoSync('Eviscerado')" style="background: rgba(34, 197, 94, 0.15);">
+          🎯 Demo: Navegar a "Eviscerado"
+        </button>
+        <button class="preset-btn" onclick="demoSync('Grader')" style="background: rgba(34, 197, 94, 0.15);">
+          🎯 Demo: Navegar a "Grader"
+        </button>
+        <button class="preset-btn" onclick="showSyncInfo()" style="background: rgba(59, 130, 246, 0.15);">
+          📖 Info Sistema
+        </button>
+      </div>
+      <div id="sync-log" style="margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 4px; font-size: 0.65rem; max-height: 120px; overflow-y: auto; display: none;">
+        <div style="color: var(--text-muted); margin-bottom: 4px;">Log de eventos:</div>
+        <div id="sync-log-content"></div>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <h3>🖼️ Layout Canvas</h3>
+      
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:lime;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Ancho workspace <span class="value-display" id="workspaceWidthValue">auto</span></label>
+        <input type="range" id="workspaceWidth" min="300" max="2000" value="0" step="50" oninput="document.getElementById('workspaceWidthValue').textContent = this.value > 0 ? this.value + 'px' : 'auto'; updateWorkspaceLayout()">
+        <div style="display: flex; gap: 4px; margin-top: 4px;">
+          <button class="preset-btn" onclick="setWorkspaceWidth(0)" style="font-size: 0.65rem; padding: 4px;">Auto (1fr)</button>
+          <button class="preset-btn" onclick="setWorkspaceWidth(800)" style="font-size: 0.65rem; padding: 4px;">800px</button>
+          <button class="preset-btn" onclick="setWorkspaceWidth(1200)" style="font-size: 0.65rem; padding: 4px;">1200px</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:red;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Gap entre paneles <span class="value-display" id="shellGapValue">0px</span></label>
+        <input type="range" id="shellGap" min="0" max="50" value="0" step="2" oninput="document.getElementById('shellGapValue').textContent = this.value + 'px'; updateWorkspaceLayout()">
+      </div>
+
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:red;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Padding shell <span class="value-display" id="shellPaddingValue">0px</span></label>
+        <input type="range" id="shellPadding" min="0" max="50" value="0" step="2" oninput="document.getElementById('shellPaddingValue').textContent = this.value + 'px'; updateWorkspaceLayout()">
+      </div>
+
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:yellow;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Ancho map-toolbar <span class="value-display" id="toolbarWidthValue">100%</span></label>
+        <input type="range" id="toolbarWidth" min="300" max="2000" value="0" step="50" oninput="document.getElementById('toolbarWidthValue').textContent = this.value > 0 ? this.value + 'px' : '100%'; updateWorkspaceLayout()">
+      </div>
+
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:cyan;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Ancho map-canvas-stage <span class="value-display" id="canvasWidthValue">100%</span></label>
+        <input type="range" id="canvasWidth" min="300" max="2000" value="0" step="50" oninput="document.getElementById('canvasWidthValue').textContent = this.value > 0 ? this.value + 'px' : '100%'; updateWorkspaceLayout()">
+      </div>
+
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:lime;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Max-width workspace <span class="value-display" id="workspaceMaxWidthValue">none</span></label>
+        <input type="range" id="workspaceMaxWidth" min="0" max="2000" value="0" step="50" oninput="document.getElementById('workspaceMaxWidthValue').textContent = this.value > 0 ? this.value + 'px' : 'none'; updateWorkspaceLayout()">
+      </div>
+
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:lime;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Min-width workspace <span class="value-display" id="workspaceMinWidthValue">0</span></label>
+        <input type="range" id="workspaceMinWidth" min="0" max="1000" value="0" step="50" oninput="document.getElementById('workspaceMinWidthValue').textContent = this.value + 'px'; updateWorkspaceLayout()">
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 12px 0;">
+      <div style="font-size: 0.7rem; color: var(--primary-light); margin-bottom: 8px;">🔵 Panel lateral (azul)</div>
+
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:magenta;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Ancho panel-tab-content <span class="value-display" id="tabContentWidthValue">500px</span></label>
+        <input type="range" id="tabContentWidth" min="300" max="1000" value="500" step="10" oninput="document.getElementById('tabContentWidthValue').textContent = this.value > 0 ? this.value + 'px' : '100%'; updateWorkspaceLayout()">
+      </div>
+
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:orange;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Ancho tab-content-wrapper <span class="value-display" id="contentWrapperWidthValue">500px</span></label>
+        <input type="range" id="contentWrapperWidth" min="300" max="1000" value="500" step="10" oninput="document.getElementById('contentWrapperWidthValue').textContent = this.value > 0 ? this.value + 'px' : '100%'; updateWorkspaceLayout()">
+      </div>
+
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:purple;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Ancho tab-scroll-content <span class="value-display" id="scrollContentWidthValue">470px</span></label>
+        <input type="range" id="scrollContentWidth" min="300" max="1000" value="470" step="10" oninput="document.getElementById('scrollContentWidthValue').textContent = this.value > 0 ? this.value + 'px' : '100%'; updateWorkspaceLayout()">
+      </div>
+
+      <div class="control-group">
+        <label><span style="display:inline-block;width:12px;height:12px;background:blue;border:1px solid #000;margin-right:6px;vertical-align:middle;"></span>Max-width panel <span class="value-display" id="panelMaxWidthValue">500px</span></label>
+        <input type="range" id="panelMaxWidth" min="0" max="1000" value="500" step="10" oninput="document.getElementById('panelMaxWidthValue').textContent = this.value > 0 ? this.value + 'px' : 'none'; updateWorkspaceLayout()">
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="workspaceBorderRadius" onchange="updateWorkspaceLayout()">
+          Border radius en paneles
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="workspaceShadows" onchange="updateWorkspaceLayout()">
+          Sombras en paneles
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="debugBorders" onchange="updateWorkspaceLayout()">
+          🐛 Debug: Mostrar bordes de contenedores
+        </label>
+      </div>
+
+      <button class="preset-btn" onclick="updateWorkspaceLayout()" style="width: 100%; margin-top: 12px; padding: 8px; background: var(--primary); color: white; font-weight: 600;">✓ Aplicar cambios</button>
+
+      <div style="margin-top: 12px; padding: 8px; background: rgba(59, 130, 246, 0.1); border-radius: 6px; font-size: 0.65rem; color: var(--text-secondary);">
+        💡 Tip: Activa "Debug" para ver los límites de cada contenedor
+      </div>
+    </div>
+
+    <div class="control-section">
       <h3>💾 Exportar</h3>
       <button class="preset-btn" onclick="exportCSS()" style="width: 100%">
         Copiar CSS al portapapeles
@@ -1021,15 +1628,7 @@
       <div class="panel-tabs">
         <button class="panel-tab active" onclick="switchPanelTab('mapas')">
           <span class="panel-tab-text">Mapas</span>
-          <span class="panel-tab-badge">2</span>
-        </button>
-        <button class="panel-tab" onclick="switchPanelTab('areas')">
-          <span class="panel-tab-text">Áreas</span>
-          <span class="panel-tab-badge">12</span>
-        </button>
-        <button class="panel-tab" onclick="switchPanelTab('migracion')">
-          <span class="panel-tab-text">Migración</span>
-          <span class="panel-tab-badge">2</span>
+          <span class="panel-tab-badge">-</span>
         </button>
         <button class="panel-tab" onclick="switchPanelTab('logs')">
           <span class="panel-tab-text">Logs</span>
@@ -1038,549 +1637,292 @@
 
       <!-- CONTENIDO: MAPAS -->
       <div id="tabMapas" class="panel-tab-content active">
-        <!-- Área fija -->
-        <div class="tab-fixed-header">
-          <!-- Botón nuevo mapa -->
-          <button class="action-btn" style="width: 100%; padding: 8px 12px; font-size: 0.75rem; background: var(--success); color: white; border-color: var(--success);">
-            + Crear nuevo mapa
+        <!-- Sidebar de subsecciones -->
+        <nav class="subsections-sidebar" id="subsectionsSidebar">
+          <button class="subsection-item active" onclick="scrollToSection('jerarquia-completa')">
+            <span class="subsection-icon">J</span>
+            <span class="subsection-label">Jerarquía Completa</span>
           </button>
+          <button class="subsection-item" onclick="scrollToSection('mapas-creados')">
+            <span class="subsection-icon">M</span>
+            <span class="subsection-label">Mapas Creados</span>
+          </button>
+          <button class="subsection-item" onclick="scrollToSection('pendientes')">
+            <span class="subsection-icon">P</span>
+            <span class="subsection-label">Pendientes</span>
+          </button>
+          <button class="subsection-item" onclick="scrollToSection('estadisticas')">
+            <span class="subsection-icon">E</span>
+            <span class="subsection-label">Estadísticas</span>
+          </button>
+        </nav>
 
-          <!-- Stats generales -->
-          <div class="stats-row">
-            <div class="stat-card">
-              <div class="stat-value">2</div>
-              <div class="stat-label">Mapas</div>
+        <!-- Contenedor del contenido -->
+        <div class="tab-content-wrapper">
+          <!-- Área fija -->
+          <div class="tab-fixed-header">
+            <!-- Buscador global -->
+            <div class="search-container">
+              <input type="text" id="globalSearch" class="search-input" placeholder="🔎 Buscar en jerarquía..." oninput="filterHierarchy(this.value)">
             </div>
-            <div class="stat-card">
-              <div class="stat-value">12</div>
-              <div class="stat-label">Áreas</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">48</div>
-              <div class="stat-label">Marcadores</div>
+
+            <!-- Stats generales -->
+            <div class="stats-row" style="margin-top: 6px;">
+              <div class="stat-card">
+                <div class="stat-value">-</div>
+                <div class="stat-label">Mapas</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">-</div>
+                <div class="stat-label">Áreas</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">-</div>
+                <div class="stat-label">Marcadores</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Área con scroll -->
-        <div class="tab-scroll-content">
-          <!-- Buscador de mapas -->
-          <div class="search-container">
-            <input type="text" class="search-input" placeholder="🔎 Buscar mapa...">
-          </div>
+          <!-- Área con scroll -->
+          <div class="tab-scroll-content">
 
-        <!-- Lista de mapas creados -->
-        <section class="map-section">
+        <!-- 1. JERARQUÍA COMPLETA - SECCIÓN PRINCIPAL -->
+        <section class="map-section" id="section-jerarquia-completa">
           <div class="map-section-header" onclick="toggleSection(this)">
-            <h3><span class="collapse-icon">▼</span> 🗺️ Mapas creados (2)</h3>
+            <h3><span class="collapse-icon">▼</span> 🏢 Jerarquía Completa</h3>
           </div>
           <div class="section-content">
-            <!-- Mapa 1: Recinto Completo -->
-            <div class="area-item" style="background: var(--bg-primary); padding: 8px; margin-bottom: 6px; border-radius: 4px; border-left: 3px solid #60a5fa;">
-              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                <span class="area-badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">🗺️</span>
-                <span class="node-label" style="font-weight: 600;">Recinto Completo</span>
-              </div>
-              <div style="font-size: 0.6rem; color: var(--text-muted); margin-left: 22px; margin-bottom: 4px;">
-                Asignado a: <span style="color: var(--text-secondary);">N1 Planta Principal</span>
-              </div>
-              <div style="display: flex; gap: 4px; margin-left: 22px;">
-                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem; background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
-                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem;">Cambiar</button>
-                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem;">✏️</button>
-              </div>
+            <div style="font-size: 0.6rem; color: var(--text-muted); margin-bottom: 8px; padding: 6px 8px; background: rgba(59, 130, 246, 0.05); border-radius: 4px; border-left: 2px solid var(--primary);">
+              💡 <strong>Indicadores:</strong> 🗺️ Mapa asignado • 📦 Área creada • 📍 Marcadores (numerados)
             </div>
-
-            <!-- Mapa 2: Planta Principal -->
-            <div class="area-item" style="background: var(--bg-primary); padding: 8px; margin-bottom: 6px; border-radius: 4px; border-left: 3px solid #60a5fa;">
-              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                <span class="area-badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">🗺️</span>
-                <span class="node-label" style="font-weight: 600;">Planta Principal</span>
-              </div>
-              <div style="font-size: 0.6rem; color: var(--text-muted); margin-left: 22px; margin-bottom: 4px;">
-                Asignado a: <span style="color: var(--text-secondary);">N1 > N2 Eviscerado</span>
-              </div>
-              <div style="display: flex; gap: 4px; margin-left: 22px;">
-                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem; background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
-                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem;">Cambiar</button>
-                <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem;">✏️</button>
-              </div>
+            <div id="hierarchy-tree-container" class="area-tree">
+              <!-- La jerarquía completa se cargará dinámicamente aquí -->
             </div>
           </div>
         </section>
 
-        <!-- Vista jerárquica sincronizada -->
-        <section class="map-section">
+        <!-- 2. MAPAS CREADOS - LISTA COMPACTA -->
+        <section class="map-section" id="section-mapas-creados">
           <div class="map-section-header" onclick="toggleSection(this)">
-            <h3><span class="collapse-icon">▼</span> 🏢 Jerarquía completa</h3>
+            <h3><span class="collapse-icon">▼</span> 🗺️ Mapas Creados (<span id="mapasCount">0</span>)</h3>
           </div>
           <div class="section-content">
-            <div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 6px; padding: 4px; background: rgba(59, 130, 246, 0.05); border-radius: 3px;">
-              Sincronizada con pestaña Áreas • Resaltados = con mapa asignado
-            </div>
+            <!-- Los mapas se cargarán dinámicamente desde mapas.json -->
+          </div>
+        </section>
 
-            <div class="area-tree">
-              <!-- N1: Planta Principal (CON MAPA - DESTACADO) -->
-              <div class="hierarchy-node">
-                <div class="node-header" style="background: rgba(59, 130, 246, 0.08); border-left: 3px solid #60a5fa; padding: 6px 8px;">
-                  <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)">▼</span>
-                  <span class="node-badge" style="background: rgba(34, 197, 94, 0.2); color: #4ade80; font-weight: 600;">N1</span>
-                  <span style="font-size: 0.65rem; color: #60a5fa; margin-right: 3px;">🗺️</span>
-                  <span class="node-label" style="font-weight: 600; color: var(--text-primary);">Planta Principal</span>
-                  <button class="action-btn" style="margin-left: auto; padding: 2px 6px; font-size: 0.6rem; background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
-                </div>
-                <div class="node-children">
-                  <!-- N2: Eviscerado (CON MAPA - DESTACADO) -->
-                  <div class="hierarchy-node">
-                    <div class="node-header" style="background: rgba(59, 130, 246, 0.08); border-left: 3px solid #60a5fa; padding: 6px 8px;">
-                      <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)">▼</span>
-                      <span class="node-badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-weight: 600;">N2</span>
-                      <span style="font-size: 0.65rem; color: #60a5fa; margin-right: 3px;">🗺️</span>
-                      <span class="node-label" style="font-weight: 600; color: var(--text-primary);">Eviscerado</span>
-                      <button class="action-btn" style="margin-left: auto; padding: 2px 6px; font-size: 0.6rem; background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
-                    </div>
-                    <div class="node-children">
-                      <!-- N3: Grader (SIN MAPA - DISCRETO) -->
-                      <div class="hierarchy-node">
-                        <div class="node-header" style="padding: 4px 8px; opacity: 0.5;">
-                          <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▼</span>
-                          <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 4px;">N3</span>
-                          <span class="node-label" style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Grader</span>
-                          <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.55rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
-                        </div>
-                        <div class="node-children">
-                          <!-- N4: Pocket 1 al 4 (SIN MAPA - DISCRETO) -->
-                          <div class="hierarchy-node">
-                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
-                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Pocket 1-4</span>
-                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
-                            </div>
-                            <div class="node-children collapsed"></div>
-                          </div>
-
-                          <!-- N4: Cinta Z (SIN MAPA - DISCRETO) -->
-                          <div class="hierarchy-node">
-                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
-                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Cinta Z</span>
-                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
-                            </div>
-                            <div class="node-children collapsed"></div>
-                          </div>
-
-                          <!-- N4: Cinta Aceleración 1 (SIN MAPA - DISCRETO) -->
-                          <div class="hierarchy-node">
-                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
-                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Cinta Acel. 1</span>
-                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
-                            </div>
-                            <div class="node-children collapsed"></div>
-                          </div>
-
-                          <!-- N4: Cinta Aceleración 2 (SIN MAPA - DISCRETO) -->
-                          <div class="hierarchy-node">
-                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
-                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Cinta Acel. 2</span>
-                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
-                            </div>
-                            <div class="node-children collapsed"></div>
-                          </div>
-
-                          <!-- N4: Cinta Larga (SIN MAPA - DISCRETO) -->
-                          <div class="hierarchy-node">
-                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
-                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Cinta Larga</span>
-                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
-                            </div>
-                            <div class="node-children collapsed"></div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- N3: Marel (SIN MAPA - DISCRETO) -->
-                      <div class="hierarchy-node">
-                        <div class="node-header" style="padding: 4px 8px; opacity: 0.5;">
-                          <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▼</span>
-                          <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 4px;">N3</span>
-                          <span class="node-label" style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Marel</span>
-                          <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.55rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
-                        </div>
-                        <div class="node-children">
-                          <!-- N4: Cinta Azul Marel (SIN MAPA - DISCRETO) -->
-                          <div class="hierarchy-node">
-                            <div class="node-header" style="padding: 3px 8px; opacity: 0.4;">
-                              <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); margin-left: 4px;">N4</span>
-                              <span style="font-size: 0.6rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Cinta Azul</span>
-                              <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.5rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
-                            </div>
-                            <div class="node-children collapsed"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- N2: Filete (SIN MAPA - DISCRETO) -->
-                  <div class="hierarchy-node">
-                    <div class="node-header" style="padding: 4px 8px; opacity: 0.5;">
-                      <span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement)" style="color: var(--text-muted);">▶</span>
-                      <span style="font-size: 0.65rem; color: var(--text-muted); margin-left: 4px;">N2</span>
-                      <span class="node-label" style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal; margin-left: 6px;">Filete</span>
-                      <button class="action-btn" style="margin-left: auto; padding: 1px 4px; font-size: 0.55rem; opacity: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0'">Asignar</button>
-                    </div>
-                    <div class="node-children collapsed"></div>
-                  </div>
-                </div>
-              </div>
+        <!-- 3. PENDIENTES - ELEMENTOS SIN ASIGNAR -->
+        <section class="map-section" id="section-pendientes">
+          <div class="map-section-header" onclick="toggleSection(this)">
+            <h3><span class="collapse-icon">▼</span> ⚠️ Pendientes</h3>
+          </div>
+          <div class="section-content">
+            <div style="font-size: 0.62rem; color: var(--text-muted); padding: 12px; text-align: center;">
+              Elementos sin mapa o área asignada
             </div>
           </div>
         </section>
-        
-        <!-- Mapas sin asignar -->
-        <section class="map-section">
+
+        <!-- 4. ESTADÍSTICAS - RESUMEN VISUAL -->
+        <section class="map-section" id="section-estadisticas">
           <div class="map-section-header" onclick="toggleSection(this)">
-            <h3><span class="collapse-icon">▼</span> ⚠️ Mapas sin asignar (0)</h3>
+            <h3><span class="collapse-icon">▼</span> 📊 Estadísticas</h3>
           </div>
           <div class="section-content">
-            <div style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 0.65rem; background: rgba(34, 197, 94, 0.05); border-radius: 4px; border: 1px dashed var(--border-color);">
-              <p style="margin: 0;">✓ Todos los mapas están asignados</p>
-              <p style="margin: 4px 0 0 0; font-size: 0.6rem;">Arrastra aquí mapas sin jerarquía</p>
+            <div id="stats-details-container">
+              <!-- Estadísticas detalladas se cargarán aquí -->
             </div>
           </div>
         </section>
+
         </div> <!-- Fin tab-scroll-content -->
-      </div>
+        </div> <!-- Fin tab-content-wrapper -->
+      </div> <!-- Fin tabMapas -->
 
-      <!-- CONTENIDO: ÁREAS -->
+      <!-- CONTENIDO: ÁREAS (OCULTO - NO SE USA) -->
       <div id="tabAreas" class="panel-tab-content">
-        <!-- Área fija -->
-        <div class="tab-fixed-header">
-          <!-- Botones de acción -->
-          <div class="action-buttons">
-            <button class="action-btn">✏️ Dibujar</button>
-            <button class="action-btn">📍 Marcador</button>
-            <button class="action-btn">🔍 Cascada</button>
-          </div>
-
-          <!-- Buscador -->
-          <div class="search-container">
-            <input type="text" class="search-input" placeholder="🔎 Buscar área...">
-          </div>
-
-          <!-- Filtros de categoría -->
-          <div class="filter-chips">
-            <span class="filter-chip active">Todas</span>
-            <span class="filter-chip">Área</span>
-            <span class="filter-chip">Máquina</span>
-            <span class="filter-chip">Estructura</span>
-          </div>
-        </div>
-
-        <!-- Área con scroll -->
-        <div class="tab-scroll-content">
-
-        <!-- Badge de jerarquía -->
-        <div class="jerarquia-badge">
-          <div class="jerarquia-info">
-            <strong>Planta Grader</strong>
-            <span>Planta / Producción / Sección A</span>
-          </div>
-          <button class="jerarquia-btn">Cambiar</button>
-        </div>
-
-        <!-- Árbol jerárquico de áreas -->
-        <section class="map-section">
-          <div class="map-section-header" onclick="toggleSection(this)">
-            <h3><span class="collapse-icon">▼</span> Áreas del mapa</h3>
-          </div>
-          <div class="section-content">
-            <!-- Árbol jerárquico de áreas -->
-            <div class="area-tree">
-              <!-- Nivel 1 -->
-              <div class="hierarchy-node">
-                <div class="node-header" onclick="toggleNode(this)">
-                  <span class="node-toggle">▼</span>
-                  <span class="node-badge">N1</span>
-                  <span class="node-label">Planta Grader</span>
-                  <span class="node-count">15</span>
-                </div>
-                <div class="node-children">
-                  <!-- Nivel 2 -->
-                  <div class="hierarchy-node">
-                    <div class="node-header" onclick="toggleNode(this)">
-                      <span class="node-toggle">▼</span>
-                      <span class="node-badge">N2</span>
-                      <span class="node-label">Producción</span>
-                      <span class="node-count">8</span>
-                    </div>
-                    <div class="node-children">
-                      <!-- Nivel 3 -->
-                      <div class="hierarchy-node">
-                        <div class="node-header" onclick="toggleNode(this)">
-                          <span class="node-toggle">▼</span>
-                          <span class="node-badge">N3</span>
-                          <span class="node-label">Sección A</span>
-                          <span class="node-count">8</span>
-                        </div>
-                        <div class="node-children">
-                          <!-- Área individual -->
-                          <div class="area-item" onclick="focusArea(this)">
-                            <span class="area-badge">ÁREA</span>
-                            <span class="node-badge">N4</span>
-                            <span class="node-label">Grader Principal</span>
-                            <span class="node-count">8</span>
-                          </div>
-
-                          <!-- Categorías de marcadores -->
-                          <div class="node-children">
-                            <!-- Categoría: Mecánica -->
-                            <div class="category-group">
-                              <div class="category-header" onclick="toggleCategory(this)">
-                                <span class="category-toggle">▼</span>
-                                <span>⚙️ Mecánica</span>
-                                <span class="node-count">3</span>
-                              </div>
-                              <div class="category-markers">
-                                <div class="marker-item">
-                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
-                                  <span class="correlativo-badge" data-correlativo="1">#1</span>
-                                </div>
-                                <div class="marker-item">
-                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
-                                  <span class="correlativo-badge" data-correlativo="2">#2</span>
-                                </div>
-                                <div class="marker-item">
-                                  <span class="marker-name">MOTOR TRIFÁSICO 5HP</span>
-                                  <span class="correlativo-compact" title="Total: 8 instancias (Ver Tab Jerarquía para detalle)">x8</span>
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- Categoría: Eléctrica -->
-                            <div class="category-group">
-                              <div class="category-header" onclick="toggleCategory(this)">
-                                <span class="category-toggle">▼</span>
-                                <span>⚡ Eléctrica</span>
-                                <span class="node-count">4</span>
-                              </div>
-                              <div class="category-markers">
-                                <div class="marker-item">
-                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
-                                  <span class="correlativo-badge" data-correlativo="3">#3</span>
-                                </div>
-                                <div class="marker-item">
-                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
-                                  <span class="correlativo-badge" data-correlativo="4">#4</span>
-                                </div>
-                                <div class="marker-item">
-                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
-                                  <span class="correlativo-badge" data-correlativo="5">#5</span>
-                                </div>
-                                <div class="marker-item">
-                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
-                                  <span class="correlativo-badge" data-correlativo="6">#6</span>
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- Categoría: Seguridad -->
-                            <div class="category-group">
-                              <div class="category-header" onclick="toggleCategory(this)">
-                                <span class="category-toggle">▼</span>
-                                <span>🛡️ Seguridad</span>
-                                <span class="node-count">2</span>
-                              </div>
-                              <div class="category-markers">
-                                <div class="marker-item">
-                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
-                                  <span class="correlativo-badge" data-correlativo="7">#7</span>
-                                </div>
-                                <div class="marker-item">
-                                  <span class="marker-name">PARADA EMERGENCIA CON CAJA</span>
-                                  <span class="correlativo-badge" data-correlativo="8">#8</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        </div> <!-- Fin tab-scroll-content -->
-      </div>
-
-      <!-- CONTENIDO: MIGRACIÓN -->
-      <div id="tabMigracion" class="panel-tab-content">
-        <!-- Área fija -->
-        <div class="tab-fixed-header">
-          <!-- Botón refresh -->
-          <button class="action-btn" style="width: 100%; padding: 8px 12px; font-size: 0.75rem; background: var(--primary); color: white; border-color: var(--primary);">
-            🔄 Re-escanear jerarquías
+        <!-- Sidebar de subsecciones -->
+        <nav class="subsections-sidebar" id="subsectionsSidebarAreas">
+          <button class="subsection-item active" onclick="scrollToSection('areas-todas')">
+            <span class="subsection-icon">A</span>
+            <span class="subsection-label">Todas</span>
           </button>
-        </div>
+          <button class="subsection-item" onclick="scrollToSection('areas-jerarquia')">
+            <span class="subsection-icon">J</span>
+            <span class="subsection-label">Jerarquía</span>
+          </button>
+          <button class="subsection-pin" onclick="toggleSubsectionPin()">
+            ▸ Anclar
+          </button>
+        </nav>
 
-        <!-- Área con scroll -->
-        <div class="tab-scroll-content">
+        <!-- Contenedor del contenido -->
+        <div class="tab-content-wrapper">
+          <!-- Área fija -->
+          <div class="tab-fixed-header">
+            <!-- Botón nueva área -->
+            <button class="action-btn" style="width: 100%; padding: 5px 8px; font-size: 0.65rem; background: var(--success); color: white; border-color: var(--success);">
+              + Crear nueva área
+            </button>
 
-        <!-- Stats de migración -->
-        <section class="map-section">
-          <div class="map-section-header" onclick="toggleSection(this)">
-            <h3><span class="collapse-icon">▼</span> Resumen de migración</h3>
-          </div>
-          <div class="section-content">
-            <div class="stats-row">
+            <!-- Stats generales -->
+            <div class="stats-row" style="margin-top: 6px;">
               <div class="stat-card">
-                <div class="stat-value">5</div>
-                <div class="stat-label">Total</div>
+                <div class="stat-value">37</div>
+                <div class="stat-label">Total áreas</div>
               </div>
               <div class="stat-card">
-                <div class="stat-value" style="color: var(--success)">3</div>
-                <div class="stat-label">En regla</div>
+                <div class="stat-value">30</div>
+                <div class="stat-label">Con equipos</div>
               </div>
               <div class="stat-card">
-                <div class="stat-value" style="color: var(--warning)">2</div>
-                <div class="stat-label">Pendientes</div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-value" style="color: var(--danger)">0</div>
-                <div class="stat-label">Conflictos</div>
+                <div class="stat-value">7</div>
+                <div class="stat-label">Vacías</div>
               </div>
             </div>
-          </div>
-        </section>
 
-        <!-- Lista de pendientes -->
-        <section class="map-section">
-          <div class="map-section-header" onclick="toggleSection(this)">
-            <h3><span class="collapse-icon">▼</span> Mapas pendientes</h3>
-          </div>
-          <div class="section-content">
-            <div class="area-item" style="border-left-color: var(--warning)">
-              <span class="area-badge" style="background: rgba(184, 146, 90, 0.3); color: var(--warning)">⚠️</span>
-              <span class="node-label">Mapa Antiguo 1</span>
-              <span class="node-count">Sin jerarquía</span>
-            </div>
-            <div class="area-item" style="border-left-color: var(--warning)">
-              <span class="area-badge" style="background: rgba(184, 146, 90, 0.3); color: var(--warning)">⚠️</span>
-              <span class="node-label">Mapa Antiguo 2</span>
-              <span class="node-count">Sin jerarquía</span>
+            <!-- Buscador -->
+            <div class="search-container" style="margin-top: 8px;">
+              <input type="text" class="search-input" placeholder="🔎 Buscar área...">
             </div>
           </div>
-        </section>
-        
-        <!-- Acciones recomendadas -->
-        <section class="map-section">
-          <div class="map-section-header" onclick="toggleSection(this)">
-            <h3><span class="collapse-icon">▼</span> Acciones recomendadas</h3>
-          </div>
-          <div class="section-content">
-            <div style="font-size: 0.7rem; color: var(--text-secondary); line-height: 1.6;">
-              <div style="padding: 8px; background: rgba(184, 146, 90, 0.1); border-left: 3px solid var(--warning); margin-bottom: 8px; border-radius: 4px;">
-                <strong style="color: var(--warning)">1. Asignar jerarquías</strong>
-                <p style="margin: 4px 0 0 0; font-size: 0.65rem; color: var(--text-muted);">2 mapas necesitan ser asignados a una rama jerárquica</p>
+
+          <!-- Área con scroll -->
+          <div class="tab-scroll-content">
+
+            <!-- Sección: Todas las áreas -->
+            <section class="map-section" id="section-areas-todas">
+              <div class="map-section-header" onclick="toggleSection(this)">
+                <h3><span class="collapse-icon">▼</span> 📦 Áreas creadas (37)</h3>
               </div>
-              <div style="padding: 8px; background: rgba(91, 155, 122, 0.1); border-left: 3px solid var(--success); margin-bottom: 8px; border-radius: 4px;">
-                <strong style="color: var(--success)">2. Verificar áreas</strong>
-                <p style="margin: 4px 0 0 0; font-size: 0.65rem; color: var(--text-muted);">3 mapas tienen jerarquía correcta</p>
+              <div class="section-content">
+                <div id="areas-list-container">
+                  <!-- Las áreas se cargarán dinámicamente aquí -->
+                  <p style="color: var(--text-muted); font-size: 0.7rem; text-align: center; padding: 20px;">
+                    Cargando áreas...
+                  </p>
+                </div>
               </div>
-              <div style="padding: 8px; background: rgba(91, 139, 180, 0.1); border-left: 3px solid var(--primary); margin-bottom: 8px; border-radius: 4px;">
-                <strong style="color: var(--primary)">3. Agregar marcadores</strong>
-                <p style="margin: 4px 0 0 0; font-size: 0.65rem; color: var(--text-muted);">Algunos mapas no tienen marcadores de repuestos</p>
+            </section>
+
+            <!-- Sección: Vista jerárquica -->
+            <section class="map-section" id="section-areas-jerarquia">
+              <div class="map-section-header" onclick="toggleSection(this)">
+                <h3><span class="collapse-icon">▼</span> 🏢 Vista jerárquica</h3>
               </div>
-            </div>
-          </div>
-        </section>
-        </div> <!-- Fin tab-scroll-content -->
+              <div class="section-content">
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 6px; padding: 4px; background: rgba(59, 130, 246, 0.05); border-radius: 3px;">
+                  Estructura completa de áreas organizadas por jerarquía
+                </div>
+
+                <div class="area-tree">
+                  <!-- El árbol se cargará dinámicamente aquí -->
+                  <p style="color: var(--text-muted); font-size: 0.7rem; text-align: center; padding: 20px;">
+                    Cargando jerarquía...
+                  </p>
+                </div>
+              </div>
+            </section>
+
+          </div> <!-- Fin tab-scroll-content -->
+        </div> <!-- Fin tab-content-wrapper -->
       </div>
 
       <!-- CONTENIDO: LOGS -->
       <div id="tabLogs" class="panel-tab-content">
-        <!-- Área fija -->
+        <!-- Área fija superior: Filtros -->
         <div class="tab-fixed-header">
-          <!-- Botón refresh logs -->
-          <button class="action-btn" style="width: 100%; padding: 8px 12px; font-size: 0.75rem;">
-            🔄 Actualizar logs
-          </button>
+          <section class="map-section" style="margin: 0;">
+            <div class="map-section-header" onclick="toggleSection(this)">
+              <h3><span class="collapse-icon">▼</span> Filtrar por Tipo</h3>
+            </div>
+            <div class="section-content">
+              <div class="filter-chips">
+                <span class="filter-chip active" onclick="filterLogs('all')">Todos</span>
+                <span class="filter-chip" onclick="filterLogs('success')">Creación</span>
+                <span class="filter-chip" onclick="filterLogs('edit')">Edición</span>
+                <span class="filter-chip" onclick="filterLogs('delete')">Eliminación</span>
+                <span class="filter-chip" onclick="filterLogs('marker')">Marcadores</span>
+                <span class="filter-chip" onclick="filterLogs('warning')">Jerarquía</span>
+              </div>
+            </div>
+          </section>
         </div>
 
-        <!-- Área con scroll -->
-        <div class="tab-scroll-content">
+        <!-- Área con scroll: Actividad Reciente (ocupa todo el espacio) -->
+        <div class="tab-scroll-content" style="flex: 1; overflow-y: auto;">
+          <div class="log-timeline">
+            <div class="log-item log-success">
+              <div class="log-icon">✓</div>
+              <div class="log-content">
+                <div class="log-message">Área creada: <strong>"Grader Principal"</strong></div>
+                <div class="log-time">Hace 5 minutos</div>
+              </div>
+            </div>
+            <div class="log-item log-marker">
+              <div class="log-icon">📍</div>
+              <div class="log-content">
+                <div class="log-message">Marcador agregado: <strong>"PARADA EMERGENCIA"</strong></div>
+                <div class="log-time">Hace 12 minutos</div>
+              </div>
+            </div>
+            <div class="log-item log-edit">
+              <div class="log-icon">✏️</div>
+              <div class="log-content">
+                <div class="log-message">Área editada: <strong>"Cinta Transversal"</strong></div>
+                <div class="log-time">Hace 1 hora</div>
+              </div>
+            </div>
+            <div class="log-item log-delete">
+              <div class="log-icon">✗</div>
+              <div class="log-content">
+                <div class="log-message">Área eliminada: <strong>"Zona Temporal"</strong></div>
+                <div class="log-time">Hace 2 horas</div>
+              </div>
+            </div>
+            <div class="log-item log-success">
+              <div class="log-icon">✓</div>
+              <div class="log-content">
+                <div class="log-message">Mapa creado: <strong>"Plano Oficinas"</strong></div>
+                <div class="log-time">Hace 3 horas</div>
+              </div>
+            </div>
+            <div class="log-item log-marker">
+              <div class="log-icon">📍</div>
+              <div class="log-content">
+                <div class="log-message">Marcador movido: <strong>"MOTOR TRIFÁSICO"</strong></div>
+                <div class="log-time">Hace 4 horas</div>
+              </div>
+            </div>
+            <div class="log-item log-warning">
+              <div class="log-icon">⚠️</div>
+              <div class="log-content">
+                <div class="log-message">Jerarquía modificada: <strong>"Planta Grader"</strong></div>
+                <div class="log-time">Hace 5 horas</div>
+              </div>
+            </div>
+            <div class="log-item log-success">
+              <div class="log-icon">💾</div>
+              <div class="log-content">
+                <div class="log-message">Backup automático completado</div>
+                <div class="log-time">Hace 6 horas</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <!-- Logs recientes -->
-        <section class="map-section">
-          <div class="map-section-header" onclick="toggleSection(this)">
-            <h3><span class="collapse-icon">▼</span> Actividad reciente</h3>
+        <!-- Área fija inferior: Controles -->
+        <div style="padding: 8px; border-top: 1px solid var(--border-color); background: var(--bg-secondary);">
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-secondary); cursor: pointer;">
+              <input type="checkbox" id="autoRefreshLogs" checked style="cursor: pointer;">
+              Actualizar logs
+            </label>
+            <button class="action-btn" onclick="refreshLogs()" style="flex: 1; padding: 5px 8px; font-size: 0.65rem;">
+              🔄 Refrescar ahora
+            </button>
           </div>
-          <div class="section-content">
-            <div style="font-size: 0.7rem; color: var(--text-muted); line-height: 1.6;">
-              <div style="padding: 6px; border-left: 2px solid var(--success); margin-bottom: 4px;">
-                <strong style="color: var(--success)">✓</strong> Área creada: "Grader Principal"
-                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 5 minutos</div>
-              </div>
-              <div style="padding: 6px; border-left: 2px solid var(--primary); margin-bottom: 4px;">
-                <strong style="color: var(--primary)">📍</strong> Marcador agregado: "PARADA EMERGENCIA"
-                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 12 minutos</div>
-              </div>
-              <div style="padding: 6px; border-left: 2px solid var(--warning); margin-bottom: 4px;">
-                <strong style="color: var(--warning)">✏️</strong> Área editada: "Cinta Transversal"
-                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 1 hora</div>
-              </div>
-              <div style="padding: 6px; border-left: 2px solid var(--danger); margin-bottom: 4px;">
-                <strong style="color: var(--danger)">✗</strong> Área eliminada: "Zona Temporal"
-                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 2 horas</div>
-              </div>
-              <div style="padding: 6px; border-left: 2px solid var(--success); margin-bottom: 4px;">
-                <strong style="color: var(--success)">✓</strong> Mapa creado: "Plano Oficinas"
-                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 3 horas</div>
-              </div>
-              <div style="padding: 6px; border-left: 2px solid var(--primary); margin-bottom: 4px;">
-                <strong style="color: var(--primary)">📍</strong> Marcador movido: "MOTOR TRIFÁSICO"
-                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 4 horas</div>
-              </div>
-              <div style="padding: 6px; border-left: 2px solid var(--warning); margin-bottom: 4px;">
-                <strong style="color: var(--warning)">⚠️</strong> Jerarquía modificada: "Planta Grader"
-                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 5 horas</div>
-              </div>
-              <div style="padding: 6px; border-left: 2px solid var(--success); margin-bottom: 4px;">
-                <strong style="color: var(--success)">✓</strong> Backup automático completado
-                <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Hace 6 horas</div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        <!-- Filtros de logs -->
-        <section class="map-section">
-          <div class="map-section-header" onclick="toggleSection(this)">
-            <h3><span class="collapse-icon">▼</span> Filtrar por tipo</h3>
-          </div>
-          <div class="section-content">
-            <div class="filter-chips">
-              <span class="filter-chip active">Todos</span>
-              <span class="filter-chip">Creación</span>
-              <span class="filter-chip">Edición</span>
-              <span class="filter-chip">Eliminación</span>
-              <span class="filter-chip">Marcadores</span>
-              <span class="filter-chip">Jerarquía</span>
-            </div>
-          </div>
-        </section>
-        </div> <!-- Fin tab-scroll-content -->
+        </div>
       </div>
     </aside>
 
@@ -1790,6 +2132,13 @@
       document.querySelectorAll('.correlativo-compact').forEach(badge => {
         badge.style.display = useCompactBadge ? 'inline-block' : 'none';
       });
+      
+      // Recalcular expansión del sidebar después de cambiar el ancho del panel
+      document.querySelectorAll('.subsections-sidebar').forEach(sidebar => {
+        if (sidebar.classList.contains('pinned') || sidebar.matches(':hover')) {
+          updatePanelWidth(sidebar);
+        }
+      });
     }
 
     // Quick set panel width
@@ -1956,10 +2305,177 @@
       });
     }
 
-    // Toggle control panel
-    function toggleControlPanel() {
-      document.getElementById('controlPanel').classList.toggle('collapsed');
+    // Workspace layout controls
+    function updateWorkspaceLayout() {
+      const shell = document.querySelector('.map-shell');
+      const workspace = document.querySelector('.map-workspace');
+      const panel = document.querySelector('.map-panel');
+      const toolbar = document.querySelector('.map-toolbar');
+      const canvas = document.querySelector('.map-canvas-stage');
+      const tabContent = document.querySelector('.panel-tab-content');
+      const contentWrapper = document.querySelector('.tab-content-wrapper');
+      const scrollContent = document.querySelector('.tab-scroll-content');
+      
+      const workspaceWidth = document.getElementById('workspaceWidth').value;
+      const shellGap = document.getElementById('shellGap').value;
+      const shellPadding = document.getElementById('shellPadding').value;
+      const toolbarWidth = document.getElementById('toolbarWidth').value;
+      const canvasWidth = document.getElementById('canvasWidth').value;
+      const workspaceMaxWidth = document.getElementById('workspaceMaxWidth').value;
+      const workspaceMinWidth = document.getElementById('workspaceMinWidth').value;
+      const tabContentWidth = document.getElementById('tabContentWidth').value;
+      const contentWrapperWidth = document.getElementById('contentWrapperWidth').value;
+      const scrollContentWidth = document.getElementById('scrollContentWidth').value;
+      const panelMaxWidth = document.getElementById('panelMaxWidth').value;
+      const hasBorderRadius = document.getElementById('workspaceBorderRadius').checked;
+      const hasShadows = document.getElementById('workspaceShadows').checked;
+      const debugBorders = document.getElementById('debugBorders').checked;
+      
+      // Actualizar grid
+      if (workspaceWidth == 0) {
+        shell.style.gridTemplateColumns = '500px 1fr';
+        document.getElementById('workspaceWidthValue').textContent = 'auto (1fr)';
+      } else {
+        shell.style.gridTemplateColumns = `500px ${workspaceWidth}px`;
+        document.getElementById('workspaceWidthValue').textContent = workspaceWidth + 'px';
+      }
+      
+      shell.style.gap = shellGap + 'px';
+      shell.style.padding = shellPadding + 'px';
+      document.getElementById('shellGapValue').textContent = shellGap + 'px';
+      document.getElementById('shellPaddingValue').textContent = shellPadding + 'px';
+      
+      // Workspace max/min width
+      if (workspace) {
+        if (workspaceMaxWidth == 0) {
+          workspace.style.maxWidth = 'none';
+          document.getElementById('workspaceMaxWidthValue').textContent = 'none';
+        } else {
+          workspace.style.maxWidth = workspaceMaxWidth + 'px';
+          document.getElementById('workspaceMaxWidthValue').textContent = workspaceMaxWidth + 'px';
+        }
+        
+        workspace.style.minWidth = workspaceMinWidth + 'px';
+        document.getElementById('workspaceMinWidthValue').textContent = workspaceMinWidth + 'px';
+      }
+      
+      // Panel max-width
+      if (panel) {
+        if (panelMaxWidth == 0) {
+          panel.style.maxWidth = 'none';
+          document.getElementById('panelMaxWidthValue').textContent = 'none';
+        } else {
+          panel.style.maxWidth = panelMaxWidth + 'px';
+          document.getElementById('panelMaxWidthValue').textContent = panelMaxWidth + 'px';
+        }
+      }
+      
+      // Toolbar width
+      if (toolbar) {
+        if (toolbarWidth == 0) {
+          toolbar.style.width = '100%';
+          document.getElementById('toolbarWidthValue').textContent = '100%';
+        } else {
+          toolbar.style.width = toolbarWidth + 'px';
+          document.getElementById('toolbarWidthValue').textContent = toolbarWidth + 'px';
+        }
+      }
+      
+      // Canvas width
+      if (canvas) {
+        if (canvasWidth == 0) {
+          canvas.style.width = '100%';
+          document.getElementById('canvasWidthValue').textContent = '100%';
+        } else {
+          canvas.style.width = canvasWidth + 'px';
+          document.getElementById('canvasWidthValue').textContent = canvasWidth + 'px';
+        }
+      }
+      
+      // Panel tab-content width
+      if (tabContent) {
+        if (tabContentWidth == 0) {
+          tabContent.style.width = '100%';
+          document.getElementById('tabContentWidthValue').textContent = '100%';
+        } else {
+          tabContent.style.width = tabContentWidth + 'px';
+          document.getElementById('tabContentWidthValue').textContent = tabContentWidth + 'px';
+        }
+      }
+      
+      // Content wrapper width
+      if (contentWrapper) {
+        if (contentWrapperWidth == 0) {
+          contentWrapper.style.width = '100%';
+          document.getElementById('contentWrapperWidthValue').textContent = '100%';
+        } else {
+          contentWrapper.style.width = contentWrapperWidth + 'px';
+          document.getElementById('contentWrapperWidthValue').textContent = contentWrapperWidth + 'px';
+        }
+      }
+      
+      // Scroll content width
+      if (scrollContent) {
+        if (scrollContentWidth == 0) {
+          scrollContent.style.width = '100%';
+          document.getElementById('scrollContentWidthValue').textContent = '100%';
+        } else {
+          scrollContent.style.width = scrollContentWidth + 'px';
+          document.getElementById('scrollContentWidthValue').textContent = scrollContentWidth + 'px';
+        }
+      }
+      
+      // Border radius
+      const radius = hasBorderRadius ? '8px' : '0';
+      if (workspace) workspace.style.borderRadius = radius;
+      if (panel) panel.style.borderRadius = radius;
+      
+      // Sombras
+      const shadow = hasShadows ? '0 2px 8px rgba(0, 0, 0, 0.15)' : 'none';
+      if (workspace) workspace.style.boxShadow = shadow;
+      if (panel) panel.style.boxShadow = shadow;
+      
+      // Debug borders
+      if (debugBorders) {
+        if (shell) shell.style.outline = '3px solid red';
+        if (workspace) workspace.style.outline = '3px solid lime';
+        if (panel) panel.style.outline = '3px solid blue';
+        if (toolbar) toolbar.style.outline = '2px solid yellow';
+        if (canvas) canvas.style.outline = '2px solid cyan';
+        if (tabContent) tabContent.style.outline = '2px solid magenta';
+        if (contentWrapper) contentWrapper.style.outline = '2px solid orange';
+        if (scrollContent) scrollContent.style.outline = '2px solid purple';
+      } else {
+        if (shell) shell.style.outline = 'none';
+        if (workspace) workspace.style.outline = 'none';
+        if (panel) panel.style.outline = 'none';
+        if (toolbar) toolbar.style.outline = 'none';
+        if (canvas) canvas.style.outline = 'none';
+        if (tabContent) tabContent.style.outline = 'none';
+        if (contentWrapper) contentWrapper.style.outline = 'none';
+        if (scrollContent) scrollContent.style.outline = 'none';
+      }
     }
+
+    function setWorkspaceWidth(width) {
+      document.getElementById('workspaceWidth').value = width;
+      updateWorkspaceLayout();
+    }
+
+    // Toggle control panel
+    function toggleControlPanel(event) {
+      event.stopPropagation();
+      const panel = document.getElementById('controlPanel');
+      panel.classList.toggle('expanded');
+    }
+
+    // Cerrar panel al hacer click fuera
+    document.addEventListener('click', function(event) {
+      const panel = document.getElementById('controlPanel');
+      if (panel.classList.contains('expanded') && !panel.contains(event.target)) {
+        panel.classList.remove('expanded');
+      }
+    });
 
     // Toggle section
     function toggleSection(header) {
@@ -1992,9 +2508,9 @@
       item.style.background = 'rgba(59, 130, 246, 0.2)';
     }
 
-    // Switch panel tabs
+    // Switch panel tabs (mantener compatibilidad con tabs horizontales ocultos)
     function switchPanelTab(tabName) {
-      // Remover active de todos los tabs
+      // Remover active de todos los tabs horizontales
       document.querySelectorAll('.panel-tab').forEach(tab => {
         tab.classList.remove('active');
       });
@@ -2010,19 +2526,867 @@
       // Mostrar contenido correspondiente
       const contentMap = {
         'mapas': 'tabMapas',
-        'areas': 'tabAreas',
-        'migracion': 'tabMigracion',
         'logs': 'tabLogs'
       };
       
       const contentId = contentMap[tabName];
       if (contentId) {
         document.getElementById(contentId).classList.add('active');
+        
+        // Si es la pestaña de Mapas, restablecer vista a "Mapas creados"
+        if (tabName === 'mapas') {
+          // Simular click en la primera subsección
+          const firstSubsection = document.querySelector('.subsection-item');
+          if (firstSubsection) {
+            // Resetear todas las secciones primero
+            const sectionMap = {
+              'jerarquia-completa': 'section-jerarquia-completa',
+              'mapas-creados': 'section-mapas-creados',
+              'pendientes': 'section-pendientes',
+              'estadisticas': 'section-estadisticas'
+            };
+            
+            // Ocultar todas
+            Object.values(sectionMap).forEach(id => {
+              const section = document.getElementById(id);
+              if (section) {
+                section.style.display = 'none';
+              }
+            });
+            
+            // Mostrar solo "Jerarquía Completa"
+            const jerarquiaCompleta = document.getElementById('section-jerarquia-completa');
+            if (jerarquiaCompleta) {
+              jerarquiaCompleta.style.display = 'block';
+            }
+            
+            // Actualizar subsección activa
+            document.querySelectorAll('.subsection-item').forEach(item => {
+              item.classList.remove('active');
+            });
+            firstSubsection.classList.add('active');
+          }
+        }
       }
     }
 
+    // Filtrar y mostrar solo la subsección seleccionada
+    function scrollToSection(sectionId) {
+      console.log('🔄 Cambiando a subsección:', sectionId);
+      
+      const sectionMap = {
+        // Secciones de Mapas
+        'jerarquia-completa': 'section-jerarquia-completa',
+        'mapas-creados': 'section-mapas-creados',
+        'pendientes': 'section-pendientes',
+        'estadisticas': 'section-estadisticas',
+        // Secciones de Áreas (obsoletas pero mantenidas por compatibilidad)
+        'areas-todas': 'section-areas-todas',
+        'areas-jerarquia': 'section-areas-jerarquia'
+      };
+      
+      const targetId = sectionMap[sectionId];
+      console.log('Target ID:', targetId);
+      
+      // Ocultar todas las secciones
+      Object.values(sectionMap).forEach(id => {
+        const section = document.getElementById(id);
+        if (section && !section.classList.contains('persistent-section')) {
+          section.style.display = 'none';
+          console.log('Ocultando:', id);
+        }
+      });
+      
+      // Mostrar solo la sección seleccionada
+      const targetSection = document.getElementById(targetId);
+      if (targetSection) {
+        targetSection.style.display = 'block';
+        targetSection.classList.remove('collapsed');
+        // IMPORTANTE: Expandir la sección (quitar clase collapsed)
+        console.log('✅ Mostrando y expandiendo:', targetId);
+      } else {
+        console.error('❌ No se encontró la sección:', targetId);
+      }
+      
+      // Actualizar subsección activa
+      document.querySelectorAll('.subsection-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+
+    // Toggle pin del sidebar de subsecciones (obsoleto - texto vertical)
+    function toggleSubsectionPin() {
+      // No hace nada, mantenido por compatibilidad
+    }
+
+    // Actualizar ancho del panel (obsoleto - texto vertical)
+    function updatePanelWidth(sidebar) {
+      // No hace nada, mantenido por compatibilidad
+    }
+
+    // Inicializar estado de subsecciones al cargar
+    function initializeSubsections() {
+      const sectionMap = {
+        // Secciones de Mapas
+        'jerarquia-completa': 'section-jerarquia-completa',
+        'mapas-creados': 'section-mapas-creados',
+        'pendientes': 'section-pendientes',
+        'estadisticas': 'section-estadisticas',
+        // Secciones de Áreas (obsoletas)
+        'areas-todas': 'section-areas-todas',
+        'areas-jerarquia': 'section-areas-jerarquia'
+      };
+      
+      // Mostrar sección inicial, pero mantener visibles las persistentes
+      Object.entries(sectionMap).forEach(([key, id], index) => {
+        const section = document.getElementById(id);
+        if (section) {
+          const isPersistent = section.classList.contains('persistent-section');
+          const isFirstOfMapas = key === 'jerarquia-completa';
+          const isFirstOfAreas = key === 'areas-todas';
+          
+          // Mostrar primera sección de cada tab o las persistentes
+          section.style.display = isFirstOfMapas || isFirstOfAreas || isPersistent ? 'block' : 'none';
+          
+          if (isPersistent) {
+            section.classList.remove('collapsed');
+          }
+        }
+      });
+    }
+
     // Inicializar
-    updateLayout();
+    // Aplicar preset ultraMinimal automáticamente
+    applyPreset('ultraMinimal');
+    initializeSubsections();
+
+    // ===== CARGA DE DATOS REALES (EMBEBIDOS) =====
+    // NOTA: Para usar con servidor Vite, cambiar a fetch('./INVENTARIO_STORAGE/xxx.json')
+    
+    // Datos embebidos directamente (sin necesidad de servidor)
+    const EMBEDDED_MAPAS = [{"id":1760411932641,"name":"Planta Principal","imagePath":"imagenes/mapas/map_1760411932641.png","width":9362,"height":6623,"createdAt":"2025-10-14T03:18:52.886Z","updatedAt":"2025-11-15T00:21:05.263Z","jerarquiaPath":[{"id":"AQ-IN","nivel":"empresa"},{"id":"PCHO","nivel":"area"}],"allowFreeLevel":false,"mapLevel":"area"},{"id":1763209400991,"name":"Recinto Aquachile Antarfood","imagePath":"imagenes/mapas/map_1763209400991.png","width":18725,"height":13245,"createdAt":"2025-11-15T12:23:21.221Z","updatedAt":"2025-11-15T12:23:38.348Z","jerarquiaPath":[{"id":"AQ-IN","nivel":"empresa"}],"allowFreeLevel":false,"mapLevel":"empresa"}];
+    
+    const EMBEDDED_ZONAS_COUNT = 37; // Total de zonas en zonas.json
+    
+    let mapasData = EMBEDDED_MAPAS;
+    let zonasData = []; // Se cargaría aquí si fuera necesario
+    let inventarioData = [];
+
+    function loadRealData() {
+      try {
+        // Usar datos embebidos
+        mapasData = EMBEDDED_MAPAS;
+        
+        // Simular zonas (solo contador para no sobrecargar el HTML)
+        zonasData = Array(EMBEDDED_ZONAS_COUNT).fill(null).map((_, i) => ({
+          id: i,
+          mapId: 1760411932641,
+          equipos: i < 30 ? ['equipo1'] : [] // Simular algunas con equipos
+        }));
+        
+        console.log('✅ Datos cargados (embebidos)');
+        console.log('Mapas:', mapasData.length);
+        console.log('Zonas:', zonasData.length);
+
+        // Renderizar datos
+        renderHierarchyTree(); // Primero renderizar jerarquía (componente principal)
+        renderMapasTab();
+        renderAreasTab();
+        updateStats();
+
+      } catch (error) {
+        console.error('❌ Error cargando datos:', error);
+        console.error('Detalles del error:', error.message);
+        
+        // Mostrar error en UI
+        const contentArea = document.querySelector('.panel-tab-content.active .section-content');
+        if (contentArea) {
+          contentArea.innerHTML = `
+            <div style="padding: 20px; text-align: center; color: var(--danger);">
+              <p style="font-size: 1.2rem; margin-bottom: 10px;">⚠️ Error al cargar datos</p>
+              <p style="font-size: 0.8rem; color: var(--text-secondary);">${error.message}</p>
+              <button onclick="loadRealData()" style="margin-top: 15px; padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                🔄 Reintentar
+              </button>
+            </div>
+          `;
+        }
+      }
+    }
+
+    function renderMapasTab() {
+      // Construir jerarquía desde datos reales
+      const jerarquiaCompleta = buildHierarchyFromData();
+      
+      // Actualizar contador en el header
+      const mapasCountEl = document.getElementById('mapasCount');
+      if (mapasCountEl) {
+        mapasCountEl.textContent = mapasData.length;
+      }
+      
+      // Actualizar sección de mapas creados
+      const mapasSection = document.querySelector('.map-section .section-content');
+      if (mapasSection && mapasData.length > 0) {
+        mapasSection.innerHTML = mapasData.map(mapa => `
+          <div class="area-item" style="padding: 5px 6px; margin-bottom: 3px; border-left: 2px solid var(--primary); display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 0.7rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${mapa.name}
+              </div>
+              <div style="font-size: 0.6rem; color: var(--text-muted);">
+                ${mapa.mapLevel} • ${zonasData.filter(z => z.mapId === mapa.id).length} zonas • ${mapa.jerarquiaPath.map(j => j.id).join(' > ')}
+              </div>
+            </div>
+            <div style="display: flex; gap: 3px; flex-shrink: 0;">
+              <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem; background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
+              <button class="action-btn" style="padding: 2px 6px; font-size: 0.6rem;">Editar</button>
+              <button class="action-btn" style="padding: 2px 5px; font-size: 0.6rem;">🗑️</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function renderAreasTab() {
+      const container = document.getElementById('areas-list-container');
+      if (!container) return;
+
+      // Generar tarjetas de áreas compactas (máximo 2 líneas por área)
+      const areasHtml = zonasData.slice(0, 10).map((zona, index) => {
+        const tieneEquipos = zona.equipos && zona.equipos.length > 0;
+        const numEquipos = tieneEquipos ? zona.equipos.length : 0;
+        const nivel = `N${Math.min(index % 4 + 1, 4)}`;
+        const mapaName = zona.mapId === 1760411932641 ? 'Planta Principal' : 'Sin asignar';
+        
+        return `
+          <div class="map-card" style="margin-bottom: 4px; padding: 6px 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="node-badge" style="font-size: 0.55rem; padding: 1px 4px;">${nivel}</span>
+                <span style="font-size: 0.7rem; color: var(--text-primary); font-weight: 500;">Área ${index + 1}</span>
+                <span style="font-size: 0.6rem; color: var(--text-muted);">• ${tieneEquipos ? `${numEquipos} eq.` : 'Vacía'}</span>
+              </div>
+              <div style="display: flex; gap: 4px;">
+                <button class="action-btn" style="font-size: 0.6rem; padding: 2px 6px;">Ver</button>
+                <button class="action-btn" style="font-size: 0.6rem; padding: 2px 6px;">Editar</button>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.62rem; color: var(--text-secondary);">
+              <span>Mapa: <span style="color: var(--primary-light);">${mapaName}</span></span>
+              <span style="color: var(--text-muted); font-family: monospace; font-size: 0.58rem;">ID: ${zona.id}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = areasHtml || '<p style="color: var(--text-muted); font-size: 0.65rem; text-align: center; padding: 15px;">No hay áreas disponibles</p>';
+      
+      console.log('✅ Áreas renderizadas en subsección de Mapas');
+    }
+
+    function buildHierarchyFromData() {
+      // Construir estructura jerárquica desde zonas
+      const hierarchy = {};
+      
+      zonasData.forEach(zona => {
+        const jer = zona.jerarquia;
+        if (!jer) return;
+        
+        // Procesar cada nivel de jerarquía
+        let currentLevel = hierarchy;
+        for (let i = 1; i <= 7; i++) {
+          const nivelKey = `nivel${i}`;
+          const nivelValue = jer[nivelKey];
+          
+          if (nivelValue) {
+            if (!currentLevel[nivelValue]) {
+              currentLevel[nivelValue] = {
+                name: nivelValue,
+                nivel: i,
+                children: {},
+                zonas: [],
+                mapId: zona.mapId
+              };
+            }
+            currentLevel[nivelValue].zonas.push(zona);
+            currentLevel = currentLevel[nivelValue].children;
+          }
+        }
+      });
+      
+      return hierarchy;
+    }
+
+    // ===== FUNCIONES JERARQUÍA COMPLETA =====
+    
+    function renderHierarchyTree() {
+      const container = document.getElementById('hierarchy-tree-container');
+      if (!container) return;
+
+      // Construir jerarquía desde zonasData
+      // Para este prototipo, crearemos una jerarquía estática basada en los datos
+      const hierarchy = {
+        name: 'Planta Principal',
+        nivel: 1,
+        mapId: 1760411932641,
+        children: [
+          {
+            name: 'Eviscerado',
+            nivel: 2,
+            mapId: 1760411932641,
+            areas: 15,
+            marcadores: 42,
+            children: [
+              {
+                name: 'Grader',
+                nivel: 3,
+                areas: 6,
+                marcadores: 18,
+                children: [
+                  { name: 'Pocket 1-4', nivel: 4, marcadores: 5 },
+                  { name: 'Cinta Z', nivel: 4, marcadores: 3 },
+                  { name: 'Cinta Acel. 1', nivel: 4, marcadores: 4 },
+                  { name: 'Cinta Acel. 2', nivel: 4, marcadores: 3 },
+                  { name: 'Cinta Larga', nivel: 4, marcadores: 3 }
+                ]
+              },
+              {
+                name: 'Marel',
+                nivel: 3,
+                areas: 3,
+                marcadores: 8,
+                children: [
+                  { name: 'Cinta Azul', nivel: 4, marcadores: 8 }
+                ]
+              }
+            ]
+          },
+          {
+            name: 'Filete',
+            nivel: 2,
+            areas: 8,
+            marcadores: 24
+          },
+          {
+            name: 'Congelado',
+            nivel: 2,
+            areas: 5,
+            marcadores: 15
+          }
+        ]
+      };
+
+      container.innerHTML = renderHierarchyNode(hierarchy, 0);
+    }
+
+    function renderHierarchyNode(node, depth) {
+      const hasMap = node.mapId;
+      const hasAreas = node.areas > 0;
+      const hasMarcadores = node.marcadores > 0;
+      const hasChildren = node.children && node.children.length > 0;
+      
+      // Estilos condicionales sobrios
+      const isHighlighted = hasMap || hasAreas || hasMarcadores;
+      const opacity = isHighlighted ? '1' : '0.6';
+      const paddingLeft = depth * 14;
+      const fontWeight = hasMap ? '600' : '400';
+      
+      // Indicadores discretos
+      let indicatorsHtml = '<span class="node-indicators">';
+      if (hasMap) indicatorsHtml += '<span class="node-indicator" title="Mapa asignado">🗺️</span>';
+      if (hasAreas) indicatorsHtml += '<span class="node-indicator" title="Áreas creadas">📦</span>';
+      if (hasMarcadores) indicatorsHtml += `<span class="node-indicator" title="${node.marcadores} marcadores">📍<sub style="font-size: 0.55rem;">${node.marcadores}</sub></span>`;
+      indicatorsHtml += '</span>';
+      
+      // Data attributes para sincronización
+      const dataAttrs = `data-node-name="${node.name}" data-node-level="${node.nivel}" data-map-id="${node.mapId || ''}" data-has-map="${hasMap}" data-depth="${depth}"`;
+      
+      let html = `
+        <div class="hierarchy-node" ${dataAttrs} style="opacity: ${opacity};">
+          <div class="node-header" style="padding: 4px 8px; padding-left: ${paddingLeft + 8}px;" onclick="onHierarchyNodeClick(this)">
+            ${hasChildren ? '<span class="node-toggle" onclick="toggleNode(this.parentElement.parentElement); event.stopPropagation();">▼</span>' : '<span style="display: inline-block; width: 12px;"></span>'}
+            <span class="node-badge">N${node.nivel}</span>
+            ${indicatorsHtml}
+            <span class="node-label" style="font-weight: ${fontWeight};">${node.name}</span>
+          </div>
+          ${hasChildren ? `<div class="node-children">${node.children.map(child => renderHierarchyNode(child, depth + 1)).join('')}</div>` : ''}
+        </div>
+      `;
+      
+      return html;
+    }
+
+    function filterHierarchy(searchTerm) {
+      const container = document.getElementById('hierarchy-tree-container');
+      if (!container) return;
+
+      const term = searchTerm.toLowerCase().trim();
+      
+      // Si no hay término, mostrar todo y limpiar resaltados
+      if (!term) {
+        container.querySelectorAll('.hierarchy-node').forEach(node => {
+          node.style.display = 'block';
+          node.classList.remove('highlighted');
+          const header = node.querySelector('.node-header');
+          if (header) {
+            header.style.backgroundColor = '';
+            header.classList.remove('search-match');
+          }
+        });
+        return;
+      }
+
+      // Primero, limpiar todos los resaltados
+      container.querySelectorAll('.hierarchy-node').forEach(node => {
+        node.classList.remove('highlighted');
+        const header = node.querySelector('.node-header');
+        if (header) {
+          header.classList.remove('search-match');
+        }
+      });
+
+      // Filtrar y resaltar nodos
+      const allNodes = container.querySelectorAll('.hierarchy-node');
+      const matchingNodes = [];
+      
+      allNodes.forEach(node => {
+        const nodeName = node.getAttribute('data-node-name').toLowerCase();
+        const matches = nodeName.includes(term);
+        
+        if (matches) {
+          matchingNodes.push(node);
+          // Nodo coincide: mostrar y resaltar
+          node.style.display = 'block';
+          node.classList.add('highlighted');
+          const header = node.querySelector('.node-header');
+          if (header) {
+            header.classList.add('search-match');
+          }
+          
+          // Mostrar y resaltar todos los padres (rama completa)
+          let parent = node.parentElement;
+          while (parent && parent !== container) {
+            if (parent.classList.contains('node-children')) {
+              parent.style.display = 'block';
+              // Expandir si está colapsado
+              if (parent.classList.contains('collapsed')) {
+                parent.classList.remove('collapsed');
+                const toggle = parent.previousElementSibling?.querySelector('.node-toggle');
+                if (toggle) toggle.textContent = '▼';
+              }
+              // Resaltar el nodo padre
+              const parentNode = parent.parentElement;
+              if (parentNode && parentNode.classList.contains('hierarchy-node')) {
+                parentNode.style.display = 'block';
+                parentNode.classList.add('highlighted');
+              }
+            }
+            parent = parent.parentElement;
+          }
+          
+          // Expandir y mostrar hijos si los tiene
+          const children = node.querySelector(':scope > .node-children');
+          if (children) {
+            children.style.display = 'block';
+            if (children.classList.contains('collapsed')) {
+              children.classList.remove('collapsed');
+              const toggle = node.querySelector(':scope > .node-header .node-toggle');
+              if (toggle) toggle.textContent = '▼';
+            }
+          }
+        } else {
+          // Nodo no coincide: ocultar por defecto (se mostrará si es padre/hijo de coincidencia)
+          node.style.display = 'none';
+        }
+      });
+      
+      console.log(`🔍 Búsqueda: "${term}" - ${matchingNodes.length} coincidencias`);
+    }
+
+    function onHierarchyNodeClick(headerElement) {
+      const nodeElement = headerElement.parentElement;
+      const nodeName = nodeElement.getAttribute('data-node-name');
+      const mapId = nodeElement.getAttribute('data-map-id');
+      const hasMap = nodeElement.getAttribute('data-has-map') === 'true';
+      const level = nodeElement.getAttribute('data-node-level');
+      
+      console.log('🎯 Click en nodo:', { nodeName, mapId, hasMap, level });
+      
+      // 1. LIMPIAR SELECCIONES PREVIAS
+      document.querySelectorAll('.node-header').forEach(header => {
+        header.classList.remove('selected');
+      });
+      document.querySelectorAll('.hierarchy-node').forEach(node => {
+        node.classList.remove('highlighted');
+      });
+      
+      // 2. RESALTAR NODO SELECCIONADO
+      headerElement.classList.add('selected');
+      
+      // 3. RESALTAR RAMA COMPLETA (PADRES)
+      let currentNode = nodeElement;
+      while (currentNode) {
+        if (currentNode.classList.contains('hierarchy-node')) {
+          currentNode.classList.add('highlighted');
+          // Expandir padres si están colapsados
+          const children = currentNode.querySelector(':scope > .node-children');
+          if (children && children.classList.contains('collapsed')) {
+            children.classList.remove('collapsed');
+            const toggle = currentNode.querySelector(':scope > .node-header .node-toggle');
+            if (toggle) toggle.textContent = '▼';
+          }
+        }
+        currentNode = currentNode.parentElement?.parentElement;
+      }
+      
+      // 4. ACTUALIZAR CANVAS DEL MAPA (si tiene mapa asignado)
+      if (hasMap && mapId) {
+        updateMapCanvas(mapId);
+      }
+      
+      // 5. EMITIR EVENTO PARA SINCRONIZACIÓN CON APP PRINCIPAL
+      const syncData = {
+        source: 'prototype-mapas',
+        action: 'node-selected',
+        data: {
+          nodeName,
+          mapId,
+          level,
+          hasMap,
+          timestamp: new Date().toISOString()
+        }
+      };
+      
+      // Emitir evento personalizado
+      window.dispatchEvent(new CustomEvent('hierarchy-sync', { detail: syncData }));
+      
+      // Comunicación con iframe padre (si existe)
+      if (window.parent !== window) {
+        window.parent.postMessage(syncData, '*');
+      }
+      
+      // Log para debugging
+      console.log('📡 Evento de sincronización emitido:', syncData);
+      
+      // Mostrar notificación visual temporal
+      showSyncNotification(nodeName, hasMap);
+    }
+    
+    function updateMapCanvas(mapId) {
+      console.log('🗺️ Actualizando canvas del mapa:', mapId);
+      
+      // Buscar el mapa en los datos
+      const mapa = mapasData.find(m => m.id == mapId);
+      if (!mapa) {
+        console.warn('⚠️ Mapa no encontrado:', mapId);
+        return;
+      }
+      
+      // Aquí se implementaría la lógica para actualizar el canvas
+      // Por ahora, solo mostramos la información en consola
+      console.log('📍 Mapa encontrado:', {
+        nombre: mapa.name,
+        nivel: mapa.mapLevel,
+        dimensiones: `${mapa.width}x${mapa.height}`,
+        ruta: mapa.jerarquiaPath.map(p => p.id).join(' > ')
+      });
+      
+      // TODO: Implementar renderizado en canvas real
+      // const canvas = document.getElementById('map-canvas');
+      // if (canvas) {
+      //   renderMapOnCanvas(canvas, mapa);
+      // }
+    }
+    
+    function showSyncNotification(nodeName, hasMap) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        font-size: 0.85rem;
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+      `;
+      
+      notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.2rem;">${hasMap ? '🗺️' : '📍'}</span>
+          <div>
+            <div style="font-weight: 600;">${nodeName}</div>
+            <div style="font-size: 0.75rem; opacity: 0.9;">${hasMap ? 'Mapa cargado' : 'Nodo seleccionado'}</div>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    }
+    
+    // Listener para eventos de sincronización desde la app principal
+    window.addEventListener('message', (event) => {
+      // Validar origen si es necesario
+      if (event.data && event.data.source === 'app-principal') {
+        console.log('📨 Mensaje recibido de app principal:', event.data);
+        handleExternalSync(event.data);
+      }
+    });
+    
+    window.addEventListener('hierarchy-sync', (event) => {
+      console.log('🔄 Evento de sincronización interno:', event.detail);
+    });
+    
+    function handleExternalSync(data) {
+      if (data.action === 'navigate-to-node') {
+        const nodeName = data.data.nodeName;
+        const nodeElement = document.querySelector(`[data-node-name="${nodeName}"]`);
+        if (nodeElement) {
+          const header = nodeElement.querySelector('.node-header');
+          if (header) {
+            header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => onHierarchyNodeClick(header), 300);
+          }
+        }
+      }
+    }
+
+    function updateStats() {
+      // Actualizar estadísticas en el header
+      const statsRow = document.querySelector('.stats-row');
+      if (statsRow) {
+        const totalMapas = mapasData.length;
+        const totalZonas = zonasData.length;
+        const totalMarcadores = zonasData.reduce((sum, zona) => sum + (zona.equipos?.length || 0), 0);
+        
+        statsRow.innerHTML = `
+          <div class="stat-card">
+            <div class="stat-value">${totalMapas}</div>
+            <div class="stat-label">Mapas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${totalZonas}</div>
+            <div class="stat-label">Áreas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${totalMarcadores}</div>
+            <div class="stat-label">Marcadores</div>
+          </div>
+        `;
+      }
+      
+      // Actualizar badges en tabs
+      updateTabBadges();
+    }
+
+    function updateTabBadges() {
+      const tabsData = {
+        'mapas': mapasData.length
+      };
+      
+      // Actualizar badges en tabs horizontales
+      Object.entries(tabsData).forEach(([tabName, count]) => {
+        const tab = document.querySelector(`[onclick="switchPanelTab('${tabName}')"]`);
+        if (tab) {
+          const badge = tab.querySelector('.panel-tab-badge');
+          if (badge) badge.textContent = count;
+        }
+      });
+    }
+
+    // Funciones de logs
+    function refreshLogs() {
+      console.log('🔄 Refrescando logs...');
+      // Aquí se recargarían los logs desde el servidor
+    }
+
+    function filterLogs(type) {
+      // Remover active de todos los chips
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.classList.remove('active');
+      });
+      
+      // Activar chip seleccionado
+      event.target.classList.add('active');
+      
+      // Filtrar logs según tipo
+      const logItems = document.querySelectorAll('.log-item');
+      logItems.forEach(item => {
+        if (type === 'all') {
+          item.style.display = 'flex';
+        } else {
+          const shouldShow = item.classList.contains(`log-${type}`);
+          item.style.display = shouldShow ? 'flex' : 'none';
+        }
+      });
+      
+      console.log('🔍 Filtrando logs por:', type);
+    }
+
+    // ===== FUNCIONES DEMO SINCRONIZACIÓN =====
+    
+    function demoSync(nodeName) {
+      // Mostrar log
+      const logContainer = document.getElementById('sync-log');
+      const logContent = document.getElementById('sync-log-content');
+      logContainer.style.display = 'block';
+      
+      const timestamp = new Date().toLocaleTimeString();
+      logContent.innerHTML += `<div style="color: var(--success); margin: 2px 0;">
+        [${timestamp}] 🎯 Navegando a: "${nodeName}"
+      </div>`;
+      logContent.scrollTop = logContent.scrollHeight;
+      
+      // Simular navegación
+      const nodeElement = document.querySelector(`[data-node-name="${nodeName}"]`);
+      if (nodeElement) {
+        const header = nodeElement.querySelector('.node-header');
+        if (header) {
+          // Scroll suave
+          header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Destacar temporalmente
+          header.style.background = 'rgba(34, 197, 94, 0.3)';
+          setTimeout(() => {
+            header.style.background = '';
+            onHierarchyNodeClick(header);
+            
+            logContent.innerHTML += `<div style="color: var(--primary-light); margin: 2px 0;">
+              [${new Date().toLocaleTimeString()}] ✅ Nodo seleccionado y sincronizado
+            </div>`;
+            logContent.scrollTop = logContent.scrollHeight;
+          }, 800);
+        }
+      } else {
+        logContent.innerHTML += `<div style="color: var(--danger); margin: 2px 0;">
+          [${timestamp}] ❌ Nodo no encontrado
+        </div>`;
+      }
+    }
+    
+    function showSyncInfo() {
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 20000;
+        animation: fadeIn 0.2s ease-out;
+      `;
+      
+      modal.innerHTML = `
+        <div style="
+          background: var(--bg-secondary);
+          border: 1px solid var(--border-light);
+          border-radius: 12px;
+          padding: 24px;
+          max-width: 600px;
+          max-height: 80vh;
+          overflow-y: auto;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        ">
+          <h2 style="color: var(--primary-light); margin-bottom: 16px; font-size: 1.2rem;">
+            🔄 Sistema de Sincronización Bidireccional
+          </h2>
+          
+          <div style="color: var(--text-secondary); line-height: 1.6; font-size: 0.85rem;">
+            <h3 style="color: var(--text-primary); font-size: 1rem; margin: 16px 0 8px;">
+              📤 Eventos Emitidos (Prototype → App)
+            </h3>
+            <ul style="margin-left: 20px;">
+              <li><strong>CustomEvent:</strong> 'hierarchy-sync'</li>
+              <li><strong>PostMessage:</strong> { source: 'prototype-mapas', action: 'node-selected' }</li>
+              <li><strong>Trigger:</strong> Click en cualquier nodo</li>
+              <li><strong>Datos:</strong> nodeName, mapId, level, hasMap, timestamp</li>
+            </ul>
+            
+            <h3 style="color: var(--text-primary); font-size: 1rem; margin: 16px 0 8px;">
+              📥 Eventos Recibidos (App → Prototype)
+            </h3>
+            <ul style="margin-left: 20px;">
+              <li><strong>PostMessage:</strong> { source: 'app-principal', action: 'navigate-to-node' }</li>
+              <li><strong>Acción:</strong> Scroll suave + selección + resaltado de rama</li>
+            </ul>
+            
+            <h3 style="color: var(--text-primary); font-size: 1rem; margin: 16px 0 8px;">
+              ⚡ Funcionalidades
+            </h3>
+            <ul style="margin-left: 20px;">
+              <li>🎯 Resaltado de nodo y rama completa</li>
+              <li>🗺️ Actualización automática del canvas</li>
+              <li>🔍 Búsqueda global con filtrado inteligente</li>
+              <li>📍 Indicadores visuales sobrios (mapa/área/marcadores)</li>
+              <li>🔔 Notificaciones visuales temporales</li>
+            </ul>
+            
+            <h3 style="color: var(--text-primary); font-size: 1rem; margin: 16px 0 8px;">
+              💻 Ejemplo de Integración
+            </h3>
+            <pre style="
+              background: rgba(0,0,0,0.3);
+              padding: 12px;
+              border-radius: 6px;
+              overflow-x: auto;
+              font-size: 0.75rem;
+              color: #a5d6ff;
+            ">// Desde la app principal:
+window.postMessage({
+  source: 'app-principal',
+  action: 'navigate-to-node',
+  data: { nodeName: 'Eviscerado' }
+}, '*');
+
+// Escuchar eventos:
+window.addEventListener('message', (e) => {
+  if (e.data.source === 'prototype-mapas') {
+    console.log('Nodo:', e.data.data.nodeName);
+  }
+});</pre>
+          </div>
+          
+          <button onclick="this.parentElement.parentElement.remove()" style="
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            width: 100%;
+          ">
+            Cerrar
+          </button>
+        </div>
+      `;
+      
+      modal.onclick = (e) => {
+        if (e.target === modal) modal.remove();
+      };
+      
+      document.body.appendChild(modal);
+    }
+
+    // Cargar datos al iniciar
+    loadRealData();
+    
+    // Aplicar layout inicial con los valores por defecto
+    updateWorkspaceLayout();
   </script>
 </body>
 </html>
