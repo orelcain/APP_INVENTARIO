@@ -86,6 +86,16 @@
   background: rgba(255, 255, 255, 0.03);
 }
 
+/* 🔧 Mostrar botón de asignación al hover */
+.mapas-tab .node-header:hover .node-assign-btn {
+  opacity: 1 !important;
+}
+
+.mapas-tab .node-assign-btn:hover {
+  background: rgba(91, 139, 180, 0.15) !important;
+  border-color: var(--primary) !important;
+}
+
 /* Estado: Seleccionado (click en el nodo) */
 .mapas-tab .node-header.selected {
   background: rgba(59, 130, 246, 0.12);

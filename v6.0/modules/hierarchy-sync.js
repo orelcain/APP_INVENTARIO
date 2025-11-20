@@ -146,11 +146,28 @@ class HierarchySync {
     
     return `
       <div class="hierarchy-node ${isRepuesto ? 'hierarchy-node-repuesto' : ''}" ${dataAttrs} style="opacity: ${opacity};">
-        <div class="node-header" style="padding: 4px 8px; padding-left: ${paddingLeft + 8}px;" onclick="window.hierarchySync.onNodeClick(event)">
-          ${toggleHtml}
-          ${badgeHtml}
-          ${indicators}
-          <span class="node-label" style="font-weight: ${fontWeight};">${node.name}</span>
+        <div class="node-header" style="padding: 4px 8px; padding-left: ${paddingLeft + 8}px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 6px; flex: 1;" onclick="window.hierarchySync.onNodeClick(event)">
+            ${toggleHtml}
+            ${badgeHtml}
+            ${indicators}
+            <span class="node-label" style="font-weight: ${fontWeight};">${node.name}</span>
+          </div>
+          <button 
+            class="node-assign-btn" 
+            onclick="window.hierarchySync.openAssignModal(event, '${node.id}', '${node.name}', '${node.nivel}')"
+            title="Asignar mapa/área o crear marcador"
+            style="
+              background: transparent;
+              border: 1px solid rgba(91, 139, 180, 0.3);
+              color: var(--primary-light, #7ba5c8);
+              padding: 2px 6px;
+              border-radius: 3px;
+              font-size: 0.65rem;
+              cursor: pointer;
+              opacity: 0;
+              transition: opacity 0.2s;
+            ">⚙️</button>
         </div>
         ${childrenHtml}
       </div>
@@ -780,6 +797,117 @@ class HierarchySync {
    */
   on(eventName, callback) {
     this.eventTarget.addEventListener(eventName, callback);
+  }
+
+  /**
+   * Abrir modal de asignación
+   */
+  openAssignModal(event, nodeId, nodeName, nodeLevel) {
+    event.stopPropagation(); // Evitar que se propague al click del nodo
+    
+    console.log('⚙️ Abriendo modal de asignación:', { nodeId, nodeName, nodeLevel });
+    
+    // TODO: Implementar modal completo
+    // Por ahora mostrar opciones básicas con confirm
+    
+    const options = [
+      '1. Asignar mapa existente',
+      '2. Asignar área existente',
+      '3. Crear nuevo marcador en mapa actual',
+      '4. Ver propiedades del nodo',
+      '5. Cancelar'
+    ].join('\n');
+    
+    const choice = prompt(`⚙️ Opciones para: "${nodeName}"\n\n${options}\n\nIngresa número (1-5):`, '5');
+    
+    if (choice === '1') {
+      this.assignMapToNode(nodeId, nodeName);
+    } else if (choice === '2') {
+      this.assignAreaToNode(nodeId, nodeName);
+    } else if (choice === '3') {
+      this.createMarkerForNode(nodeId, nodeName);
+    } else if (choice === '4') {
+      this.showNodeProperties(nodeId, nodeName, nodeLevel);
+    }
+  }
+
+  /**
+   * Asignar mapa a nodo
+   */
+  assignMapToNode(nodeId, nodeName) {
+    if (!this.mapasData || this.mapasData.length === 0) {
+      alert('❌ No hay mapas disponibles. Crea un mapa primero en la sección "Mapas Creados".');
+      return;
+    }
+    
+    const mapasList = this.mapasData.map((m, i) => `${i + 1}. ${m.nombre || m.name || 'Mapa ' + m.id}`).join('\n');
+    const mapChoice = prompt(`🗺️ Selecciona un mapa para "${nodeName}":\n\n${mapasList}\n\nIngresa número:`, '1');
+    
+    if (mapChoice && parseInt(mapChoice) > 0 && parseInt(mapChoice) <= this.mapasData.length) {
+      const selectedMap = this.mapasData[parseInt(mapChoice) - 1];
+      console.log('✅ Asignando mapa:', selectedMap.nombre, 'a nodo:', nodeName);
+      
+      // TODO: Guardar asignación en localStorage o backend
+      alert(`✅ Mapa "${selectedMap.nombre}" asignado a "${nodeName}"`);
+      
+      // Recargar jerarquía
+      this.renderTree();
+    }
+  }
+
+  /**
+   * Asignar área a nodo
+   */
+  assignAreaToNode(nodeId, nodeName) {
+    if (!this.zonasData || this.zonasData.length === 0) {
+      alert('❌ No hay áreas disponibles. Crea un área primero en un mapa.');
+      return;
+    }
+    
+    const areasList = this.zonasData.map((z, i) => `${i + 1}. ${z.nombre || 'Área ' + z.id}`).join('\n');
+    const areaChoice = prompt(`📦 Selecciona un área para "${nodeName}":\n\n${areasList}\n\nIngresa número:`, '1');
+    
+    if (areaChoice && parseInt(areaChoice) > 0 && parseInt(areaChoice) <= this.zonasData.length) {
+      const selectedArea = this.zonasData[parseInt(areaChoice) - 1];
+      console.log('✅ Asignando área:', selectedArea.nombre, 'a nodo:', nodeName);
+      
+      // TODO: Guardar asignación
+      alert(`✅ Área "${selectedArea.nombre}" asignada a "${nodeName}"`);
+      
+      this.renderTree();
+    }
+  }
+
+  /**
+   * Crear marcador en mapa actual
+   */
+  createMarkerForNode(nodeId, nodeName) {
+    alert(`📍 Para crear un marcador para "${nodeName}":\n\n1. Haz click derecho en el mapa\n2. Selecciona "Crear marcador"\n3. El marcador se vinculará automáticamente a este nodo`);
+    
+    // TODO: Emitir evento para que el canvas entre en modo "crear marcador"
+    window.dispatchEvent(new CustomEvent('hierarchy-create-marker', {
+      detail: { nodeId, nodeName }
+    }));
+  }
+
+  /**
+   * Mostrar propiedades del nodo
+   */
+  showNodeProperties(nodeId, nodeName, nodeLevel) {
+    const nodeElement = this.container.querySelector(`[data-node-id="${nodeId}"]`);
+    const mapId = nodeElement?.getAttribute('data-map-id');
+    const areaId = nodeElement?.getAttribute('data-area-id');
+    
+    const props = [
+      `📋 Propiedades de: ${nodeName}`,
+      ``,
+      `🔢 ID: ${nodeId}`,
+      `📊 Nivel: ${nodeLevel}`,
+      `🗺️ Mapa: ${mapId || 'Sin asignar'}`,
+      `📦 Área: ${areaId || 'Sin asignar'}`,
+    ].join('\n');
+    
+    alert(props);
   }
 
   /**
