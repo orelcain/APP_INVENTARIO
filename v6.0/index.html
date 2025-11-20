@@ -16114,12 +16114,8 @@
 
 <!-- Script visualTreeV2.js removido - funcionalidad integrada en el código principal -->
 
-<!-- Cargar módulo de sincronización de jerarquía (sin ES6 modules para compatibilidad file://) -->
-<script src="./modules/hierarchy-sync.js"></script>
-
+<!-- Inicializar sistema de eventos ANTES de cargar módulos -->
 <script>
-// @ts-nocheck
-
 // ========================================================================
 //  SISTEMA DE EVENTOS GLOBAL
 // ========================================================================
@@ -16127,6 +16123,13 @@ if (!window.appEvents) {
   window.appEvents = new EventTarget();
   console.log('✅ Sistema de eventos global creado');
 }
+</script>
+
+<!-- Cargar módulo de sincronización de jerarquía (sin ES6 modules para compatibilidad file://) -->
+<script src="./modules/hierarchy-sync.js"></script>
+
+<script>
+// @ts-nocheck
 
 const EMBEDDED_DATA = {
   version: '1.0-mobile',
