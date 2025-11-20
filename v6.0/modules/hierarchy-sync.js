@@ -625,8 +625,8 @@ class HierarchySync {
   }
 }
 
-// Exportar también funciones helper standalone
-export const HierarchyUtils = {
+// Funciones helper standalone (disponibles globalmente)
+const HierarchyUtils = {
   /**
    * Construir jerarquía desde datos planos
    */
@@ -669,5 +669,6 @@ export const HierarchyUtils = {
 // Exponer clase globalmente para uso sin módulos ES6
 if (typeof window !== 'undefined') {
   window.HierarchySync = HierarchySync;
+  window.HierarchyUtils = HierarchyUtils;
   console.log('✅ HierarchySync cargado y disponible globalmente');
 }

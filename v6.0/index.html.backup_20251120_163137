@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>APP Inventario v6.0</title>
 
-  <!-- CSS Modular para Jerarquía de Mapas -->
-  <link rel="stylesheet" href="styles/main.css">
-  <link rel="stylesheet" href="styles/mapas-hierarchy.css">
-
   <style>
     /* CACHE-BUST: 2025-11-19-v50-CORRELATIVOS-GLOBALES-EN-MAPAS */
     * {
@@ -15041,7 +15037,7 @@
   
   <!--  NUEVO SISTEMA DE MAPAS AVANZADO DE APP_BASE (FASE 3 - HTML INTEGRADO) -->
   <!-- TAB MAPA -->
-  <div id='mapa' class='tab-content mapas-tab'>
+  <div id='mapa' class='tab-content'>
     <div class='map-shell'>
       <aside class='map-panel'>
         <div class='map-panel-header'>
@@ -15097,25 +15093,6 @@
               </div>
             </div>
           </section>
-          
-          <!-- SECCIÓN NUEVA: JERARQUÍA COMPLETA -->
-          <section class='map-section'>
-            <div class='map-section-header' onclick='app.toggleMapSection(this)'>
-              <h3><span class='map-section-collapse-icon'></span> Jerarquía Completa</h3>
-            </div>
-            <!-- Input de búsqueda global -->
-            <div class='map-search-container'>
-              <input 
-                type='text' 
-                id='globalSearch' 
-                placeholder='🔍 Buscar en jerarquía...'
-                class='map-search-input'
-              />
-            </div>
-            <!-- Contenedor del árbol de jerarquía -->
-            <div id='hierarchy-tree-container' class='area-tree'></div>
-          </section>
-          
           <section class='map-section'>
             <div class='map-section-header map-section-header-custom' onclick='app.toggleMapSection(this)'>
               <h3><span class='map-section-collapse-icon'></span> reas del mapa</h3>
@@ -16114,20 +16091,8 @@
 
 <!-- Script visualTreeV2.js removido - funcionalidad integrada en el código principal -->
 
-<!-- Cargar módulo de sincronización de jerarquía (sin ES6 modules para compatibilidad file://) -->
-<script src="./modules/hierarchy-sync.js"></script>
-
 <script>
 // @ts-nocheck
-
-// ========================================================================
-//  SISTEMA DE EVENTOS GLOBAL
-// ========================================================================
-if (!window.appEvents) {
-  window.appEvents = new EventTarget();
-  console.log('✅ Sistema de eventos global creado');
-}
-
 const EMBEDDED_DATA = {
   version: '1.0-mobile',
   lastUpdate: new Date().toISOString(),
@@ -37297,25 +37262,6 @@ class InventarioCompleto {
     input.value = ''; // Limpiar el input
   }
 
-  /**
-   * Obtiene el nodo jerárquico completo de un repuesto
-   * Prioridad: nivel5 > nivel4 > nivel3 > nivel2 > nivel1
-   */
-  getNodoJerarquicoCompleto(repuesto) {
-    if (!repuesto) return null;
-    
-    // Buscar el nivel más específico no vacío
-    const niveles = ['nivel5', 'nivel4', 'nivel3', 'nivel2', 'nivel1'];
-    for (const nivel of niveles) {
-      const valor = repuesto[nivel];
-      if (valor && valor.trim() !== '') {
-        return valor.trim();
-      }
-    }
-    
-    return null;
-  }
-
   async openModal(mode, id = null) {
     console.log(`\n ========== ABRIENDO MODAL ==========`);
     console.log(`Modo: ${mode}`);
@@ -37544,21 +37490,6 @@ class InventarioCompleto {
       // Inicializar wizard despus de que todo est renderizado
       this.setWizardStep(1, { focusFirstField: false });
     }, 120);
-    
-    // 🔄 SINCRONIZACIÓN: Emitir evento cuando se selecciona un repuesto
-    if (mode === 'edit' && id && repuesto) {
-      const nodoJerarquia = this.getNodoJerarquicoCompleto(repuesto);
-      if (window.appEvents && nodoJerarquia) {
-        window.appEvents.dispatchEvent(new CustomEvent('inventario-item-selected', {
-          detail: { 
-            equipoId: id,
-            nodoJerarquia: nodoJerarquia,
-            repuesto: repuesto
-          }
-        }));
-        console.log(`📤 Evento emitido: inventario-item-selected (${nodoJerarquia})`);
-      }
-    }
     
     console.log('========== MODAL ABIERTO ==========\n');
   }
@@ -44943,36 +44874,11 @@ class InventarioCompleto {
     // path es un objeto con la ruta jerrquica: { planta, areaGeneral, subArea, etc. }
     this.filtrosJerarquicosActivos = path;
     
-    // 🔄 SINCRONIZACIÓN: Emitir evento cuando se selecciona nodo en jerarquía
-    const nodeName = this.getLastNonEmptyLevel(path);
-    if (window.appEvents && nodeName) {
-      window.appEvents.dispatchEvent(new CustomEvent('jerarquia-node-clicked', {
-        detail: { 
-          nodeName: nodeName,
-          path: path
-        }
-      }));
-      console.log(`📤 Evento emitido: jerarquia-node-clicked (${nodeName})`);
-    }
-    
     // Cambiar a pestaa inventario
     this.switchTab('inventario');
     
     // Renderizar inventario filtrado
     this.applyFilters();
-  }
-  
-  /**
-   * Obtiene el último nivel no vacío del path jerárquico
-   */
-  getLastNonEmptyLevel(path) {
-    const niveles = ['nivel5', 'nivel4', 'nivel3', 'nivel2', 'nivel1'];
-    for (const nivel of niveles) {
-      if (path[nivel] && path[nivel].trim() !== '') {
-        return path[nivel].trim();
-      }
-    }
-    return null;
   }
   
   /**
@@ -55356,119 +55262,6 @@ function deferHeavyTask(task, { timeout = 1500, label = 'tarea diferida' } = {})
 }
 
 // ========================================================================
-//  INICIALIZACIÓN DE JERARQUÍA EN TAB MAPAS
-// ========================================================================
-async function initTabMapas() {
-  console.log('🔄 Inicializando jerarquía en Tab Mapas...');
-  
-  try {
-    // 1. Obtener datos de mapas y zonas
-    const mapasData = app.mapas || [];
-    const zonasData = app.zonas || [];
-    
-    console.log(`📦 Datos disponibles: ${mapasData.length} mapas, ${zonasData.length} zonas`);
-    
-    // 2. Obtener contenedor HTML
-    const container = document.getElementById('hierarchy-tree-container');
-    if (!container) {
-      throw new Error('Contenedor #hierarchy-tree-container no encontrado');
-    }
-    
-    // 3. Crear instancia de HierarchySync
-    window.hierarchySync = new HierarchySync(container, mapasData, zonasData);
-    
-    // 4. Configurar eventos ANTES de inicializar
-    setupHierarchyEvents();
-    
-    // 5. Inicializar (renderiza el árbol)
-    window.hierarchySync.init();
-    
-    // 6. Conectar búsqueda global
-    setupGlobalSearch();
-    
-    console.log('✅ Jerarquía de mapas inicializada correctamente');
-    
-  } catch (error) {
-    console.error('❌ Error al inicializar jerarquía de mapas:', error);
-  }
-}
-
-// Configurar eventos de la jerarquía
-function setupHierarchyEvents() {
-  if (!window.hierarchySync) return;
-  
-  // Evento: Nodo seleccionado
-  window.hierarchySync.on('node-selected', (event) => {
-    const { name, mapId, level, hasMap } = event.detail.data;
-    console.log(`✅ Nodo seleccionado: ${name} (Nivel ${level})`);
-    
-    // Emitir evento global para sincronización
-    if (window.appEvents) {
-      window.appEvents.dispatchEvent(new CustomEvent('mapas-node-selected', {
-        detail: { name, mapId, hasMap, level }
-      }));
-    }
-  });
-  
-  // Evento: Actualizar canvas de mapa
-  window.hierarchySync.on('map-canvas-update', (event) => {
-    const mapa = event.detail.mapa;
-    console.log(`🗺️ Canvas actualizado: ${mapa.name}`);
-  });
-  
-  // 📥 SINCRONIZACIÓN: Escuchar eventos desde Tab Inventario
-  if (window.appEvents) {
-    window.appEvents.addEventListener('inventario-item-selected', (event) => {
-      const { nodoJerarquia, equipoId } = event.detail;
-      console.log(`📨 Recibido de Inventario: ${nodoJerarquia} (ID: ${equipoId})`);
-      
-      // Navegar al nodo en la jerarquía
-      if (window.hierarchySync && nodoJerarquia) {
-        window.hierarchySync.navigateToNode(nodoJerarquia);
-      }
-    });
-    
-    // 📥 SINCRONIZACIÓN: Escuchar eventos desde Tab Jerarquía  
-    window.appEvents.addEventListener('jerarquia-node-clicked', (event) => {
-      const { nodeName } = event.detail;
-      console.log(`📨 Recibido de Jerarquía: ${nodeName}`);
-      
-      // Sincronizar con vista de mapas
-      if (window.hierarchySync && nodeName) {
-        window.hierarchySync.navigateToNode(nodeName);
-      }
-    });
-  }
-}
-
-// Configurar búsqueda global
-function setupGlobalSearch() {
-  const searchInput = document.getElementById('globalSearch');
-  if (!searchInput) {
-    console.warn('⚠️ Input de búsqueda no encontrado');
-    return;
-  }
-  
-  // Búsqueda en tiempo real
-  searchInput.addEventListener('input', (e) => {
-    const term = e.target.value;
-    if (window.hierarchySync) {
-      window.hierarchySync.filter(term);
-    }
-  });
-  
-  // Limpiar con ESC
-  searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      searchInput.value = '';
-      if (window.hierarchySync) {
-        window.hierarchySync.filter('');
-      }
-    }
-  });
-}
-
-// ========================================================================
 //  INICIALIZACIN CENTRALIZADA DE LA APLICACIN
 // ========================================================================
 (async () => {
@@ -55614,13 +55407,6 @@ function setupGlobalSearch() {
     }
   } else {
     console.log(' Canvas de mapa no encontrado - MapController no inicializado');
-  }
-  
-  //  PASO 2.6: Inicializar jerarquía en Tab Mapas
-  try {
-    await initTabMapas();
-  } catch (error) {
-    console.warn(' Error inicializando jerarquía de mapas:', error);
   }
   
   } catch (error) {
