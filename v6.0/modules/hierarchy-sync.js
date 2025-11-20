@@ -57,6 +57,41 @@ class HierarchySync {
   }
 
   /**
+   * Refresh del árbol (recargar desde datos actuales)
+   */
+  refresh() {
+    this.renderTree();
+    console.log('🔄 Árbol de jerarquía refrescado');
+  }
+
+  /**
+   * Enfocar un nodo específico
+   */
+  focusNode(nodeId) {
+    const nodeElement = this.container.querySelector(`[data-node-id="${nodeId}"]`);
+    if (nodeElement) {
+      // Expandir padres
+      let parent = nodeElement.closest('.hierarchy-node').parentElement;
+      while (parent && parent.classList.contains('node-children')) {
+        const parentNode = parent.previousElementSibling;
+        if (parentNode) {
+          parentNode.classList.remove('collapsed');
+        }
+        parent = parent.parentElement?.parentElement;
+      }
+
+      // Resaltar nodo
+      nodeElement.classList.add('search-match');
+      nodeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Quitar resaltado después de 2 segundos
+      setTimeout(() => {
+        nodeElement.classList.remove('search-match');
+      }, 2000);
+    }
+  }
+
+  /**
    * Configurar listeners de eventos
    */
   setupEventListeners() {

@@ -15242,15 +15242,21 @@
             </div>
           </div>
 
-          <!-- Área fija inferior: Controles -->
+          <!-- Área fija inferior: Controles con Export -->
           <div style='padding: 8px; border-top: 1px solid var(--border-color); background: var(--bg-secondary);'>
             <div style='display: flex; gap: 6px; align-items: center;'>
               <label style='display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-secondary); cursor: pointer;'>
                 <input type='checkbox' id='autoRefreshLogs' checked style='cursor: pointer;'>
                 Actualizar logs
               </label>
-              <button class='action-btn' onclick='refreshLogs()' style='flex: 1; padding: 5px 8px; font-size: 0.65rem;'>
-                🔄 Refrescar ahora
+              <button class='action-btn' onclick='refreshLogs()' style='padding: 5px 8px; font-size: 0.65rem;'>
+                🔄 Refrescar
+              </button>
+              <button class='action-btn' onclick='exportLogs("csv")' style='padding: 5px 8px; font-size: 0.65rem; background: var(--success);'>
+                📥 CSV
+              </button>
+              <button class='action-btn' onclick='exportLogs("json")' style='padding: 5px 8px; font-size: 0.65rem; background: var(--info);'>
+                📥 JSON
               </button>
             </div>
           </div>
