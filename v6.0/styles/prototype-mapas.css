@@ -62,7 +62,7 @@
 /* LAYOUT PRINCIPAL */
 .map-shell {
   display: grid;
-  grid-template-columns: var(--panel-width) 1fr;
+  grid-template-columns: 680px 1fr; /* 🔧 Forzar 680px directamente para evitar conflictos */
   height: calc(100vh - 100px);
   width: 100%;
   margin: 0;
