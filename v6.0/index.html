@@ -15046,11 +15046,7 @@
     <div class='map-shell'>
       <!-- PANEL LATERAL CON TABS -->
       <aside class='map-panel'>
-        <div class='map-panel-header'>
-          <h2>Mapas de planta</h2>
-          <p>Gestiona mapas, zonas y jerarquías</p>
-        </div>
-
+        
         <!-- TABS DE NAVEGACIÓN -->
         <div class='panel-tabs'>
           <button class='panel-tab active' onclick='switchPanelTab("mapas")'>
@@ -15086,29 +15082,72 @@
 
           <!-- Contenedor del contenido -->
           <div class='tab-content-wrapper'>
-            <!-- Área fija -->
+            <!-- Área fija mejorada -->
             <div class='tab-fixed-header'>
-              <!-- Buscador y Stats en una fila (50/50) -->
-              <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 4px; align-items: start;'>
-                <!-- Buscador global -->
-                <div class='search-container' style='margin-bottom: 0;'>
-                  <input type='text' id='globalSearch' class='search-input' placeholder='🔎 Buscar en jerarquía...' oninput='filterHierarchy(this.value)'>
+              <!-- 1. BREADCRUMB Y MAPA ACTIVO -->
+              <div class='map-active-header'>
+                <div class='map-thumbnail-container'>
+                  <img id='activeMapThumbnail' src='' alt='Mapa activo' class='map-thumbnail' onerror='this.style.display="none"'>
+                  <div class='map-thumbnail-placeholder'>📍</div>
                 </div>
+                <div class='map-breadcrumb-info'>
+                  <div class='breadcrumb-path' id='mapBreadcrumb'>
+                    <span class='breadcrumb-item'>Sin mapa</span>
+                  </div>
+                  <div class='map-active-name' id='activeMapName'>Ningún mapa cargado</div>
+                </div>
+                <div class='map-status-indicator'>
+                  <span class='status-badge status-inactive' id='mapStatusBadge'>●</span>
+                </div>
+              </div>
 
-                <!-- Stats generales (compactos) -->
-                <div class='stats-row' style='margin-top: 0;'>
-                  <div class='stat-card'>
-                    <div class='stat-value' id='statsMapasCount'>-</div>
-                    <div class='stat-label'>Mapas</div>
+              <!-- 2. BÚSQUEDA AVANZADA CON FILTROS -->
+              <div class='search-advanced-container'>
+                <div class='search-input-wrapper'>
+                  <input type='text' id='globalSearch' class='search-input-enhanced' 
+                         placeholder='🔎 Buscar en jerarquía, mapas, áreas...' 
+                         oninput='handleAdvancedSearch(this.value)'
+                         onkeydown='handleSearchKeyboard(event)'
+                         autocomplete='off'>
+                  <div class='search-suggestions' id='searchSuggestions' style='display: none;'></div>
+                  <div class='search-history' id='searchHistory' style='display: none;'></div>
+                </div>
+                <div class='search-filters'>
+                  <button class='filter-btn active' data-filter='all' onclick='setSearchFilter("all")'>Todo</button>
+                  <button class='filter-btn' data-filter='mapas' onclick='setSearchFilter("mapas")'>🗺️</button>
+                  <button class='filter-btn' data-filter='areas' onclick='setSearchFilter("areas")'>📦</button>
+                  <button class='filter-btn' data-filter='marcadores' onclick='setSearchFilter("marcadores")'>📍</button>
+                </div>
+              </div>
+
+              <!-- 3. STATS MEJORADOS CON COMPARATIVAS -->
+              <div class='stats-enhanced-row'>
+                <div class='stat-card-enhanced'>
+                  <div class='stat-icon'>🗺️</div>
+                  <div class='stat-content'>
+                    <div class='stat-value-enhanced' id='statsMapasCount'>0</div>
+                    <div class='stat-label-enhanced'>Mapas</div>
+                    <div class='stat-change positive' id='statsMapasChange'>+0</div>
                   </div>
-                  <div class='stat-card'>
-                    <div class='stat-value' id='statsAreasCount'>-</div>
-                    <div class='stat-label'>Áreas</div>
+                  <div class='stat-sparkline' id='statsMapasSparkline'></div>
+                </div>
+                <div class='stat-card-enhanced'>
+                  <div class='stat-icon'>📦</div>
+                  <div class='stat-content'>
+                    <div class='stat-value-enhanced' id='statsAreasCount'>0</div>
+                    <div class='stat-label-enhanced'>Áreas</div>
+                    <div class='stat-change neutral' id='statsAreasChange'>+0</div>
                   </div>
-                  <div class='stat-card'>
-                    <div class='stat-value' id='statsMarcadoresCount'>-</div>
-                    <div class='stat-label'>Marcadores</div>
+                  <div class='stat-sparkline' id='statsAreasSparkline'></div>
+                </div>
+                <div class='stat-card-enhanced'>
+                  <div class='stat-icon'>📍</div>
+                  <div class='stat-content'>
+                    <div class='stat-value-enhanced' id='statsMarcadoresCount'>0</div>
+                    <div class='stat-label-enhanced'>Marcadores</div>
+                    <div class='stat-change positive' id='statsMarcadoresChange'>+0</div>
                   </div>
+                  <div class='stat-sparkline' id='statsMarcadoresSparkline'></div>
                 </div>
               </div>
             </div>
@@ -15218,29 +15257,61 @@
         </div>
       </aside>
 
-      <!-- WORKSPACE CANVAS -->
+      <!-- WORKSPACE CANVAS MEJORADO -->
       <div class='map-workspace'>
+        <!-- Toolbar con controles mejorados -->
         <div class='map-toolbar'>
           <div class='toolbar-section'>
-            <button class='toolbar-btn' onclick='mapController.zoomIn()'>+ Zoom</button>
-            <button class='toolbar-btn' onclick='mapController.zoomOut()'>- Zoom</button>
-            <button class='toolbar-btn' onclick='mapController.resetView()'>Reset</button>
+            <div class='zoom-controls'>
+              <button class='zoom-btn' onclick='mapController.zoomOut()' title='Alejar (Ctrl + -)'>−</button>
+              <span class='zoom-level' id='zoomLevel'>100%</span>
+              <button class='zoom-btn' onclick='mapController.zoomIn()' title='Acercar (Ctrl + +)'>+</button>
+            </div>
+            <button class='toolbar-btn' onclick='mapController.resetView()' title='Restablecer vista (R)'>
+              🔄 Reset
+            </button>
           </div>
+          
           <div class='toolbar-section'>
-            <span id='mapToolbarInfo' style='font-size: 0.8rem; color: var(--text-secondary)'>100% | Mapa General</span>
+            <span id='mapToolbarInfo' style='font-size: 0.75rem; color: var(--text-secondary); font-weight: 500;'>
+              Sin mapa cargado
+            </span>
           </div>
+          
           <div class='toolbar-section'>
-            <button class='toolbar-btn' onclick='mapController.toggleNombres()'>Nombres</button>
-            <button class='toolbar-btn' onclick='mapController.togglePuntos()'>Puntos</button>
-            <button class='toolbar-btn' onclick='mapController.toggleGrid()'>Rejilla</button>
-            <button class='toolbar-btn' onclick='mapController.toggleMinimap()'>Minimap</button>
+            <button class='toolbar-btn' onclick='mapController.toggleNombres()' title='Mostrar/ocultar nombres'>
+              📝 Nombres
+            </button>
+            <button class='toolbar-btn' onclick='mapController.togglePuntos()' title='Mostrar/ocultar puntos'>
+              📍 Puntos
+            </button>
+            <button class='toolbar-btn' onclick='mapController.toggleGrid()' title='Mostrar/ocultar rejilla'>
+              ⊞ Rejilla
+            </button>
+            <button class='toolbar-btn active' onclick='mapController.toggleMinimap()' title='Mostrar/ocultar minimapa (M)'>
+              🗺️ Minimap
+            </button>
           </div>
         </div>
 
+        <!-- Canvas principal con minimapa -->
         <div class='map-canvas-stage'>
           <canvas id='mapCanvas' class='map-canvas'></canvas>
+          
+          <!-- Minimapa -->
+          <div id='minimapContainer' class='minimap-container'>
+            <canvas id='minimapCanvas' class='minimap-canvas'></canvas>
+            <div id='minimapViewport' class='minimap-viewport'></div>
+          </div>
+          
+          <!-- Hints y tooltips -->
           <div id='mapHint' class='map-hint hidden'></div>
           <div id='mapTooltip' class='map-tooltip hidden'></div>
+          
+          <!-- Indicador de atajos de teclado -->
+          <div id='keyboardShortcuts' class='keyboard-shortcuts-indicator'>
+            Presiona <span class='shortcut-key'>?</span> para ver atajos
+          </div>
         </div>
       </div>
     </div>
@@ -16140,6 +16211,9 @@ if (!window.appEvents) {
 
 <!-- Cargar módulo de UI para Tab Mapas -->
 <script src="./modules/mapas-ui.js"></script>
+
+<!-- 🚀 Cargar módulo de mejoras avanzadas -->
+<script src="./modules/map-enhancements.js"></script>
 
 <script>
 // @ts-nocheck
