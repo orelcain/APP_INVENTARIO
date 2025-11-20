@@ -9,7 +9,7 @@
 
 :root {
   /* Variables CSS del prototipo */
-  --panel-width: 500px;
+  --panel-width: 580px; /* 🔧 Ajustado: 500px → 580px (+16%) para más espacio en jerarquía */
   --panel-padding: 6px;
   --section-gap: 6px;
   --section-padding: 8px;
