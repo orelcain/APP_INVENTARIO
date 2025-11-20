@@ -8,6 +8,7 @@
   <!-- CSS Modular para Jerarquía de Mapas -->
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/mapas-hierarchy.css">
+  <link rel="stylesheet" href="styles/prototype-mapas.css">
 
   <style>
     /* CACHE-BUST: 2025-11-19-v50-CORRELATIVOS-GLOBALES-EN-MAPAS */
@@ -15039,227 +15040,233 @@
   
   -->
   
-  <!--  NUEVO SISTEMA DE MAPAS AVANZADO DE APP_BASE (FASE 3 - HTML INTEGRADO) -->
+  <!--  🏥 TRASPLANTE VISUAL DEL PROTOTIPO - Tab Mapas v6.0 -->
   <!-- TAB MAPA -->
   <div id='mapa' class='tab-content mapas-tab'>
     <div class='map-shell'>
+      <!-- PANEL LATERAL CON TABS -->
       <aside class='map-panel'>
         <div class='map-panel-header'>
-          <div>
-            <h2>Mapas de planta</h2>
-            <p>Gestiona mapas, zonas y jerarquas</p>
-          </div>
+          <h2>Mapas de planta</h2>
+          <p>Gestiona mapas, zonas y jerarquías</p>
         </div>
-        <div class='map-panel-scroll'>
-          <div class='map-storage-banner'>
-            <div class='map-storage-status'>
-              <span id='mapConnectionBadge' class='map-status-badge map-status-badge--off'>Sin carpeta</span>
-              <button id='mapConnectBtn' class='map-btn map-btn--primary'>Conectar carpeta</button>
+
+        <!-- TABS DE NAVEGACIÓN -->
+        <div class='panel-tabs'>
+          <button class='panel-tab active' onclick='switchPanelTab("mapas")'>
+            <span class='panel-tab-text'>Mapas</span>
+            <span class='panel-tab-badge'>-</span>
+          </button>
+          <button class='panel-tab' onclick='switchPanelTab("logs")'>
+            <span class='panel-tab-text'>Logs</span>
+          </button>
+        </div>
+
+        <!-- CONTENIDO: MAPAS -->
+        <div id='tabMapas' class='panel-tab-content active'>
+          <!-- Sidebar de subsecciones -->
+          <nav class='subsections-sidebar' id='subsectionsSidebar'>
+            <button class='subsection-item active' onclick='scrollToSection("jerarquia-completa")'>
+              <span class='subsection-icon'>J</span>
+              <span class='subsection-label'>Jerarquía Completa</span>
+            </button>
+            <button class='subsection-item' onclick='scrollToSection("mapas-creados")'>
+              <span class='subsection-icon'>M</span>
+              <span class='subsection-label'>Mapas Creados</span>
+            </button>
+            <button class='subsection-item' onclick='scrollToSection("pendientes")'>
+              <span class='subsection-icon'>P</span>
+              <span class='subsection-label'>Pendientes</span>
+            </button>
+            <button class='subsection-item' onclick='scrollToSection("estadisticas")'>
+              <span class='subsection-icon'>E</span>
+              <span class='subsection-label'>Estadísticas</span>
+            </button>
+          </nav>
+
+          <!-- Contenedor del contenido -->
+          <div class='tab-content-wrapper'>
+            <!-- Área fija -->
+            <div class='tab-fixed-header'>
+              <!-- Buscador global -->
+              <div class='search-container'>
+                <input type='text' id='globalSearch' class='search-input' placeholder='🔎 Buscar en jerarquía...' oninput='filterHierarchy(this.value)'>
+              </div>
+
+              <!-- Stats generales -->
+              <div class='stats-row' style='margin-top: 6px;'>
+                <div class='stat-card'>
+                  <div class='stat-value' id='statsMapasCount'>-</div>
+                  <div class='stat-label'>Mapas</div>
+                </div>
+                <div class='stat-card'>
+                  <div class='stat-value' id='statsAreasCount'>-</div>
+                  <div class='stat-label'>Áreas</div>
+                </div>
+                <div class='stat-card'>
+                  <div class='stat-value' id='statsMarcadoresCount'>-</div>
+                  <div class='stat-label'>Marcadores</div>
+                </div>
+              </div>
             </div>
-            <button id='mapCleanImagesBtn' class='map-btn map-btn--ghost map-storage-clean-btn'>Limpiar hurfanas</button>
+
+            <!-- Área con scroll -->
+            <div class='tab-scroll-content'>
+
+          <!-- 1. JERARQUÍA COMPLETA - SECCIÓN PRINCIPAL -->
+          <section class='map-section' id='section-jerarquia-completa'>
+            <div class='map-section-header' onclick='toggleSection(this)'>
+              <h3><span class='collapse-icon'>▼</span> 🏢 Jerarquía Completa</h3>
+            </div>
+            <div class='section-content'>
+              <div style='font-size: 0.6rem; color: var(--text-muted); margin-bottom: 8px; padding: 6px 8px; background: rgba(59, 130, 246, 0.05); border-radius: 4px; border-left: 2px solid var(--primary);'>
+                💡 <strong>Indicadores:</strong> 🗺️ Mapa asignado • 📦 Área creada • 📍 Marcadores (numerados)
+              </div>
+              <div id='hierarchy-tree-container' class='area-tree'>
+                <!-- La jerarquía completa se cargará dinámicamente aquí -->
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. MAPAS CREADOS - LISTA COMPACTA -->
+          <section class='map-section' id='section-mapas-creados'>
+            <div class='map-section-header' onclick='toggleSection(this)'>
+              <h3><span class='collapse-icon'>▼</span> 🗺️ Mapas Creados (<span id='mapasCount'>0</span>)</h3>
+            </div>
+            <div class='section-content' id='mapList'>
+              <!-- Los mapas se cargarán dinámicamente desde mapas.json -->
+            </div>
+          </section>
+
+          <!-- 3. PENDIENTES - ELEMENTOS SIN ASIGNAR -->
+          <section class='map-section' id='section-pendientes'>
+            <div class='map-section-header' onclick='toggleSection(this)'>
+              <h3><span class='collapse-icon'>▼</span> ⚠️ Pendientes</h3>
+            </div>
+            <div class='section-content'>
+              <div style='font-size: 0.62rem; color: var(--text-muted); padding: 12px; text-align: center;'>
+                Elementos sin mapa o área asignada
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. ESTADÍSTICAS - RESUMEN VISUAL -->
+          <section class='map-section' id='section-estadisticas'>
+            <div class='map-section-header' onclick='toggleSection(this)'>
+              <h3><span class='collapse-icon'>▼</span> 📊 Estadísticas</h3>
+            </div>
+            <div class='section-content'>
+              <div id='stats-details-container'>
+                <!-- Estadísticas detalladas se cargarán aquí -->
+              </div>
+            </div>
+          </section>
+
+          </div> <!-- Fin tab-scroll-content -->
+          </div> <!-- Fin tab-content-wrapper -->
+        </div> <!-- Fin tabMapas -->
+
+        <!-- CONTENIDO: LOGS -->
+        <div id='tabLogs' class='panel-tab-content'>
+          <!-- Área fija superior: Filtros -->
+          <div class='tab-fixed-header'>
+            <section class='map-section' style='margin: 0;'>
+              <div class='map-section-header' onclick='toggleSection(this)'>
+                <h3><span class='collapse-icon'>▼</span> Filtrar por Tipo</h3>
+              </div>
+              <div class='section-content'>
+                <div class='filter-chips'>
+                  <span class='filter-chip active' onclick='filterLogs("all")'>Todos</span>
+                  <span class='filter-chip' onclick='filterLogs("success")'>Creación</span>
+                  <span class='filter-chip' onclick='filterLogs("edit")'>Edición</span>
+                  <span class='filter-chip' onclick='filterLogs("delete")'>Eliminación</span>
+                  <span class='filter-chip' onclick='filterLogs("marker")'>Marcadores</span>
+                  <span class='filter-chip' onclick='filterLogs("warning")'>Jerarquía</span>
+                </div>
+              </div>
+            </section>
           </div>
-          <section class='map-section'>
-            <div class='map-section-header map-section-header-custom' onclick='app.toggleMapSection(this)'>
-              <h3><span class='map-section-collapse-icon'></span> Mapas disponibles</h3>
-              <button id='mapNewBtn' class='map-btn map-btn--accent map-new-btn' onclick='event.stopPropagation(); app.crearNuevoMapa()'>Nuevo mapa</button>
-            </div>
-            <div id='mapList' class='map-card-list'></div>
-          </section>
-          <section class='map-section'>
-            <div class='map-section-header map-section-header-custom' onclick='app.toggleMapSection(this)'>
-              <h3><span class='map-section-collapse-icon'></span> Plan de migracin jerarquica</h3>
-              <button id='mapContractAuditRefresh' class='map-btn map-btn--ghost map-contract-refresh' onclick='event.stopPropagation();'>Re-escanear</button>
-            </div>
-            <div id='mapContractAuditPanel' class='map-contract-panel'>
-              <div class='map-contract-summary'>
-                <div class='map-contract-stat'>
-                  <span>Mapas totales</span>
-                  <strong id='mapAuditTotal'>--</strong>
-                </div>
-                <div class='map-contract-stat'>
-                  <span>En regla</span>
-                  <strong id='mapAuditCompliant'>--</strong>
-                </div>
-                <div class='map-contract-stat'>
-                  <span>Pendientes</span>
-                  <strong id='mapAuditPending'>--</strong>
-                </div>
-                <div class='map-contract-stat'>
-                  <span>Conflictos</span>
-                  <strong id='mapAuditConflicts'>--</strong>
+
+          <!-- Área con scroll: Actividad Reciente -->
+          <div class='tab-scroll-content' style='flex: 1; overflow-y: auto;'>
+            <div class='log-timeline' id='logTimeline'>
+              <div class='log-item log-success'>
+                <div class='log-icon'>✓</div>
+                <div class='log-content'>
+                  <div class='log-message'>Sistema inicializado correctamente</div>
+                  <div class='log-time'>Ahora</div>
                 </div>
               </div>
-              <div class='map-contract-actions'>
-                <small id='mapContractAuditTimestamp'>Sin auditoras ejecutadas</small>
-              </div>
-              <div id='mapContractIssueList' class='map-contract-issues'>
-                <div class='map-contract-issue map-contract-issue--empty'>Conecta la carpeta INVENTARIO_STORAGE para analizar pendientes.</div>
-              </div>
             </div>
-          </section>
-          
-          <!-- SECCIÓN NUEVA: JERARQUÍA COMPLETA -->
-          <section class='map-section'>
-            <div class='map-section-header' onclick='app.toggleMapSection(this)'>
-              <h3><span class='map-section-collapse-icon'></span> Jerarquía Completa</h3>
-            </div>
-            <!-- Input de búsqueda global -->
-            <div class='map-search-container'>
-              <input 
-                type='text' 
-                id='globalSearch' 
-                placeholder='🔍 Buscar en jerarquía...'
-                class='map-search-input'
-              />
-            </div>
-            <!-- Contenedor del árbol de jerarquía - FORZAR VISIBLE -->
-            <div id='hierarchy-tree-container' class='area-tree' style='display: block !important; min-height: 300px; background: rgba(255,255,255,0.02); border: 1px solid rgba(91, 139, 180, 0.2);'></div>
-          </section>
-          
-          <section class='map-section'>
-            <div class='map-section-header map-section-header-custom' onclick='app.toggleMapSection(this)'>
-              <h3><span class='map-section-collapse-icon'></span> reas del mapa</h3>
-              <div class='map-controls-wrapper'>
-                <button id='mapDrawAreaBtn' class='map-btn map-btn--ghost' onclick='event.stopPropagation()'>Dibujar rea</button>
-                <button id='mapAddMarkerBtn' class='map-btn map-btn--success' onclick='event.stopPropagation()'>
-                  Agregar Marcador
-                </button>
-                <button id='btnVerCascadaModal' class='map-btn map-btn--primary' onclick='mapController.openCascadaModal(); event.stopPropagation();' title='Ver cascada completa en pantalla grande'>
-                  Ver Cascada
-                </button>
-              </div>
-            </div>
-            <!--  NUEVO: Buscador de reas -->
-            <div class='map-search-container'>
-              <input 
-                type='text' 
-                id='mapAreaSearch' 
-                placeholder='Buscar rea por nombre...'
-                class='map-search-input'
-              />
-            </div>
-            <!--  NUEVO: Filtros de categora -->
-            <div class='map-category-filters'>
-              <span class='map-category-label'>TIPO:</span>
-              <button class='map-category-filter-btn' data-category='all'>
-                Todas
-              </button>
-              <button class='map-category-filter-btn' data-category='area'>
-                rea
-              </button>
-              <button class='map-category-filter-btn' data-category='maquina'>
-                Mquina
-              </button>
-              <button class='map-category-filter-btn' data-category='estructura'>
-                Estructura
-              </button>
-              <button class='map-category-filter-btn' data-category='cinta'>
-                 Cinta
-              </button>
-              <button class='map-category-filter-btn' data-category='componente'>
-                 Componente
+          </div>
+
+          <!-- Área fija inferior: Controles -->
+          <div style='padding: 8px; border-top: 1px solid var(--border-color); background: var(--bg-secondary);'>
+            <div style='display: flex; gap: 6px; align-items: center;'>
+              <label style='display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--text-secondary); cursor: pointer;'>
+                <input type='checkbox' id='autoRefreshLogs' checked style='cursor: pointer;'>
+                Actualizar logs
+              </label>
+              <button class='action-btn' onclick='refreshLogs()' style='flex: 1; padding: 5px 8px; font-size: 0.65rem;'>
+                🔄 Refrescar ahora
               </button>
             </div>
-            <div id='mapJerarquiaBadge' class='map-jerarquia-badge map-jerarquia-badge--empty'>
-              <div>
-                <strong>Sin jerarqua asignada</strong>
-                <span class='map-jerarquia-badge__path'>Asigna la rama para sincronizar las reas.</span>
-              </div>
-              <button type='button' class='map-btn map-btn--ghost' data-action='badge-assign-jerarquia'>Asignar</button>
-            </div>
-            <div id='mapContractSignals' class='map-contract-signals hidden'></div>
-            <div id='mapJerarquiaBranch' class='map-jerarquia-branch'></div>
-            <div id='areaList' class='map-area-list'></div>
-          </section>
-          <!--  ELIMINADO: Historial - No se le dar uso funcional -->
+          </div>
         </div>
       </aside>
+
+      <!-- WORKSPACE CANVAS -->
       <div class='map-workspace'>
-        <div class='map-toolbar' id='mapToolbar'>
-          <div class='map-toolbar-left'>
-            <button class='map-icon-btn map-btn-info' data-action='zoom-in' data-tooltip='Zoom In: Acerca la vista del mapa. Tambin puedes usar la rueda del mouse o Ctrl + para acercar.'>
-              + <span class='info-icon info-icon-small'></span>
-            </button>
-            <button class='map-icon-btn map-btn-info' data-action='zoom-out' data-tooltip='Zoom Out: Aleja la vista del mapa. Tambin puedes usar la rueda del mouse o Ctrl - para alejar.'>
-              - <span class='info-icon info-icon-small'></span>
-            </button>
-            <button class='map-icon-btn map-btn-info' data-action='reset-view' data-tooltip='Reset View: Restablece el zoom al 100% y centra el mapa en su posicin original.'>
-              Reset <span class='info-icon info-icon-small'></span>
-            </button>
+        <div class='map-toolbar'>
+          <div class='toolbar-section'>
+            <button class='toolbar-btn' onclick='mapController.zoomIn()'>+ Zoom</button>
+            <button class='toolbar-btn' onclick='mapController.zoomOut()'>- Zoom</button>
+            <button class='toolbar-btn' onclick='mapController.resetView()'>Reset</button>
           </div>
-          <div class='map-toolbar-center'>
-            <div id='mapZoomBadge' class='map-zoom-badge'>100%</div>
-            <div id='mapMetaBadge' class='map-meta-badge'>Sin mapa</div>
-            <div id='mapSelectionBadge' class='map-meta-badge map-selection-badge'>0 seleccionadas</div>
+          <div class='toolbar-section'>
+            <span id='mapToolbarInfo' style='font-size: 0.8rem; color: var(--text-secondary)'>100% | Mapa General</span>
           </div>
-          <div class='map-toolbar-right'>
-            <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-nombres-areas' data-tooltip='Nombres de reas: Muestra u oculta los nombres de las reas en el mapa.'>
-              Nombres
-            </button>
-            <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-puntos-repuestos' data-tooltip='Puntos de Repuestos: Muestra u oculta los marcadores de repuestos en el mapa.'>
-              Puntos
-            </button>
-            <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-grid' data-tooltip='Rejilla: Activa/desactiva la cuadrcula de referencia en el mapa. til para alinear reas con precisin.'>
-              Rejilla <span class='info-icon'>i</span>
-            </button>
-            <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-minimap' data-tooltip='Minimap: Muestra un minimapa en la esquina para navegacin rpida. Click en el minimap para saltar a esa ubicacin.'>
-               Minimap <span class='info-icon'></span>
-            </button>
-            <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-rulers' data-tooltip='Reglas: Muestra reglas laterales con medidas en pxeles. Ayuda a medir distancias y posicionar elementos con exactitud.'>
-               Reglas <span class='info-icon'></span>
-            </button>
-            <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-multiselect' id='mapMultiSelectBtn' data-tooltip='Seleccin Mltiple: Activa modo para seleccionar mltiples reas. Click en reas para seleccionar, Ctrl+A para todas, Escape para limpiar, Delete para eliminar.'>
-               Seleccin Mltiple <span class='info-icon'></span>
-            </button>
-            <button class='map-btn map-btn--ghost map-btn-info' data-action='toggle-reshape' id='mapReshapeBtn' data-tooltip='Modo Edicin: Edita ubicaciones de reas y repuestos. Arrastra puntos de reas, click en bordes para agregar, selecciona punto + Delete para eliminar. Arrastra repuestos para reubicarlos.'>
-               Editar Ubicaciones <span class='info-icon'></span>
-            </button>
-            <button class='map-btn map-btn--ghost map-btn-info map-btn-batch-hidden' data-action='batch-operations' id='mapBatchBtn' data-tooltip='Operaciones en Lote: Aplica cambios masivos a reas seleccionadas (categora, color, opacidad). Ctrl+B para abrir.'>
-               Operaciones <span class='info-icon'></span>
-            </button>
-            <button class='map-btn map-btn--ghost map-btn-info' data-action='recenter' data-tooltip='Centrar: Restaura la vista del mapa a su posicin y zoom inicial. til cuando te pierdes navegando.'>
-              Centrar <span class='info-icon'></span>
-            </button>
+          <div class='toolbar-section'>
+            <button class='toolbar-btn' onclick='mapController.toggleNombres()'>Nombres</button>
+            <button class='toolbar-btn' onclick='mapController.togglePuntos()'>Puntos</button>
+            <button class='toolbar-btn' onclick='mapController.toggleGrid()'>Rejilla</button>
+            <button class='toolbar-btn' onclick='mapController.toggleMinimap()'>Minimap</button>
           </div>
         </div>
+
         <div class='map-canvas-stage'>
           <canvas id='mapCanvas' class='map-canvas'></canvas>
           <div id='mapHint' class='map-hint hidden'></div>
           <div id='mapTooltip' class='map-tooltip hidden'></div>
-          <!--  NUEVO: Minimap para navegacin rpida -->
-          <div id='mapMinimapContainer' class='map-minimap-container'>
-            <canvas id='mapMinimap' class='map-minimap-canvas'></canvas>
-            <div id='mapMinimapViewport' class='map-minimap-viewport'></div>
-          </div>
         </div>
-        <!--  ELIMINADO: Footer con mensaje intil y botn que no sirve -->
       </div>
     </div>
 
+    <!-- MODALES (mantener compatibilidad) -->
     <div id='mapModalOverlay' class='map-modal hidden'>
       <div class='map-modal-content'>
         <div class='map-modal-header'>
-          <h3 id='mapModalTitle'>Nuevo mapa</h3>
+          <h3 id='mapModalTitle'>Modal</h3>
           <button id='mapModalClose' class='map-icon-btn'>X</button>
         </div>
         <div id='mapModalBody' class='map-modal-body'></div>
       </div>
     </div>
 
-    <div id="mapLoadingOverlay" class="map-loading-overlay hidden">
-      <div class="map-loading-modal">
-        <div class="map-loading-header">
-          <div class="map-loading-icon">🗺️</div>
+    <div id='mapLoadingOverlay' class='map-loading-overlay hidden'>
+      <div class='map-loading-modal'>
+        <div class='map-loading-header'>
+          <div class='map-loading-icon'>🗺️</div>
           <div>
-            <div id="mapLoadingTitle" class="map-loading-title">Preparando mapa</div>
-            <div id="mapLoadingStatus" class="map-loading-status">Inicializando...</div>
+            <div id='mapLoadingTitle' class='map-loading-title'>Preparando mapa</div>
+            <div id='mapLoadingStatus' class='map-loading-status'>Inicializando...</div>
           </div>
         </div>
-        <div class="map-loading-bar">
-          <div id="mapLoadingBar" class="map-loading-bar-fill"></div>
+        <div class='map-loading-bar'>
+          <div id='mapLoadingBar' class='map-loading-bar-fill'></div>
         </div>
-        <div id="mapLoadingPercent" class="map-loading-percent">0%</div>
-        <div class="map-loading-hint">Algunos mapas pesan bastante, aguarda mientras optimizamos la imagen.</div>
+        <div id='mapLoadingPercent' class='map-loading-percent'>0%</div>
+        <div class='map-loading-hint'>Cargando recursos del mapa...</div>
       </div>
     </div>
   </div>
@@ -16127,6 +16134,9 @@ if (!window.appEvents) {
 
 <!-- Cargar módulo de sincronización de jerarquía (sin ES6 modules para compatibilidad file://) -->
 <script src="./modules/hierarchy-sync.js"></script>
+
+<!-- Cargar módulo de UI para Tab Mapas -->
+<script src="./modules/mapas-ui.js"></script>
 
 <script>
 // @ts-nocheck
@@ -35821,6 +35831,27 @@ class InventarioCompleto {
       setTimeout(() => {
         //  Restaurar estado de secciones colapsadas independientemente del modo
         this.restoreMapSectionsState();
+
+        // 🎨 Actualizar UI de Mapas
+        if (window.MapasUI) {
+          window.MapasUI.updateStats();
+          window.MapasUI.initializeSubsections();
+          
+          // Renderizar jerarquía si HierarchySync está disponible
+          if (window.HierarchySync) {
+            const container = document.getElementById('hierarchy-tree-container');
+            if (container) {
+              window.HierarchySync.render(container);
+            }
+          }
+          
+          // Renderizar lista de mapas
+          if (window.mapStorage && window.mapStorage.state && window.mapStorage.state.mapas) {
+            window.MapasUI.renderMapasList(window.mapStorage.state.mapas);
+          }
+          
+          console.log('✅ Tab Mapas UI actualizado');
+        }
 
         const hasMapController = typeof window !== 'undefined'
           && window.mapController
@@ -56533,6 +56564,32 @@ window.mapStorage = mapStorage; //  AHORA DISPONIBLE - MapStorage integrado
 window.mapController = mapController; //  Controlador de mapas
 console.log('App disponible en: window.app');
 console.log('=== SISTEMA LISTO ===');
+
+// 🎨 Inicializar MapasUI cuando todo esté cargado
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.MapasUI) {
+    // Inicializar subsecciones
+    window.MapasUI.initializeSubsections();
+    
+    // Inicializar eventos
+    window.MapasUI.initializeEvents();
+    
+    // Actualizar stats iniciales
+    window.MapasUI.updateStats();
+    
+    // Renderizar jerarquía usando HierarchySync
+    if (window.HierarchySync && window.mapStorage) {
+      setTimeout(() => {
+        const container = document.getElementById('hierarchy-tree-container');
+        if (container) {
+          window.HierarchySync.render(container);
+        }
+      }, 500);
+    }
+    
+    console.log('✅ MapasUI inicializado');
+  }
+});
 
 //  FUNCIONES DE ZOOM GLOBAL (zoom CSS puro - estilo navegador)
 let currentZoom = 100;
