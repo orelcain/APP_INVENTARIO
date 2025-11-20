@@ -225,7 +225,10 @@ const MapasUI = {
     }
 
     container.innerHTML = mapas.map(mapa => {
-      const zonasCount = window.mapStorage?.countZonasByMapId(mapa.id) || 0;
+      // Contar zonas de este mapa
+      const zonas = window.mapStorage?.state?.zonas || [];
+      const zonasCount = zonas.filter(z => z.mapId === mapa.id).length;
+      
       const jerarquiaText = mapa.jerarquiaPath ? mapa.jerarquiaPath.map(j => j.id).join(' > ') : 'Sin jerarquía';
       
       return `
@@ -240,8 +243,7 @@ const MapasUI = {
               </div>
             </div>
             <div style="display: flex; gap: 4px; flex-shrink: 0;">
-              <button class="action-btn" onclick="window.mapStorage?.loadMap(${mapa.id})" style="background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
-              <button class="action-btn" onclick="window.mapStorage?.editMap(${mapa.id})">Editar</button>
+              <button class="action-btn" onclick="if(window.mapController && window.mapController.loadMap) window.mapController.loadMap(${mapa.id})" style="background: var(--primary); color: white; border-color: var(--primary);">Ver</button>
             </div>
           </div>
         </div>
@@ -278,6 +280,121 @@ const MapasUI = {
     if (statsMapasCount) statsMapasCount.textContent = mapas.length;
     if (statsAreasCount) statsAreasCount.textContent = zonas.length;
     if (statsMarcadoresCount) statsMarcadoresCount.textContent = totalMarcadores;
+  },
+
+  /**
+   * Renderizar logs de actividad
+   */
+  renderLogs() {
+    const container = document.getElementById('logTimeline');
+    if (!container) return;
+
+    // Por ahora, logs estáticos de ejemplo
+    const logs = [
+      { type: 'success', icon: '✓', message: 'Mapa <strong>Planta Principal</strong> creado', time: 'Hace 2 horas' },
+      { type: 'marker', icon: '📍', message: 'Marcador agregado en <strong>Eviscerado</strong>', time: 'Hace 3 horas' },
+      { type: 'edit', icon: '✏️', message: 'Zona <strong>Grader</strong> actualizada', time: 'Hace 5 horas' }
+    ];
+
+    container.innerHTML = logs.map(log => `
+      <div class="log-item log-${log.type}">
+        <div class="log-icon">${log.icon}</div>
+        <div class="log-content">
+          <div class="log-message">${log.message}</div>
+          <div class="log-time">${log.time}</div>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  /**
+   * Renderizar elementos pendientes
+   */
+  renderPendientes() {
+    const container = document.getElementById('pendientesList');
+    if (!container) return;
+
+    const zonas = window.mapStorage?.state?.zonas || [];
+    
+    // Zonas sin equipos asignados
+    const zonasSinEquipos = zonas.filter(z => !z.equipos || z.equipos.length === 0);
+    
+    if (zonasSinEquipos.length === 0) {
+      container.innerHTML = '<p style="color: var(--success); text-align: center; padding: 20px;">✅ No hay elementos pendientes</p>';
+      return;
+    }
+
+    container.innerHTML = `
+      <div style="font-size: 0.7rem; margin-bottom: 8px; color: var(--text-secondary);">
+        ${zonasSinEquipos.length} zonas sin equipos asignados
+      </div>
+      ${zonasSinEquipos.slice(0, 10).map(zona => `
+        <div style="padding: 6px; margin-bottom: 4px; background: var(--bg-primary); border-left: 2px solid var(--warning); border-radius: 3px;">
+          <div style="font-size: 0.7rem; color: var(--text-primary);">Zona ID: ${zona.id}</div>
+          <div style="font-size: 0.6rem; color: var(--text-muted);">Mapa: ${zona.mapId}</div>
+        </div>
+      `).join('')}
+      ${zonasSinEquipos.length > 10 ? `<div style="text-align: center; padding: 8px; font-size: 0.65rem; color: var(--text-muted);">+ ${zonasSinEquipos.length - 10} más</div>` : ''}
+    `;
+  },
+
+  /**
+   * Renderizar estadísticas detalladas
+   */
+  renderEstadisticas() {
+    const container = document.getElementById('stats-details-container');
+    if (!container) return;
+
+    const mapas = window.mapStorage?.state?.mapas || [];
+    const zonas = window.mapStorage?.state?.zonas || [];
+    
+    // Análisis por nivel de mapa
+    const porNivel = {};
+    mapas.forEach(mapa => {
+      const nivel = mapa.mapLevel || 'sin nivel';
+      porNivel[nivel] = (porNivel[nivel] || 0) + 1;
+    });
+
+    // Zonas por mapa
+    const zonasPorMapa = {};
+    zonas.forEach(zona => {
+      const mapId = zona.mapId;
+      zonasPorMapa[mapId] = (zonasPorMapa[mapId] || 0) + 1;
+    });
+
+    container.innerHTML = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+        <div class="stat-card">
+          <div class="stat-value">${mapas.length}</div>
+          <div class="stat-label">Total Mapas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${zonas.length}</div>
+          <div class="stat-label">Total Zonas</div>
+        </div>
+      </div>
+      
+      <div style="font-size: 0.7rem; font-weight: 600; margin-bottom: 6px; color: var(--text-primary);">Por Nivel</div>
+      ${Object.entries(porNivel).map(([nivel, count]) => `
+        <div style="display: flex; justify-content: space-between; padding: 4px 6px; margin-bottom: 3px; background: var(--bg-primary); border-radius: 3px;">
+          <span style="font-size: 0.65rem; color: var(--text-secondary);">${nivel}</span>
+          <span style="font-size: 0.65rem; color: var(--primary-light); font-weight: 600;">${count}</span>
+        </div>
+      `).join('')}
+      
+      ${Object.keys(zonasPorMapa).length > 0 ? `
+        <div style="font-size: 0.7rem; font-weight: 600; margin-top: 10px; margin-bottom: 6px; color: var(--text-primary);">Zonas por Mapa</div>
+        ${Object.entries(zonasPorMapa).slice(0, 5).map(([mapId, count]) => {
+          const mapa = mapas.find(m => m.id == mapId);
+          return `
+            <div style="display: flex; justify-content: space-between; padding: 4px 6px; margin-bottom: 3px; background: var(--bg-primary); border-radius: 3px;">
+              <span style="font-size: 0.65rem; color: var(--text-secondary);">${mapa?.name || 'ID ' + mapId}</span>
+              <span style="font-size: 0.65rem; color: var(--primary-light); font-weight: 600;">${count}</span>
+            </div>
+          `;
+        }).join('')}
+      ` : ''}
+    `;
   },
 
   /**

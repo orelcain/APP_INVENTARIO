@@ -15143,9 +15143,9 @@
             <div class='map-section-header' onclick='toggleSection(this)'>
               <h3><span class='collapse-icon'>▼</span> ⚠️ Pendientes</h3>
             </div>
-            <div class='section-content'>
+            <div class='section-content' id='pendientesList'>
               <div style='font-size: 0.62rem; color: var(--text-muted); padding: 12px; text-align: center;'>
-                Elementos sin mapa o área asignada
+                Cargando elementos pendientes...
               </div>
             </div>
           </section>
@@ -35848,6 +35848,8 @@ class InventarioCompleto {
           // Renderizar lista de mapas
           if (window.mapStorage && window.mapStorage.state && window.mapStorage.state.mapas) {
             window.MapasUI.renderMapasList(window.mapStorage.state.mapas);
+            window.MapasUI.renderPendientes();
+            window.MapasUI.renderEstadisticas();
           }
           
           console.log('✅ Tab Mapas UI actualizado');
@@ -56577,6 +56579,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Actualizar stats iniciales
     window.MapasUI.updateStats();
     
+    // Renderizar secciones con datos
+    if (window.mapStorage && window.mapStorage.state) {
+      if (window.mapStorage.state.mapas) {
+        window.MapasUI.renderMapasList(window.mapStorage.state.mapas);
+      }
+      window.MapasUI.renderPendientes();
+      window.MapasUI.renderEstadisticas();
+    }
+    
     // Renderizar jerarquía usando HierarchySync
     if (window.HierarchySync && window.mapStorage) {
       setTimeout(() => {
@@ -56607,6 +56618,12 @@ function scrollToSection(sectionId) {
 function filterHierarchy(searchTerm) {
   if (window.MapasUI) {
     window.MapasUI.filterHierarchy(searchTerm);
+  }
+}
+
+function toggleSection(headerElement) {
+  if (window.MapasUI) {
+    window.MapasUI.toggleSection(headerElement);
   }
 }
 
