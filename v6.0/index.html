@@ -15088,24 +15088,27 @@
           <div class='tab-content-wrapper'>
             <!-- Área fija -->
             <div class='tab-fixed-header'>
-              <!-- Buscador global -->
-              <div class='search-container'>
-                <input type='text' id='globalSearch' class='search-input' placeholder='🔎 Buscar en jerarquía...' oninput='filterHierarchy(this.value)'>
-              </div>
+              <!-- Buscador y Stats en una fila (50/50) -->
+              <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start;'>
+                <!-- Buscador global -->
+                <div class='search-container' style='margin-bottom: 0;'>
+                  <input type='text' id='globalSearch' class='search-input' placeholder='🔎 Buscar en jerarquía...' oninput='filterHierarchy(this.value)'>
+                </div>
 
-              <!-- Stats generales -->
-              <div class='stats-row' style='margin-top: 6px;'>
-                <div class='stat-card'>
-                  <div class='stat-value' id='statsMapasCount'>-</div>
-                  <div class='stat-label'>Mapas</div>
-                </div>
-                <div class='stat-card'>
-                  <div class='stat-value' id='statsAreasCount'>-</div>
-                  <div class='stat-label'>Áreas</div>
-                </div>
-                <div class='stat-card'>
-                  <div class='stat-value' id='statsMarcadoresCount'>-</div>
-                  <div class='stat-label'>Marcadores</div>
+                <!-- Stats generales (compactos) -->
+                <div class='stats-row' style='margin-top: 0;'>
+                  <div class='stat-card'>
+                    <div class='stat-value' id='statsMapasCount'>-</div>
+                    <div class='stat-label'>Mapas</div>
+                  </div>
+                  <div class='stat-card'>
+                    <div class='stat-value' id='statsAreasCount'>-</div>
+                    <div class='stat-label'>Áreas</div>
+                  </div>
+                  <div class='stat-card'>
+                    <div class='stat-value' id='statsMarcadoresCount'>-</div>
+                    <div class='stat-label'>Marcadores</div>
+                  </div>
                 </div>
               </div>
             </div>

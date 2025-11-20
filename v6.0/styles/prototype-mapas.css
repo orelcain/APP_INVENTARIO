@@ -63,7 +63,7 @@
 .map-shell {
   display: grid;
   grid-template-columns: 680px 1fr; /* 🔧 Forzar 680px directamente para evitar conflictos */
-  height: calc(100vh - 100px);
+  height: calc(100vh - 140px); /* 🔧 Aumentado margen: 100px → 140px para barra Windows */
   width: 100%;
   margin: 0;
   padding: 8px;
@@ -363,8 +363,8 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-height: 400px;
-  max-height: 600px;
+  min-height: 300px; /* 🔧 Reducido: 400px → 300px */
+  max-height: calc(100vh - 320px); /* 🔧 Dinámico para evitar overflow */
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -722,14 +722,14 @@
 }
 
 .stat-value {
-  font-size: 1rem;
+  font-size: 0.75rem; /* 🔧 Reducido: 1rem → 0.75rem para compactar */
   font-weight: 700;
   color: var(--primary-light);
   line-height: 1;
 }
 
 .stat-label {
-  font-size: 0.55rem;
+  font-size: 0.5rem; /* 🔧 Reducido: 0.55rem → 0.5rem */
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.3px;
