@@ -55426,6 +55426,8 @@ async function initTabMapas() {
     function initializeWithData() {
       let mapasData = [];
       let zonasData = [];
+      let jerarquiaData = null;
+      let repuestosData = [];
       
       // Obtener datos de mapStorage
       if (typeof mapStorage !== 'undefined' && mapStorage.state) {
@@ -55438,12 +55440,24 @@ async function initTabMapas() {
         zonasData = app.zonas || [];
       }
       
-      console.log('📦 Datos cargados:', mapasData.length, 'mapas,', zonasData.length, 'zonas');
+      // 🔥 CRÍTICO: Obtener jerarquía completa de app
+      if (typeof app !== 'undefined' && app.jerarquiaAnidada) {
+        jerarquiaData = app.jerarquiaAnidada;
+        console.log('✅ Jerarquía de app cargada:', jerarquiaData.areas?.length || 0, 'áreas');
+      }
+      
+      // 🔥 Obtener repuestos de app
+      if (typeof app !== 'undefined' && app.repuestos) {
+        repuestosData = app.repuestos;
+        console.log('✅ Repuestos de app cargados:', repuestosData.length, 'repuestos');
+      }
+      
+      console.log('📦 Datos cargados:', mapasData.length, 'mapas,', zonasData.length, 'zonas,', repuestosData.length, 'repuestos');
       
       // Si ya existe hierarchySync, actualizar datos
       if (window.hierarchySync && window.hierarchySync.updateData) {
         console.log('🔄 Actualizando datos en hierarchySync existente');
-        window.hierarchySync.updateData(mapasData, zonasData);
+        window.hierarchySync.updateData(mapasData, zonasData, jerarquiaData, repuestosData);
         return;
       }
       
@@ -55460,7 +55474,7 @@ async function initTabMapas() {
         return;
       }
       
-      window.hierarchySync = new HierarchySync(container, mapasData, zonasData);
+      window.hierarchySync = new HierarchySync(container, mapasData, zonasData, jerarquiaData, repuestosData);
       console.log('✅ Instancia HierarchySync creada con', mapasData.length, 'mapas');
       
       // Configurar eventos y renderizar

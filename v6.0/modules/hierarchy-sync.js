@@ -23,10 +23,12 @@
 
 // Definir clase globalmente (sin export para compatibilidad file://)
 class HierarchySync {
-  constructor(containerElement, mapasData = [], zonasData = []) {
+  constructor(containerElement, mapasData = [], zonasData = [], jerarquiaData = null, repuestosData = []) {
     this.container = containerElement;
     this.mapasData = mapasData;
     this.zonasData = zonasData;
+    this.jerarquiaData = jerarquiaData; // 🔥 Nueva: jerarquía completa de app
+    this.repuestosData = repuestosData; // 🔥 Nueva: repuestos de app
     this.selectedNode = null;
     this.eventTarget = new EventTarget();
   }
@@ -43,11 +45,15 @@ class HierarchySync {
   /**
    * Actualizar datos y re-renderizar
    */
-  updateData(mapasData, zonasData) {
+  updateData(mapasData, zonasData, jerarquiaData = null, repuestosData = []) {
     this.mapasData = mapasData || [];
     this.zonasData = zonasData || [];
+    this.repuestosData = repuestosData || [];
+    if (jerarquiaData) {
+      this.jerarquiaData = jerarquiaData;
+    }
     this.renderTree();
-    console.log(`🔄 Datos actualizados: ${this.mapasData.length} mapas, ${this.zonasData.length} zonas`);
+    console.log(`🔄 Datos actualizados: ${this.mapasData.length} mapas, ${this.zonasData.length} zonas, ${this.repuestosData.length} repuestos`);
   }
 
   /**
@@ -77,8 +83,15 @@ class HierarchySync {
       return;
     }
 
-    // Si no se proporciona jerarquía, usar datos de ejemplo
-    const data = hierarchyData || this.buildDefaultHierarchy();
+    // 🔥 PRIORIDAD: Usar jerarquía real de app si existe
+    let data;
+    if (hierarchyData) {
+      data = hierarchyData;
+    } else if (this.jerarquiaData) {
+      data = this.buildTreeFromAppHierarchy();
+    } else {
+      data = this.buildDefaultHierarchy();
+    }
     
     this.container.innerHTML = this.renderNode(data, 0);
     console.log('✅ Árbol de jerarquía renderizado');
@@ -92,9 +105,10 @@ class HierarchySync {
    */
   renderNode(node, depth) {
     const hasMap = !!node.mapId;
-    const hasAreas = (node.areas || 0) > 0;
+    const hasAreas = (node.areas || 0) > 0 || !!node.areaId;
     const hasMarcadores = (node.marcadores || 0) > 0;
     const hasChildren = node.children && node.children.length > 0;
+    const isRepuesto = !!node.isRepuesto;
     
     // Estilos condicionales
     const isHighlighted = hasMap || hasAreas || hasMarcadores;
@@ -103,14 +117,17 @@ class HierarchySync {
     const fontWeight = hasMap ? '600' : '400';
     
     // Construir indicadores
-    const indicators = this.buildIndicators(hasMap, hasAreas, node.marcadores);
+    const indicators = this.buildIndicators(hasMap, hasAreas, node.marcadores, isRepuesto);
     
     // Data attributes para sincronización
     const dataAttrs = [
       `data-node-name="${node.name}"`,
       `data-node-level="${node.nivel}"`,
+      `data-node-id="${node.id || ''}"`,
       `data-map-id="${node.mapId || ''}"`,
+      `data-area-id="${node.areaId || ''}"`,
       `data-has-map="${hasMap}"`,
+      `data-is-repuesto="${isRepuesto}"`,
       `data-depth="${depth}"`
     ].join(' ');
     
@@ -122,11 +139,16 @@ class HierarchySync {
       ? `<div class="node-children">${node.children.map(child => this.renderNode(child, depth + 1)).join('')}</div>` 
       : '';
     
+    // Badge especial para repuestos
+    const badgeHtml = isRepuesto 
+      ? '<span class="node-badge" style="background: var(--primary, #3b82f6);">🔧</span>'
+      : `<span class="node-badge">N${node.nivel}</span>`;
+    
     return `
-      <div class="hierarchy-node" ${dataAttrs} style="opacity: ${opacity};">
+      <div class="hierarchy-node ${isRepuesto ? 'hierarchy-node-repuesto' : ''}" ${dataAttrs} style="opacity: ${opacity};">
         <div class="node-header" style="padding: 4px 8px; padding-left: ${paddingLeft + 8}px;" onclick="window.hierarchySync.onNodeClick(event)">
           ${toggleHtml}
-          <span class="node-badge">N${node.nivel}</span>
+          ${badgeHtml}
           ${indicators}
           <span class="node-label" style="font-weight: ${fontWeight};">${node.name}</span>
         </div>
@@ -138,14 +160,14 @@ class HierarchySync {
   /**
    * Construir HTML de indicadores visuales
    */
-  buildIndicators(hasMap, hasAreas, marcadores) {
+  buildIndicators(hasMap, hasAreas, marcadores, isRepuesto = false) {
     let html = '<span class="node-indicators">';
     
     if (hasMap) {
       html += '<span class="node-indicator" title="Mapa asignado">🗺️</span>';
     }
     
-    if (hasAreas) {
+    if (hasAreas && !isRepuesto) {
       html += '<span class="node-indicator" title="Áreas creadas">📦</span>';
     }
     
@@ -212,6 +234,136 @@ class HierarchySync {
         }
       ]
     };
+  }
+
+  /**
+   * 🔥 NUEVO: Construir árbol desde app.jerarquiaAnidada
+   * Convierte la estructura de app al formato de HierarchySync
+   */
+  buildTreeFromAppHierarchy() {
+    if (!this.jerarquiaData) {
+      console.warn('⚠️ No hay jerarquiaData, usando jerarquía por defecto');
+      return this.buildDefaultHierarchy();
+    }
+
+    const { empresa, areas } = this.jerarquiaData;
+    
+    if (!areas || areas.length === 0) {
+      console.warn('⚠️ No hay áreas en jerarquiaData');
+      return this.buildDefaultHierarchy();
+    }
+
+    console.log(`📋 Construyendo árbol desde app.jerarquiaAnidada: ${areas.length} áreas`);
+
+    // Construir el árbol desde la raíz (empresa)
+    const tree = {
+      name: empresa?.nombre || 'Empresa',
+      nivel: 0,
+      id: empresa?.id || 'empresa_root',
+      children: areas.map(area => this.buildTreeNode(area, 1))
+    };
+
+    return tree;
+  }
+
+  /**
+   * Construir un nodo del árbol recursivamente
+   * @param {Object} node - Nodo de jerarquiaAnidada
+   * @param {Number} nivel - Nivel de profundidad (1=Área, 2=SubÁrea, etc.)
+   * @returns {Object} - Nodo formateado para HierarchySync
+   */
+  buildTreeNode(node, nivel) {
+    const treeNode = {
+      name: node.nombre,
+      nivel: nivel,
+      id: node.id,
+      mapId: node.mapId || null,
+      areaId: node.areaId || null,
+      areas: 0,
+      marcadores: 0,
+      children: []
+    };
+
+    // Recursivamente construir hijos según el nivel
+    // Nivel 1: Áreas → tienen subAreas
+    // Nivel 2: SubÁreas → tienen sistemas
+    // Nivel 3: Sistemas → tienen subSistemas
+    // Nivel 4: SubSistemas → tienen secciones
+    // Nivel 5: Secciones → tienen subSecciones
+    // Nivel 6: SubSecciones (hoja)
+
+    if (nivel === 1 && node.subAreas) {
+      treeNode.children = node.subAreas.map(subArea => this.buildTreeNode(subArea, 2));
+    } else if (nivel === 2 && node.sistemas) {
+      treeNode.children = node.sistemas.map(sistema => this.buildTreeNode(sistema, 3));
+    } else if (nivel === 3 && node.subSistemas) {
+      treeNode.children = node.subSistemas.map(subSistema => this.buildTreeNode(subSistema, 4));
+    } else if (nivel === 4 && node.secciones) {
+      treeNode.children = node.secciones.map(seccion => this.buildTreeNode(seccion, 5));
+    } else if (nivel === 5 && node.subSecciones) {
+      treeNode.children = node.subSecciones.map(subSeccion => this.buildTreeNode(subSeccion, 6));
+    }
+
+    // 🔥 NUEVO: Agregar repuestos de app.repuestos que coincidan con esta jerarquía
+    if (this.repuestosData && this.repuestosData.length > 0) {
+      const repuestosVinculados = this.findRepuestosForNode(node, nivel);
+      
+      if (repuestosVinculados.length > 0) {
+        const repuestosNodes = repuestosVinculados.map(repuesto => ({
+          name: repuesto.nombre || repuesto.id,
+          nivel: 7,
+          id: repuesto.id,
+          isRepuesto: true,
+          mapId: repuesto.mapId || null,
+          areaId: repuesto.areaId || null,
+          marcadores: 1, // Cada repuesto cuenta como 1 marcador
+          children: []
+        }));
+        
+        treeNode.children.push(...repuestosNodes);
+        treeNode.marcadores += repuestosNodes.length;
+      }
+    }
+
+    // Contar áreas y marcadores de hijos
+    if (treeNode.children.length > 0) {
+      treeNode.children.forEach(child => {
+        treeNode.areas += (child.areas || 0) + (child.areaId ? 1 : 0);
+        treeNode.marcadores += child.marcadores || 0;
+      });
+    }
+
+    return treeNode;
+  }
+
+  /**
+   * Encontrar repuestos que pertenecen a un nodo de jerarquía
+   * @param {Object} node - Nodo de jerarquía
+   * @param {Number} nivel - Nivel del nodo
+   * @returns {Array} - Repuestos que coinciden con este nodo
+   */
+  findRepuestosForNode(node, nivel) {
+    if (!this.repuestosData || !node.id) return [];
+
+    // Mapear nivel a campo de jerarquía en repuestos
+    const jerarquiaFieldMap = {
+      1: 'areaGeneral',
+      2: 'subArea',
+      3: 'sistemaEquipo',
+      4: 'subSistema',
+      5: 'seccion',
+      6: 'subSeccion'
+    };
+
+    const field = jerarquiaFieldMap[nivel];
+    if (!field) return [];
+
+    // Filtrar repuestos que coincidan con el nombre del nodo en el campo correspondiente
+    const repuestos = this.repuestosData.filter(repuesto => {
+      return repuesto[field] === node.nombre;
+    });
+
+    return repuestos;
   }
 
   /**
