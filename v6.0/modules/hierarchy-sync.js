@@ -13,8 +13,7 @@
  * - Sincronización con canvas de mapas
  * - Notificaciones visuales
  * 
- * Uso:
- * import { HierarchySync } from './modules/hierarchy-sync.js';
+ * Uso (sin módulos ES6 - compatible con file://):
  * const hierarchy = new HierarchySync(containerElement, mapasData);
  * hierarchy.init();
  * 
@@ -22,7 +21,8 @@
  * ========================================
  */
 
-export class HierarchySync {
+// Definir clase globalmente (sin export para compatibilidad file://)
+class HierarchySync {
   constructor(containerElement, mapasData = [], zonasData = []) {
     this.container = containerElement;
     this.mapasData = mapasData;
@@ -665,3 +665,9 @@ export const HierarchyUtils = {
     return hierarchy;
   }
 };
+
+// Exponer clase globalmente para uso sin módulos ES6
+if (typeof window !== 'undefined') {
+  window.HierarchySync = HierarchySync;
+  console.log('✅ HierarchySync cargado y disponible globalmente');
+}

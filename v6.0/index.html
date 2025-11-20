@@ -16114,11 +16114,11 @@
 
 <!-- Script visualTreeV2.js removido - funcionalidad integrada en el código principal -->
 
-<script type="module">
-// @ts-nocheck
+<!-- Cargar módulo de sincronización de jerarquía (sin ES6 modules para compatibilidad file://) -->
+<script src="./modules/hierarchy-sync.js"></script>
 
-// Importar módulo de sincronización de jerarquía
-import { HierarchySync } from './modules/hierarchy-sync.js';
+<script>
+// @ts-nocheck
 
 // ========================================================================
 //  SISTEMA DE EVENTOS GLOBAL
