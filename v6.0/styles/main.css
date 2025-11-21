@@ -1265,7 +1265,7 @@
       animation: slideUp 0.25s ease;
       display: flex;
       flex-direction: column;
-      margin: clamp(10px, 2vh, 24px) auto clamp(20px, 4vh, 48px);
+      margin: auto;
       overflow: hidden;
       transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
     }
