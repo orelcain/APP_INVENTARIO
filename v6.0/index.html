@@ -37654,12 +37654,14 @@ class InventarioCompleto {
       });
     };
 
+    let repuesto = null; // 🔧 Definir fuera del bloque para uso posterior
+
     if (mode === 'edit' && id) {
       console.log(`\n Buscando repuesto con ID: "${id}" (tipo: ${typeof id})`);
       console.log(`Primeros 5 IDs disponibles:`, this.repuestos.slice(0, 5).map(r => `"${r.id}" (${typeof r.id})`));
       
       // BSQUEDA MULTI-FORMATO: Probar diferentes comparaciones
-      let repuesto = this.repuestos.find(r => {
+      repuesto = this.repuestos.find(r => {
         // Normalizar ambos IDs a string para comparar
         const idStr = String(id).trim();
         const rIdStr = String(r.id).trim();
