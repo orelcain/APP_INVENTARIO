@@ -2,8 +2,9 @@
 
 **Repositorio:** APP_INVENTARIO  
 **Owner:** orelcain  
-**Estado:** ✅ v6.0 en desarrollo activo - 95% completado  
-**Última actualización:** 20 de noviembre de 2025
+**Estado:** ✅ v6.0.1 - Flujo de Trabajo Completo Implementado  
+**Última actualización:** 21 de noviembre de 2025  
+**Release:** [v6.0.1](docs/RELEASE_NOTES_v6.0.1.md) - 22 funciones nuevas, ~1650 líneas de código
 
 > **📑 NAVEGACIÓN RÁPIDA:**  
 > [🎯 Flujo de Trabajo](#-flujo-de-trabajo-guiado-nuevo) • [🔄 Sistema Sincronización](#-sistema-de-sincronización-prototipo-mapas) • [📅 Historial Cronológico](#-historial-cronológico-de-desarrollo) • [🎯 Estructura](#-estructura-del-proyecto) • [🚀 Inicio Rápido](#-inicio-rápido) • [📊 Comparación](#-comparación-de-versiones) • [📈 Métricas](#-métricas-del-proyecto) • [🎨 Características](#-características-v60) • [🐛 Solución Problemas](#-solución-de-problemas) • [✅ Checklist](#-checklist-rápido)
@@ -12,11 +13,22 @@
 
 ## 🎯 FLUJO DE TRABAJO GUIADO - **NUEVO**
 
-### ⚡ Actualización 20 Nov 2025 - IMPLEMENTACIÓN COMPLETA
+### ⚡ Actualización 21 Nov 2025 - RELEASE v6.0.1
 
-**Estado:** ✅ Completado 100%  
-**Documentación:** [`docs/IMPLEMENTACION_FLUJO_COMPLETO.md`](docs/IMPLEMENTACION_FLUJO_COMPLETO.md)  
-**Especificación:** [`FLUJO_TRABAJO_USUARIO.md`](FLUJO_TRABAJO_USUARIO.md)
+**Estado:** ✅ Completado 100% | Testing Pendiente ⏳  
+**Release Notes:** [`docs/RELEASE_NOTES_v6.0.1.md`](docs/RELEASE_NOTES_v6.0.1.md)  
+**Documentación Técnica:** [`docs/IMPLEMENTACION_FLUJO_COMPLETO.md`](docs/IMPLEMENTACION_FLUJO_COMPLETO.md)  
+**Plan de Testing:** [`docs/PLAN_TESTING_FLUJO.md`](docs/PLAN_TESTING_FLUJO.md)
+
+#### 🎁 Contenido del Release
+
+- ✅ **22 Funciones Nuevas**: Sistema completo de flujo guiado
+- ✅ **~1650 Líneas de Código**: JS (1100) + HTML (250) + CSS (300)
+- ✅ **13 Commits**: Desarrollo incremental con documentación
+- ✅ **3 Documentos**: Implementación, testing, release notes
+- ✅ **Navegación Cross-Tab**: 4 funciones de navegación inteligente
+- ✅ **Integración MapController**: loadMap, panTo, setZoom
+- ✅ **Visual Feedback**: Marcador pulsante, zoom adaptativo, mensajes contextuales
 
 #### 🚀 Sistema de 3 Fases Implementado
 
