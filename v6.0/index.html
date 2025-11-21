@@ -20319,6 +20319,13 @@ const mapController = {
     }
 
     this.showMapLoadingOverlay(map);
+    
+    // 🔥 Mostrar workspace cuando se selecciona un mapa
+    const workspace = document.getElementById('mapWorkspace');
+    if (workspace) {
+      workspace.style.display = 'flex';
+    }
+    
     await this.loadMapImage(map, { ...options, viewportOverride });
     this.renderMapList(mapStorage.maps);
     this.renderAreaList(this.state.areas);
