@@ -304,10 +304,10 @@
 
 /* SECCIONES */
 .map-section {
-  background: rgba(30, 34, 41, 0.6);
+  background: #ffffff;
   border-radius: var(--border-radius);
   padding: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(91, 139, 180, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(91, 139, 180, 0.15);
   border: 1px solid rgba(91, 139, 180, 0.08);
   transition: all 0.2s ease;
 }
