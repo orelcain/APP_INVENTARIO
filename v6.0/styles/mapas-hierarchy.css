@@ -84,9 +84,10 @@
   transition: all 0.2s ease;
   font-size: 0.7rem;
   border-radius: 6px;
-  color: #ffffff;
+  color: #ffffff !important;
   box-shadow: none;
   border: 1px solid transparent;
+  opacity: 1 !important;
 }
 
 /* Estado: Hover */
@@ -127,25 +128,25 @@
   font-size: 0.75rem;
   width: 14px;
   font-family: monospace;
-  color: #e2e8f0;
+  color: #e2e8f0 !important;
   transition: transform 0.2s ease;
   font-weight: 700;
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 /* Badge de nivel (N1, N2, N3, etc.) */
 .mapas-tab .node-badge {
-  background: #3b82f6;
-  color: #ffffff;
+  background: #3b82f6 !important;
+  color: #ffffff !important;
   padding: 2px 6px;
   border-radius: 4px;
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   border: 1px solid #2563eb;
   letter-spacing: 0.3px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 /* ===== INDICADORES VISUALES ===== */
@@ -178,16 +179,59 @@
   cursor: help;
 }
 
+/* ===== SOBRESCRITURA FORZADA ===== */
+/* Estos estilos anulan los genéricos de prototype-mapas.css */
+
+.mapas-tab .node-label,
+.mapas-tab .hierarchy-node .node-label,
+.mapas-tab .node-header .node-label {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.mapas-tab .node-count,
+.mapas-tab .hierarchy-node .node-count,
+.mapas-tab .node-header .node-count {
+  color: #e2e8f0 !important;
+  opacity: 1 !important;
+}
+
+.mapas-tab .node-toggle,
+.mapas-tab .hierarchy-node .node-toggle,
+.mapas-tab .node-header .node-toggle {
+  color: #e2e8f0 !important;
+  opacity: 1 !important;
+}
+
+.mapas-tab .node-badge,
+.mapas-tab .hierarchy-node .node-badge,
+.mapas-tab .node-header .node-badge {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.mapas-tab .node-indicators,
+.mapas-tab .hierarchy-node .node-indicators {
+  opacity: 1 !important;
+}
+
+.mapas-tab .node-indicator,
+.mapas-tab .hierarchy-node .node-indicator {
+  opacity: 1 !important;
+  filter: none !important;
+}
+
 /* ===== LABEL Y CONTENIDO ===== */
 
 .mapas-tab .node-label {
   flex: 1;
-  color: #ffffff;
-  font-size: 0.8rem;
-  font-weight: 600;
+  color: #ffffff !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
   transition: color 0.2s ease;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-  opacity: 1;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+  opacity: 1 !important;
 }
 
 .mapas-tab .node-header:hover .node-label {
@@ -197,11 +241,11 @@
 
 .mapas-tab .node-count {
   font-size: 0.65rem;
-  color: #e2e8f0;
-  background: rgba(255, 255, 255, 0.15);
+  color: #e2e8f0 !important;
+  background: rgba(255, 255, 255, 0.15) !important;
   padding: 2px 6px;
   border-radius: 999px;
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 /* ===== HIJOS (CHILDREN) ===== */
