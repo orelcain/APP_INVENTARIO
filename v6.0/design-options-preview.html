@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opciones de Diseño - Áreas</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2rem;
+      color: #3b82f6;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .option-card {
+      background: #1e293b;
+      border: 2px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+    }
+
+    .option-card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    }
+
+    .option-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #334155;
+    }
+
+    .option-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #60a5fa;
+    }
+
+    .option-badge {
+      background: #3b82f6;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .option-description {
+      color: #94a3b8;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+
+    .preview-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 15px;
+      min-height: 200px;
+    }
+
+    /* OPCIÓN A: Panel Lateral */
+    .panel-lateral {
+      display: flex;
+      gap: 10px;
+    }
+
+    .map-mini {
+      flex: 1;
+      background: linear-gradient(135deg, #1e3a8a, #312e81);
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 0.7rem;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-panel {
+      width: 200px;
+      background: #1e293b;
+      border: 1px solid #3b82f6;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.75rem;
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-weight: 700;
+      color: #60a5fa;
+    }
+
+    .detail-section {
+      margin: 8px 0;
+      padding: 6px 0;
+      border-top: 1px solid #334155;
+    }
+
+    .detail-label {
+      color: #94a3b8;
+      font-size: 0.7rem;
+      margin-bottom: 3px;
+    }
+
+    .detail-value {
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .btn-mini {
+      flex: 1;
+      padding: 4px 8px;
+      background: #3b82f6;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: 0.65rem;
+      cursor: pointer;
+    }
+
+    /* OPCIÓN B: Cards Mejoradas */
+    .area-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .area-card:hover {
+      border-color: #3b82f6;
+      background: #253244;
+    }
+
+    .area-preview {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .area-info {
+      flex: 1;
+    }
+
+    .area-name {
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 2px;
+    }
+
+    .area-path {
+      font-size: 0.7rem;
+      color: #64748b;
+    }
+
+    .area-stats {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .area-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .btn-icon {
+      width: 28px;
+      height: 28px;
+      background: #334155;
+      border: none;
+      border-radius: 4px;
+      color: #94a3b8;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .btn-icon:hover {
+      background: #3b82f6;
+      color: white;
+    }
+
+    /* OPCIÓN C: Grid/Galería */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .gallery-item {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .gallery-item:hover {
+      border-color: #3b82f6;
+      transform: scale(1.05);
+    }
+
+    .gallery-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .gallery-name {
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      color: #e2e8f0;
+    }
+
+    .gallery-meta {
+      font-size: 0.65rem;
+      color: #64748b;
+    }
+
+    /* OPCIÓN D: Filtros Avanzados */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
+      padding: 6px 12px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-chip:hover,
+    .filter-chip.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: white;
+    }
+
+    .results-list {
+      max-height: 140px;
+      overflow-y: auto;
+    }
+
+    /* OPCIÓN E: Estadísticas Visuales */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #3b82f6;
+    }
+
+    .stat-bar {
+      background: #1e293b;
+      border-radius: 4px;
+      height: 8px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .stat-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      transition: width 0.3s;
+    }
+
+    /* OPCIÓN F: Árbol Jerárquico */
+    .tree-view {
+      font-size: 0.75rem;
+    }
+
+    .tree-node {
+      margin-left: 15px;
+      margin-bottom: 4px;
+    }
+
+    .tree-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .tree-header:hover {
+      background: #1e293b;
+    }
+
+    .tree-icon {
+      font-size: 0.9rem;
+    }
+
+    .tree-label {
+      color: #e2e8f0;
+    }
+
+    .tree-badge {
+      margin-left: auto;
+      background: #334155;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.65rem;
+      color: #94a3b8;
+    }
+
+    .tree-children {
+      margin-left: 15px;
+      border-left: 1px solid #334155;
+      padding-left: 10px;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b82f6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Opciones de Diseño para Áreas</h1>
+
+    <div class="options-grid">
+      
+      <!-- OPCIÓN A -->
+      <div class="option-card">
+        <div class="option-header">
+          <div class="option-title">A) Panel Lateral Detallado</div>
+          <div class="option-badge">Interactivo</div>
+        </div>
+        <div class="option-description">
+          Al hacer click en un área del mapa, se abre un panel lateral con toda la información detallada, equipos, estadísticas y acciones.
+        </div>
+        <div class="preview-box">
+          <div class="panel-lateral">
+            <div class="map-mini">
+              🗺️<br>
+              Mapa con áreas<br>
+              (click en área)
+            </div>
+            <div class="detail-panel">
+              <div class="detail-header">
+                🟢 Pocket Grader
+              </div>
+              <div class="detail-section">
+                <div class="detail-label">📍 Ubicación</div>
+                <div class="detail-value">Eviscerado > Grader</div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-label">🏷️ Categoría</div>
+                <div class="detail-value">Máquina</div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-label">⚙️ Equipos</div>
+                <div class="detail-value">3 asignados</div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-label">📊 Área</div>
+                <div class="detail-value">234.5 m²</div>
+              </div>
+              <div class="btn-group">
+                <button class="btn-mini">✏️ Editar</button>
+                <button class="btn-mini">🗑️</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPCIÓN B -->
+      <div class="option-card">
+        <div class="option-header">
+          <div class="option-title">B) Cards Mejoradas con Preview</div>
+          <div class="option-badge">Visual</div>
+        </div>
+        <div class="option-description">
+          Lista de áreas con miniatura visual del polígono, información compacta y acciones rápidas en hover.
+        </div>
+        <div class="preview-box">
+          <div class="area-card">
+            <div class="area-preview">🟢</div>
+            <div class="area-info">
+              <div class="area-name">Pocket Grader</div>
+              <div class="area-path">Eviscerado › Grader › Pocket 1-4</div>
+              <div class="area-stats">⚙️ 3 equipos • 📊 234.5 m²</div>
+            </div>
+            <div class="area-actions">
+              <button class="btn-icon">👁️</button>
+              <button class="btn-icon">✏️</button>
+            </div>
+          </div>
+          
+          <div class="area-card">
+            <div class="area-preview" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🟡</div>
+            <div class="area-info">
+              <div class="area-name">Cinta Zeta</div>
+              <div class="area-path">Eviscerado › Transporte</div>
+              <div class="area-stats">⚙️ 1 equipo • 📊 156.3 m²</div>
+            </div>
+            <div class="area-actions">
+              <button class="btn-icon">👁️</button>
+              <button class="btn-icon">✏️</button>
+            </div>
+          </div>
+
+          <div class="area-card">
+            <div class="area-preview" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">🔵</div>
+            <div class="area-info">
+              <div class="area-name">Sistema Neumático</div>
+              <div class="area-path">Eviscerado › Pocket 1-4</div>
+              <div class="area-stats">⚙️ 5 equipos • 📊 89.7 m²</div>
+            </div>
+            <div class="area-actions">
+              <button class="btn-icon">👁️</button>
+              <button class="btn-icon">✏️</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPCIÓN C -->
+      <div class="option-card">
+        <div class="option-header">
+          <div class="option-title">C) Grid/Galería Compacta</div>
+          <div class="option-badge">Rápido</div>
+        </div>
+        <div class="option-description">
+          Vista de galería con cards compactos, ideal para visualización rápida y acceso directo a muchas áreas.
+        </div>
+        <div class="preview-box">
+          <div class="gallery-grid">
+            <div class="gallery-item">
+              <div class="gallery-icon">🟢</div>
+              <div class="gallery-name">Pocket Grader</div>
+              <div class="gallery-meta">3 equipos</div>
+            </div>
+            
+            <div class="gallery-item">
+              <div class="gallery-icon">🟡</div>
+              <div class="gallery-name">Cinta Zeta</div>
+              <div class="gallery-meta">1 equipo</div>
+            </div>
+            
+            <div class="gallery-item">
+              <div class="gallery-icon">🔵</div>
+              <div class="gallery-name">Sist. Neumático</div>
+              <div class="gallery-meta">5 equipos</div>
+            </div>
+            
+            <div class="gallery-item">
+              <div class="gallery-icon">🟣</div>
+              <div class="gallery-name">Lavadora</div>
+              <div class="gallery-meta">2 equipos</div>
+            </div>
+            
+            <div class="gallery-item">
+              <div class="gallery-icon">🔴</div>
+              <div class="gallery-name">Balanza</div>
+              <div class="gallery-meta">1 equipo</div>
+            </div>
+            
+            <div class="gallery-item">
+              <div class="gallery-icon">🟠</div>
+              <div class="gallery-name">Mesa Trabajo</div>
+              <div class="gallery-meta">0 equipos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPCIÓN D -->
+      <div class="option-card">
+        <div class="option-header">
+          <div class="option-title">D) Filtros Avanzados</div>
+          <div class="option-badge">Búsqueda</div>
+        </div>
+        <div class="option-description">
+          Sistema de filtros inteligente por categoría, jerarquía, equipos, color. Ideal para encontrar áreas específicas rápidamente.
+        </div>
+        <div class="preview-box">
+          <div class="filter-bar">
+            <div class="filter-chip active">🎯 Todos</div>
+            <div class="filter-chip">⚙️ Máquinas</div>
+            <div class="filter-chip">📦 Áreas</div>
+            <div class="filter-chip">🔧 Con Equipos</div>
+            <div class="filter-chip">📍 Eviscerado</div>
+          </div>
+          <div class="results-list">
+            <div class="area-card">
+              <div class="area-preview">🟢</div>
+              <div class="area-info">
+                <div class="area-name">Pocket Grader</div>
+                <div class="area-path">Máquina • 3 equipos</div>
+              </div>
+            </div>
+            <div class="area-card">
+              <div class="area-preview" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🟡</div>
+              <div class="area-info">
+                <div class="area-name">Cinta Zeta</div>
+                <div class="area-path">Transporte • 1 equipo</div>
+              </div>
+            </div>
+            <div class="area-card">
+              <div class="area-preview" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">🔵</div>
+              <div class="area-info">
+                <div class="area-name">Sistema Neumático</div>
+                <div class="area-path">Máquina • 5 equipos</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPCIÓN E -->
+      <div class="option-card">
+        <div class="option-header">
+          <div class="option-title">E) Estadísticas Visuales</div>
+          <div class="option-badge">Analytics</div>
+        </div>
+        <div class="option-description">
+          Dashboard con métricas y visualizaciones: áreas más grandes, más equipos, distribución por categoría, mapas de calor.
+        </div>
+        <div class="preview-box">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Áreas</div>
+              <div class="stat-value">127</div>
+              <div class="stat-bar">
+                <div class="stat-fill" style="width: 85%"></div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-label">Con Equipos</div>
+              <div class="stat-value">89</div>
+              <div class="stat-bar">
+                <div class="stat-fill" style="width: 70%"></div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-label">Máquinas</div>
+              <div class="stat-value">45</div>
+              <div class="stat-bar">
+                <div class="stat-fill" style="width: 35%"></div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-label">Áreas Generales</div>
+              <div class="stat-value">82</div>
+              <div class="stat-bar">
+                <div class="stat-fill" style="width: 65%"></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 10px; padding: 10px; background: #1e293b; border-radius: 6px; font-size: 0.7rem;">
+            <div style="color: #64748b; margin-bottom: 4px;">Top 3 áreas con más equipos:</div>
+            <div style="color: #e2e8f0;">1. 🟢 Sistema Neumático (5)</div>
+            <div style="color: #e2e8f0;">2. 🟡 Pocket Grader (3)</div>
+            <div style="color: #e2e8f0;">3. 🔵 Lavadora (2)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPCIÓN F -->
+      <div class="option-card">
+        <div class="option-header">
+          <div class="option-title">F) Árbol Jerárquico Expandible</div>
+          <div class="option-badge">Navegación</div>
+        </div>
+        <div class="option-description">
+          Vista de árbol navegable que refleja la jerarquía completa: empresa → planta → zona → máquina → área.
+        </div>
+        <div class="preview-box">
+          <div class="tree-view">
+            <div class="tree-node">
+              <div class="tree-header">
+                <span class="tree-icon">▼</span>
+                <span class="tree-label">🏢 Aquachile Antarfood</span>
+                <span class="tree-badge">127</span>
+              </div>
+              <div class="tree-children">
+                <div class="tree-node">
+                  <div class="tree-header">
+                    <span class="tree-icon">▼</span>
+                    <span class="tree-label">🏭 Planta Principal</span>
+                    <span class="tree-badge">89</span>
+                  </div>
+                  <div class="tree-children">
+                    <div class="tree-node">
+                      <div class="tree-header">
+                        <span class="tree-icon">▼</span>
+                        <span class="tree-label">📦 Eviscerado</span>
+                        <span class="tree-badge">34</span>
+                      </div>
+                      <div class="tree-children">
+                        <div class="tree-node">
+                          <div class="tree-header">
+                            <span class="tree-icon">▶</span>
+                            <span class="tree-label">⚙️ Grader</span>
+                            <span class="tree-badge">12</span>
+                          </div>
+                        </div>
+                        <div class="tree-node">
+                          <div class="tree-header">
+                            <span class="tree-icon">▶</span>
+                            <span class="tree-label">⚙️ Pocket 1-4</span>
+                            <span class="tree-badge">8</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align: center; padding: 30px; background: #1e293b; border-radius: 12px; border: 2px solid #3b82f6;">
+      <h2 style="margin-bottom: 15px; color: #60a5fa;">💡 ¿Cuál opción prefieres?</h2>
+      <p style="color: #94a3b8; margin-bottom: 20px;">
+        También podemos <strong>combinar varias opciones</strong> para crear una experiencia completa.<br>
+        Por ejemplo: <strong>B + D + E</strong> (Cards con filtros y estadísticas) o <strong>A + F</strong> (Panel lateral con árbol).
+      </p>
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button style="padding: 12px 24px; background: #3b82f6; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; font-size: 0.9rem;">
+          Opción A
+        </button>
+        <button style="padding: 12px 24px; background: #10b981; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; font-size: 0.9rem;">
+          Opción B
+        </button>
+        <button style="padding: 12px 24px; background: #f59e0b; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; font-size: 0.9rem;">
+          Opción C
+        </button>
+        <button style="padding: 12px 24px; background: #8b5cf6; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; font-size: 0.9rem;">
+          Opción D
+        </button>
+        <button style="padding: 12px 24px; background: #ef4444; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; font-size: 0.9rem;">
+          Opción E
+        </button>
+        <button style="padding: 12px 24px; background: #06b6d4; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; font-size: 0.9rem;">
+          Opción F
+        </button>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

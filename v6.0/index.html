@@ -10720,25 +10720,27 @@
 .visual-v2-tree-container .node-content {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: 10px;
+  padding: 8px 14px;
   min-width: 320px;
   max-width: fit-content;
-  background: linear-gradient(135deg, #536a83 0%, #435a73 100%);
-  color: #e8edf3;
-  border-radius: 6px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  background: rgba(30, 41, 59, 0.5);
+  color: #e2e8f0;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   position: relative;
   z-index: 2;
   height: 32px;
+  font-size: 0.8rem;
+  border-left: 2px solid rgba(59, 130, 246, 0.3);
 }
 
 .visual-v2-tree-container .node-content:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(83, 106, 131, 0.5);
-  filter: brightness(1.15);
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  background: rgba(51, 65, 85, 0.6);
 }
 
 .visual-v2-tree-container .node-content.search-highlight {
@@ -12277,10 +12279,13 @@
   height: 32px;
 }
 
+/* === DISEÑO GRADIENTE PURO: Minimalista azul-gris por nivel === */
+/* Nivel 1 (Empresa): #1e3a8a (azul oscuro) → gris */
 .palette-visual .node-content[data-level="1"] {
-  background: linear-gradient(135deg, #3d4e63 0%, #2d3d4f 100%);
-  color: #d5dce5;
-  padding-left: 12px;
+  background: linear-gradient(90deg, rgba(30, 58, 138, 0.15), rgba(51, 65, 85, 0.1));
+  color: #e2e8f0;
+  padding-left: 14px;
+  border-left: 2px solid rgba(59, 130, 246, 0.3);
 }
 
 .palette-visual .tree-container > .tree-node > .node-content[data-level="1"] {
@@ -12288,45 +12293,51 @@
 }
 
 .palette-visual .node-content[data-level="2"] {
-  background: linear-gradient(135deg, #405266 0%, #30415a 100%);
-  color: #d5dce5;
-  padding-left: 12px;
+  background: linear-gradient(90deg, rgba(30, 64, 175, 0.15), rgba(51, 65, 85, 0.1));
+  color: #e2e8f0;
+  padding-left: 14px;
+  border-left: 2px solid rgba(59, 130, 246, 0.3);
 }
 
 .palette-visual .node-content[data-level="3"] {
-  background: linear-gradient(135deg, #43566b 0%, #33465d 100%);
-  color: #dbe2ea;
-  padding-left: 12px;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.15), rgba(51, 65, 85, 0.1));
+  color: #e2e8f0;
+  padding-left: 14px;
+  border-left: 2px solid rgba(59, 130, 246, 0.3);
 }
 
 .palette-visual .node-content[data-level="4"] {
-  background: linear-gradient(135deg, #475b71 0%, #374b61 100%);
-  color: #dbe2ea;
-  padding-left: 12px;
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.15), rgba(51, 65, 85, 0.1));
+  color: #e2e8f0;
+  padding-left: 14px;
+  border-left: 2px solid rgba(59, 130, 246, 0.3);
 }
 
 .palette-visual .node-content[data-level="5"] {
-  background: linear-gradient(135deg, #4b6077 0%, #3b5067 100%);
-  color: #e2e8ef;
-  padding-left: 12px;
+  background: linear-gradient(90deg, rgba(96, 165, 250, 0.15), rgba(51, 65, 85, 0.1));
+  color: #e2e8f0;
+  padding-left: 14px;
+  border-left: 2px solid rgba(59, 130, 246, 0.3);
 }
 
 .palette-visual .node-content[data-level="6"] {
-  background: linear-gradient(135deg, #4f657d 0%, #3f556d 100%);
-  color: #e2e8ef;
-  padding-left: 12px;
+  background: linear-gradient(90deg, rgba(147, 197, 253, 0.15), rgba(51, 65, 85, 0.1));
+  color: #e2e8f0;
+  padding-left: 14px;
+  border-left: 2px solid rgba(59, 130, 246, 0.3);
 }
 
 .palette-visual .node-content[data-level="7"] {
-  background: linear-gradient(135deg, #536a83 0%, #435a73 100%);
-  color: #e8edf3;
-  padding-left: 12px;
+  background: linear-gradient(90deg, rgba(147, 197, 253, 0.15), rgba(51, 65, 85, 0.1));
+  color: #e2e8f0;
+  padding-left: 14px;
+  border-left: 2px solid rgba(59, 130, 246, 0.3);
 }
 
 .palette-visual .node-content:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(83, 106, 131, 0.5);
-  filter: brightness(1.15);
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  background: rgba(51, 65, 85, 0.2) !important;
 }
 
 .palette-visual .node-toggle {
