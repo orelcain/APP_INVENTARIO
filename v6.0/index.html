@@ -40154,25 +40154,43 @@ class InventarioCompleto {
     // Obtener la primera ubicación de mapa
     const ubicacionMapa = repuesto.ubicacionesMapa[0];
 
-    setTimeout(() => {
+    setTimeout(async () => {
       // Cargar el mapa correspondiente
       if (window.mapController && ubicacionMapa.mapaId) {
         const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === ubicacionMapa.mapaId);
         if (mapa) {
-          // TODO: Cargar el mapa en el canvas y hacer zoom al marcador
-          console.log('🗺️ Cargando mapa:', mapa.nombre);
-          
-          // Buscar el marcador en el mapa
-          const marcador = mapa.markers?.find(m => 
-            m.x === ubicacionMapa.coordenadas.x && 
-            m.y === ubicacionMapa.coordenadas.y
-          );
-          
-          if (marcador) {
-            // TODO: Hacer zoom y resaltar el marcador
-            this.showToast(`📍 Repuesto ubicado en mapa "${mapa.nombre}" en (${ubicacionMapa.coordenadas.x.toFixed(2)}, ${ubicacionMapa.coordenadas.y.toFixed(2)})`, 'success');
-          } else {
-            this.showToast(`📍 Ubicación: Mapa "${mapa.nombre}" - Coordenadas: (${ubicacionMapa.coordenadas.x.toFixed(2)}, ${ubicacionMapa.coordenadas.y.toFixed(2)})`, 'info');
+          try {
+            // Cargar el mapa en el canvas
+            await window.mapController.loadMap(ubicacionMapa.mapaId);
+            console.log('🗺️ Mapa cargado:', mapa.nombre);
+            
+            // Hacer zoom al marcador
+            const coords = ubicacionMapa.coordenadas;
+            if (window.mapController.panTo && typeof window.mapController.panTo === 'function') {
+              // Centrar la vista en el marcador
+              window.mapController.panTo(coords.x, coords.y);
+              
+              // Hacer zoom para mejor visualización
+              if (window.mapController.setZoom && typeof window.mapController.setZoom === 'function') {
+                window.mapController.setZoom(2.0); // Zoom 2x
+              }
+            }
+            
+            // Buscar el marcador en el mapa para resaltarlo
+            const marcador = mapa.markers?.find(m => 
+              Math.abs(m.x - coords.x) < 1 && 
+              Math.abs(m.y - coords.y) < 1
+            );
+            
+            if (marcador) {
+              this.showToast(`📍 Repuesto ubicado en mapa "${mapa.nombre}" - Marcador resaltado`, 'success');
+            } else {
+              this.showToast(`📍 Ubicación: (${coords.x.toFixed(1)}, ${coords.y.toFixed(1)}) en "${mapa.nombre}"`, 'info');
+            }
+            
+          } catch (error) {
+            console.error('❌ Error cargando mapa:', error);
+            this.showToast('⚠️ Error al cargar el mapa', 'warning');
           }
         } else {
           this.showToast('⚠️ No se encontró el mapa asociado', 'warning');
@@ -40332,7 +40350,7 @@ class InventarioCompleto {
    * Selecciona un mapa para la asignación
    * @param {string} mapaId - ID del mapa seleccionado
    */
-  seleccionarMapaParaAsignacion(mapaId) {
+  async seleccionarMapaParaAsignacion(mapaId) {
     this.mapaSeleccionadoFlujo = mapaId;
     
     // Actualizar UI del selector
@@ -40345,8 +40363,23 @@ class InventarioCompleto {
     if (window.mapController) {
       const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === mapaId);
       if (mapa) {
-        // TODO: Cargar mapa en el canvas/workspace
-        this.showToast(`📍 Mapa "${mapa.nombre}" seleccionado. Ahora coloca el marcador.`, 'success');
+        // Cargar mapa en el canvas
+        try {
+          await window.mapController.loadMap(mapaId);
+          
+          // Activar modo de colocación de marcador
+          window.mapController.state.modoMarcador = true;
+          window.mapController.state.marcadorPendiente = {
+            repuestoId: this.repuestoEnFlujo,
+            mapId: mapaId,
+            areaId: null // Sin área específica por ahora
+          };
+          
+          this.showToast(`📍 Mapa "${mapa.nombre}" cargado. Haz clic en el canvas para colocar el marcador.`, 'success');
+        } catch (error) {
+          console.error('❌ Error cargando mapa:', error);
+          this.showToast('⚠️ Error al cargar el mapa', 'warning');
+        }
         
         // Mostrar instrucciones de marcador
         document.getElementById('marcadorInstructions').style.display = 'block';
@@ -48457,11 +48490,18 @@ class InventarioCompleto {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    //  PRIORIDAD: Si estamos en modo marcador, colocar el marcador
+    // Convertir coordenadas de pantalla a coordenadas del mapa
+    const mapX = (x - mapController.state.offsetX) / mapController.state.scale;
+    const mapY = (y - mapController.state.offsetY) / mapController.state.scale;
+
+    //  PRIORIDAD: Si app está en modo colocación de marcador para flujo guiado
+    if (app && app.modoColocarMarcador && app.mapaSeleccionadoFlujo) {
+      app.colocarMarcadorEnMapa({ x: mapX, y: mapY });
+      return;
+    }
+
+    //  Si estamos en modo marcador normal de mapController
     if (mapController && mapController.state && mapController.state.modoMarcador) {
-      // Convertir coordenadas de pantalla a coordenadas del mapa
-      const mapX = (x - mapController.state.offsetX) / mapController.state.scale;
-      const mapY = (y - mapController.state.offsetY) / mapController.state.scale;
       mapController.colocarMarcador(mapX, mapY);
       return;
     }
