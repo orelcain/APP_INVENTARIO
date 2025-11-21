@@ -37599,6 +37599,9 @@ class InventarioCompleto {
     console.log(`ID recibido: ${id} (tipo: ${typeof id})`);
     console.log(`Total repuestos en memoria: ${this.repuestos.length}`);
     
+    // 🎯 RESETEAR POSICIÓN: Limpiar posición guardada para que siempre abra centrado
+    localStorage.removeItem('modal-repuesto-state');
+    
     this.currentEditingId = id;
     
     // Inicializar estado multimedia con nuevo sistema
@@ -37792,6 +37795,15 @@ class InventarioCompleto {
     document.getElementById('modal').classList.add('active');
     this.addEscapeListener();
     this.setupEnterNavigation();
+    
+    // 🎯 RESETEAR ESTILOS: Limpiar cualquier transformación o posición anterior
+    const modalContent = document.querySelector('.modal-content');
+    if (modalContent) {
+      modalContent.style.transform = '';
+      modalContent.style.top = '';
+      modalContent.style.left = '';
+      modalContent.style.position = 'relative';
+    }
     
     // Inicializar modal redimensionable y arrastrable
     setTimeout(() => {
