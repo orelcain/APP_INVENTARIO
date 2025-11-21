@@ -37599,9 +37599,6 @@ class InventarioCompleto {
     console.log(`ID recibido: ${id} (tipo: ${typeof id})`);
     console.log(`Total repuestos en memoria: ${this.repuestos.length}`);
     
-    // 🎯 RESETEAR POSICIÓN: Limpiar posición guardada para que siempre abra centrado
-    localStorage.removeItem('modal-repuesto-state');
-    
     this.currentEditingId = id;
     
     // Inicializar estado multimedia con nuevo sistema
@@ -37817,7 +37814,7 @@ class InventarioCompleto {
           minHeight: 500,
           draggable: true,
           resizable: true,
-          persist: true,
+          persist: false, // 🎯 Deshabilitado para que siempre abra centrado
           storageKey: 'modal-repuesto-state',
           onResize: (size) => {
             console.log('Modal redimensionado:', size);
