@@ -30,7 +30,11 @@
   min-height: 400px;
   max-height: 600px;
   overflow-y: auto;
-  padding-right: 4px;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
 }
 
 /* Scrollbar personalizado */
@@ -55,11 +59,11 @@
 /* ===== NODOS DE JERARQUÍA ===== */
 
 .mapas-tab .hierarchy-node {
-  background: transparent;
-  border-left: 1px solid rgba(100, 100, 100, 0.15);
-  border-radius: 0;
+  background: rgba(248, 250, 252, 0.8);
+  border-left: 2px solid rgba(59, 130, 246, 0.25);
+  border-radius: 6px;
   overflow: hidden;
-  margin: 1px 0;
+  margin: 2px 0;
 }
 
 /* Estado: Rama resaltada (cuando se selecciona un nodo, toda su rama se resalta) */
@@ -70,6 +74,7 @@
 
 /* ===== HEADER DE NODO ===== */
 
+
 .mapas-tab .node-header {
   padding: 5px 8px;
   cursor: pointer;
@@ -78,13 +83,14 @@
   gap: 6px;
   transition: all 0.2s ease;
   font-size: 0.7rem;
-  border-radius: 3px;
+  border-radius: 6px;
+  color: #0f172a;
 }
 
 /* Estado: Hover */
 .mapas-tab .node-header:hover {
-  background: rgba(59, 130, 246, 0.1);
-  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.08);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
 }
 
 /* 🔧 Mostrar botón de asignación al hover */
@@ -100,13 +106,13 @@
 /* Estado: Seleccionado (click en el nodo) */
 .mapas-tab .node-header.selected {
   background: rgba(59, 130, 246, 0.12);
-  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 /* Estado: Coincide con búsqueda */
 .mapas-tab .node-header.search-match {
-  background: rgba(34, 197, 94, 0.15);
-  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.12);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
 }
 
 /* ===== ELEMENTOS DEL NODO ===== */
@@ -116,7 +122,7 @@
   font-size: 0.75rem;
   width: 14px;
   font-family: monospace;
-  color: #e2e8f0;
+  color: #475569;
   transition: transform 0.2s ease;
   font-weight: 700;
 }
@@ -169,23 +175,23 @@
 
 .mapas-tab .node-label {
   flex: 1;
-  color: #f1f5f9;
-  font-size: 0.75rem;
-  font-weight: 500;
+  color: #0f172a;
+  font-size: 0.8rem;
+  font-weight: 600;
   transition: color 0.2s ease;
 }
 
 .mapas-tab .node-header:hover .node-label {
-  color: #ffffff;
-  text-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+  color: #1d4ed8;
+  text-shadow: none;
 }
 
 .mapas-tab .node-count {
   font-size: 0.65rem;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.05);
+  color: #475569;
+  background: rgba(148, 163, 184, 0.2);
   padding: 2px 6px;
-  border-radius: 3px;
+  border-radius: 999px;
 }
 
 /* ===== HIJOS (CHILDREN) ===== */
@@ -265,31 +271,34 @@
 /* ===== BÚSQUEDA GLOBAL ===== */
 
 .mapas-tab .global-search-container {
-  padding: 8px;
-  background: rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid var(--border-color);
+  padding: 10px;
+  background: rgba(241, 245, 249, 0.9);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .mapas-tab .global-search-input {
   width: 100%;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.4);
   border-radius: 6px;
-  color: var(--text-primary);
+  color: #0f172a;
   font-size: 0.85rem;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
 }
 
 .mapas-tab .global-search-input:focus {
   outline: none;
-  border-color: var(--primary);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 2px rgba(91, 139, 180, 0.2);
+  border-color: #3b82f6;
+  background: #eef2ff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .mapas-tab .global-search-input::placeholder {
-  color: var(--text-muted);
+  color: #94a3b8;
 }
 
 /* ===== ESTADOS ESPECIALES ===== */

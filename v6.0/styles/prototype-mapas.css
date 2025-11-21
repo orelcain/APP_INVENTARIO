@@ -76,19 +76,19 @@
 }
 
 .map-panel {
-  background: var(--bg-secondary);
+  background: #f8fafc;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
   overflow: hidden;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(15, 23, 42, 0.1);
 }
 
 .map-panel-header {
   padding: 12px;
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
+  background: linear-gradient(135deg, #ffffff, #e2e8f0);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
   flex-shrink: 0;
 }
 
@@ -107,8 +107,8 @@
 /* TABS DEL PANEL */
 .panel-tabs {
   display: flex;
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
+  background: #f1f5f9;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
   flex-shrink: 0;
   overflow-x: auto;
   scrollbar-width: thin;
@@ -120,7 +120,7 @@
   padding: 10px var(--tab-padding);
   background: transparent;
   border: none;
-  color: var(--text-muted);
+  color: #475569;
   font-size: var(--tab-font-size);
   font-weight: 600;
   text-transform: uppercase;
@@ -145,17 +145,17 @@
 }
 
 .panel-tab:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
+  background: rgba(148, 163, 184, 0.15);
+  color: #1e293b;
   transform: translateY(-1px);
   transition: all 0.2s ease;
 }
 
 .panel-tab.active {
-  color: white;
-  border-bottom-color: var(--primary-light);
-  background: linear-gradient(135deg, rgba(91, 139, 180, 0.35), rgba(91, 139, 180, 0.25));
-  box-shadow: 0 3px 10px rgba(91, 139, 180, 0.25);
+  color: #0f172a;
+  border-bottom-color: #3b82f6;
+  background: linear-gradient(135deg, #e2e8f0, #cbd5f5);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.25);
   font-weight: 700;
 }
 
@@ -304,17 +304,17 @@
 
 /* SECCIONES */
 .map-section {
-  background: rgba(255, 255, 255, 0.03);
+  background: #ffffff;
   border-radius: var(--border-radius);
   padding: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(91, 139, 180, 0.1);
-  border: 1px solid rgba(91, 139, 180, 0.08);
-  transition: all 0.2s ease;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .map-section:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(91, 139, 180, 0.15);
-  border-color: rgba(91, 139, 180, 0.12);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
 }
 
 .map-section-header {

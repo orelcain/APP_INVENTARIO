@@ -5458,18 +5458,7 @@
 
     /* Efecto de partculas en el fondo (sutil) */
     body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: 
-        radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 40% 20%, rgba(59, 130, 246, 0.02) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: -1;
+      content: none;
     }
 
     /* Mejora de contraste para accesibilidad */
@@ -6212,11 +6201,12 @@
     }
 
     .map-panel {
-      background: var(--bg-secondary);
+      background: #f8fafc;
       border-radius: 12px;
       display: flex;
       flex-direction: column;
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+      border: 1px solid rgba(15, 23, 42, 0.1);
       min-height: 500px;
       height: 100%; /*  NUEVO: Tomar altura completa del grid */
       overflow: hidden;
@@ -6225,8 +6215,8 @@
 
     .map-panel-header {
       padding: 6px 10px;
-      border-bottom: 1px solid var(--border-color-light);
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.12));
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+      background: linear-gradient(135deg, #ffffff, #e2e8f0);
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
@@ -6323,10 +6313,11 @@
     }
 
     .map-section {
-      background: var(--bg-primary);
+      background: #ffffff;
       border-radius: 6px;
       padding: 5px 6px;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(15, 23, 42, 0.06);
     }
 
     .map-section-header {
