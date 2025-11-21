@@ -39665,16 +39665,143 @@ class InventarioCompleto {
     console.log('  Repuesto:', this.repuestoEnFlujo.nombre);
     console.log('  Nodo:', this.nodoSeleccionadoParaAsignacion);
 
-    // TODO: Implementar la lógica de asignación
-    // Por ahora solo mostramos confirmación y cerramos el panel
-    
-    this.showToast(`✅ Repuesto "${this.repuestoEnFlujo.nombre}" asignado correctamente`, 'success');
-    this.cerrarPanelAsignacion();
+    try {
+      // Encontrar el repuesto en el array
+      const repuestoIndex = this.repuestos.findIndex(r => r.id === this.repuestoEnFlujo.id);
+      if (repuestoIndex === -1) {
+        throw new Error('Repuesto no encontrado en el array');
+      }
 
-    // TODO: Continuar al Paso 3 - Mapa
-    setTimeout(() => {
-      this.showToast('📍 Ahora puedes ubicarlo en el mapa', 'info');
-    }, 1000);
+      // Extraer información del nodo para construir la ubicación
+      const nodo = this.nodoSeleccionadoParaAsignacion;
+      const nodeId = nodo.id;
+      
+      // Parsear el nodeId para obtener la jerarquía
+      const ubicacion = this.extraerUbicacionDesdeNodoId(nodeId);
+      
+      if (!ubicacion.areaGeneral) {
+        throw new Error('No se pudo determinar el área general del nodo');
+      }
+
+      console.log('📍 Ubicación extraída:', ubicacion);
+
+      // Actualizar el repuesto con la nueva ubicación
+      const repuesto = this.repuestos[repuestoIndex];
+      
+      // Verificar si ya tiene ubicaciones
+      if (!repuesto.ubicaciones || repuesto.ubicaciones.length === 0) {
+        repuesto.ubicaciones = [ubicacion];
+      } else {
+        // Reemplazar la ubicación actual (flujo guiado solo permite una)
+        repuesto.ubicaciones = [ubicacion];
+      }
+
+      // Actualizar campos de compatibilidad
+      repuesto.areaGeneral = ubicacion.areaGeneral;
+      repuesto.subArea = ubicacion.subArea || '';
+      repuesto.sistemaEquipo = ubicacion.sistemaEquipo || '';
+      repuesto.subSistema = ubicacion.subSistema || '';
+      repuesto.seccion = ubicacion.seccion || '';
+      repuesto.detalle = ubicacion.detalle || '';
+
+      // Actualizar estados del flujo
+      repuesto.estado_ubicacion = this.calcularEstadoUbicacion(repuesto.ubicaciones);
+      repuesto.progreso_flujo = this.calcularProgresoFlujo(repuesto.ubicaciones);
+      repuesto.ultimaModificacion = new Date().toISOString();
+
+      console.log('✅ Repuesto actualizado:', repuesto);
+
+      // Guardar cambios
+      await this.saveData();
+      
+      // Actualizar UI
+      await this.render();
+      
+      // Sincronizar con jerarquía
+      if (typeof this.syncJerarquiaTab === 'function') {
+        await this.syncJerarquiaTab(repuesto.id, repuesto.multimedia || [], repuesto.ubicaciones);
+      }
+
+      this.showToast(`✅ "${repuesto.nombre}" asignado a "${nodo.label}"`, 'success');
+      this.cerrarPanelAsignacion();
+
+      // Preguntar si desea continuar al mapa
+      setTimeout(() => {
+        if (confirm('✅ Jerarquía asignada.\n\n¿Deseas continuar para ubicarlo en el mapa?')) {
+          this.switchTab('mapa');
+          // TODO: Abrir panel de asignación en mapa
+        }
+      }, 500);
+
+    } catch (error) {
+      console.error('❌ Error asignando repuesto:', error);
+      this.showToast(`❌ Error: ${error.message}`, 'error');
+    }
+  }
+
+  /**
+   * 🎯 Extrae la ubicación jerárquica desde un nodeId
+   */
+  extraerUbicacionDesdeNodoId(nodeId) {
+    const ubicacion = {
+      areaGeneral: '',
+      subArea: '',
+      sistemaEquipo: '',
+      subSistema: '',
+      seccion: '',
+      subSeccion: '',
+      detalle: '',
+      cantidadEnUbicacion: 1
+    };
+
+    const parts = nodeId.split('_');
+    const tipo = parts[0];
+    const indices = parts.slice(1).map(i => parseInt(i));
+
+    console.log('🔍 Parseando nodeId:', nodeId, '→', tipo, indices);
+
+    try {
+      const { areas } = this.jerarquiaAnidada;
+      
+      if (tipo === 'empresa') {
+        throw new Error('Selecciona un nodo más específico (Área, Sistema, etc.)');
+      }
+
+      const areaIndex = indices[0];
+      const area = areas[areaIndex];
+      if (!area) throw new Error('Área no encontrada');
+      
+      ubicacion.areaGeneral = area.nombre;
+
+      if (tipo === 'area') return ubicacion;
+
+      if (indices.length > 1 && area.subAreas) {
+        const subAreaIndex = indices[1];
+        const subArea = area.subAreas[subAreaIndex];
+        if (subArea) {
+          ubicacion.subArea = subArea.nombre;
+          if (tipo === 'subArea') return ubicacion;
+
+          if (indices.length > 2 && subArea.sistemas) {
+            const sistemaIndex = indices[2];
+            const sistema = subArea.sistemas[sistemaIndex];
+            if (sistema) {
+              ubicacion.sistemaEquipo = sistema.nombre;
+              
+              if (indices.length > 3 && sistema.children) {
+                const child = sistema.children[indices[3]];
+                if (child) ubicacion.subSistema = child.nombre;
+              }
+            }
+          }
+        }
+      }
+
+      return ubicacion;
+    } catch (error) {
+      console.error('❌ Error parseando nodeId:', error);
+      throw error;
+    }
   }
 
   async deleteRepuesto(id) {
