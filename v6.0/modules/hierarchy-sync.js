@@ -886,14 +886,81 @@ class HierarchySync {
     
     if (mapChoice && parseInt(mapChoice) > 0 && parseInt(mapChoice) <= this.mapasData.length) {
       const selectedMap = this.mapasData[parseInt(mapChoice) - 1];
-      console.log('✅ Asignando mapa:', selectedMap.nombre, 'a nodo:', nodeName);
+      console.log('✅ Asignando mapa:', selectedMap.nombre, 'a nodo:', nodeName, 'ID:', nodeId);
       
-      // TODO: Guardar asignación en localStorage o backend
-      alert(`✅ Mapa "${selectedMap.nombre}" asignado a "${nodeName}"`);
-      
-      // Recargar jerarquía
-      this.renderTree();
+      // 🔥 ACTUALIZAR jerarquiaData con el mapId
+      if (this.jerarquiaData) {
+        const updated = this.updateNodeMapId(this.jerarquiaData, nodeId, selectedMap.id);
+        
+        if (updated) {
+          // Guardar en localStorage
+          if (window.app && window.app.saveJerarquiaAnidada) {
+            window.app.saveJerarquiaAnidada({
+              reason: 'asignar-mapa',
+              meta: { nodeId, nodeName, mapId: selectedMap.id }
+            });
+          }
+          
+          alert(`✅ Mapa "${selectedMap.nombre}" asignado a "${nodeName}"`);
+          
+          // Recargar jerarquía con datos actualizados
+          this.renderTree();
+        } else {
+          alert(`⚠️ No se pudo actualizar el nodo. Verifica el ID: ${nodeId}`);
+        }
+      } else {
+        alert('⚠️ No se puede guardar: jerarquiaData no disponible');
+      }
     }
+  }
+
+  /**
+   * 🔥 NUEVO: Actualizar mapId en estructura jerarquiaData recursivamente
+   */
+  updateNodeMapId(hierarchy, nodeId, mapId) {
+    // Verificar si es la empresa (nivel 1)
+    if (hierarchy.empresa && hierarchy.empresa.id === nodeId) {
+      hierarchy.empresa.mapId = mapId;
+      console.log('✅ MapId actualizado en empresa');
+      return true;
+    }
+    
+    // Buscar en áreas
+    if (hierarchy.areas) {
+      for (let area of hierarchy.areas) {
+        if (this.updateNodeInTree(area, nodeId, mapId)) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+
+  /**
+   * 🔥 NUEVO: Actualizar nodo recursivamente en el árbol
+   */
+  updateNodeInTree(node, nodeId, mapId) {
+    if (node.id === nodeId) {
+      node.mapId = mapId;
+      console.log('✅ MapId actualizado en nodo:', node.nombre);
+      return true;
+    }
+    
+    // Buscar en hijos según el tipo de nodo
+    const childTypes = ['subAreas', 'sistemas', 'subSistemas', 'secciones', 'subSecciones'];
+    
+    for (let childType of childTypes) {
+      if (node[childType] && Array.isArray(node[childType])) {
+        for (let child of node[childType]) {
+          if (this.updateNodeInTree(child, nodeId, mapId)) {
+            return true;
+          }
+        }
+      }
+    }
+    
+    return false;
   }
 
   /**
