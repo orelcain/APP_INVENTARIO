@@ -6,7 +6,75 @@
 **Última actualización:** 20 de noviembre de 2025
 
 > **📑 NAVEGACIÓN RÁPIDA:**  
-> [🔄 Sistema Sincronización](#-sistema-de-sincronización-prototipo-mapas) • [📅 Historial Cronológico](#-historial-cronológico-de-desarrollo) • [🎯 Estructura](#-estructura-del-proyecto) • [🚀 Inicio Rápido](#-inicio-rápido) • [📊 Comparación](#-comparación-de-versiones) • [📈 Métricas](#-métricas-del-proyecto) • [🎨 Características](#-características-v60) • [🐛 Solución Problemas](#-solución-de-problemas) • [✅ Checklist](#-checklist-rápido)
+> [🎯 Flujo de Trabajo](#-flujo-de-trabajo-guiado-nuevo) • [🔄 Sistema Sincronización](#-sistema-de-sincronización-prototipo-mapas) • [📅 Historial Cronológico](#-historial-cronológico-de-desarrollo) • [🎯 Estructura](#-estructura-del-proyecto) • [🚀 Inicio Rápido](#-inicio-rápido) • [📊 Comparación](#-comparación-de-versiones) • [📈 Métricas](#-métricas-del-proyecto) • [🎨 Características](#-características-v60) • [🐛 Solución Problemas](#-solución-de-problemas) • [✅ Checklist](#-checklist-rápido)
+
+---
+
+## 🎯 FLUJO DE TRABAJO GUIADO - **NUEVO**
+
+### ⚡ Actualización 20 Nov 2025 - IMPLEMENTACIÓN COMPLETA
+
+**Estado:** ✅ Completado 100%  
+**Documentación:** [`docs/IMPLEMENTACION_FLUJO_COMPLETO.md`](docs/IMPLEMENTACION_FLUJO_COMPLETO.md)  
+**Especificación:** [`FLUJO_TRABAJO_USUARIO.md`](FLUJO_TRABAJO_USUARIO.md)
+
+#### 🚀 Sistema de 3 Fases Implementado
+
+```
+INVENTARIO → JERARQUÍA → MAPA
+   (Crear)    (Ubicar)    (Marcar)
+```
+
+| Fase | Descripción | Estado |
+|------|-------------|--------|
+| **1️⃣ Creación** | Modal con botón "Guardar y Asignar Jerarquía" | ✅ |
+| **2️⃣ Jerarquía** | Panel flotante + selección de nodo + parser | ✅ |
+| **3️⃣ Mapa** | Panel flotante + selector de mapa + marcador | ✅ |
+| **➕ Navegación** | Cross-tab: Ver en Jerarquía/Mapa/Editar | ✅ |
+| **📊 Visualización** | Tarjetas con ubicación completa + badges | ✅ |
+
+#### 🎨 Características Principales
+
+- ✅ **Estados Automáticos**: `sin_ubicacion` → `jerarquia_sola` → `mapa_solo` → `completo`
+- ✅ **Progreso Visual**: Badges "Borrador" / "Listo para ubicar" / "Ubicado"
+- ✅ **Paneles Flotantes**: Animación slideInRight, 380px, responsive
+- ✅ **Parser de Jerarquía**: Extrae ubicación completa desde nodeId
+- ✅ **Selector de Mapas**: Lista visual con checks y metadata
+- ✅ **Navegación Inteligente**: Botones contextuales según estado
+- ✅ **20 Funciones Nuevas**: ~1250 líneas de código agregadas
+
+#### 📱 Experiencia de Usuario
+
+```javascript
+// EJEMPLO DE USO
+1. Usuario crea repuesto → Click "Guardar y Asignar Jerarquía"
+2. Panel flotante aparece en tab Jerarquía
+3. Click en nodo del árbol → Selección visual (borde verde)
+4. Click "Asignar a este nodo" → Guarda ubicación
+5. Pregunta: "¿Continuar al mapa?" → Sí
+6. Panel de mapa aparece → Selecciona mapa de lista
+7. Click en canvas → Coloca marcador con coordenadas
+8. Click "Asignar Mapa" → Estado: COMPLETO ✅
+9. Tarjeta muestra: Jerarquía + Mapa + Botones navegación
+```
+
+#### 🔗 Navegación Cross-Tab
+
+| Desde | Acción | Resultado |
+|-------|--------|-----------|
+| Tarjeta Inventario | "Ver en Jerarquía" | Abre tab, resalta nodo, scroll automático |
+| Tarjeta Inventario | "Ver en Mapa" | Abre tab, carga mapa, zoom a marcador |
+| Tarjeta Inventario | "Editar Ubicación" | Abre modal en Step 4 |
+| Tarjeta Inventario | "+ Asignar Jerarquía" | Inicia flujo guiado |
+| Tarjeta Inventario | "+ Asignar Mapa" | Abre panel de mapa |
+
+#### 📊 Métricas
+
+- **Funciones implementadas**: 20
+- **Líneas de código JS**: ~800
+- **Líneas de HTML**: ~250
+- **Líneas de CSS**: ~200
+- **Commits**: 8 (6 features, 2 fixes)
 
 ---
 
