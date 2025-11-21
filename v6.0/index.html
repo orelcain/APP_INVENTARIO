@@ -15969,8 +15969,20 @@
                     
                     <!-- Botón Guardar en Step 4 -->
                     <div class="step-actions-bottom">
+                      <!-- 🎯 Botón de flujo guiado: Guardar y continuar a Jerarquía -->
+                      <button type="button" id="saveAndContinueJerarquia" class="btn btn-success btn-lg" style="display: none;">
+                        <span class="btn-text">💾 Guardar y Asignar Jerarquía →</span>
+                        <span class="btn-loading" style="display: none;">
+                          <span class="spinner-border spinner-border-sm"></span> Guardando...
+                        </span>
+                      </button>
+                      
+                      <!-- Botón normal de guardar -->
                       <button type="button" id="saveRepuestoStep4" class="btn btn-primary btn-lg">
-                        💾 Guardar Repuesto
+                        <span class="btn-text">💾 Guardar Repuesto</span>
+                        <span class="btn-loading" style="display: none;">
+                          <span class="spinner-border spinner-border-sm"></span> Guardando...
+                        </span>
                       </button>
                     </div>
                   </section>
@@ -34492,6 +34504,7 @@ class InventarioCompleto {
     const saveStep2 = document.getElementById('saveRepuestoStep2');
     const saveStep3 = document.getElementById('saveRepuestoStep3');
     const saveStep4 = document.getElementById('saveRepuestoStep4');
+    const saveAndContinue = document.getElementById('saveAndContinueJerarquia');
     
     if (saveStep1) {
       saveStep1.addEventListener('click', () => this.saveRepuesto(null, true));
@@ -34504,6 +34517,9 @@ class InventarioCompleto {
     }
     if (saveStep4) {
       saveStep4.addEventListener('click', () => this.saveRepuesto(null, true));
+    }
+    if (saveAndContinue) {
+      saveAndContinue.addEventListener('click', () => this.saveAndContinueToJerarquia());
     }
 
     indicators.forEach((indicator) => {
@@ -37823,6 +37839,27 @@ class InventarioCompleto {
     this.addEscapeListener();
     this.setupEnterNavigation();
     
+    // 🎯 FLUJO GUIADO: Mostrar botón correcto según estado
+    const saveAndContinueBtn = document.getElementById('saveAndContinueJerarquia');
+    const saveNormalBtn = document.getElementById('saveRepuestoStep4');
+    
+    if (mode === 'edit' && repuesto) {
+      // Si el repuesto tiene jerarquía, mostrar botón normal
+      const tieneJerarquia = repuesto.ubicaciones && repuesto.ubicaciones.length > 0 && repuesto.ubicaciones[0].areaGeneral;
+      if (tieneJerarquia) {
+        if (saveAndContinueBtn) saveAndContinueBtn.style.display = 'none';
+        if (saveNormalBtn) saveNormalBtn.style.display = 'inline-flex';
+      } else {
+        // Sin jerarquía, mostrar botón de flujo guiado
+        if (saveAndContinueBtn) saveAndContinueBtn.style.display = 'inline-flex';
+        if (saveNormalBtn) saveNormalBtn.style.display = 'none';
+      }
+    } else {
+      // Modo agregar: mostrar botón de flujo guiado
+      if (saveAndContinueBtn) saveAndContinueBtn.style.display = 'inline-flex';
+      if (saveNormalBtn) saveNormalBtn.style.display = 'none';
+    }
+    
     // 🎯 RESETEAR ESTILOS: Limpiar cualquier transformación o posición anterior
     const modalContent = document.querySelector('.modal-content');
     if (modalContent) {
@@ -39490,6 +39527,30 @@ class InventarioCompleto {
       btnGuardar.style.cursor = 'pointer';
       btnText.style.display = 'inline';
       btnLoading.style.display = 'none';
+    }
+  }
+
+  /**
+   * 🎯 FLUJO GUIADO: Guardar repuesto y continuar a asignar jerarquía
+   */
+  async saveAndContinueToJerarquia() {
+    console.log('🎯 [FLUJO] Iniciando: Guardar y continuar a Jerarquía');
+    
+    // Guardar el repuesto primero
+    await this.saveRepuesto(null, true);
+    
+    // Si se guardó exitosamente, cerrar modal y abrir tab Jerarquía
+    if (this.currentEditingId) {
+      this.closeModal();
+      
+      // Cambiar a tab Jerarquía
+      this.switchTab('jerarquia');
+      
+      // Esperar un momento para que el tab se renderice
+      setTimeout(() => {
+        // TODO: Preseleccionar el repuesto en el panel de jerarquía
+        this.showToast('✅ Repuesto guardado. Ahora asigna su jerarquía.', 'success');
+      }, 300);
     }
   }
 
