@@ -36771,7 +36771,7 @@ class InventarioCompleto {
             
             <!-- Jerarquía -->
             <div style="margin-bottom: 6px;">
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 3px;">Jerarquía:</div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 3px;">🌳 Jerarquía:</div>
               <div style="font-size: 0.75rem; color: var(--text-primary); line-height: 1.4;">
                 ${[
                   r.ubicaciones[0].areaGeneral,
@@ -36782,10 +36782,21 @@ class InventarioCompleto {
               </div>
             </div>
             
+            ${r.ubicacionesMapa && r.ubicacionesMapa.length > 0 ? `
+              <!-- Ubicación en Mapa -->
+              <div style="margin-bottom: 6px; padding-top: 6px; border-top: 1px solid rgba(59, 130, 246, 0.2);">
+                <div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 3px;">🗺️ Mapa:</div>
+                <div style="font-size: 0.75rem; color: var(--text-primary); line-height: 1.4;">
+                  Coordenadas: (${r.ubicacionesMapa[0].coordenadas.x.toFixed(1)}, ${r.ubicacionesMapa[0].coordenadas.y.toFixed(1)})
+                </div>
+              </div>
+            ` : ''}
+            
             <!-- Botones de navegación -->
-            <div style="display: flex; gap: 6px; margin-top: 8px;">
+            <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
               <button onclick="app.verRepuestoEnJerarquia('${r.id}')" style="
                 flex: 1;
+                min-width: 120px;
                 background: rgba(59, 130, 246, 0.15);
                 border: 1px solid rgba(59, 130, 246, 0.3);
                 color: var(--primary);
@@ -36800,8 +36811,48 @@ class InventarioCompleto {
               onmouseout="this.style.background='rgba(59, 130, 246, 0.15)'">
                 🌳 Ver en Jerarquía
               </button>
+              
+              ${r.ubicacionesMapa && r.ubicacionesMapa.length > 0 ? `
+                <button onclick="app.verRepuestoEnMapa('${r.id}')" style="
+                  flex: 1;
+                  min-width: 120px;
+                  background: rgba(34, 197, 94, 0.15);
+                  border: 1px solid rgba(34, 197, 94, 0.3);
+                  color: #22c55e;
+                  padding: 6px 10px;
+                  border-radius: 4px;
+                  font-size: 0.7rem;
+                  font-weight: 500;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                "
+                onmouseover="this.style.background='rgba(34, 197, 94, 0.25)'"
+                onmouseout="this.style.background='rgba(34, 197, 94, 0.15)'">
+                  🗺️ Ver en Mapa
+                </button>
+              ` : `
+                <button onclick="app.continuarAMapa(); app.repuestoEnFlujo='${r.id}';" style="
+                  flex: 1;
+                  min-width: 120px;
+                  background: rgba(168, 85, 247, 0.15);
+                  border: 1px solid rgba(168, 85, 247, 0.3);
+                  color: #a855f7;
+                  padding: 6px 10px;
+                  border-radius: 4px;
+                  font-size: 0.7rem;
+                  font-weight: 500;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                "
+                onmouseover="this.style.background='rgba(168, 85, 247, 0.25)'"
+                onmouseout="this.style.background='rgba(168, 85, 247, 0.15)'">
+                  + Asignar Mapa
+                </button>
+              `}
+              
               <button onclick="app.editarUbicacionRepuesto('${r.id}')" style="
                 flex: 1;
+                min-width: 120px;
                 background: rgba(251, 191, 36, 0.15);
                 border: 1px solid rgba(251, 191, 36, 0.3);
                 color: #fbbf24;
@@ -40066,6 +40117,68 @@ class InventarioCompleto {
         }
       } else {
         this.showToast('⚠️ No se pudo localizar la ubicación en el árbol', 'warning');
+      }
+    }, 100);
+  }
+
+  /**
+   * Navega a la pestaña de mapa y resalta el marcador donde está ubicado el repuesto
+   * @param {string} repuestoId - ID del repuesto
+   */
+  verRepuestoEnMapa(repuestoId) {
+    const repuesto = this.repuestos.find(r => r.id === repuestoId);
+    if (!repuesto) {
+      this.showToast('❌ Repuesto no encontrado', 'error');
+      return;
+    }
+
+    if (!repuesto.ubicacionesMapa || repuesto.ubicacionesMapa.length === 0) {
+      this.showToast('⚠️ Este repuesto no tiene ubicación en el mapa', 'warning');
+      
+      // Preguntar si quiere asignar ahora
+      if (confirm('¿Deseas asignar una ubicación en el mapa ahora?')) {
+        this.repuestoEnFlujo = repuestoId;
+        this.currentTab = 'mapa';
+        this.renderTabs();
+        setTimeout(() => {
+          this.mostrarPanelAsignacionMapa(repuesto);
+        }, 100);
+      }
+      return;
+    }
+
+    // Cambiar a la pestaña de mapa
+    this.currentTab = 'mapa';
+    this.renderTabs();
+
+    // Obtener la primera ubicación de mapa
+    const ubicacionMapa = repuesto.ubicacionesMapa[0];
+
+    setTimeout(() => {
+      // Cargar el mapa correspondiente
+      if (window.mapController && ubicacionMapa.mapaId) {
+        const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === ubicacionMapa.mapaId);
+        if (mapa) {
+          // TODO: Cargar el mapa en el canvas y hacer zoom al marcador
+          console.log('🗺️ Cargando mapa:', mapa.nombre);
+          
+          // Buscar el marcador en el mapa
+          const marcador = mapa.markers?.find(m => 
+            m.x === ubicacionMapa.coordenadas.x && 
+            m.y === ubicacionMapa.coordenadas.y
+          );
+          
+          if (marcador) {
+            // TODO: Hacer zoom y resaltar el marcador
+            this.showToast(`📍 Repuesto ubicado en mapa "${mapa.nombre}" en (${ubicacionMapa.coordenadas.x.toFixed(2)}, ${ubicacionMapa.coordenadas.y.toFixed(2)})`, 'success');
+          } else {
+            this.showToast(`📍 Ubicación: Mapa "${mapa.nombre}" - Coordenadas: (${ubicacionMapa.coordenadas.x.toFixed(2)}, ${ubicacionMapa.coordenadas.y.toFixed(2)})`, 'info');
+          }
+        } else {
+          this.showToast('⚠️ No se encontró el mapa asociado', 'warning');
+        }
+      } else {
+        this.showToast('⚠️ Sistema de mapas no disponible', 'warning');
       }
     }, 100);
   }
