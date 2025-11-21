@@ -66,6 +66,8 @@
   align-items: center;
   opacity: 0;
   transition: opacity 0.2s;
+  flex-shrink: 0;
+  margin-left: 8px;
 }
 
 .mapas-tab .hierarchy-node:hover .node-actions {
@@ -74,13 +76,18 @@
 
 .mapas-tab .node-add-btn,
 .mapas-tab .node-assign-btn {
-  padding: 2px 6px !important;
-  border-radius: 3px !important;
-  font-size: 0.65rem !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  font-size: 0.7rem !important;
   cursor: pointer !important;
   transition: all 0.2s !important;
   white-space: nowrap !important;
   border: 1px solid !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 22px !important;
 }
 
 .mapas-tab .node-add-btn {
@@ -99,12 +106,39 @@
   background: transparent !important;
   border-color: rgba(91, 139, 180, 0.3) !important;
   color: #7ba5c8 !important;
+  font-size: 0.9rem !important;
+  padding: 2px 6px !important;
 }
 
 .mapas-tab .node-assign-btn:hover {
   background: rgba(91, 139, 180, 0.1) !important;
   border-color: rgba(91, 139, 180, 0.5) !important;
   transform: scale(1.1);
+}
+
+/* Asegurar que el label no se comprima */
+.mapas-tab .node-label {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* Contenedor del header con flex mejorado */
+.mapas-tab .node-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 6px 12px !important;
+}
+
+.mapas-tab .node-header > div:first-child {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex: 1 !important;
+  min-width: 0 !important;
 }
 
 /* Estilo especial para nodos de repuestos */

@@ -184,19 +184,7 @@ class HierarchySync {
       <button 
         class="node-add-btn" 
         onclick="window.hierarchySync.addChildNode(event, '${node.id}', ${node.nivel}, '${node.name}')"
-        title="Agregar ${this.getLevelLabel(node.nivel + 1)}"
-        style="
-          background: rgba(34, 197, 94, 0.1);
-          border: 1px solid rgba(34, 197, 94, 0.3);
-          color: #4ade80;
-          padding: 2px 6px;
-          border-radius: 3px;
-          font-size: 0.65rem;
-          cursor: pointer;
-          margin-left: 4px;
-          opacity: 0;
-          transition: opacity 0.2s;
-        ">
+        title="Agregar ${this.getLevelLabel(node.nivel + 1)}">
         + ${this.getLevelLabel(node.nivel + 1)}
       </button>
     ` : '';
@@ -204,39 +192,23 @@ class HierarchySync {
     return `
       <div class="hierarchy-node ${isRepuesto ? 'hierarchy-node-repuesto' : ''}" ${dataAttrs} style="opacity: ${opacity};">
         <div class="node-header" style="padding: 4px 8px; padding-left: ${paddingLeft + 8}px; display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 6px; flex: 1;" onclick="window.hierarchySync.onNodeClick(event)">
+          <div style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0;" onclick="window.hierarchySync.onNodeClick(event)">
             ${toggleHtml}
             ${badgeHtml}
             ${indicators}
-            <span class="node-label" style="font-weight: ${fontWeight};">${node.name}</span>
+            <span class="node-label" style="font-weight: ${fontWeight}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${node.name}</span>
           </div>
-          <div class="node-actions" style="display: flex; gap: 4px;">
+          <div class="node-actions" style="display: flex; gap: 4px; flex-shrink: 0;">
             ${addButtonHtml}
             ${!isRepuesto ? `
               <button 
                 class="node-assign-btn" 
                 onclick="window.hierarchySync.openAssignModal(event, '${node.id}', '${node.name}', '${node.nivel}')"
-                title="Asignar mapa/área o crear marcador"
-                style="
-                  background: transparent;
-                  border: 1px solid rgba(91, 139, 180, 0.3);
-                  color: var(--primary-light, #7ba5c8);
-                  padding: 2px 6px;
-                  border-radius: 3px;
-                  font-size: 0.65rem;
-                  cursor: pointer;
-                  opacity: 0;
-                  transition: opacity 0.2s;
-                ">
+                title="Asignar mapa/área o crear marcador">
                 📍
               </button>
             ` : ''}
           </div>
-              font-size: 0.65rem;
-              cursor: pointer;
-              opacity: 0;
-              transition: opacity 0.2s;
-            ">⚙️</button>
         </div>
         ${childrenHtml}
       </div>
