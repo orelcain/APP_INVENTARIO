@@ -6201,12 +6201,12 @@
     }
 
     .map-panel {
-      background: #f8fafc;
+      background: var(--bg-secondary);
       border-radius: 12px;
       display: flex;
       flex-direction: column;
       box-shadow: none;
-      border: 1px solid rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.15);
       min-height: 500px;
       height: 100%; /*  NUEVO: Tomar altura completa del grid */
       overflow: hidden;
@@ -6215,8 +6215,8 @@
 
     .map-panel-header {
       padding: 6px 10px;
-      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-      background: #ffffff;
+      border-bottom: 1px solid var(--border-color-light);
+      background: var(--bg-primary);
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
@@ -6313,11 +6313,11 @@
     }
 
     .map-section {
-      background: #ffffff;
+      background: var(--bg-primary);
       border-radius: 6px;
       padding: 5px 6px;
       box-shadow: none;
-      border: 1px solid rgba(15, 23, 42, 0.06);
+      border: 1px solid rgba(148, 163, 184, 0.1);
     }
 
     .map-section-header {
