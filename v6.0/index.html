@@ -36645,7 +36645,7 @@ class InventarioCompleto {
             </div>
           </div>
         </div>
-        <div class="card-footer" style="display: flex; justify-content: center; align-items: center; gap: 8px; padding: 8px 12px;">
+        <div class="card-footer" style="display: flex; justify-content: center; align-items: center; gap: 8px; padding: 8px 12px; flex-wrap: wrap;">
           <button class="card-btn" style="
             background: var(--primary);
             color: white;
@@ -36656,8 +36656,8 @@ class InventarioCompleto {
             font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            flex: 1;
-            max-width: 90px;
+            min-width: 80px;
+            flex: 0 1 auto;
           " data-action="edit" data-id="${r.id}" 
           onmouseover="this.style.background='#6a9dc4'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
           onmouseout="this.style.background='var(--primary)'; this.style.boxShadow='none';">
@@ -36674,8 +36674,8 @@ class InventarioCompleto {
             font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            flex: 1;
-            max-width: 90px;
+            min-width: 80px;
+            flex: 0 1 auto;
           " data-action="contar" data-id="${r.id}"
           onmouseover="this.style.background='#6bae89'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
           onmouseout="this.style.background='var(--success)'; this.style.boxShadow='none';">
@@ -36692,8 +36692,8 @@ class InventarioCompleto {
             font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            flex: 1;
-            max-width: 90px;
+            min-width: 80px;
+            flex: 0 1 auto;
           " data-action="delete" data-id="${r.id}"
           onmouseover="this.style.background='#c88080'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
           onmouseout="this.style.background='var(--danger)'; this.style.boxShadow='none';">
