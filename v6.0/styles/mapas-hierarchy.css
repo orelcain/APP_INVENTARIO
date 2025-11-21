@@ -34,7 +34,7 @@
   border-radius: 10px;
   background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
   border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+  box-shadow: none;
 }
 
 /* Scrollbar personalizado */
@@ -85,12 +85,15 @@
   font-size: 0.7rem;
   border-radius: 6px;
   color: #0f172a;
+  box-shadow: none;
+  border: 1px solid transparent;
 }
 
 /* Estado: Hover */
 .mapas-tab .node-header:hover {
   background: rgba(59, 130, 246, 0.08);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+  box-shadow: none;
+  border: 1px solid rgba(59, 130, 246, 0.35);
 }
 
 /* 🔧 Mostrar botón de asignación al hover */
@@ -106,13 +109,15 @@
 /* Estado: Seleccionado (click en el nodo) */
 .mapas-tab .node-header.selected {
   background: rgba(59, 130, 246, 0.12);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: none;
+  border: 1px solid rgba(59, 130, 246, 0.45);
 }
 
 /* Estado: Coincide con búsqueda */
 .mapas-tab .node-header.search-match {
   background: rgba(34, 197, 94, 0.12);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+  box-shadow: none;
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 /* ===== ELEMENTOS DEL NODO ===== */

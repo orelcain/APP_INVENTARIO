@@ -80,14 +80,14 @@
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+  box-shadow: none;
   overflow: hidden;
-  border: 1px solid rgba(15, 23, 42, 0.1);
+  border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .map-panel-header {
   padding: 12px;
-  background: linear-gradient(135deg, #ffffff, #e2e8f0);
+  background: #ffffff;
   border-bottom: 1px solid rgba(15, 23, 42, 0.08);
   flex-shrink: 0;
 }
@@ -154,8 +154,8 @@
 .panel-tab.active {
   color: #0f172a;
   border-bottom-color: #3b82f6;
-  background: linear-gradient(135deg, #e2e8f0, #cbd5f5);
-  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.25);
+  background: #e2e8f0;
+  box-shadow: none;
   font-weight: 700;
 }
 
@@ -307,14 +307,13 @@
   background: #ffffff;
   border-radius: var(--border-radius);
   padding: 10px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  box-shadow: none;
   border: 1px solid rgba(15, 23, 42, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .map-section:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
 .map-section-header {
