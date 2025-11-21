@@ -15285,6 +15285,60 @@
             </div>
           </section>
 
+          <!-- PANEL FLOTANTE DE ASIGNACIÓN DE MAPA (similar al de jerarquía) -->
+          <div id="panel-asignacion-mapa" class="panel-asignacion-repuesto" style="display: none;">
+            <div class="panel-header">
+              <h3>📍 Asignar Ubicación en Mapa</h3>
+              <button class="panel-close-btn" onclick="app.cerrarPanelAsignacionMapa()">&times;</button>
+            </div>
+            <div class="panel-body">
+              <div class="repuesto-preview">
+                <div class="repuesto-preview-icon">📦</div>
+                <div class="repuesto-preview-info">
+                  <div class="repuesto-preview-name" id="panelMapaRepuestoNombre">-</div>
+                  <div class="repuesto-preview-code" id="panelMapaRepuestoCodigo">-</div>
+                </div>
+              </div>
+              
+              <div class="panel-instructions">
+                <h4>📋 Paso 1: Selecciona un mapa</h4>
+                <p>Primero elige el mapa donde se ubica el repuesto</p>
+                <div id="mapasSelectorContainer" class="mapas-selector">
+                  <!-- Se llenará dinámicamente con la lista de mapas -->
+                </div>
+              </div>
+
+              <div class="panel-instructions" id="zonaInstructions" style="display: none;">
+                <h4>📋 Paso 2: Selecciona una zona (opcional)</h4>
+                <p>Si el mapa tiene zonas definidas, selecciona una. Si no, continúa al marcador.</p>
+                <button class="btn-secondary" onclick="app.saltarAMarcador()">Saltar a colocar marcador</button>
+              </div>
+
+              <div class="panel-instructions" id="marcadorInstructions" style="display: none;">
+                <h4>📋 Paso 3: Coloca el marcador</h4>
+                <p>Haz clic en el mapa para colocar el marcador en la ubicación exacta del repuesto</p>
+                <div id="coordenadasMarcador" style="margin-top: 8px; padding: 8px; background: rgba(59, 130, 246, 0.1); border-radius: 4px; font-size: 0.85rem;">
+                  <strong>Coordenadas:</strong> <span id="coordsDisplay">-</span>
+                </div>
+              </div>
+
+              <div class="panel-info-box">
+                <strong>💡 Progreso:</strong>
+                <div id="progresoMapa" style="margin-top: 6px; padding: 6px; background: rgba(26, 29, 35, 0.6); border-radius: 4px; font-size: 0.8rem;">
+                  <div id="estadoMapaSeleccionado">📋 Paso 1: Selecciona un mapa</div>
+                  <div id="estadoZonaSeleccionada" style="margin-top: 4px; opacity: 0.5;">📋 Paso 2: Zona (opcional)</div>
+                  <div id="estadoMarcadorColocado" style="margin-top: 4px; opacity: 0.5;">📋 Paso 3: Coloca marcador</div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-footer">
+              <button class="btn-secondary" onclick="app.cerrarPanelAsignacionMapa()">Cancelar</button>
+              <button id="btnAsignarMapa" class="btn-primary" onclick="app.confirmarAsignacionMapa()" disabled>
+                Asignar Mapa
+              </button>
+            </div>
+          </div>
+
           <!-- 2. MAPAS CREADOS - LISTA COMPACTA -->
           <section class='map-section' id='section-mapas-creados'>
             <div class='map-section-header' onclick='toggleSection(this)'>
@@ -39834,8 +39888,10 @@ class InventarioCompleto {
       // Preguntar si desea continuar al mapa
       setTimeout(() => {
         if (confirm('✅ Jerarquía asignada.\n\n¿Deseas continuar para ubicarlo en el mapa?')) {
-          this.switchTab('mapa');
-          // TODO: Abrir panel de asignación en mapa
+          this.continuarAMapa();
+        } else {
+          // Limpiar flujo si no quiere continuar
+          this.repuestoEnFlujo = null;
         }
       }, 500);
 
@@ -40062,6 +40118,290 @@ class InventarioCompleto {
       this.mostrarPanelAsignacionRepuesto(repuesto);
       this.showToast('👆 Selecciona un nodo en el árbol para asignar la ubicación', 'info');
     }, 100);
+  }
+
+  /**
+   * Continúa el flujo desde jerarquía hacia mapa
+   * Se llama después de asignar la jerarquía
+   */
+  async continuarAMapa() {
+    if (!this.repuestoEnFlujo) {
+      this.showToast('❌ No hay repuesto en flujo', 'error');
+      return;
+    }
+
+    const repuesto = this.repuestos.find(r => r.id === this.repuestoEnFlujo);
+    if (!repuesto) {
+      this.showToast('❌ Repuesto no encontrado', 'error');
+      return;
+    }
+
+    // Cambiar a la pestaña de mapa
+    this.currentTab = 'mapa';
+    this.renderTabs();
+
+    // Mostrar el panel de asignación de mapa
+    setTimeout(() => {
+      this.mostrarPanelAsignacionMapa(repuesto);
+      this.showToast('📍 Selecciona un mapa y coloca el marcador', 'info');
+    }, 100);
+  }
+
+  /**
+   * Muestra el panel flotante de asignación de mapa
+   * @param {Object} repuesto - Objeto del repuesto
+   */
+  mostrarPanelAsignacionMapa(repuesto) {
+    const panel = document.getElementById('panel-asignacion-mapa');
+    if (!panel) return;
+
+    // Actualizar info del repuesto
+    document.getElementById('panelMapaRepuestoNombre').textContent = repuesto.nombre || '-';
+    document.getElementById('panelMapaRepuestoCodigo').textContent = `Código: ${repuesto.codigo || repuesto.id || '-'}`;
+
+    // Cargar lista de mapas disponibles
+    this.cargarMapasDisponibles();
+
+    // Resetear estados
+    this.mapaSeleccionadoFlujo = null;
+    this.zonaSeleccionadaFlujo = null;
+    this.marcadorColocadoFlujo = null;
+
+    // Mostrar panel con animación
+    panel.style.display = 'flex';
+    setTimeout(() => panel.classList.add('active'), 10);
+
+    // Actualizar progreso
+    this.actualizarProgresoMapa();
+  }
+
+  /**
+   * Carga la lista de mapas disponibles en el selector
+   */
+  async cargarMapasDisponibles() {
+    const container = document.getElementById('mapasSelectorContainer');
+    if (!container) return;
+
+    // Obtener mapas del storage
+    const mapas = window.mapStorage?.state?.mapas || [];
+
+    if (mapas.length === 0) {
+      container.innerHTML = `
+        <div style="padding: 12px; text-align: center; color: var(--text-secondary); background: rgba(255, 193, 7, 0.1); border-radius: 4px; border: 1px solid rgba(255, 193, 7, 0.3);">
+          <p>⚠️ No hay mapas creados aún</p>
+          <button class="btn-primary" onclick="app.crearPrimerMapa()" style="margin-top: 8px;">
+            + Crear Primer Mapa
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    // Renderizar lista de mapas
+    container.innerHTML = mapas.map((mapa, idx) => `
+      <div class="mapa-selector-item ${this.mapaSeleccionadoFlujo === mapa.id ? 'selected' : ''}" 
+           onclick="app.seleccionarMapaParaAsignacion('${mapa.id}')">
+        <div class="mapa-selector-icon">🗺️</div>
+        <div class="mapa-selector-info">
+          <div class="mapa-selector-name">${mapa.nombre || `Mapa ${idx + 1}`}</div>
+          <div class="mapa-selector-meta">
+            ${mapa.areas?.length || 0} zonas • ${mapa.markers?.length || 0} marcadores
+          </div>
+        </div>
+        <div class="mapa-selector-check">
+          ${this.mapaSeleccionadoFlujo === mapa.id ? '✓' : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /**
+   * Selecciona un mapa para la asignación
+   * @param {string} mapaId - ID del mapa seleccionado
+   */
+  seleccionarMapaParaAsignacion(mapaId) {
+    this.mapaSeleccionadoFlujo = mapaId;
+    
+    // Actualizar UI del selector
+    this.cargarMapasDisponibles();
+    
+    // Actualizar progreso
+    this.actualizarProgresoMapa();
+    
+    // Cargar el mapa en el workspace si existe
+    if (window.mapController) {
+      const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === mapaId);
+      if (mapa) {
+        // TODO: Cargar mapa en el canvas/workspace
+        this.showToast(`📍 Mapa "${mapa.nombre}" seleccionado. Ahora coloca el marcador.`, 'success');
+        
+        // Mostrar instrucciones de marcador
+        document.getElementById('marcadorInstructions').style.display = 'block';
+      }
+    }
+    
+    // Habilitar modo de colocación de marcador
+    this.modoColocarMarcador = true;
+  }
+
+  /**
+   * Maneja el click en el mapa para colocar el marcador
+   * @param {Object} coordenadas - {x, y} coordenadas del marcador
+   */
+  colocarMarcadorEnMapa(coordenadas) {
+    if (!this.modoColocarMarcador) return;
+    
+    this.marcadorColocadoFlujo = coordenadas;
+    
+    // Actualizar display de coordenadas
+    document.getElementById('coordsDisplay').textContent = `X: ${coordenadas.x.toFixed(2)}, Y: ${coordenadas.y.toFixed(2)}`;
+    
+    // Actualizar progreso
+    this.actualizarProgresoMapa();
+    
+    // Habilitar botón de asignar
+    document.getElementById('btnAsignarMapa').disabled = false;
+    
+    this.showToast('📍 Marcador colocado correctamente', 'success');
+  }
+
+  /**
+   * Actualiza el progreso visual del panel de asignación de mapa
+   */
+  actualizarProgresoMapa() {
+    const estadoMapa = document.getElementById('estadoMapaSeleccionado');
+    const estadoZona = document.getElementById('estadoZonaSeleccionada');
+    const estadoMarcador = document.getElementById('estadoMarcadorColocado');
+    
+    if (this.mapaSeleccionadoFlujo) {
+      estadoMapa.innerHTML = '✅ Paso 1: Mapa seleccionado';
+      estadoMapa.style.opacity = '1';
+      estadoZona.style.opacity = '1';
+    } else {
+      estadoMapa.innerHTML = '📋 Paso 1: Selecciona un mapa';
+      estadoMapa.style.opacity = '1';
+      estadoZona.style.opacity = '0.5';
+    }
+    
+    if (this.zonaSeleccionadaFlujo) {
+      estadoZona.innerHTML = '✅ Paso 2: Zona seleccionada';
+      estadoMarcador.style.opacity = '1';
+    } else {
+      estadoZona.innerHTML = '⏭️ Paso 2: Zona (opcional)';
+      estadoMarcador.style.opacity = this.mapaSeleccionadoFlujo ? '1' : '0.5';
+    }
+    
+    if (this.marcadorColocadoFlujo) {
+      estadoMarcador.innerHTML = '✅ Paso 3: Marcador colocado';
+      estadoMarcador.style.opacity = '1';
+    } else {
+      estadoMarcador.innerHTML = '📋 Paso 3: Coloca marcador';
+    }
+  }
+
+  /**
+   * Salta directamente a colocar marcador sin seleccionar zona
+   */
+  saltarAMarcador() {
+    if (!this.mapaSeleccionadoFlujo) {
+      this.showToast('⚠️ Primero selecciona un mapa', 'warning');
+      return;
+    }
+    
+    this.showToast('📍 Haz clic en el mapa para colocar el marcador', 'info');
+    document.getElementById('marcadorInstructions').style.display = 'block';
+    this.modoColocarMarcador = true;
+  }
+
+  /**
+   * Confirma y guarda la asignación del mapa al repuesto
+   */
+  async confirmarAsignacionMapa() {
+    if (!this.repuestoEnFlujo || !this.mapaSeleccionadoFlujo || !this.marcadorColocadoFlujo) {
+      this.showToast('❌ Faltan datos para completar la asignación', 'error');
+      return;
+    }
+
+    const repuesto = this.repuestos.find(r => r.id === this.repuestoEnFlujo);
+    if (!repuesto) {
+      this.showToast('❌ Repuesto no encontrado', 'error');
+      return;
+    }
+
+    try {
+      // Crear el objeto de ubicación de mapa
+      const ubicacionMapa = {
+        tipo: 'mapa',
+        mapaId: this.mapaSeleccionadoFlujo,
+        zonaId: this.zonaSeleccionadaFlujo || null,
+        coordenadas: this.marcadorColocadoFlujo,
+        fechaAsignacion: new Date().toISOString()
+      };
+
+      // Agregar a ubicaciones del repuesto
+      if (!repuesto.ubicacionesMapa) {
+        repuesto.ubicacionesMapa = [];
+      }
+      repuesto.ubicacionesMapa.push(ubicacionMapa);
+
+      // Recalcular estado
+      repuesto.estado_ubicacion = this.calcularEstadoUbicacion(repuesto);
+      repuesto.progreso_flujo = this.calcularProgresoFlujo(repuesto);
+
+      // Guardar datos
+      await this.saveData();
+      await this.render();
+
+      // Cerrar panel y limpiar estado
+      this.cerrarPanelAsignacionMapa();
+      this.repuestoEnFlujo = null;
+      this.modoColocarMarcador = false;
+
+      this.showToast('✅ Ubicación en mapa asignada correctamente', 'success');
+
+      // Preguntar si quiere ver el resultado
+      if (confirm('¿Deseas ver el repuesto en el inventario?')) {
+        this.currentTab = 'inventario';
+        this.renderTabs();
+      }
+
+    } catch (error) {
+      console.error('❌ Error al asignar mapa:', error);
+      this.showToast('❌ Error al guardar la asignación de mapa', 'error');
+    }
+  }
+
+  /**
+   * Cierra el panel de asignación de mapa
+   */
+  cerrarPanelAsignacionMapa() {
+    const panel = document.getElementById('panel-asignacion-mapa');
+    if (panel) {
+      panel.classList.remove('active');
+      setTimeout(() => panel.style.display = 'none', 300);
+    }
+
+    // Limpiar estados
+    this.mapaSeleccionadoFlujo = null;
+    this.zonaSeleccionadaFlujo = null;
+    this.marcadorColocadoFlujo = null;
+    this.modoColocarMarcador = false;
+
+    // Resetear botón
+    document.getElementById('btnAsignarMapa').disabled = true;
+  }
+
+  /**
+   * Crea el primer mapa desde el flujo de asignación
+   */
+  crearPrimerMapa() {
+    this.showToast('💡 Redirigiendo a creación de mapa...', 'info');
+    // TODO: Implementar creación rápida de mapa o abrir modal de creación
+    if (window.MapasUI && window.MapasUI.showCreateMapModal) {
+      window.MapasUI.showCreateMapModal();
+    } else {
+      this.showToast('⚠️ Funcionalidad de creación de mapas en desarrollo', 'warning');
+    }
   }
 
   async deleteRepuesto(id) {

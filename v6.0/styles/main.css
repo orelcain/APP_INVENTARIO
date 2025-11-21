@@ -9180,6 +9180,111 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
+/* Estilos generales para panel-header, panel-body, panel-footer */
+.panel-header {
+  background: var(--primary);
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.panel-close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.panel-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.panel-body {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.panel-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  display: flex;
+  gap: 12px;
+}
+
+.panel-footer .btn-primary,
+.panel-footer .btn-secondary {
+  flex: 1;
+  padding: 12px 20px;
+  font-weight: 600;
+  justify-content: center;
+}
+
+.panel-footer .btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Repuesto preview card en panel */
+.repuesto-preview {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.repuesto-preview-icon {
+  font-size: 32px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.repuesto-preview-info {
+  flex: 1;
+}
+
+.repuesto-preview-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.repuesto-preview-code {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+}
+
 .panel-asignacion-body {
   padding: 20px;
   flex: 1;
@@ -9279,6 +9384,110 @@
   background: rgba(34, 197, 94, 0.2) !important;
   border: 2px solid #22c55e !important;
   box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+/* 🗺️ SELECTOR DE MAPAS (Flujo de Asignación) */
+.mapas-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mapa-selector-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mapa-selector-item:hover {
+  border-color: var(--primary);
+  background: rgba(59, 130, 246, 0.05);
+  transform: translateX(4px);
+}
+
+.mapa-selector-item.selected {
+  border-color: var(--success);
+  background: rgba(34, 197, 94, 0.1);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.mapa-selector-icon {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.mapa-selector-item.selected .mapa-selector-icon {
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.mapa-selector-info {
+  flex: 1;
+}
+
+.mapa-selector-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.mapa-selector-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.mapa-selector-check {
+  font-size: 20px;
+  color: var(--success);
+  font-weight: bold;
+  width: 24px;
+  text-align: center;
+}
+
+/* Panel instructions */
+.panel-instructions {
+  margin-bottom: 16px;
+}
+
+.panel-instructions h4 {
+  font-size: 14px;
+  color: var(--primary);
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.panel-instructions p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.panel-info-box {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+  margin-top: 16px;
+}
+
+.panel-info-box strong {
+  color: var(--primary);
 }
 
 .jerarquia-save-btn {
