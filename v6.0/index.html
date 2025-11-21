@@ -10939,8 +10939,8 @@
   align-items: center;
   gap: 8px;
   padding: 6px 12px;
-  background: linear-gradient(135deg, rgba(30, 34, 41, 0.6), rgba(30, 34, 41, 0.4));
-  border-left: 3px solid rgba(91, 139, 180, 0.5);
+  background: rgba(96, 165, 250, 0.08);
+  border-left: 3px solid rgba(96, 165, 250, 0.6);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -10949,10 +10949,10 @@
 }
 
 .node-repuesto-item:hover {
-  background: linear-gradient(135deg, rgba(91, 139, 180, 0.3), rgba(91, 139, 180, 0.2));
-  border-left-color: rgba(91, 139, 180, 0.8);
+  background: rgba(96, 165, 250, 0.15);
+  border-left-color: rgba(96, 165, 250, 0.8);
   transform: translateX(4px);
-  box-shadow: 0 2px 8px rgba(91, 139, 180, 0.2);
+  box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
 }
 
 .node-repuesto-item .repuesto-icon {
@@ -10962,11 +10962,13 @@
 
 .node-repuesto-item .repuesto-nombre {
   flex: 1;
-  color: var(--text-primary);
-  font-weight: 500;
+  color: #60a5fa;
+  font-weight: 400;
+  font-style: italic;
   display: flex;
   align-items: center;
   gap: 6px;
+  text-shadow: 0 0 8px rgba(96, 165, 250, 0.3);
 }
 
 .node-repuesto-item .repuesto-badges {
