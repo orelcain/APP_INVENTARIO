@@ -20941,6 +20941,9 @@ class InventarioCompleto {
     const areaExpanded = this.getNodeExpandState(areaNodeId, areaLegacyId);
     const areaToggleClass = areaExpanded ? 'expanded' : 'collapsed';
 
+    // 🔥 NUEVO: Indicadores visuales
+    const nodeIndicators = this.buildNodeIndicators(area);
+
     let html = `<div class="tree-node" data-node-type="area" data-node-index="${indexPath}">`;
 
     html += `
@@ -20950,6 +20953,7 @@ class InventarioCompleto {
         <span class="node-id">${safeId}</span>
         <span class="node-name">${safeName}</span>
         <span class="node-level">${labels.area}</span>
+        ${nodeIndicators}
         <div class="node-actions">
           <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('area', '${indexPath}', -1)" title="Subir">↑</button>
           <button class="node-btn node-btn-move" onclick="event.stopPropagation(); app.reordenarVisualNodo('area', '${indexPath}', 1)" title="Bajar">↓</button>
@@ -21336,6 +21340,68 @@ class InventarioCompleto {
     }
 
     this.moveOrReorderSAPNodes(type, fromIndices, toIndices, true);
+  }
+
+  /**
+   * 🔥 NUEVO: Construir indicadores visuales para nodos (mapa, áreas, marcadores)
+   */
+  buildNodeIndicators(node) {
+    if (!node) return '';
+    
+    let indicators = '<span class="node-status-indicators">';
+    
+    // Indicador de mapa asignado
+    if (node.mapId) {
+      const mapName = this.getMapNameById(node.mapId);
+      indicators += `<span class="node-status-badge node-status-badge--map" title="Mapa: ${mapName || node.mapId}">🗺️</span>`;
+    }
+    
+    // Contar áreas y marcadores en este nodo
+    const stats = this.getNodeMapStats(node);
+    
+    if (stats.areas > 0) {
+      indicators += `<span class="node-status-badge node-status-badge--area" title="${stats.areas} área(s)">📦 ${stats.areas}</span>`;
+    }
+    
+    if (stats.markers > 0) {
+      indicators += `<span class="node-status-badge node-status-badge--marker" title="${stats.markers} marcador(es)">📍 ${stats.markers}</span>`;
+    }
+    
+    indicators += '</span>';
+    
+    return indicators;
+  }
+
+  /**
+   * 🔥 NUEVO: Obtener nombre de mapa por ID
+   */
+  getMapNameById(mapId) {
+    if (!window.mapStorage || !window.mapStorage.maps) return null;
+    const map = window.mapStorage.maps.find(m => m.id === mapId);
+    return map ? map.name : null;
+  }
+
+  /**
+   * 🔥 NUEVO: Obtener estadísticas de mapas para un nodo
+   */
+  getNodeMapStats(node) {
+    const stats = { areas: 0, markers: 0 };
+    
+    if (!window.mapStorage) return stats;
+    
+    // Si el nodo tiene mapId, contar áreas y marcadores de ese mapa
+    if (node.mapId) {
+      const areas = (window.mapStorage.areas || []).filter(a => a.mapId === node.mapId);
+      stats.areas = areas.length;
+      
+      areas.forEach(area => {
+        if (area.equipos && Array.isArray(area.equipos)) {
+          stats.markers += area.equipos.length;
+        }
+      });
+    }
+    
+    return stats;
   }
 
   openVisualMoveModal(type, indicesPath) {

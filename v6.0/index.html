@@ -7830,6 +7830,53 @@
       line-height: 1.2;
     }
 
+    /* 🔥 NUEVO: Header con título e indicadores */
+    .map-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    /* 🔥 NUEVO: Contenedor de indicadores */
+    .map-card-indicators {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* 🔥 NUEVO: Indicadores visuales */
+    .map-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .map-indicator--success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #4ade80;
+    }
+
+    .map-indicator--info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+    }
+
+    .map-indicator--warning {
+      background: rgba(251, 146, 60, 0.1);
+      border: 1px solid rgba(251, 146, 60, 0.3);
+      color: #fb923c;
+    }
+
     .map-card-path {
       font-size: 0.6rem;
       color: var(--text-secondary);
@@ -10771,6 +10818,45 @@
   pointer-events: auto;
   z-index: 10;
   position: relative;
+}
+
+/* 🔥 NUEVO: Indicadores de estado de nodos */
+.visual-v2-tree-container .node-status-indicators {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.visual-v2-tree-container .node-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.visual-v2-tree-container .node-status-badge--map {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
+}
+
+.visual-v2-tree-container .node-status-badge--area {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+
+.visual-v2-tree-container .node-status-badge--marker {
+  background: rgba(251, 146, 60, 0.1);
+  border: 1px solid rgba(251, 146, 60, 0.3);
+  color: #fb923c;
 }
 
 .visual-v2-tree-container .node-content:hover .node-actions {
@@ -18655,16 +18741,51 @@ const mapController = {
   renderMapCard(map) {
     const isActive = this.state.currentMapId === map.id;
     const hasJerarquia = Array.isArray(map.jerarquiaPath) && map.jerarquiaPath.length > 0;
-    const pathLabel = hasJerarquia ? this.getJerarquiaPathLabel(map.jerarquiaPath) : 'Sin jerarqua asignada';
+    const pathLabel = hasJerarquia ? this.getJerarquiaPathLabel(map.jerarquiaPath) : 'Sin jerarquía asignada';
+    
+    // 🔥 NUEVO: Indicadores visuales
+    const areasCount = this.getAreasCountForMap(map.id);
+    const markersCount = this.getMarkersCountForMap(map.id);
+    
+    let statusIndicators = '<div class="map-card-indicators">';
+    if (hasJerarquia) {
+      statusIndicators += '<span class="map-indicator map-indicator--success" title="Jerarquía asignada">🗺️</span>';
+    }
+    if (areasCount > 0) {
+      statusIndicators += `<span class="map-indicator map-indicator--info" title="${areasCount} área(s)">📦 ${areasCount}</span>`;
+    }
+    if (markersCount > 0) {
+      statusIndicators += `<span class="map-indicator map-indicator--warning" title="${markersCount} marcador(es)">📍 ${markersCount}</span>`;
+    }
+    statusIndicators += '</div>';
 
     return `
       <article class="map-card ${isActive ? 'map-card--active' : ''}" data-map-id="${map.id}">
         <div class="map-card-content" data-action="select-map">
-          <div class="map-card-title">${this.escapeHtml(map.name || 'Mapa sin nombre')}</div>
+          <div class="map-card-header">
+            <div class="map-card-title">${this.escapeHtml(map.name || 'Mapa sin nombre')}</div>
+            ${statusIndicators}
+          </div>
           <div class="map-card-path ${hasJerarquia ? '' : 'map-card-path--empty'}">${this.escapeHtml(pathLabel)}</div>
         </div>
       </article>
     `;
+  },
+
+  /**
+   * 🔥 NUEVO: Obtener cantidad de marcadores en un mapa
+   */
+  getMarkersCountForMap(mapId) {
+    if (!mapStorage || !Array.isArray(mapStorage.areas)) {
+      return 0;
+    }
+    let count = 0;
+    mapStorage.areas.forEach(area => {
+      if (area.mapId === mapId && area.equipos && Array.isArray(area.equipos)) {
+        count += area.equipos.length;
+      }
+    });
+    return count;
   },
 
   getAreasCountForMap(mapId) {
@@ -28011,6 +28132,20 @@ dibujarUbicacionesResaltadas(ctx) {
     try {
       await mapStorage.saveMaps(updatedMaps, { action: 'assign_jerarquia', mapId: assignment.mapId, detail: map.name });
 
+      // 🔥 NUEVO: Actualizar también el nodo de jerarquía con el mapId
+      if (!allowFreeLevel && sanitizedPath.length > 0 && app && app.jerarquiaAnidada) {
+        const lastNode = sanitizedPath[sanitizedPath.length - 1];
+        const updated = this.updateJerarquiaNodeMapId(app.jerarquiaAnidada, lastNode.id, assignment.mapId);
+        
+        if (updated && app.saveJerarquiaAnidada) {
+          app.saveJerarquiaAnidada({
+            reason: 'asignar-mapa-desde-tab-mapas',
+            meta: { nodeId: lastNode.id, mapId: assignment.mapId, mapName: map.name }
+          });
+          console.log('✅ MapId asignado al nodo de jerarquía:', lastNode.id);
+        }
+      }
+
       if (this.state.currentMapId === assignment.mapId) {
         this.state.currentMap = updatedMap;
         this.state.jerarquiaBranchFilter = null;
@@ -28018,7 +28153,7 @@ dibujarUbicacionesResaltadas(ctx) {
 
       this.state.tempJerarquiaAssignment = null;
       this.closeModal();
-      this.showToast('Jerarqua asignada correctamente.', 'success');
+      this.showToast('Jerarquía asignada correctamente.', 'success');
 
       if (window.appEvents && typeof window.appEvents.emit === 'function') {
         window.appEvents.emit('mapa:jerarquia-asignada', {
@@ -28028,13 +28163,65 @@ dibujarUbicacionesResaltadas(ctx) {
         });
       }
 
+      // 🔥 NUEVO: Refrescar jerarquía en Tab Mapas si existe
+      if (window.hierarchySync && window.hierarchySync.refresh) {
+        window.hierarchySync.refresh();
+      }
+
       this.renderMapList(updatedMaps);
       this.updateMapJerarquiaBadge();
       await this.selectMap(assignment.mapId, { keepViewport: true });
     } catch (error) {
-      console.error('Error guardando la jerarqua del mapa:', error);
-      this.showToast('No se pudo guardar la jerarqua. Revisa la consola.', 'error');
+      console.error('Error guardando la jerarquía del mapa:', error);
+      this.showToast('No se pudo guardar la jerarquía. Revisa la consola.', 'error');
     }
+  },
+
+  /**
+   * 🔥 NUEVO: Actualizar mapId en nodo de jerarquía
+   */
+  updateJerarquiaNodeMapId(hierarchy, nodeId, mapId) {
+    // Verificar si es la empresa (nivel 1)
+    if (hierarchy.empresa && hierarchy.empresa.id === nodeId) {
+      hierarchy.empresa.mapId = mapId;
+      return true;
+    }
+    
+    // Buscar en áreas recursivamente
+    if (hierarchy.areas) {
+      for (let area of hierarchy.areas) {
+        if (this.updateNodeInJerarquiaTree(area, nodeId, mapId)) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  },
+
+  /**
+   * 🔥 NUEVO: Actualizar nodo recursivamente en el árbol de jerarquía
+   */
+  updateNodeInJerarquiaTree(node, nodeId, mapId) {
+    if (node.id === nodeId) {
+      node.mapId = mapId;
+      return true;
+    }
+    
+    // Buscar en hijos según el tipo de nodo
+    const childTypes = ['subAreas', 'sistemas', 'subSistemas', 'secciones', 'subSecciones'];
+    
+    for (let childType of childTypes) {
+      if (node[childType] && Array.isArray(node[childType])) {
+        for (let child of node[childType]) {
+          if (this.updateNodeInJerarquiaTree(child, nodeId, mapId)) {
+            return true;
+          }
+        }
+      }
+    }
+    
+    return false;
   },
 
   getJerarquiaRootNode() {
