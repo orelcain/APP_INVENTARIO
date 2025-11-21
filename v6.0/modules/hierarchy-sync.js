@@ -179,6 +179,28 @@ class HierarchySync {
       ? '<span class="node-badge" style="background: var(--primary, #3b82f6);">🔧</span>'
       : `<span class="node-badge">N${node.nivel}</span>`;
     
+    // 🔥 Botón de agregar hijo (solo si no es repuesto y no es nivel máximo)
+    const addButtonHtml = !isRepuesto && node.nivel < 7 ? `
+      <button 
+        class="node-add-btn" 
+        onclick="window.hierarchySync.addChildNode(event, '${node.id}', ${node.nivel}, '${node.name}')"
+        title="Agregar ${this.getLevelLabel(node.nivel + 1)}"
+        style="
+          background: rgba(34, 197, 94, 0.1);
+          border: 1px solid rgba(34, 197, 94, 0.3);
+          color: #4ade80;
+          padding: 2px 6px;
+          border-radius: 3px;
+          font-size: 0.65rem;
+          cursor: pointer;
+          margin-left: 4px;
+          opacity: 0;
+          transition: opacity 0.2s;
+        ">
+        + ${this.getLevelLabel(node.nivel + 1)}
+      </button>
+    ` : '';
+    
     return `
       <div class="hierarchy-node ${isRepuesto ? 'hierarchy-node-repuesto' : ''}" ${dataAttrs} style="opacity: ${opacity};">
         <div class="node-header" style="padding: 4px 8px; padding-left: ${paddingLeft + 8}px; display: flex; align-items: center; justify-content: space-between;">
@@ -188,16 +210,28 @@ class HierarchySync {
             ${indicators}
             <span class="node-label" style="font-weight: ${fontWeight};">${node.name}</span>
           </div>
-          <button 
-            class="node-assign-btn" 
-            onclick="window.hierarchySync.openAssignModal(event, '${node.id}', '${node.name}', '${node.nivel}')"
-            title="Asignar mapa/área o crear marcador"
-            style="
-              background: transparent;
-              border: 1px solid rgba(91, 139, 180, 0.3);
-              color: var(--primary-light, #7ba5c8);
-              padding: 2px 6px;
-              border-radius: 3px;
+          <div class="node-actions" style="display: flex; gap: 4px;">
+            ${addButtonHtml}
+            ${!isRepuesto ? `
+              <button 
+                class="node-assign-btn" 
+                onclick="window.hierarchySync.openAssignModal(event, '${node.id}', '${node.name}', '${node.nivel}')"
+                title="Asignar mapa/área o crear marcador"
+                style="
+                  background: transparent;
+                  border: 1px solid rgba(91, 139, 180, 0.3);
+                  color: var(--primary-light, #7ba5c8);
+                  padding: 2px 6px;
+                  border-radius: 3px;
+                  font-size: 0.65rem;
+                  cursor: pointer;
+                  opacity: 0;
+                  transition: opacity 0.2s;
+                ">
+                📍
+              </button>
+            ` : ''}
+          </div>
               font-size: 0.65rem;
               cursor: pointer;
               opacity: 0;
@@ -943,6 +977,46 @@ class HierarchySync {
     ].join('\n');
     
     alert(props);
+  }
+
+  /**
+   * 🔥 NUEVO: Agregar nodo hijo
+   */
+  addChildNode(event, parentId, parentLevel, parentName) {
+    event.stopPropagation();
+    
+    const childLevel = parentLevel + 1;
+    const childLabel = this.getLevelLabel(childLevel);
+    
+    // Emitir evento hacia la app principal para abrir modal
+    window.dispatchEvent(new CustomEvent('hierarchy-add-child', {
+      detail: {
+        parentId,
+        parentLevel,
+        parentName,
+        childLevel,
+        childLabel
+      }
+    }));
+    
+    // Notificación temporal
+    this.showNotification(`Agregar ${childLabel} a: ${parentName}`, false);
+  }
+
+  /**
+   * 🔥 NUEVO: Obtener etiqueta legible para un nivel
+   */
+  getLevelLabel(nivel) {
+    const labels = {
+      1: 'Empresa',
+      2: 'Área',
+      3: 'Sub-Área',
+      4: 'Sistema',
+      5: 'Sub-Sistema',
+      6: 'Sección',
+      7: 'Sub-Sección'
+    };
+    return labels[nivel] || 'Elemento';
   }
 
   /**

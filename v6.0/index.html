@@ -55636,6 +55636,46 @@ function setupHierarchyEvents() {
     console.log(`🗺️ Canvas actualizado: ${mapa.name}`);
   });
   
+  // 🔥 NUEVO: Escuchar evento de agregar hijo desde jerarquía
+  window.addEventListener('hierarchy-add-child', (event) => {
+    const { parentId, parentLevel, parentName, childLevel, childLabel } = event.detail;
+    console.log(`➕ Agregar ${childLabel} a: ${parentName} (ID: ${parentId})`);
+    
+    // Aquí conectar con la función de agregar de app.js
+    if (window.app && window.app.agregarNodoJerarquia) {
+      // Mapear nivel a tipo de nodo
+      const tipoMap = {
+        2: 'area',
+        3: 'subArea',
+        4: 'sistema',
+        5: 'subSistema',
+        6: 'seccion',
+        7: 'subSeccion'
+      };
+      const tipo = tipoMap[childLevel];
+      
+      if (tipo) {
+        window.app.agregarNodoJerarquia(tipo, parentId);
+      } else {
+        alert(`⚠️ No se puede agregar ${childLabel} desde este nivel`);
+      }
+    }
+  });
+  
+  // 🔥 NUEVO: Escuchar evento de asignar área/marcador
+  window.addEventListener('hierarchy-assign-area', (event) => {
+    const { nodeId, nodeName, action } = event.detail;
+    console.log(`📍 Asignar ${action} para: ${nodeName} (ID: ${nodeId})`);
+    
+    if (action === 'assign-map') {
+      alert(`🗺️ Para asignar mapa a "${nodeName}":\n\n1. Selecciona un mapa de la lista\n2. Vincula el nodo con el mapa\n\n(Funcionalidad en desarrollo)`);
+    } else if (action === 'create-area') {
+      alert(`📦 Para crear área para "${nodeName}":\n\n1. Dibuja un área en el mapa actual\n2. El área se vinculará automáticamente\n\n(Funcionalidad en desarrollo)`);
+    } else if (action === 'create-marker') {
+      alert(`📍 Para crear marcador para "${nodeName}":\n\n1. Haz click derecho en el mapa\n2. Selecciona "Crear marcador"\n3. El marcador se vinculará automáticamente\n\n(Funcionalidad en desarrollo)`);
+    }
+  });
+  
   // 📥 SINCRONIZACIÓN: Escuchar eventos desde Tab Inventario
   if (window.appEvents) {
     window.appEvents.addEventListener('inventario-item-selected', (event) => {
