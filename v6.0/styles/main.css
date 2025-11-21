@@ -65,17 +65,17 @@
       --border-accent: #4a5059;
 
       /*  Fondos con profundidad sutil */
-      --bg-primary: #f8fafc;        /* Base principal - Gris muy claro */
-      --bg-secondary: #ffffff;      /* Tarjetas - Blanco puro */
-      --bg-tertiary: #e2e8f0;       /* Hover states - Gris suave */
-      --bg-elevated: #cbd5e1;       /* Elementos elevados - Gris claro */
-      --bg-app: #f1f5f9;            /* Fondo general app - Casi blanco */
+      --bg-primary: #1e2229;        /* Base principal */
+      --bg-secondary: #252a33;      /* Tarjetas */
+      --bg-tertiary: #2d333d;       /* Hover states */
+      --bg-elevated: #3a4049;       /* Elementos elevados */
+      --bg-app: #1a1d23;            /* Fondo general app */
 
       /*  Texto con jerarqua clara (4 niveles) */
-      --text-primary: #1e293b;      /* Ttulos (gris muy oscuro) */
-      --text-secondary: #475569;    /* Texto normal (gris oscuro) */
-      --text-muted: #64748b;        /* Metadata (gris medio) */
-      --text-disabled: #94a3b8;     /* Deshabilitados (gris claro) */
+      --text-primary: #e6e9ef;      /* Ttulos (blanco casi puro) */
+      --text-secondary: #b8bec8;    /* Texto normal (gris claro) */
+      --text-muted: #8a909a;        /* Metadata (gris medio) */
+      --text-disabled: #5a606a;     /* Deshabilitados (gris oscuro) */
     }
 
     body {
