@@ -40014,9 +40014,13 @@ class InventarioCompleto {
       const html = this.buildTreeHTML_Visual();
       container.innerHTML = html;
       
-      // 🎯 FLUJO GUIADO: Event listener para selección de nodos
-      if (this.repuestoEnFlujo) {
+      // 🎯 FLUJO GUIADO: Event listener para selección de nodos (solo una vez)
+      if (!container.hasAttribute('data-assignment-listener')) {
+        container.setAttribute('data-assignment-listener', 'true');
         container.addEventListener('click', (e) => {
+          // Solo funcionar si hay un repuesto en flujo
+          if (!this.repuestoEnFlujo) return;
+          
           // Buscar el nodo-content más cercano
           const nodeContent = e.target.closest('.node-content');
           if (nodeContent && !e.target.closest('.node-actions')) {
