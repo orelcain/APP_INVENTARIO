@@ -3684,6 +3684,12 @@ const mapController = {
     this.state.areas = mapStorage.getAreasByMap(map.id);
     this.state.highlightAreaId = null;
 
+    // Mostrar workspace del canvas
+    const workspace = document.getElementById('mapWorkspace');
+    if (workspace) {
+      workspace.style.display = 'flex';
+    }
+
     const viewportOverride = !options.keepViewport
       ? this.getPersistedViewportForMap(map.id)
       : null;
