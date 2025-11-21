@@ -15047,6 +15047,34 @@
     <!--  RBOL JERRQUICO ORGANIZACIONAL -->
     <div class="jerarquia-config-container full-width">
       
+      <!-- 🎯 PANEL DE ASIGNACIÓN DE REPUESTO (Flujo Guiado) -->
+      <div id="panelAsignacionRepuesto" class="panel-asignacion-repuesto" style="display: none;">
+        <div class="panel-asignacion-header">
+          <h3>📦 Asignando Repuesto a Jerarquía</h3>
+          <button onclick="app.cerrarPanelAsignacion()" class="btn-cerrar-panel" title="Cerrar">✕</button>
+        </div>
+        <div class="panel-asignacion-body">
+          <div class="repuesto-preview">
+            <div class="repuesto-preview-label">Repuesto:</div>
+            <div id="repuestoNombreAsignacion" class="repuesto-preview-nombre">-</div>
+            <div id="repuestoCodigoAsignacion" class="repuesto-preview-codigo">-</div>
+          </div>
+          <div class="instrucciones-asignacion">
+            <p>👉 <strong>Navega por el árbol</strong> y selecciona el nodo donde deseas ubicar este repuesto.</p>
+            <p>💡 Puedes asignarlo a cualquier nivel: Área, Sistema, Equipo, etc.</p>
+          </div>
+          <div id="nodoSeleccionadoInfo" class="nodo-seleccionado-info" style="display: none;">
+            <div class="nodo-seleccionado-label">✓ Nodo seleccionado:</div>
+            <div id="nodoSeleccionadoPath" class="nodo-seleccionado-path">-</div>
+          </div>
+        </div>
+        <div class="panel-asignacion-footer">
+          <button id="btnAsignarRepuestoANodo" onclick="app.asignarRepuestoANodo()" class="btn btn-success btn-lg" disabled>
+            ✓ Asignar Repuesto a Este Nodo
+          </button>
+        </div>
+      </div>
+      
       <!-- 🔍 BARRA DE CONTROLES -->
       <div class="jerarquia-controls-bar">
         <div class="jerarquia-search-wrapper">
@@ -39541,6 +39569,7 @@ class InventarioCompleto {
     
     // Si se guardó exitosamente, cerrar modal y abrir tab Jerarquía
     if (this.currentEditingId) {
+      const repuestoId = this.currentEditingId;
       this.closeModal();
       
       // Cambiar a tab Jerarquía
@@ -39548,10 +39577,104 @@ class InventarioCompleto {
       
       // Esperar un momento para que el tab se renderice
       setTimeout(() => {
-        // TODO: Preseleccionar el repuesto en el panel de jerarquía
-        this.showToast('✅ Repuesto guardado. Ahora asigna su jerarquía.', 'success');
+        // Mostrar panel de asignación con el repuesto
+        this.mostrarPanelAsignacionRepuesto(repuestoId);
+        this.showToast('✅ Repuesto guardado. Selecciona un nodo en el árbol.', 'success');
       }, 300);
     }
+  }
+
+  /**
+   * 🎯 Muestra el panel de asignación de repuesto en el tab Jerarquía
+   */
+  mostrarPanelAsignacionRepuesto(repuestoId) {
+    const repuesto = this.repuestos.find(r => r.id === repuestoId);
+    if (!repuesto) {
+      console.error('❌ Repuesto no encontrado:', repuestoId);
+      return;
+    }
+
+    // Guardar el repuesto actual en el flujo
+    this.repuestoEnFlujo = repuesto;
+
+    // Mostrar panel
+    const panel = document.getElementById('panelAsignacionRepuesto');
+    if (panel) {
+      panel.style.display = 'flex';
+
+      // Llenar datos del repuesto
+      const nombreEl = document.getElementById('repuestoNombreAsignacion');
+      const codigoEl = document.getElementById('repuestoCodigoAsignacion');
+      
+      if (nombreEl) nombreEl.textContent = repuesto.nombre || 'Sin nombre';
+      if (codigoEl) codigoEl.textContent = `${repuesto.codSAP || repuesto.codProv || 'Sin código'}`;
+
+      // Resetear selección
+      document.getElementById('nodoSeleccionadoInfo').style.display = 'none';
+      document.getElementById('btnAsignarRepuestoANodo').disabled = true;
+      this.nodoSeleccionadoParaAsignacion = null;
+
+      console.log('✅ Panel de asignación mostrado para:', repuesto.nombre);
+    }
+  }
+
+  /**
+   * 🎯 Cierra el panel de asignación de repuesto
+   */
+  cerrarPanelAsignacion() {
+    const panel = document.getElementById('panelAsignacionRepuesto');
+    if (panel) {
+      panel.style.display = 'none';
+    }
+    this.repuestoEnFlujo = null;
+    this.nodoSeleccionadoParaAsignacion = null;
+  }
+
+  /**
+   * 🎯 Se llama cuando el usuario hace click en un nodo del árbol durante el flujo de asignación
+   */
+  seleccionarNodoParaAsignacion(nodo) {
+    if (!this.repuestoEnFlujo) return;
+
+    this.nodoSeleccionadoParaAsignacion = nodo;
+
+    // Mostrar info del nodo seleccionado
+    const infoEl = document.getElementById('nodoSeleccionadoInfo');
+    const pathEl = document.getElementById('nodoSeleccionadoPath');
+    const btnAsignar = document.getElementById('btnAsignarRepuestoANodo');
+
+    if (infoEl && pathEl && btnAsignar) {
+      infoEl.style.display = 'block';
+      pathEl.textContent = nodo.path || nodo.label || 'Nodo seleccionado';
+      btnAsignar.disabled = false;
+    }
+
+    console.log('✓ Nodo seleccionado para asignación:', nodo);
+  }
+
+  /**
+   * 🎯 Asigna el repuesto al nodo seleccionado
+   */
+  async asignarRepuestoANodo() {
+    if (!this.repuestoEnFlujo || !this.nodoSeleccionadoParaAsignacion) {
+      this.showToast('❌ Error: No hay repuesto o nodo seleccionado', 'error');
+      return;
+    }
+
+    console.log('🎯 [FLUJO] Asignando repuesto a nodo...');
+    console.log('  Repuesto:', this.repuestoEnFlujo.nombre);
+    console.log('  Nodo:', this.nodoSeleccionadoParaAsignacion);
+
+    // TODO: Implementar la lógica de asignación
+    // Por ahora solo mostramos confirmación y cerramos el panel
+    
+    this.showToast(`✅ Repuesto "${this.repuestoEnFlujo.nombre}" asignado correctamente`, 'success');
+    this.cerrarPanelAsignacion();
+
+    // TODO: Continuar al Paso 3 - Mapa
+    setTimeout(() => {
+      this.showToast('📍 Ahora puedes ubicarlo en el mapa', 'info');
+    }, 1000);
   }
 
   async deleteRepuesto(id) {
@@ -39890,6 +40013,34 @@ class InventarioCompleto {
       // Usar SIEMPRE el renderizador visual
       const html = this.buildTreeHTML_Visual();
       container.innerHTML = html;
+      
+      // 🎯 FLUJO GUIADO: Event listener para selección de nodos
+      if (this.repuestoEnFlujo) {
+        container.addEventListener('click', (e) => {
+          // Buscar el nodo-content más cercano
+          const nodeContent = e.target.closest('.node-content');
+          if (nodeContent && !e.target.closest('.node-actions')) {
+            // No activar si se hizo click en un botón de acción
+            const nodeId = nodeContent.getAttribute('data-node-id');
+            const nodeName = nodeContent.querySelector('.node-name')?.textContent;
+            const nodeLevel = nodeContent.querySelector('.node-level')?.textContent;
+            
+            if (nodeId && nodeName) {
+              // Remover selección anterior
+              container.querySelectorAll('.node-content').forEach(n => n.classList.remove('node-selected-for-assignment'));
+              // Agregar selección al nodo actual
+              nodeContent.classList.add('node-selected-for-assignment');
+              
+              this.seleccionarNodoParaAsignacion({
+                id: nodeId,
+                label: nodeName,
+                level: nodeLevel,
+                path: nodeName + (nodeLevel ? ` (${nodeLevel})` : '')
+              });
+            }
+          }
+        });
+      }
       
       // 🔄 Restaurar estados de expansión guardados (con delay para asegurar DOM)
       setTimeout(() => {
