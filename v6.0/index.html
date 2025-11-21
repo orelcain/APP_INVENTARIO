@@ -37593,6 +37593,36 @@ class InventarioCompleto {
     return null;
   }
 
+  /**
+   * 🎯 Calcula el estado de ubicación del repuesto según el flujo de trabajo
+   * @param {Array} ubicaciones - Array de ubicaciones del repuesto
+   * @returns {string} - 'sin_ubicacion', 'jerarquia_sola', 'mapa_solo', 'completo'
+   */
+  calcularEstadoUbicacion(ubicaciones) {
+    const tieneJerarquia = ubicaciones && ubicaciones.length > 0 && ubicaciones[0].areaGeneral;
+    const tieneMapa = false; // TODO: Implementar cuando tengamos mapas
+    
+    if (!tieneJerarquia && !tieneMapa) return 'sin_ubicacion';
+    if (tieneJerarquia && !tieneMapa) return 'jerarquia_sola';
+    if (!tieneJerarquia && tieneMapa) return 'mapa_solo';
+    return 'completo';
+  }
+
+  /**
+   * 🎯 Calcula el progreso del flujo de trabajo para mostrar al usuario
+   * @param {Array} ubicaciones - Array de ubicaciones del repuesto
+   * @returns {string} - 'Borrador', 'Listo para ubicar', 'Ubicado'
+   */
+  calcularProgresoFlujo(ubicaciones) {
+    const tieneJerarquia = ubicaciones && ubicaciones.length > 0 && ubicaciones[0].areaGeneral;
+    const tieneMapa = false; // TODO: Implementar cuando tengamos mapas
+    
+    if (!tieneJerarquia && !tieneMapa) return 'Borrador';
+    if (tieneJerarquia && !tieneMapa) return 'Listo para ubicar';
+    if (tieneJerarquia && tieneMapa) return 'Ubicado';
+    return 'Borrador';
+  }
+
   async openModal(mode, id = null) {
     console.log(`\n ========== ABRIENDO MODAL ==========`);
     console.log(`Modo: ${mode}`);
@@ -39332,6 +39362,10 @@ class InventarioCompleto {
       // UBICACIONES MLTIPLES (nuevo sistema)
       ubicaciones: ubicacionesLimpias,
       planta: this.plantaBase, // Empresa siempre fija
+      
+      // 🎯 ESTADOS DEL FLUJO DE TRABAJO
+      estado_ubicacion: this.calcularEstadoUbicacion(ubicacionesLimpias),
+      progreso_flujo: this.calcularProgresoFlujo(ubicacionesLimpias),
       
       // COMPATIBILIDAD: Guardar primera ubicacin en formato antiguo
       areaGeneral: ubicacionesLimpias[0].areaGeneral || '',
