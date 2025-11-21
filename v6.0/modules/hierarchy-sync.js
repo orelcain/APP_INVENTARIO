@@ -310,9 +310,9 @@ class HierarchySync {
     // Construir el árbol desde la raíz (empresa)
     const tree = {
       name: empresa?.nombre || 'Empresa',
-      nivel: 0,
+      nivel: 1,
       id: empresa?.id || 'empresa_root',
-      children: areas.map(area => this.buildTreeNode(area, 1))
+      children: areas.map(area => this.buildTreeNode(area, 2))
     };
 
     return tree;
@@ -337,23 +337,23 @@ class HierarchySync {
     };
 
     // Recursivamente construir hijos según el nivel
-    // Nivel 1: Áreas → tienen subAreas
-    // Nivel 2: SubÁreas → tienen sistemas
-    // Nivel 3: Sistemas → tienen subSistemas
-    // Nivel 4: SubSistemas → tienen secciones
-    // Nivel 5: Secciones → tienen subSecciones
-    // Nivel 6: SubSecciones (hoja)
+    // Nivel 2: Áreas → tienen subAreas
+    // Nivel 3: SubÁreas → tienen sistemas
+    // Nivel 4: Sistemas → tienen subSistemas
+    // Nivel 5: SubSistemas → tienen secciones
+    // Nivel 6: Secciones → tienen subSecciones
+    // Nivel 7: SubSecciones (hoja)
 
-    if (nivel === 1 && node.subAreas) {
-      treeNode.children = node.subAreas.map(subArea => this.buildTreeNode(subArea, 2));
-    } else if (nivel === 2 && node.sistemas) {
-      treeNode.children = node.sistemas.map(sistema => this.buildTreeNode(sistema, 3));
-    } else if (nivel === 3 && node.subSistemas) {
-      treeNode.children = node.subSistemas.map(subSistema => this.buildTreeNode(subSistema, 4));
-    } else if (nivel === 4 && node.secciones) {
-      treeNode.children = node.secciones.map(seccion => this.buildTreeNode(seccion, 5));
-    } else if (nivel === 5 && node.subSecciones) {
-      treeNode.children = node.subSecciones.map(subSeccion => this.buildTreeNode(subSeccion, 6));
+    if (nivel === 2 && node.subAreas) {
+      treeNode.children = node.subAreas.map(subArea => this.buildTreeNode(subArea, 3));
+    } else if (nivel === 3 && node.sistemas) {
+      treeNode.children = node.sistemas.map(sistema => this.buildTreeNode(sistema, 4));
+    } else if (nivel === 4 && node.subSistemas) {
+      treeNode.children = node.subSistemas.map(subSistema => this.buildTreeNode(subSistema, 5));
+    } else if (nivel === 5 && node.secciones) {
+      treeNode.children = node.secciones.map(seccion => this.buildTreeNode(seccion, 6));
+    } else if (nivel === 6 && node.subSecciones) {
+      treeNode.children = node.subSecciones.map(subSeccion => this.buildTreeNode(subSeccion, 7));
     }
 
     // 🔥 NUEVO: Agregar repuestos de app.repuestos que coincidan con esta jerarquía
@@ -363,7 +363,7 @@ class HierarchySync {
       if (repuestosVinculados.length > 0) {
         const repuestosNodes = repuestosVinculados.map(repuesto => ({
           name: repuesto.nombre || repuesto.id,
-          nivel: 7,
+          nivel: 8,  // Repuestos están en nivel 8 (después de los 7 niveles jerárquicos)
           id: repuesto.id,
           isRepuesto: true,
           mapId: repuesto.mapId || null,
