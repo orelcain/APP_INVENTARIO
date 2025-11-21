@@ -46,9 +46,8 @@ class ModalResizable {
     // Cargar estado guardado o centrar
     if (this.options.persist) {
       this.loadState();
-    } else {
-      this.center();
     }
+    // 🎯 Si persist: false, NO forzar centrado, dejar que flexbox del padre lo centre
 
     if (this.options.draggable) {
       this.makeDraggable();
