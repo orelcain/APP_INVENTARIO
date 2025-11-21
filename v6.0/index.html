@@ -36689,6 +36689,112 @@ class InventarioCompleto {
             </div>
           </div>
         </div>
+        
+        <!-- 🎯 BLOQUE: Ubicación Completa -->
+        ${r.ubicaciones && r.ubicaciones.length > 0 ? `
+          <div style="
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 3px solid var(--primary);
+            padding: 10px 12px;
+            margin: 8px 12px;
+            border-radius: 6px;
+          ">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <div style="font-size: 0.7rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">
+                📍 Ubicación Completa
+              </div>
+              <div style="
+                font-size: 0.65rem;
+                background: ${r.estado_ubicacion === 'completo' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(251, 191, 36, 0.15)'};
+                color: ${r.estado_ubicacion === 'completo' ? '#22c55e' : '#fbbf24'};
+                padding: 2px 8px;
+                border-radius: 4px;
+                font-weight: 600;
+              ">
+                ${r.progreso_flujo || 'Borrador'}
+              </div>
+            </div>
+            
+            <!-- Jerarquía -->
+            <div style="margin-bottom: 6px;">
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 3px;">Jerarquía:</div>
+              <div style="font-size: 0.75rem; color: var(--text-primary); line-height: 1.4;">
+                ${[
+                  r.ubicaciones[0].areaGeneral,
+                  r.ubicaciones[0].subArea,
+                  r.ubicaciones[0].sistemaEquipo,
+                  r.ubicaciones[0].subSistema
+                ].filter(Boolean).join(' → ') || 'Sin asignar'}
+              </div>
+            </div>
+            
+            <!-- Botones de navegación -->
+            <div style="display: flex; gap: 6px; margin-top: 8px;">
+              <button onclick="app.verRepuestoEnJerarquia('${r.id}')" style="
+                flex: 1;
+                background: rgba(59, 130, 246, 0.15);
+                border: 1px solid rgba(59, 130, 246, 0.3);
+                color: var(--primary);
+                padding: 6px 10px;
+                border-radius: 4px;
+                font-size: 0.7rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+              "
+              onmouseover="this.style.background='rgba(59, 130, 246, 0.25)'"
+              onmouseout="this.style.background='rgba(59, 130, 246, 0.15)'">
+                🌳 Ver en Jerarquía
+              </button>
+              <button onclick="app.editarUbicacionRepuesto('${r.id}')" style="
+                flex: 1;
+                background: rgba(251, 191, 36, 0.15);
+                border: 1px solid rgba(251, 191, 36, 0.3);
+                color: #fbbf24;
+                padding: 6px 10px;
+                border-radius: 4px;
+                font-size: 0.7rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+              "
+              onmouseover="this.style.background='rgba(251, 191, 36, 0.25)'"
+              onmouseout="this.style.background='rgba(251, 191, 36, 0.15)'">
+                ✏️ Editar Ubicación
+              </button>
+            </div>
+          </div>
+        ` : `
+          <!-- Sin ubicación asignada -->
+          <div style="
+            background: rgba(251, 191, 36, 0.08);
+            border-left: 3px solid #fbbf24;
+            padding: 10px 12px;
+            margin: 8px 12px;
+            border-radius: 6px;
+          ">
+            <div style="font-size: 0.7rem; color: #fbbf24; margin-bottom: 6px;">
+              ⚠️ Sin ubicación en jerarquía
+            </div>
+            <button onclick="app.asignarJerarquiaRepuesto('${r.id}')" style="
+              width: 100%;
+              background: rgba(251, 191, 36, 0.15);
+              border: 1px solid rgba(251, 191, 36, 0.3);
+              color: #fbbf24;
+              padding: 6px 10px;
+              border-radius: 4px;
+              font-size: 0.7rem;
+              font-weight: 500;
+              cursor: pointer;
+              transition: all 0.2s;
+            "
+            onmouseover="this.style.background='rgba(251, 191, 36, 0.25)'"
+            onmouseout="this.style.background='rgba(251, 191, 36, 0.15)'">
+              + Asignar a Jerarquía
+            </button>
+          </div>
+        `}
+        
         <div class="card-footer" style="display: flex; justify-content: center; align-items: center; gap: 8px; padding: 8px 12px; flex-wrap: wrap;">
           <button class="card-btn" style="
             background: var(--primary);
@@ -39802,6 +39908,160 @@ class InventarioCompleto {
       console.error('❌ Error parseando nodeId:', error);
       throw error;
     }
+  }
+
+  /**
+   * Navega a la pestaña de jerarquía y resalta el nodo donde está ubicado el repuesto
+   * @param {string} repuestoId - ID del repuesto
+   */
+  verRepuestoEnJerarquia(repuestoId) {
+    const repuesto = this.repuestos.find(r => r.id === repuestoId);
+    if (!repuesto) {
+      this.showToast('❌ Repuesto no encontrado', 'error');
+      return;
+    }
+
+    if (!repuesto.ubicaciones || repuesto.ubicaciones.length === 0) {
+      this.showToast('⚠️ Este repuesto no tiene ubicación asignada', 'warning');
+      return;
+    }
+
+    // Cambiar a la pestaña de jerarquía
+    this.currentTab = 'jerarquia';
+    this.renderTabs();
+
+    // Obtener la primera ubicación
+    const ubicacion = repuesto.ubicaciones[0];
+
+    // Buscar el nodo correspondiente en el árbol
+    setTimeout(() => {
+      const { areas } = this.jerarquiaAnidada;
+      
+      // Buscar índices basados en nombres
+      let nodeId = null;
+      
+      for (let areaIdx = 0; areaIdx < areas.length; areaIdx++) {
+        const area = areas[areaIdx];
+        if (area.nombre === ubicacion.areaGeneral) {
+          
+          if (!ubicacion.subArea) {
+            nodeId = `area_${areaIdx}`;
+            break;
+          }
+
+          if (area.subAreas) {
+            for (let subAreaIdx = 0; subAreaIdx < area.subAreas.length; subAreaIdx++) {
+              const subArea = area.subAreas[subAreaIdx];
+              if (subArea.nombre === ubicacion.subArea) {
+                
+                if (!ubicacion.sistemaEquipo) {
+                  nodeId = `subArea_${areaIdx}_${subAreaIdx}`;
+                  break;
+                }
+
+                if (subArea.sistemas) {
+                  for (let sistemaIdx = 0; sistemaIdx < subArea.sistemas.length; sistemaIdx++) {
+                    const sistema = subArea.sistemas[sistemaIdx];
+                    if (sistema.nombre === ubicacion.sistemaEquipo) {
+                      nodeId = `sistema_${areaIdx}_${subAreaIdx}_${sistemaIdx}`;
+                      break;
+                    }
+                  }
+                }
+                break;
+              }
+            }
+          }
+          break;
+        }
+      }
+
+      if (nodeId) {
+        // Encontrar y resaltar el nodo
+        const nodoElement = document.querySelector(`[data-node-id="${nodeId}"]`);
+        if (nodoElement) {
+          // Expandir padres
+          let parent = nodoElement.closest('.tree-node');
+          while (parent) {
+            const collapseBtn = parent.querySelector('.collapse-btn');
+            if (collapseBtn && !collapseBtn.classList.contains('collapsed')) {
+              // Ya está expandido
+            } else if (collapseBtn) {
+              collapseBtn.click();
+            }
+            parent = parent.parentElement.closest('.tree-node');
+          }
+
+          // Resaltar nodo
+          document.querySelectorAll('.tree-node-content').forEach(n => {
+            n.style.border = 'none';
+            n.style.background = '';
+          });
+          
+          nodoElement.style.border = '3px solid var(--success)';
+          nodoElement.style.background = 'rgba(46, 204, 113, 0.1)';
+          
+          // Scroll hasta el nodo
+          nodoElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          this.showToast(`📍 Repuesto ubicado en: ${ubicacion.areaGeneral}${ubicacion.subArea ? ' → ' + ubicacion.subArea : ''}${ubicacion.sistemaEquipo ? ' → ' + ubicacion.sistemaEquipo : ''}`, 'success');
+        } else {
+          this.showToast('⚠️ No se encontró el nodo en el árbol', 'warning');
+        }
+      } else {
+        this.showToast('⚠️ No se pudo localizar la ubicación en el árbol', 'warning');
+      }
+    }, 100);
+  }
+
+  /**
+   * Abre el modal de edición del repuesto enfocado en la sección de ubicaciones
+   * @param {string} repuestoId - ID del repuesto
+   */
+  editarUbicacionRepuesto(repuestoId) {
+    const repuesto = this.repuestos.find(r => r.id === repuestoId);
+    if (!repuesto) {
+      this.showToast('❌ Repuesto no encontrado', 'error');
+      return;
+    }
+
+    // Abrir modal en modo edición
+    this.abrirModal(repuestoId);
+
+    // Esperar a que el modal se abra y navegar al Step 4 (ubicaciones)
+    setTimeout(() => {
+      const step4Btn = document.querySelector('.step-btn[data-step="4"]');
+      if (step4Btn) {
+        step4Btn.click();
+        this.showToast('💡 Ahora puedes editar las ubicaciones del repuesto', 'info');
+      }
+    }, 200);
+  }
+
+  /**
+   * Inicia el flujo de asignación de jerarquía para un repuesto existente
+   * @param {string} repuestoId - ID del repuesto
+   */
+  asignarJerarquiaRepuesto(repuestoId) {
+    const repuesto = this.repuestos.find(r => r.id === repuestoId);
+    if (!repuesto) {
+      this.showToast('❌ Repuesto no encontrado', 'error');
+      return;
+    }
+
+    // Guardar en el flujo de trabajo
+    this.repuestoEnFlujo = repuestoId;
+    this.nodoSeleccionadoParaAsignacion = null;
+
+    // Cambiar a la pestaña de jerarquía
+    this.currentTab = 'jerarquia';
+    this.renderTabs();
+
+    // Mostrar el panel de asignación
+    setTimeout(() => {
+      this.mostrarPanelAsignacionRepuesto(repuesto);
+      this.showToast('👆 Selecciona un nodo en el árbol para asignar la ubicación', 'info');
+    }, 100);
   }
 
   async deleteRepuesto(id) {
