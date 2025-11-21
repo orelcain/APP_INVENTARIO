@@ -40164,15 +40164,20 @@ class InventarioCompleto {
             await window.mapController.loadMap(ubicacionMapa.mapaId);
             console.log('🗺️ Mapa cargado:', mapa.nombre);
             
+            // Esperar un momento para que el mapa se renderice
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
             // Hacer zoom al marcador
             const coords = ubicacionMapa.coordenadas;
             if (window.mapController.panTo && typeof window.mapController.panTo === 'function') {
               // Centrar la vista en el marcador
               window.mapController.panTo(coords.x, coords.y);
               
-              // Hacer zoom para mejor visualización
+              // Hacer zoom adaptativo según el tamaño del mapa
               if (window.mapController.setZoom && typeof window.mapController.setZoom === 'function') {
-                window.mapController.setZoom(2.0); // Zoom 2x
+                const imageDimensions = window.mapController.state.imageDimensions;
+                const zoomLevel = imageDimensions.width > 2000 ? 1.5 : 2.0; // Menos zoom para mapas grandes
+                window.mapController.setZoom(zoomLevel);
               }
             }
             
@@ -40183,9 +40188,9 @@ class InventarioCompleto {
             );
             
             if (marcador) {
-              this.showToast(`📍 Repuesto ubicado en mapa "${mapa.nombre}" - Marcador resaltado`, 'success');
+              this.showToast(`📍 "${repuesto.nombre}" ubicado en "${mapa.nombre}" - Vista centrada en marcador`, 'success', 4000);
             } else {
-              this.showToast(`📍 Ubicación: (${coords.x.toFixed(1)}, ${coords.y.toFixed(1)}) en "${mapa.nombre}"`, 'info');
+              this.showToast(`📍 "${repuesto.nombre}" en (${coords.x.toFixed(1)}, ${coords.y.toFixed(1)}) - "${mapa.nombre}"`, 'info', 3000);
             }
             
           } catch (error) {
@@ -40402,13 +40407,104 @@ class InventarioCompleto {
     // Actualizar display de coordenadas
     document.getElementById('coordsDisplay').textContent = `X: ${coordenadas.x.toFixed(2)}, Y: ${coordenadas.y.toFixed(2)}`;
     
+    // Dibujar marcador temporal en el canvas
+    if (window.mapController && window.mapController.elements.canvas) {
+      const canvas = window.mapController.elements.canvas;
+      const ctx = canvas.getContext('2d');
+      
+      // Guardar estado del canvas
+      ctx.save();
+      
+      // Convertir coordenadas del mapa a coordenadas de pantalla
+      const screenX = coordenadas.x * window.mapController.state.scale + window.mapController.state.offsetX;
+      const screenY = coordenadas.y * window.mapController.state.scale + window.mapController.state.offsetY;
+      
+      // Dibujar marcador temporal (pin rojo pulsante)
+      ctx.strokeStyle = '#ef4444';
+      ctx.fillStyle = '#ef4444';
+      ctx.lineWidth = 3;
+      
+      // Círculo exterior (animación de pulso)
+      ctx.globalAlpha = 0.3;
+      ctx.beginPath();
+      ctx.arc(screenX, screenY, 20, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Círculo medio
+      ctx.globalAlpha = 0.6;
+      ctx.beginPath();
+      ctx.arc(screenX, screenY, 12, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Círculo interior sólido
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.arc(screenX, screenY, 6, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Borde blanco
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Restaurar estado del canvas
+      ctx.restore();
+      
+      // Redibujar después de 2 segundos para mantener el marcador visible
+      setTimeout(() => {
+        if (window.mapController && window.mapController.draw) {
+          window.mapController.draw();
+          // Volver a dibujar el marcador encima
+          this.dibujarMarcadorTemporal(coordenadas);
+        }
+      }, 100);
+    }
+    
     // Actualizar progreso
     this.actualizarProgresoMapa();
     
     // Habilitar botón de asignar
     document.getElementById('btnAsignarMapa').disabled = false;
     
-    this.showToast('📍 Marcador colocado correctamente', 'success');
+    this.showToast('📍 Marcador colocado correctamente. Haz clic en "Asignar Mapa" para guardar.', 'success');
+  }
+
+  /**
+   * Dibuja el marcador temporal en el canvas (helper function)
+   * @param {Object} coordenadas - {x, y} coordenadas del marcador
+   */
+  dibujarMarcadorTemporal(coordenadas) {
+    if (!coordenadas || !window.mapController) return;
+    
+    const canvas = window.mapController.elements.canvas;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.save();
+    
+    const screenX = coordenadas.x * window.mapController.state.scale + window.mapController.state.offsetX;
+    const screenY = coordenadas.y * window.mapController.state.scale + window.mapController.state.offsetY;
+    
+    // Marcador más sutil para redibujado
+    ctx.strokeStyle = '#ef4444';
+    ctx.fillStyle = '#ef4444';
+    ctx.lineWidth = 2;
+    
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath();
+    ctx.arc(screenX, screenY, 15, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.globalAlpha = 1;
+    ctx.beginPath();
+    ctx.arc(screenX, screenY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    ctx.restore();
   }
 
   /**
@@ -40498,18 +40594,29 @@ class InventarioCompleto {
       await this.saveData();
       await this.render();
 
+      // Limpiar marcador visual del canvas
+      if (window.mapController && window.mapController.draw) {
+        window.mapController.draw();
+      }
+
       // Cerrar panel y limpiar estado
       this.cerrarPanelAsignacionMapa();
       this.repuestoEnFlujo = null;
       this.modoColocarMarcador = false;
 
-      this.showToast('✅ Ubicación en mapa asignada correctamente', 'success');
+      // Obtener nombre del mapa para mensaje
+      const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === this.mapaSeleccionadoFlujo);
+      const nombreMapa = mapa?.nombre || 'el mapa';
+
+      this.showToast(`✅ "${repuesto.nombre}" ubicado en ${nombreMapa} (${this.marcadorColocadoFlujo.x.toFixed(1)}, ${this.marcadorColocadoFlujo.y.toFixed(1)})`, 'success', 4000);
 
       // Preguntar si quiere ver el resultado
-      if (confirm('¿Deseas ver el repuesto en el inventario?')) {
-        this.currentTab = 'inventario';
-        this.renderTabs();
-      }
+      setTimeout(() => {
+        if (confirm('✅ Ubicación guardada exitosamente.\n\n¿Deseas ver el repuesto en el inventario?')) {
+          this.currentTab = 'inventario';
+          this.renderTabs();
+        }
+      }, 500);
 
     } catch (error) {
       console.error('❌ Error al asignar mapa:', error);
@@ -40527,6 +40634,17 @@ class InventarioCompleto {
       setTimeout(() => panel.style.display = 'none', 300);
     }
 
+    // Limpiar marcador visual del canvas
+    if (window.mapController && window.mapController.draw) {
+      window.mapController.draw(); // Redibujar sin el marcador temporal
+    }
+
+    // Desactivar modo marcador en mapController
+    if (window.mapController && window.mapController.state) {
+      window.mapController.state.modoMarcador = false;
+      window.mapController.state.marcadorPendiente = null;
+    }
+
     // Limpiar estados
     this.mapaSeleccionadoFlujo = null;
     this.zonaSeleccionadaFlujo = null;
@@ -40534,7 +40652,16 @@ class InventarioCompleto {
     this.modoColocarMarcador = false;
 
     // Resetear botón
-    document.getElementById('btnAsignarMapa').disabled = true;
+    const btnAsignar = document.getElementById('btnAsignarMapa');
+    if (btnAsignar) {
+      btnAsignar.disabled = true;
+    }
+
+    // Limpiar display de coordenadas
+    const coordsDisplay = document.getElementById('coordsDisplay');
+    if (coordsDisplay) {
+      coordsDisplay.textContent = '-';
+    }
   }
 
   /**
