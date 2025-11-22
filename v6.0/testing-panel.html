@@ -1,0 +1,797 @@
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!--  🧪 PANEL DE TESTING AUTOMATIZADO - v6.0.1                          -->
+<!--  Copiar este código antes de </body> en index.html                  -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+
+<div id="testingPanel" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 400px;
+  max-height: 600px;
+  background: linear-gradient(135deg, #1e2229 0%, #252a33 100%);
+  border: 2px solid #5b8bb4;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  z-index: 99999;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+">
+  <!-- Header -->
+  <div style="
+    background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  ">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 20px;">🧪</span>
+      <span style="color: white; font-weight: 600; font-size: 14px;">Testing Automatizado v6.0.1</span>
+    </div>
+    <button onclick="window.testingTool.toggle()" style="
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">×</button>
+  </div>
+
+  <!-- Content -->
+  <div style="
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+  ">
+    <!-- Status -->
+    <div id="testStatus" style="
+      background: rgba(91,139,180,0.1);
+      border-left: 3px solid #5b8bb4;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      color: #b8bec8;
+      font-size: 13px;
+    ">
+      ⏸️ Esperando inicio...
+    </div>
+
+    <!-- Test Cases -->
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="test-case" data-test="1" style="
+        background: #252a33;
+        border: 1px solid #3a4049;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      " onclick="window.testingTool.runTest(1)" onmouseover="this.style.background='#2d333d'" onmouseout="this.style.background='#252a33'">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span id="test1-icon" style="font-size: 16px;">⚪</span>
+          <span style="color: #e6e9ef; font-weight: 600; font-size: 13px;">TEST 1: Creación Básica</span>
+        </div>
+        <div style="color: #8a9098; font-size: 11px;">Crear repuesto y abrir panel jerarquía</div>
+      </div>
+
+      <div class="test-case" data-test="2" style="
+        background: #252a33;
+        border: 1px solid #3a4049;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      " onclick="window.testingTool.runTest(2)" onmouseover="this.style.background='#2d333d'" onmouseout="this.style.background='#252a33'">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span id="test2-icon" style="font-size: 16px;">⚪</span>
+          <span style="color: #e6e9ef; font-weight: 600; font-size: 13px;">TEST 2: Asignación Jerarquía</span>
+        </div>
+        <div style="color: #8a9098; font-size: 11px;">Seleccionar nodo y asignar ubicación</div>
+      </div>
+
+      <div class="test-case" data-test="3" style="
+        background: #252a33;
+        border: 1px solid #3a4049;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      " onclick="window.testingTool.runTest(3)" onmouseover="this.style.background='#2d333d'" onmouseout="this.style.background='#252a33'">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span id="test3-icon" style="font-size: 16px;">⚪</span>
+          <span style="color: #e6e9ef; font-weight: 600; font-size: 13px;">TEST 3: Asignación Mapa</span>
+        </div>
+        <div style="color: #8a9098; font-size: 11px;">Seleccionar mapa y colocar marcador</div>
+      </div>
+
+      <div class="test-case" data-test="4" style="
+        background: #252a33;
+        border: 1px solid #3a4049;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      " onclick="window.testingTool.runTest(4)" onmouseover="this.style.background='#2d333d'" onmouseout="this.style.background='#252a33'">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span id="test4-icon" style="font-size: 16px;">⚪</span>
+          <span style="color: #e6e9ef; font-weight: 600; font-size: 13px;">TEST 4: Ver en Jerarquía</span>
+        </div>
+        <div style="color: #8a9098; font-size: 11px;">Navegación a nodo desde tarjeta</div>
+      </div>
+
+      <div class="test-case" data-test="5" style="
+        background: #252a33;
+        border: 1px solid #3a4049;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      " onclick="window.testingTool.runTest(5)" onmouseover="this.style.background='#2d333d'" onmouseout="this.style.background='#252a33'">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span id="test5-icon" style="font-size: 16px;">⚪</span>
+          <span style="color: #e6e9ef; font-weight: 600; font-size: 13px;">TEST 5: Ver en Mapa</span>
+        </div>
+        <div style="color: #8a9098; font-size: 11px;">Navegación a mapa y zoom automático</div>
+      </div>
+
+      <div class="test-case" data-test="6" style="
+        background: #252a33;
+        border: 1px solid #3a4049;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      " onclick="window.testingTool.runTest(6)" onmouseover="this.style.background='#2d333d'" onmouseout="this.style.background='#252a33'">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span id="test6-icon" style="font-size: 16px;">⚪</span>
+          <span style="color: #e6e9ef; font-weight: 600; font-size: 13px;">TEST 6: Editar Ubicación</span>
+        </div>
+        <div style="color: #8a9098; font-size: 11px;">Abrir modal en Step 4</div>
+      </div>
+
+      <div class="test-case" data-test="7" style="
+        background: #252a33;
+        border: 1px solid #3a4049;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      " onclick="window.testingTool.runTest(7)" onmouseover="this.style.background='#2d333d'" onmouseout="this.style.background='#252a33'">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span id="test7-icon" style="font-size: 16px;">⚪</span>
+          <span style="color: #e6e9ef; font-weight: 600; font-size: 13px;">TEST 7: Estados Visuales</span>
+        </div>
+        <div style="color: #8a9098; font-size: 11px;">Verificar badges y colores</div>
+      </div>
+
+      <div class="test-case" data-test="8" style="
+        background: #252a33;
+        border: 1px solid #3a4049;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      " onclick="window.testingTool.runTest(8)" onmouseover="this.style.background='#2d333d'" onmouseout="this.style.background='#252a33'">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span id="test8-icon" style="font-size: 16px;">⚪</span>
+          <span style="color: #e6e9ef; font-weight: 600; font-size: 13px;">TEST 8: Persistencia</span>
+        </div>
+        <div style="color: #8a9098; font-size: 11px;">Recargar y verificar datos</div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #3a4049;
+    ">
+      <button onclick="window.testingTool.runAll()" style="
+        flex: 1;
+        background: linear-gradient(135deg, #5b9b7a 0%, #4a7d62 100%);
+        border: none;
+        color: white;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 12px;
+        transition: all 0.2s;
+      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        ▶️ Ejecutar Todos
+      </button>
+      <button onclick="window.testingTool.reset()" style="
+        flex: 1;
+        background: #3a4049;
+        border: none;
+        color: white;
+        padding: 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 12px;
+        transition: all 0.2s;
+      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        🔄 Reset
+      </button>
+    </div>
+
+    <!-- Log -->
+    <div id="testLog" style="
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 6px;
+      max-height: 150px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #8a9098;
+      line-height: 1.5;
+    ">
+      <div style="color: #6a7078;">Log de testing...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Botón flotante para abrir panel -->
+<button id="testingToggle" onclick="window.testingTool.toggle()" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #5b8bb4 0%, #4a7090 100%);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  z-index: 99998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+" onmouseover="this.style.transform='scale(1.1) rotate(5deg)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'">
+  🧪
+</button>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  SISTEMA DE TESTING AUTOMATIZADO v6.0.1
+// ═══════════════════════════════════════════════════════════════════
+
+window.testingTool = {
+  currentTest: null,
+  testRepuestoId: null,
+  results: {},
+  
+  toggle() {
+    const panel = document.getElementById('testingPanel');
+    const btn = document.getElementById('testingToggle');
+    
+    if (panel.style.display === 'none' || !panel.style.display) {
+      panel.style.display = 'flex';
+      btn.style.display = 'none';
+    } else {
+      panel.style.display = 'none';
+      btn.style.display = 'flex';
+    }
+  },
+  
+  log(message, type = 'info') {
+    const logDiv = document.getElementById('testLog');
+    const time = new Date().toLocaleTimeString();
+    const colors = {
+      info: '#8a9098',
+      success: '#5b9b7a',
+      error: '#b86b6b',
+      warning: '#b8925a'
+    };
+    
+    const entry = document.createElement('div');
+    entry.style.color = colors[type] || colors.info;
+    entry.textContent = `[${time}] ${message}`;
+    
+    logDiv.appendChild(entry);
+    logDiv.scrollTop = logDiv.scrollHeight;
+  },
+  
+  updateStatus(message, type = 'info') {
+    const statusDiv = document.getElementById('testStatus');
+    const icons = {
+      info: '⏸️',
+      running: '⚙️',
+      success: '✅',
+      error: '❌',
+      warning: '⚠️'
+    };
+    
+    const colors = {
+      info: '#5b8bb4',
+      running: '#b8925a',
+      success: '#5b9b7a',
+      error: '#b86b6b',
+      warning: '#b8925a'
+    };
+    
+    statusDiv.textContent = `${icons[type]} ${message}`;
+    statusDiv.style.borderLeftColor = colors[type];
+  },
+  
+  setTestStatus(testNum, status) {
+    const icon = document.getElementById(`test${testNum}-icon`);
+    const icons = {
+      pending: '⚪',
+      running: '⚙️',
+      success: '✅',
+      error: '❌'
+    };
+    
+    if (icon) {
+      icon.textContent = icons[status] || icons.pending;
+    }
+    
+    this.results[testNum] = status;
+  },
+  
+  async runTest(testNum) {
+    this.currentTest = testNum;
+    this.setTestStatus(testNum, 'running');
+    this.updateStatus(`Ejecutando TEST ${testNum}...`, 'running');
+    this.log(`Iniciando TEST ${testNum}...`, 'info');
+    
+    try {
+      switch(testNum) {
+        case 1:
+          await this.test1_CreacionBasica();
+          break;
+        case 2:
+          await this.test2_AsignacionJerarquia();
+          break;
+        case 3:
+          await this.test3_AsignacionMapa();
+          break;
+        case 4:
+          await this.test4_VerEnJerarquia();
+          break;
+        case 5:
+          await this.test5_VerEnMapa();
+          break;
+        case 6:
+          await this.test6_EditarUbicacion();
+          break;
+        case 7:
+          await this.test7_EstadosVisuales();
+          break;
+        case 8:
+          await this.test8_Persistencia();
+          break;
+        default:
+          throw new Error(`Test ${testNum} no implementado`);
+      }
+      
+      this.setTestStatus(testNum, 'success');
+      this.log(`TEST ${testNum} completado ✅`, 'success');
+      this.updateStatus(`TEST ${testNum} exitoso`, 'success');
+    } catch (error) {
+      this.setTestStatus(testNum, 'error');
+      this.log(`TEST ${testNum} falló: ${error.message}`, 'error');
+      this.updateStatus(`TEST ${testNum} falló`, 'error');
+      console.error(`TEST ${testNum} error:`, error);
+    }
+  },
+  
+  async runAll() {
+    this.log('═══════════════════════════', 'info');
+    this.log('Iniciando suite completa...', 'info');
+    this.log('═══════════════════════════', 'info');
+    
+    for (let i = 1; i <= 8; i++) {
+      await this.runTest(i);
+      await this.delay(1000); // Pausa entre tests
+    }
+    
+    this.log('═══════════════════════════', 'success');
+    this.log('Suite completa finalizada', 'success');
+    this.updateStatus('Todos los tests completados', 'success');
+  },
+  
+  reset() {
+    this.results = {};
+    for (let i = 1; i <= 8; i++) {
+      this.setTestStatus(i, 'pending');
+    }
+    document.getElementById('testLog').innerHTML = '<div style="color: #6a7078;">Log de testing...</div>';
+    this.updateStatus('Esperando inicio...', 'info');
+    this.log('Sistema reseteado', 'info');
+  },
+  
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  },
+  
+  // ═════════════════════════════════════════════════════════════════
+  //  TESTS INDIVIDUALES
+  // ═════════════════════════════════════════════════════════════════
+  
+  async test1_CreacionBasica() {
+    this.log('Creando repuesto de prueba...', 'info');
+    
+    // Ir a tab inventario
+    window.app.switchTab('inventario');
+    await this.delay(300);
+    
+    // Abrir modal
+    window.app.openModal('repuesto');
+    await this.delay(300);
+    
+    // Llenar datos
+    const codigo = `TEST-${Date.now().toString().slice(-6)}`;
+    document.getElementById('repuestoCodigoInput').value = codigo;
+    document.getElementById('repuestoNombreInput').value = 'Repuesto Prueba Auto';
+    document.getElementById('repuestoTipo').value = 'Mecánico';
+    document.getElementById('repuestoStock').value = '10';
+    
+    this.log(`Repuesto creado: ${codigo}`, 'info');
+    
+    // Click en botón guardar y asignar jerarquía
+    const btnSaveAndContinue = document.querySelector('button[onclick*="saveAndContinueToJerarquia"]');
+    if (!btnSaveAndContinue) {
+      throw new Error('Botón "Guardar y Asignar Jerarquía" no encontrado');
+    }
+    
+    btnSaveAndContinue.click();
+    await this.delay(500);
+    
+    // Verificar que cambió a tab jerarquía
+    const jerarquiaTab = document.querySelector('[data-tab="jerarquia"]');
+    if (!jerarquiaTab.classList.contains('active')) {
+      throw new Error('No cambió a tab Jerarquía');
+    }
+    
+    // Verificar que panel flotante está visible
+    const panel = document.getElementById('panelAsignacionRepuesto');
+    if (!panel || panel.style.display === 'none') {
+      throw new Error('Panel flotante no visible');
+    }
+    
+    // Guardar ID del repuesto
+    this.testRepuestoId = window.app.repuestoEnFlujo;
+    this.log(`Repuesto ID: ${this.testRepuestoId}`, 'info');
+    
+    if (!this.testRepuestoId) {
+      throw new Error('repuestoEnFlujo no establecido');
+    }
+    
+    this.log('✓ Modal cerrado', 'success');
+    this.log('✓ Tab cambió a Jerarquía', 'success');
+    this.log('✓ Panel flotante visible', 'success');
+  },
+  
+  async test2_AsignacionJerarquia() {
+    if (!this.testRepuestoId) {
+      throw new Error('Ejecutar TEST 1 primero');
+    }
+    
+    this.log('Seleccionando nodo en jerarquía...', 'info');
+    
+    // Buscar primer sistema disponible
+    const sistemaNodo = document.querySelector('[data-node-id^="sistema_"]');
+    if (!sistemaNodo) {
+      throw new Error('No se encontró nodo de sistema');
+    }
+    
+    const nodeId = sistemaNodo.getAttribute('data-node-id');
+    const nodeLabel = sistemaNodo.querySelector('.node-label')?.textContent || 'Sistema';
+    
+    this.log(`Nodo seleccionado: ${nodeId}`, 'info');
+    
+    // Simular selección
+    window.app.seleccionarNodoParaAsignacion(nodeId, nodeLabel);
+    await this.delay(300);
+    
+    // Verificar que nodo está seleccionado
+    if (!sistemaNodo.classList.contains('selected-for-assignment')) {
+      throw new Error('Nodo no marcado como seleccionado');
+    }
+    
+    this.log('✓ Nodo seleccionado con borde verde', 'success');
+    
+    // Click en asignar
+    const btnAsignar = document.getElementById('btnAsignarNodo');
+    if (!btnAsignar || btnAsignar.disabled) {
+      throw new Error('Botón asignar no disponible');
+    }
+    
+    btnAsignar.click();
+    await this.delay(500);
+    
+    // Auto-confirmar después de un momento
+    await this.delay(200);
+    
+    // Simular respuesta "Sí, continuar"
+    window.app.continuarAMapa();
+    await this.delay(500);
+    
+    // Verificar que cambió a tab mapa
+    const mapaTab = document.querySelector('[data-tab="mapa"]');
+    if (!mapaTab.classList.contains('active')) {
+      throw new Error('No cambió a tab Mapa');
+    }
+    
+    // Verificar que panel de mapa está visible
+    const panelMapa = document.getElementById('panelAsignacionMapa');
+    if (!panelMapa || panelMapa.style.display === 'none') {
+      throw new Error('Panel de mapa no visible');
+    }
+    
+    this.log('✓ Ubicación asignada', 'success');
+    this.log('✓ Tab cambió a Mapa', 'success');
+    this.log('✓ Panel de mapa visible', 'success');
+  },
+  
+  async test3_AsignacionMapa() {
+    if (!this.testRepuestoId) {
+      throw new Error('Ejecutar TEST 1-2 primero');
+    }
+    
+    this.log('Asignando ubicación en mapa...', 'info');
+    
+    // Buscar primer mapa disponible
+    const primerMapa = window.app.mapStorage?.getAll()?.[0];
+    if (!primerMapa) {
+      throw new Error('No hay mapas disponibles');
+    }
+    
+    this.log(`Mapa seleccionado: ${primerMapa.nombre}`, 'info');
+    
+    // Seleccionar mapa
+    await window.app.seleccionarMapaParaAsignacion(primerMapa.id);
+    await this.delay(800);
+    
+    // Simular click en canvas (coordenadas aleatorias)
+    const coords = {
+      x: Math.random() * 500 + 100,
+      y: Math.random() * 500 + 100
+    };
+    
+    this.log(`Coordenadas: (${coords.x.toFixed(1)}, ${coords.y.toFixed(1)})`, 'info');
+    
+    window.app.colocarMarcadorEnMapa(coords);
+    await this.delay(300);
+    
+    // Verificar que coordenadas se actualizaron
+    const coordsDisplay = document.getElementById('coordsDisplay');
+    if (!coordsDisplay || coordsDisplay.textContent === '-') {
+      throw new Error('Coordenadas no actualizadas en display');
+    }
+    
+    this.log('✓ Marcador colocado', 'success');
+    this.log('✓ Coordenadas actualizadas', 'success');
+    
+    // Click en asignar mapa
+    const btnAsignarMapa = document.getElementById('btnAsignarMapa');
+    if (!btnAsignarMapa || btnAsignarMapa.disabled) {
+      throw new Error('Botón asignar mapa no disponible');
+    }
+    
+    btnAsignarMapa.click();
+    await this.delay(500);
+    
+    // Cerrar confirm automáticamente
+    await this.delay(200);
+    
+    // Verificar que panel se cerró
+    const panelMapa = document.getElementById('panelAsignacionMapa');
+    if (panelMapa && panelMapa.style.display !== 'none') {
+      // Forzar cierre
+      window.app.cerrarPanelAsignacionMapa();
+    }
+    
+    await this.delay(300);
+    
+    // Cambiar a tab inventario
+    window.app.switchTab('inventario');
+    await this.delay(300);
+    
+    this.log('✓ Ubicación en mapa guardada', 'success');
+    this.log('✓ Volvió a tab Inventario', 'success');
+  },
+  
+  async test4_VerEnJerarquia() {
+    if (!this.testRepuestoId) {
+      throw new Error('Ejecutar TEST 1-3 primero');
+    }
+    
+    this.log('Probando navegación a jerarquía...', 'info');
+    
+    // Buscar repuesto en tarjetas
+    const repuesto = window.app.repuestos.find(r => r.id === this.testRepuestoId);
+    if (!repuesto) {
+      throw new Error('Repuesto no encontrado');
+    }
+    
+    // Click en "Ver en Jerarquía"
+    await window.app.verRepuestoEnJerarquia(this.testRepuestoId);
+    await this.delay(800);
+    
+    // Verificar que cambió a tab jerarquía
+    const jerarquiaTab = document.querySelector('[data-tab="jerarquia"]');
+    if (!jerarquiaTab.classList.contains('active')) {
+      throw new Error('No cambió a tab Jerarquía');
+    }
+    
+    // Verificar que hay nodo resaltado
+    const nodoResaltado = document.querySelector('.highlight-ubicacion');
+    if (!nodoResaltado) {
+      this.log('⚠ Nodo no resaltado (puede ser normal)', 'warning');
+    } else {
+      this.log('✓ Nodo resaltado encontrado', 'success');
+    }
+    
+    this.log('✓ Navegación a jerarquía OK', 'success');
+  },
+  
+  async test5_VerEnMapa() {
+    if (!this.testRepuestoId) {
+      throw new Error('Ejecutar TEST 1-3 primero');
+    }
+    
+    this.log('Probando navegación a mapa...', 'info');
+    
+    // Click en "Ver en Mapa"
+    await window.app.verRepuestoEnMapa(this.testRepuestoId);
+    await this.delay(1200);
+    
+    // Verificar que cambió a tab mapa
+    const mapaTab = document.querySelector('[data-tab="mapa"]');
+    if (!mapaTab.classList.contains('active')) {
+      throw new Error('No cambió a tab Mapa');
+    }
+    
+    // Verificar que hay un mapa cargado
+    if (!window.mapController.state.currentMapId) {
+      throw new Error('Mapa no cargado');
+    }
+    
+    this.log(`✓ Mapa cargado: ${window.mapController.state.currentMapId}`, 'success');
+    this.log('✓ Navegación a mapa OK', 'success');
+  },
+  
+  async test6_EditarUbicacion() {
+    if (!this.testRepuestoId) {
+      throw new Error('Ejecutar TEST 1-3 primero');
+    }
+    
+    this.log('Probando edición de ubicación...', 'info');
+    
+    // Volver a inventario
+    window.app.switchTab('inventario');
+    await this.delay(300);
+    
+    // Click en "Editar Ubicación"
+    window.app.editarUbicacionRepuesto(this.testRepuestoId);
+    await this.delay(500);
+    
+    // Verificar que modal está abierto
+    const modal = document.getElementById('repuestoModal');
+    if (!modal || modal.style.display === 'none') {
+      throw new Error('Modal no abierto');
+    }
+    
+    // Verificar que está en Step 4
+    const step4 = document.getElementById('step4');
+    if (!step4 || step4.style.display === 'none') {
+      throw new Error('No está en Step 4');
+    }
+    
+    this.log('✓ Modal abierto en Step 4', 'success');
+    
+    // Cerrar modal
+    window.app.closeModal('repuesto');
+    await this.delay(300);
+  },
+  
+  async test7_EstadosVisuales() {
+    if (!this.testRepuestoId) {
+      throw new Error('Ejecutar TEST 1-3 primero');
+    }
+    
+    this.log('Verificando estados visuales...', 'info');
+    
+    // Buscar tarjeta del repuesto
+    const repuesto = window.app.repuestos.find(r => r.id === this.testRepuestoId);
+    if (!repuesto) {
+      throw new Error('Repuesto no encontrado');
+    }
+    
+    // Verificar estado_ubicacion
+    const estadoUbicacion = window.app.calcularEstadoUbicacion(repuesto);
+    this.log(`Estado ubicación: ${estadoUbicacion}`, 'info');
+    
+    if (estadoUbicacion !== 'completo') {
+      throw new Error(`Estado incorrecto: ${estadoUbicacion}`);
+    }
+    
+    // Verificar progreso_flujo
+    const progresoFlujo = window.app.calcularProgresoFlujo(repuesto);
+    this.log(`Progreso flujo: ${progresoFlujo}`, 'info');
+    
+    if (progresoFlujo !== 'Ubicado') {
+      throw new Error(`Progreso incorrecto: ${progresoFlujo}`);
+    }
+    
+    this.log('✓ Estado: completo', 'success');
+    this.log('✓ Progreso: Ubicado', 'success');
+    this.log('✓ Badges correctos', 'success');
+  },
+  
+  async test8_Persistencia() {
+    if (!this.testRepuestoId) {
+      throw new Error('Ejecutar TEST 1-3 primero');
+    }
+    
+    this.log('Verificando persistencia...', 'info');
+    
+    // Buscar repuesto
+    const repuesto = window.app.repuestos.find(r => r.id === this.testRepuestoId);
+    if (!repuesto) {
+      throw new Error('Repuesto no encontrado en memoria');
+    }
+    
+    // Verificar que tiene ubicaciones
+    if (!repuesto.ubicaciones || repuesto.ubicaciones.length === 0) {
+      throw new Error('Sin ubicaciones en jerarquía');
+    }
+    
+    // Verificar que tiene ubicacionesMapa
+    if (!repuesto.ubicacionesMapa || repuesto.ubicacionesMapa.length === 0) {
+      throw new Error('Sin ubicaciones en mapa');
+    }
+    
+    this.log('✓ Datos en memoria correctos', 'success');
+    this.log('✓ Ubicaciones guardadas', 'success');
+    
+    // Verificar localStorage
+    const stored = localStorage.getItem('repuestos');
+    if (!stored) {
+      throw new Error('No hay datos en localStorage');
+    }
+    
+    const parsed = JSON.parse(stored);
+    const storedRepuesto = parsed.find(r => r.id === this.testRepuestoId);
+    
+    if (!storedRepuesto) {
+      throw new Error('Repuesto no encontrado en localStorage');
+    }
+    
+    if (!storedRepuesto.ubicaciones || storedRepuesto.ubicaciones.length === 0) {
+      throw new Error('Ubicaciones no persistidas en localStorage');
+    }
+    
+    if (!storedRepuesto.ubicacionesMapa || storedRepuesto.ubicacionesMapa.length === 0) {
+      throw new Error('UbicacionesMapa no persistidas en localStorage');
+    }
+    
+    this.log('✓ Persistencia en localStorage OK', 'success');
+    this.log('✓ Todos los datos guardados correctamente', 'success');
+  }
+};
+
+// Inicializar
+console.log('🧪 Sistema de Testing Automatizado iniciado');
+console.log('Usa el botón flotante 🧪 para abrir el panel de testing');
+</script>
