@@ -10740,6 +10740,65 @@
   transition: transform 0.25s ease;
   min-width: 780px;
   color: #f0f4ff;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* 🔧 SECCIÓN DE ELEMENTOS GENÉRICOS */
+.visual-v2-tree-container .tree-section {
+  width: 100%;
+}
+
+.visual-v2-tree-container .tree-section-generic {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.05) 100%);
+  border: 2px solid rgba(16, 185, 129, 0.25);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+}
+
+.visual-v2-tree-container .tree-section-organizational {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.05) 100%);
+  border: 2px solid rgba(59, 130, 246, 0.25);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+}
+
+.visual-v2-tree-container .tree-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border-left: 4px solid rgba(16, 185, 129, 0.5);
+}
+
+.visual-v2-tree-container .tree-section-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.visual-v2-tree-container .tree-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #10b981;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.visual-v2-tree-container .tree-section-badge {
+  margin-left: auto;
+  padding: 4px 12px;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: 12px;
+  color: #10b981;
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
 .visual-v2-tree-container .tree-container {
@@ -10764,19 +10823,32 @@
   margin: 6px 0;
 }
 
+/* 🔧 Nodos genéricos con estilo especial */
+.visual-v2-tree-container .tree-node.node-generic .node-content {
+  border-left-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.visual-v2-tree-container .tree-node.node-generic .node-content:hover {
+  background: rgba(16, 185, 129, 0.15);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
 .visual-v2-tree-container .node-content {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   padding: 8px 14px;
+  padding-right: 8px;
   min-width: 320px;
-  max-width: fit-content;
+  max-width: 100%;
+  width: fit-content;
   background: rgba(30, 41, 59, 0.5);
   color: #e2e8f0;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   position: relative;
   z-index: 2;
   height: 32px;
@@ -10784,10 +10856,12 @@
   border-left: 2px solid rgba(59, 130, 246, 0.3);
 }
 
+/* Mantener hover activo cuando el mouse está sobre los botones o el contenido */
 .visual-v2-tree-container .node-content:hover {
   transform: translateX(4px);
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
   background: rgba(51, 65, 85, 0.6);
+  padding-right: 8px;
 }
 
 .visual-v2-tree-container .node-content.search-highlight {
@@ -10811,13 +10885,23 @@
 }
 
 .visual-v2-tree-container .node-actions {
-  display: none;
-  gap: 3px;
+  display: flex;
+  gap: 4px;
   margin-left: auto;
+  padding-left: 8px;
   flex-shrink: 0;
-  pointer-events: auto;
-  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 100;
   position: relative;
+  transition: opacity 0.2s ease;
+}
+
+/* Mostrar botones al hacer hover sobre el contenido O sobre los botones mismos */
+.visual-v2-tree-container .node-content:hover .node-actions,
+.visual-v2-tree-container .node-actions:hover {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* 🔥 NUEVO: Indicadores de estado de nodos */
@@ -10859,44 +10943,86 @@
   color: #fb923c;
 }
 
-.visual-v2-tree-container .node-content:hover .node-actions {
-  display: flex;
+/* 🔧 Badge para áreas genéricas */
+.visual-v2-tree-container .node-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  margin-left: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.visual-v2-tree-container .node-badge-generic {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.15) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  color: #10b981;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.2);
+  animation: pulseGeneric 2s ease-in-out infinite;
+}
+
+@keyframes pulseGeneric {
+  0%, 100% {
+    box-shadow: 0 1px 3px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+  }
 }
 
 .visual-v2-tree-container .node-actions .node-btn {
-  padding: 3px 6px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 4px 8px;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.4);
   border-radius: 4px;
-  color: #ffffff;
+  color: #60a5fa;
   font-size: 0.7em;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
-  line-height: 1;
+  line-height: 1.2;
   pointer-events: auto;
-  z-index: 10;
+  z-index: 100;
   position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .visual-v2-tree-container .node-actions .node-btn:hover {
-  background: rgba(255, 255, 255, 0.35);
-  transform: scale(1.05);
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
 }
 
 .visual-v2-tree-container .node-btn-add {
-  background: rgba(107, 184, 147, 0.4);
-  border-color: rgba(107, 184, 147, 0.5);
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: #10b981;
 }
 
 .visual-v2-tree-container .node-btn-add:hover {
-  background: rgba(107, 184, 147, 0.65);
-  border-color: rgba(107, 184, 147, 0.7);
+  background: rgba(16, 185, 129, 0.35);
+  border-color: rgba(16, 185, 129, 0.7);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
 }
 
 .visual-v2-tree-container .node-btn-edit {
-  background: rgba(184, 146, 107, 0.4);
-  border-color: rgba(184, 146, 107, 0.5);
+  background: rgba(251, 146, 60, 0.2);
+  border-color: rgba(251, 146, 60, 0.5);
+  color: #fb923c;
+}
+
+.visual-v2-tree-container .node-btn-edit:hover {
+  background: rgba(251, 146, 60, 0.35);
+  border-color: rgba(251, 146, 60, 0.7);
+  box-shadow: 0 2px 6px rgba(251, 146, 60, 0.4);
 }
 
 .visual-v2-tree-container .node-btn-edit:hover {
@@ -15906,6 +16032,37 @@
 
                 <div class="wizard-step" data-step="3">
                   <section class="form-section form-section--full">
+                    
+                    <!-- 💡 PANEL DE AYUDA: ÁREAS GENÉRICAS -->
+                    <div style="padding: 14px 18px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(16,185,129,0.3); box-shadow: 0 4px 12px rgba(16,185,129,0.15);">
+                      <div style="color: white; font-size: 0.9rem;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                          <span style="font-size: 1.4rem;">💡</span>
+                          <strong style="font-size: 1rem;">¿Elementos de uso general sin equipo específico?</strong>
+                        </div>
+                        <div style="font-size: 0.87rem; opacity: 0.95; line-height: 1.6; margin-bottom: 12px;">
+                          Si este repuesto es de uso general (pernos, tornillos, consumibles, etc.) y no pertenece a un equipo específico, puedes crear <strong>áreas genéricas</strong> para organizarlos mejor.
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: 0.82rem;">
+                          <div style="background: rgba(255,255,255,0.18); padding: 8px 12px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);">
+                            <strong>🔧 Elementos Comunes</strong>
+                            <div style="font-size: 0.75rem; opacity: 0.9; margin-top: 2px;">Para uso transversal</div>
+                          </div>
+                          <div style="background: rgba(255,255,255,0.18); padding: 8px 12px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);">
+                            <strong>🔩 Pernería General</strong>
+                            <div style="font-size: 0.75rem; opacity: 0.9; margin-top: 2px;">Pernos, tuercas, arandelas</div>
+                          </div>
+                          <div style="background: rgba(255,255,255,0.18); padding: 8px 12px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);">
+                            <strong>📦 Consumibles</strong>
+                            <div style="font-size: 0.75rem; opacity: 0.9; margin-top: 2px;">Limpieza, lubricantes</div>
+                          </div>
+                        </div>
+                        <div style="margin-top: 12px; padding: 8px 12px; background: rgba(0,0,0,0.15); border-radius: 5px; font-size: 0.78rem; opacity: 0.95; line-height: 1.5;">
+                          <strong>ℹ️ Flexibilidad:</strong> Un mismo elemento puede estar en área genérica Y como repuesto específico de un equipo. Ejemplo: "Perno M8" en <em>"Pernería General"</em> y también en <em>"Baader 142 → Motor Principal"</em>.
+                        </div>
+                      </div>
+                    </div>
+                    
                     <div class="ubicaciones-section-visual">
                       <!-- Panel de ubicaciones asignadas -->
                       <div id="ubicacionesAsignadas" class="ubicaciones-asignadas-panel" style="display: none;">
@@ -19760,7 +19917,47 @@ const mapController = {
             </div>
           </div>
           
+          <!-- 💡 PANEL DE AYUDA: ÁREAS GENÉRICAS -->
+          <div style="padding: 12px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 6px; margin-bottom: 16px; border: 1px solid rgba(59,130,246,0.3);">
+            <div style="color: white; font-size: 0.9rem;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="font-size: 1.2rem;">💡</span>
+                <strong>Áreas Genéricas para Elementos Comunes</strong>
+              </div>
+              <div style="font-size: 0.85rem; opacity: 0.95; line-height: 1.5;">
+                Para pernos, tornillos, consumibles y otros elementos de uso general, puedes crear áreas específicas como:
+              </div>
+              <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; font-size: 0.8rem;">
+                <div style="background: rgba(255,255,255,0.15); padding: 6px 10px; border-radius: 4px;">🔧 <strong>Elementos Comunes</strong></div>
+                <div style="background: rgba(255,255,255,0.15); padding: 6px 10px; border-radius: 4px;">📦 <strong>Consumibles Generales</strong></div>
+                <div style="background: rgba(255,255,255,0.15); padding: 6px 10px; border-radius: 4px;">🔩 <strong>Pernería General</strong></div>
+                <div style="background: rgba(255,255,255,0.15); padding: 6px 10px; border-radius: 4px;">⚙️ <strong>Repuestos Transversales</strong></div>
+                <div style="background: rgba(255,255,255,0.15); padding: 6px 10px; border-radius: 4px;">🛠️ <strong>Herramientas Compartidas</strong></div>
+                <div style="background: rgba(255,255,255,0.15); padding: 6px 10px; border-radius: 4px;">🔌 <strong>Componentes Eléctricos</strong></div>
+              </div>
+              <div style="margin-top: 10px; font-size: 0.75rem; opacity: 0.85; font-style: italic;">
+                ℹ️ Estos elementos pueden coexistir con repuestos específicos de equipos. Un perno puede estar en "Pernería General" Y en "Baader 142 → Motor".
+              </div>
+            </div>
+          </div>
+          
           <form id="formEditHierarchy" style="display: flex; flex-direction: column; gap: 12px;">
+            
+            <!-- 🔧 CHECKBOX: MARCAR COMO ÁREA GENÉRICA -->
+            <div style="padding: 14px; background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(5,150,105,0.05) 100%); border: 2px solid rgba(16,185,129,0.3); border-radius: 8px; margin-bottom: 8px;">
+              <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none;">
+                <input type="checkbox" id="checkboxAreaGenerica" name="esAreaGenerica" ${area.esAreaGenerica ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer; accent-color: #10b981;" />
+                <div style="flex: 1;">
+                  <div style="color: var(--text-primary); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">
+                    🔧 Marcar como Área de Uso General
+                  </div>
+                  <div style="color: var(--text-secondary); font-size: 0.8rem; line-height: 1.4;">
+                    Si activas esta opción, el área aparecerá en una sección separada visualmente, fuera de la jerarquía organizacional normal. Ideal para elementos comunes, consumibles, pernería, etc.
+                  </div>
+                </div>
+              </label>
+            </div>
+            
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <label style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px;">
                 N1 - Empresa 🏢
@@ -19773,18 +19970,18 @@ const mapController = {
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <label style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px;">
                 N2 - Área 🏭
-                <span title="Área de la planta (ej: Planta Principal, Procesamiento)" style="cursor: help; color: var(--text-tertiary); font-size: 0.75rem;">ℹ️</span>
+                <span title="Área de la planta (ej: Planta Principal, Procesamiento) o Área Genérica (ej: 🔧 Elementos Comunes)" style="cursor: help; color: var(--text-tertiary); font-size: 0.75rem;">ℹ️</span>
               </label>
-              <input type="text" name="nivel2" list="nivel2List" placeholder="Ej: Planta Principal" value="${this.escapeHtml(jerarquia.nivel2 || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
+              <input type="text" name="nivel2" list="nivel2List" placeholder="Ej: Planta Principal o 🔧 Elementos Comunes" value="${this.escapeHtml(jerarquia.nivel2 || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
               ${buildDatalist('nivel2List', jerarquiaOptions.nivel2 || [])}
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <label style="color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px;">
                 N3 - Sub-área 📍
-                <span title="Zona específica dentro del área (ej: Eviscerado, Filete)" style="cursor: help; color: var(--text-tertiary); font-size: 0.75rem;">ℹ️</span>
+                <span title="Zona específica (ej: Eviscerado, Filete) o Categoría Genérica (ej: Pernería General, Consumibles)" style="cursor: help; color: var(--text-tertiary); font-size: 0.75rem;">ℹ️</span>
               </label>
-              <input type="text" name="nivel3" list="nivel3List" placeholder="Ej: Eviscerado" value="${this.escapeHtml(jerarquia.nivel3 || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
+              <input type="text" name="nivel3" list="nivel3List" placeholder="Ej: Eviscerado o Pernería General" value="${this.escapeHtml(jerarquia.nivel3 || '')}" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-tertiary); color: var(--text-primary);" />
               ${buildDatalist('nivel3List', jerarquiaOptions.nivel3 || [])}
             </div>
             
@@ -19857,25 +20054,59 @@ const mapController = {
         nivel7: formData.get('nivel7') || null
       };
       
+      // 🔧 CAPTURAR CHECKBOX DE ÁREA GENÉRICA
+      const esAreaGenerica = formData.get('esAreaGenerica') === 'on';
+      
+      console.log('🔧 Guardando área:', {
+        areaId: area.id,
+        nombre: area.name,
+        esAreaGenerica,
+        jerarquia: newJerarquia
+      });
+      
       // Preservar jerarquía legacy si existía (para rollback)
       if (area.jerarquia && !area._jerarquiaLegacy) {
         area._jerarquiaLegacy = { ...area.jerarquia };
       }
       
-      // Actualizar área con nueva jerarquía
+      // Actualizar área con nueva jerarquía Y marca de genérica
       area.jerarquia = newJerarquia;
+      area.esAreaGenerica = esAreaGenerica;
+      
+      console.log('📦 Área antes de guardar:', JSON.stringify(area, null, 2));
       
       // Guardar
       await mapStorage.updateArea(area);
       
+      console.log('✅ Área guardada en mapStorage');
+      
+      // 🔄 INVALIDAR CACHÉ DE JERARQUÍA PARA FORZAR RECONSTRUCCIÓN
+      this.cachedJerarquiaOptions = null;
+      this.jerarquiaAnidada = null;
+      
+      console.log('🔄 Reconstruyendo jerarquía anidada...');
+      
+      // Reconstruir jerarquía anidada
+      await this.construirJerarquiaAnidada();
+      
+      console.log('🌳 Jerarquía anidada reconstruida');
+      
+      // Renderizar árbol actualizado
+      this.renderizarArbolJerarquia();
+      
+      console.log('✅ Árbol renderizado');
+      
       // Cerrar modal
       document.getElementById('modalEditHierarchy').remove();
       
-      // Refrescar cascada
-      this.openCascadaModal();
+      // Refrescar cascada si está abierta
+      const modalCascada = document.getElementById('modalCascada');
+      if (modalCascada && modalCascada.style.display !== 'none') {
+        this.openCascadaModal();
+      }
       
-      this.showToast(' Jerarquía actualizada a 7 niveles', 'success');
-      console.log('✅ Área guardada con jerarquía unificada:', newJerarquia);
+      this.showToast(esAreaGenerica ? '🔧 Área marcada como genérica' : '✅ Jerarquía actualizada', 'success');
+      console.log('🎉 Proceso completado');
     });
   },
 
@@ -29118,6 +29349,37 @@ dibujarUbicacionesResaltadas(ctx) {
       }
     };
 
+    // 🔧 ÁREAS GENÉRICAS PREDEFINIDAS para elementos comunes
+    const areasGenericas = [
+      '🔧 Elementos Comunes',
+      '📦 Consumibles Generales',
+      '🔩 Pernería General',
+      '⚙️ Repuestos Transversales',
+      '🛠️ Herramientas Compartidas',
+      '🔌 Componentes Eléctricos',
+      '🧰 Accesorios Generales',
+      '📋 Stock Central'
+    ];
+
+    const subAreasGenericas = [
+      'Pernos Métricos',
+      'Pernos Hexagonales',
+      'Tuercas y Arandelas',
+      'Tornillos Autoperforantes',
+      'Elementos de Fijación',
+      'Consumibles de Limpieza',
+      'Lubricantes',
+      'Selladores y Adhesivos',
+      'Cables y Conectores',
+      'Fusibles y Relés',
+      'Herramientas Manuales',
+      'Instrumentos de Medición'
+    ];
+
+    // Agregar sugerencias genéricas al catálogo
+    areasGenericas.forEach(area => pushUnique('areaGeneral', area));
+    subAreasGenericas.forEach(subArea => pushUnique('subArea', subArea));
+
     const fallbackSources = [app?.opcionesJerarquia];
     fallbackSources.forEach(source => {
       if (!source) return;
@@ -29601,6 +29863,25 @@ dibujarUbicacionesResaltadas(ctx) {
           <input type="text" name="seccion" list="seccionList" placeholder="Ej: Mdulo 1" value="${this.escapeHtml(jerarquia.seccion || '')}" />
           ${buildDatalist('seccionList', jerarquiaOptions.seccion)}
         </div>
+        
+        <!--  NUEVO: Checkbox para marcar como área genérica -->
+        <div class="form-group" style="background: var(--bg-secondary); padding: 12px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #10b981;">
+          <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none;">
+            <input type="checkbox" id="checkboxAreaGenerica" name="esAreaGenerica" 
+                   ${area.esAreaGenerica ? 'checked' : ''}
+                   style="width: 18px; height: 18px; cursor: pointer;" />
+            <span style="display: flex; align-items: center; gap: 8px; font-weight: 500;">
+              <span style="font-size: 1.2rem;">🔧</span>
+              <span>Marcar como Área de Uso General</span>
+            </span>
+          </label>
+          <small style="display: block; margin-top: 8px; margin-left: 30px; color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">
+            💡 Las áreas genéricas aparecen en una sección separada (verde) en el árbol de jerarquía.<br>
+            📌 Ideal para elementos comunes como: pernos, consumibles, repuestos transversales, etc.<br>
+            🔀 El mismo elemento puede estar tanto en un área genérica como en un equipo específico.
+          </small>
+        </div>
+        
         <div class="form-group">
           <label>Equipos / maquinas (uno por linea)</label>
           <textarea name="equipos" rows="4" placeholder="Ej:\nMotor principal\nBanda transportadora">${this.escapeHtml(equiposText)}</textarea>
@@ -29670,6 +29951,9 @@ dibujarUbicacionesResaltadas(ctx) {
       const labelOffsetX = parseInt(formData.get('labelOffsetX'), 10) || 0;
       const labelOffsetY = parseInt(formData.get('labelOffsetY'), 10) || 0;
       
+      //  NUEVO: Capturar checkbox de área genérica
+      const esAreaGenerica = formData.get('esAreaGenerica') === 'on';
+      
       //  Construir jerarqua con los nombres correctos
       const jerarquia = {};
       const planta = formData.get('planta')?.trim();
@@ -29705,10 +29989,14 @@ dibujarUbicacionesResaltadas(ctx) {
         category, //  NUEVO: Categora actualizada
         labelOffsetX, //  NUEVO: Offset horizontal del nombre
         labelOffsetY, //  NUEVO: Offset vertical del nombre
+        esAreaGenerica, //  NUEVO: Marca si es área genérica
         jerarquia,
         equipos,
         updatedAt: new Date().toISOString()
       };
+
+      console.log('🔧 Guardando área:', { areaId: numericId, nombre: name, esAreaGenerica, jerarquia });
+      console.log('📦 Área antes de guardar:', JSON.stringify(updatedArea, null, 2));
 
       // Actualizar en el array global
       mapStorage.areas = mapStorage.areas.map(z => z.id === numericId ? updatedArea : z);
@@ -29721,12 +30009,49 @@ dibujarUbicacionesResaltadas(ctx) {
         detail: `Actualizada zona "${name}"`
       });
 
+      console.log('✅ Área guardada en mapStorage');
+
+      // 🔄 Sincronizar el campo esAreaGenerica con la jerarquía global de app
+      console.log('🔄 Sincronizando esAreaGenerica con jerarquía global...');
+      if (app.jerarquiaAnidada && app.jerarquiaAnidada.areas) {
+        // Buscar el área en jerarquiaAnidada que coincida con el nombre de la jerarquía
+        const nombreBuscar = jerarquia.areaGeneral || name;
+        const areaEnJerarquia = app.jerarquiaAnidada.areas.find(a => 
+          a.nombre === nombreBuscar || a.nombre === jerarquia.planta || a.nombre === name
+        );
+        
+        if (areaEnJerarquia) {
+          areaEnJerarquia.esAreaGenerica = esAreaGenerica;
+          console.log(`✅ Campo esAreaGenerica=${esAreaGenerica} sincronizado en "${areaEnJerarquia.nombre}"`);
+          
+          // Guardar jerarquía actualizada
+          app.saveJerarquiaAnidada({
+            reason: 'sync-area-generica-from-map',
+            meta: { areaId: numericId, nombre: name, esAreaGenerica }
+          });
+        } else {
+          console.warn('⚠️ No se encontró el área en jerarquiaAnidada para sincronizar:', nombreBuscar);
+        }
+      }
+
       // Recargar y actualizar UI
       this.state.areas = mapStorage.getAreasByMap(this.state.currentMapId);
       this.renderAreaList(this.state.areas);
       this.draw();
       this.closeModal();
       this.showToast(` Zona "${name}" actualizada correctamente.`, 'success');
+      
+      // 🔄 Invalidar caché de jerarquía
+      console.log('🔄 Invalidando caché...');
+      app.cachedJerarquiaOptions = null;
+      
+      // 🎯 Re-renderizar árbol visual de jerarquía
+      if (typeof renderizarArbolJerarquia === 'function') {
+        renderizarArbolJerarquia();
+        console.log('✅ Árbol renderizado');
+      }
+      
+      console.log('🎉 Proceso completado');
     } catch (error) {
       console.error(' Error actualizando rea:', error);
       this.showToast('No se pudo actualizar el rea. Revisa la consola.', 'error');
@@ -36126,10 +36451,20 @@ class InventarioCompleto {
     
     if (tab === 'jerarquia') {
       // 🌲 Renderizar árbol visual de jerarquía
-      setTimeout(() => {
-        this.renderJerarquiaTree();
-        this.initJerarquiaSearch();
-      }, 100);
+      // ⚠️ PERO: Si skipTreeStateRestore está activo, NO re-renderizar
+      // (significa que verRepuestoEnJerarquia ya renderizó el árbol colapsado)
+      if (!this.skipTreeStateRestore) {
+        setTimeout(() => {
+          this.renderJerarquiaTree();
+          this.initJerarquiaSearch();
+        }, 100);
+      } else {
+        console.log('   ⏭️ Saltando renderJerarquiaTree - navegación a repuesto específico activa');
+        // Solo inicializar búsqueda
+        setTimeout(() => {
+          this.initJerarquiaSearch();
+        }, 100);
+      }
     } else if (tab === 'stats') {
       this.renderStats();
     } else if (tab === 'valores') {
@@ -36533,9 +36868,18 @@ class InventarioCompleto {
       return { ...r, imageUrl };
     }));
 
+    // Detectar duplicados
+    const duplicados = this.detectarDuplicados();
+
     grid.innerHTML = repuestosWithImages.map(r => {
       const multimedia = r.multimedia || [];
       const imageUrl = r.imageUrl;
+      const duplicadoInfo = duplicados[r.id]; // Info de duplicado si existe
+      
+      // Validar estado del repuesto
+      const tieneJerarquia = !!(r.ubicaciones && r.ubicaciones.length > 0 && r.ubicaciones[0].areaGeneral);
+      const tieneMapa = !!(r.ubicacionesMapa && r.ubicacionesMapa.length > 0);
+      const tieneMarcador = tieneMapa && r.ubicacionesMapa.some(u => u.x !== undefined && u.y !== undefined);
       
       const minimo = r.minimo || r.stockMinimo || 5;
       const cantidad = r.cantidad || 0;
@@ -36602,13 +36946,82 @@ class InventarioCompleto {
         </div>
         <div class="card-content">
           <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px;">
-            <h3 style="margin: 0; font-weight: 500; color: var(--text-primary); font-size: 1rem;">${r.nombre}</h3>
-            <div style="display: flex; gap: 6px; width: 100%;">
-              <button class="btn-add-location" onclick="app.agregarUbicacionMapa('${r.id}')" title="Aadir nueva ubicacin en el mapa">
-                Aadir Ubicacin
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;">
+              <h3 style="margin: 0; font-weight: 500; color: var(--text-primary); font-size: 1rem; flex: 1;">${r.nombre}</h3>
+              ${duplicadoInfo ? `
+                <button onclick="app.mostrarInstanciasDuplicadas('${r.id}')" 
+                        title="Este repuesto tiene ${duplicadoInfo.total} instancias. Click para ver todas"
+                        style="
+                          padding: 4px 10px;
+                          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+                          color: white;
+                          border: none;
+                          border-radius: 12px;
+                          font-size: 0.7rem;
+                          font-weight: 700;
+                          cursor: pointer;
+                          white-space: nowrap;
+                          display: flex;
+                          align-items: center;
+                          gap: 4px;
+                          box-shadow: 0 2px 6px rgba(245,158,11,0.3);
+                          transition: all 0.2s;
+                        "
+                        onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(245,158,11,0.4)';"
+                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 6px rgba(245,158,11,0.3)';">
+                  📦 x${duplicadoInfo.total}
+                </button>
+              ` : ''}
+            </div>
+            <div style="display: flex; gap: 8px; width: 100%;">
+              <!-- Botón Jerarquía (dinámico: Verde si tiene, Rojo si no) -->
+              <button onclick="app.${tieneJerarquia ? 'verRepuestoEnJerarquia' : 'asignarJerarquiaYMostrar'}('${r.id}')" 
+                      title="${tieneJerarquia ? 'Ver en la jerarquía organizacional (para gestionar mapa/área/marcador)' : 'Asignar ubicación en jerarquía'}"
+                      style="
+                        flex: 1; 
+                        padding: 10px 12px; 
+                        background: linear-gradient(135deg, ${tieneJerarquia ? '#10b981 0%, #059669' : '#ef4444 0%, #dc2626'} 100%); 
+                        color: white; 
+                        border: none; 
+                        border-radius: 8px; 
+                        font-size: 0.85rem; 
+                        font-weight: 600; 
+                        cursor: pointer; 
+                        transition: all 0.2s;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 6px;
+                        box-shadow: 0 2px 6px ${tieneJerarquia ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};
+                      "
+                      onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px ${tieneJerarquia ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'}';"
+                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px ${tieneJerarquia ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}';">
+                ${tieneJerarquia ? '🌳 En Jerarquía' : '➕ Asignar Jerarquía'}
               </button>
-              <button class="btn-view-map" onclick="app.verRepuestoEnMapa('${r.id}')" title="Ver ubicaciones en el mapa">
-                Ver en Mapa
+              
+              <!-- Botón Editar (siempre naranja) -->
+              <button onclick="app.editarRepuesto('${r.id}')" 
+                      title="Editar información del repuesto"
+                      style="
+                        flex: 1; 
+                        padding: 10px 12px; 
+                        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
+                        color: white; 
+                        border: none; 
+                        border-radius: 8px; 
+                        font-size: 0.85rem; 
+                        font-weight: 600; 
+                        cursor: pointer; 
+                        transition: all 0.2s;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 6px;
+                        box-shadow: 0 2px 6px rgba(245,158,11,0.3);
+                      "
+                      onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(245,158,11,0.4)';"
+                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(245,158,11,0.3)';">
+                ✏️ Editar
               </button>
             </div>
           </div>
@@ -36745,162 +37158,84 @@ class InventarioCompleto {
         </div>
         
         <!-- 🎯 BLOQUE: Ubicación Completa -->
-        ${r.ubicaciones && r.ubicaciones.length > 0 ? `
-          <div style="
-            background: rgba(59, 130, 246, 0.08);
-            border-left: 3px solid var(--primary);
-            padding: 10px 12px;
-            margin: 8px 12px;
-            border-radius: 6px;
-          ">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-              <div style="font-size: 0.7rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">
-                📍 Ubicación Completa
-              </div>
-              <div style="
-                font-size: 0.65rem;
-                background: ${r.estado_ubicacion === 'completo' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(251, 191, 36, 0.15)'};
-                color: ${r.estado_ubicacion === 'completo' ? '#22c55e' : '#fbbf24'};
-                padding: 2px 8px;
-                border-radius: 4px;
-                font-weight: 600;
-              ">
-                ${r.progreso_flujo || 'Borrador'}
-              </div>
-            </div>
-            
-            <!-- Jerarquía -->
-            <div style="margin-bottom: 6px;">
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 3px;">🌳 Jerarquía:</div>
-              <div style="font-size: 0.75rem; color: var(--text-primary); line-height: 1.4;">
-                ${[
+        ${r.ubicaciones && r.ubicaciones.length > 0 ? '<div style="' +
+            'background: rgba(59, 130, 246, 0.08);' +
+            'border-left: 3px solid var(--primary);' +
+            'padding: 10px 12px;' +
+            'margin: 8px 12px;' +
+            'border-radius: 6px;' +
+          '">' +
+            '<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">' +
+              '<div style="font-size: 0.7rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">' +
+                '📍 Ubicación Completa' +
+              '</div>' +
+              '<div style="' +
+                'font-size: 0.65rem;' +
+                'background: ' + (r.estado_ubicacion === 'completo' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(251, 191, 36, 0.15)') + ';' +
+                'color: ' + (r.estado_ubicacion === 'completo' ? '#22c55e' : '#fbbf24') + ';' +
+                'padding: 2px 8px;' +
+                'border-radius: 4px;' +
+                'font-weight: 600;' +
+              '">' +
+                (r.progreso_flujo || 'Borrador') +
+              '</div>' +
+            '</div>' +
+            '<!-- Jerarquía -->' +
+            '<div style="margin-bottom: 6px;">' +
+              '<div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 3px;">🌳 Jerarquía:</div>' +
+              '<div style="font-size: 0.75rem; color: var(--text-primary); line-height: 1.4;">' +
+                ([
                   r.ubicaciones[0].areaGeneral,
                   r.ubicaciones[0].subArea,
                   r.ubicaciones[0].sistemaEquipo,
                   r.ubicaciones[0].subSistema
-                ].filter(Boolean).join(' → ') || 'Sin asignar'}
-              </div>
-            </div>
+                ].filter(Boolean).join(' → ') || 'Sin asignar') +
+              '</div>' +
+            '</div>' +
+            (r.ubicacionesMapa && r.ubicacionesMapa.length > 0 ? 
+              '<!-- Ubicación en Mapa -->' +
+              '<div style="margin-bottom: 6px; padding-top: 6px; border-top: 1px solid rgba(59, 130, 246, 0.2);">' +
+                '<div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 3px;">🗺️ Mapa:</div>' +
+                '<div style="font-size: 0.75rem; color: var(--text-primary); line-height: 1.4;">' +
+                  'Coordenadas: (' + r.ubicacionesMapa[0].coordenadas.x.toFixed(1) + ', ' + r.ubicacionesMapa[0].coordenadas.y.toFixed(1) + ')' +
+                '</div>' +
+              '</div>' : '') +
+          '</div>' : ''}
             
-            ${r.ubicacionesMapa && r.ubicacionesMapa.length > 0 ? `
-              <!-- Ubicación en Mapa -->
-              <div style="margin-bottom: 6px; padding-top: 6px; border-top: 1px solid rgba(59, 130, 246, 0.2);">
-                <div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 3px;">🗺️ Mapa:</div>
-                <div style="font-size: 0.75rem; color: var(--text-primary); line-height: 1.4;">
-                  Coordenadas: (${r.ubicacionesMapa[0].coordenadas.x.toFixed(1)}, ${r.ubicacionesMapa[0].coordenadas.y.toFixed(1)})
-                </div>
-              </div>
-            ` : ''}
-            
-            <!-- Botones de navegación -->
-            <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
-              <button onclick="app.verRepuestoEnJerarquia('${r.id}')" style="
-                flex: 1;
-                min-width: 120px;
-                background: rgba(59, 130, 246, 0.15);
-                border: 1px solid rgba(59, 130, 246, 0.3);
-                color: var(--primary);
-                padding: 6px 10px;
-                border-radius: 4px;
-                font-size: 0.7rem;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.2s;
-              "
-              onmouseover="this.style.background='rgba(59, 130, 246, 0.25)'"
-              onmouseout="this.style.background='rgba(59, 130, 246, 0.15)'">
-                🌳 Ver en Jerarquía
-              </button>
-              
-              ${r.ubicacionesMapa && r.ubicacionesMapa.length > 0 ? `
-                <button onclick="app.verRepuestoEnMapa('${r.id}')" style="
-                  flex: 1;
-                  min-width: 120px;
-                  background: rgba(34, 197, 94, 0.15);
-                  border: 1px solid rgba(34, 197, 94, 0.3);
-                  color: #22c55e;
-                  padding: 6px 10px;
-                  border-radius: 4px;
-                  font-size: 0.7rem;
-                  font-weight: 500;
-                  cursor: pointer;
-                  transition: all 0.2s;
-                "
-                onmouseover="this.style.background='rgba(34, 197, 94, 0.25)'"
-                onmouseout="this.style.background='rgba(34, 197, 94, 0.15)'">
-                  🗺️ Ver en Mapa
-                </button>
-              ` : `
-                <button onclick="app.continuarAMapa(); app.repuestoEnFlujo='${r.id}';" style="
-                  flex: 1;
-                  min-width: 120px;
-                  background: rgba(168, 85, 247, 0.15);
-                  border: 1px solid rgba(168, 85, 247, 0.3);
-                  color: #a855f7;
-                  padding: 6px 10px;
-                  border-radius: 4px;
-                  font-size: 0.7rem;
-                  font-weight: 500;
-                  cursor: pointer;
-                  transition: all 0.2s;
-                "
-                onmouseover="this.style.background='rgba(168, 85, 247, 0.25)'"
-                onmouseout="this.style.background='rgba(168, 85, 247, 0.15)'">
-                  + Asignar Mapa
-                </button>
-              `}
-              
-              <button onclick="app.editarUbicacionRepuesto('${r.id}')" style="
-                flex: 1;
-                min-width: 120px;
-                background: rgba(251, 191, 36, 0.15);
-                border: 1px solid rgba(251, 191, 36, 0.3);
-                color: #fbbf24;
-                padding: 6px 10px;
-                border-radius: 4px;
-                font-size: 0.7rem;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.2s;
-              "
-              onmouseover="this.style.background='rgba(251, 191, 36, 0.25)'"
-              onmouseout="this.style.background='rgba(251, 191, 36, 0.15)'">
-                ✏️ Editar Ubicación
-              </button>
-            </div>
-          </div>
-        ` : `
-          <!-- Sin ubicación asignada -->
-          <div style="
-            background: rgba(251, 191, 36, 0.08);
-            border-left: 3px solid #fbbf24;
-            padding: 10px 12px;
-            margin: 8px 12px;
-            border-radius: 6px;
-          ">
-            <div style="font-size: 0.7rem; color: #fbbf24; margin-bottom: 6px;">
-              ⚠️ Sin ubicación en jerarquía
-            </div>
-            <button onclick="app.asignarJerarquiaRepuesto('${r.id}')" style="
-              width: 100%;
-              background: rgba(251, 191, 36, 0.15);
-              border: 1px solid rgba(251, 191, 36, 0.3);
-              color: #fbbf24;
-              padding: 6px 10px;
-              border-radius: 4px;
-              font-size: 0.7rem;
-              font-weight: 500;
-              cursor: pointer;
-              transition: all 0.2s;
-            "
-            onmouseover="this.style.background='rgba(251, 191, 36, 0.25)'"
-            onmouseout="this.style.background='rgba(251, 191, 36, 0.15)'">
-              + Asignar a Jerarquía
-            </button>
-          </div>
-        `}
+            <!-- 🎯 BOTONES DINÁMICOS SEGÚN ESTADO DEL FLUJO -->
+            ${r.ubicaciones && r.ubicaciones.length > 0 && r.ubicaciones[0].areaGeneral ? 
+              this.generarBotonesSegunEstado(r) : 
+              '<!-- Sin ubicación asignada -->' +
+              '<div style="' +
+                'background: rgba(251, 191, 36, 0.08);' +
+                'border-left: 3px solid #fbbf24;' +
+                'padding: 10px 12px;' +
+                'margin: 8px 12px;' +
+                'border-radius: 6px;' +
+              '">' +
+                '<div style="font-size: 0.7rem; color: #fbbf24; margin-bottom: 6px;">' +
+                  '⚠️ Sin ubicación en jerarquía' +
+                '</div>' +
+                '<button onclick="app.asignarJerarquiaRepuesto(\'' + r.id + '\')" style="' +
+                  'width: 100%;' +
+                  'background: rgba(251, 191, 36, 0.15);' +
+                  'border: 1px solid rgba(251, 191, 36, 0.3);' +
+                  'color: #fbbf24;' +
+                  'padding: 6px 10px;' +
+                  'border-radius: 4px;' +
+                  'font-size: 0.7rem;' +
+                  'font-weight: 500;' +
+                  'cursor: pointer;' +
+                  'transition: all 0.2s;' +
+                '" ' +
+                'onmouseover="this.style.background=\'rgba(251, 191, 36, 0.25)\'" ' +
+                'onmouseout="this.style.background=\'rgba(251, 191, 36, 0.15)\'">' +
+                  '+ Asignar a Jerarquía' +
+                '</button>' +
+              '</div>'
+            }
         
-        <div class="card-footer" style="display: flex; justify-content: center; align-items: center; gap: 8px; padding: 8px 12px; flex-wrap: wrap;">
+            <div class="card-footer" style="display: flex; justify-content: center; align-items: center; gap: 8px; padding: 8px 12px; flex-wrap: wrap;">
           <button class="card-btn" style="
             background: var(--primary);
             color: white;
@@ -39848,16 +40183,60 @@ class InventarioCompleto {
     if (!this.repuestoEnFlujo) return;
 
     this.nodoSeleccionadoParaAsignacion = nodo;
+    console.log('🎯 Nodo seleccionado:', nodo);
 
-    // Mostrar info del nodo seleccionado
-    const infoEl = document.getElementById('nodoSeleccionadoInfo');
-    const pathEl = document.getElementById('nodoSeleccionadoPath');
-    const btnAsignar = document.getElementById('btnAsignarRepuestoANodo');
-
-    if (infoEl && pathEl && btnAsignar) {
-      infoEl.style.display = 'block';
-      pathEl.textContent = nodo.path || nodo.label || 'Nodo seleccionado';
-      btnAsignar.disabled = false;
+    // Actualizar visualización en el banner (intentar varias veces si no existe)
+    const actualizarBanner = () => {
+      const preview = document.getElementById('nodo-seleccionado-preview');
+      const btnGuardar = document.getElementById('btn-guardar-asignacion');
+      
+      console.log('🔍 Elementos del banner:', { preview, btnGuardar });
+      
+      if (preview && btnGuardar) {
+        const pathText = nodo.path || nodo.label || 'Nodo seleccionado';
+        preview.innerHTML = `<strong>✓ Seleccionado:</strong> ${this.escapeHtml(pathText)}`;
+        btnGuardar.disabled = false;
+        btnGuardar.style.cursor = 'pointer';
+        btnGuardar.style.opacity = '1';
+        btnGuardar.style.background = 'rgba(16, 185, 129, 0.9)';
+        console.log('✅ Banner actualizado. Botón guardar habilitado');
+        return true;
+      } else {
+        console.warn('⚠️ Banner no encontrado, reintentando...');
+        return false;
+      }
+    };
+    
+    // Intentar actualizar inmediatamente
+    if (!actualizarBanner()) {
+      // Si falla, reintentar después de 100ms
+      setTimeout(() => {
+        if (!actualizarBanner()) {
+          // Si falla de nuevo, reintentar después de 300ms
+          setTimeout(actualizarBanner, 300);
+        }
+      }, 100);
+    }
+    
+    // Remover selección previa
+    document.querySelectorAll('.node-selected-for-assignment').forEach(n => {
+      n.classList.remove('node-selected-for-assignment');
+    });
+    
+    // Marcar el nodo visualmente
+    const nodeElement = document.querySelector(`[data-node-id="${nodo.id}"]`);
+    console.log('🔍 Buscando nodo con data-node-id:', nodo.id, '→', nodeElement);
+    
+    if (nodeElement) {
+      const nodeContent = nodeElement.closest('.node-content');
+      if (nodeContent) {
+        nodeContent.classList.add('node-selected-for-assignment');
+        console.log('✅ Nodo marcado visualmente con clase node-selected-for-assignment');
+        // Scroll suave hacia el nodo
+        nodeContent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    } else {
+      console.warn('⚠️ No se encontró el elemento del nodo en el DOM');
     }
 
     console.log('✓ Nodo seleccionado para asignación:', nodo);
@@ -39933,18 +40312,12 @@ class InventarioCompleto {
         await this.syncJerarquiaTab(repuesto.id, repuesto.multimedia || [], repuesto.ubicaciones);
       }
 
-      this.showToast(`✅ "${repuesto.nombre}" asignado a "${nodo.label}"`, 'success');
-      this.cerrarPanelAsignacion();
+      // Limpiar el flujo de asignación
+      this.repuestoEnFlujo = null;
+      this.nodoSeleccionadoParaAsignacion = null;
+      this.cancelarAsignacionJerarquia();
 
-      // Preguntar si desea continuar al mapa
-      setTimeout(() => {
-        if (confirm('✅ Jerarquía asignada.\n\n¿Deseas continuar para ubicarlo en el mapa?')) {
-          this.continuarAMapa();
-        } else {
-          // Limpiar flujo si no quiere continuar
-          this.repuestoEnFlujo = null;
-        }
-      }, 500);
+      this.showToast(`✅ "${repuesto.nombre}" asignado a "${nodo.label}"`, 'success');
 
     } catch (error) {
       console.error('❌ Error asignando repuesto:', error);
@@ -39967,11 +40340,58 @@ class InventarioCompleto {
       cantidadEnUbicacion: 1
     };
 
+    console.log('🔍 Parseando nodeId:', nodeId);
+
+    // 🆕 Detectar si es un nodo genérico
+    if (nodeId.startsWith('generic_root_area_')) {
+      try {
+        const parts = nodeId.split('_');
+        // Formato: generic_root_area_2_subarea_0
+        const areaIndex = parseInt(parts[3]); // El índice del área
+        
+        const { areas } = this.jerarquiaAnidada;
+        const area = areas[areaIndex];
+        
+        if (!area) throw new Error('Área genérica no encontrada');
+        
+        ubicacion.areaGeneral = area.nombre;
+        console.log('✅ Área genérica encontrada:', area.nombre);
+        
+        // Si tiene subarea en el nodeId
+        if (parts.includes('subarea')) {
+          const subareaIndex = parseInt(parts[parts.indexOf('subarea') + 1]);
+          if (area.subAreas && area.subAreas[subareaIndex]) {
+            ubicacion.subArea = area.subAreas[subareaIndex].nombre;
+            console.log('✅ Sub-área genérica encontrada:', ubicacion.subArea);
+          }
+        }
+        
+        // Si tiene sistema en el nodeId
+        if (parts.includes('sistema')) {
+          const sistemaIndex = parseInt(parts[parts.indexOf('sistema') + 1]);
+          const subAreaIndex = parseInt(parts[parts.indexOf('subarea') + 1]);
+          if (area.subAreas && area.subAreas[subAreaIndex] && area.subAreas[subAreaIndex].sistemas) {
+            const sistema = area.subAreas[subAreaIndex].sistemas[sistemaIndex];
+            if (sistema) {
+              ubicacion.sistemaEquipo = sistema.nombre;
+              console.log('✅ Sistema genérico encontrado:', ubicacion.sistemaEquipo);
+            }
+          }
+        }
+        
+        return ubicacion;
+      } catch (error) {
+        console.error('❌ Error parseando nodo genérico:', error);
+        throw error;
+      }
+    }
+
+    // 🔵 Parseado normal (nodos organizacionales)
     const parts = nodeId.split('_');
     const tipo = parts[0];
     const indices = parts.slice(1).map(i => parseInt(i));
 
-    console.log('🔍 Parseando nodeId:', nodeId, '→', tipo, indices);
+    console.log('🔵 Parseando nodo normal:', tipo, indices);
 
     try {
       const { areas } = this.jerarquiaAnidada;
@@ -40021,6 +40441,8 @@ class InventarioCompleto {
    * Navega a la pestaña de jerarquía y resalta el nodo donde está ubicado el repuesto
    * @param {string} repuestoId - ID del repuesto
    */
+  /*
+  // FUNCIN COMENTADA - AHORA EST EN app.js (mdulo)
   verRepuestoEnJerarquia(repuestoId) {
     const repuesto = this.repuestos.find(r => r.id === repuestoId);
     if (!repuesto) {
@@ -40120,6 +40542,7 @@ class InventarioCompleto {
       }
     }, 100);
   }
+  */
 
   /**
    * Navega a la pestaña de mapa y resalta el marcador donde está ubicado el repuesto
@@ -40207,33 +40630,19 @@ class InventarioCompleto {
   }
 
   /**
+   * [NOTA: Esta función está definida más abajo en línea ~48505 con soporte para índice]
    * Abre el modal de edición del repuesto enfocado en la sección de ubicaciones
-   * @param {string} repuestoId - ID del repuesto
+   * La función unificada maneja dos casos:
+   * 1. Sin índice (indice === undefined): Flujo guiado desde inventario → jerarquía
+   * 2. Con índice: Edición directa de ubicación específica desde modal
    */
-  editarUbicacionRepuesto(repuestoId) {
-    const repuesto = this.repuestos.find(r => r.id === repuestoId);
-    if (!repuesto) {
-      this.showToast('❌ Repuesto no encontrado', 'error');
-      return;
-    }
-
-    // Abrir modal en modo edición
-    this.abrirModal(repuestoId);
-
-    // Esperar a que el modal se abra y navegar al Step 4 (ubicaciones)
-    setTimeout(() => {
-      const step4Btn = document.querySelector('.step-btn[data-step="4"]');
-      if (step4Btn) {
-        step4Btn.click();
-        this.showToast('💡 Ahora puedes editar las ubicaciones del repuesto', 'info');
-      }
-    }, 200);
-  }
 
   /**
    * Inicia el flujo de asignación de jerarquía para un repuesto existente
    * @param {string} repuestoId - ID del repuesto
    */
+  /*
+  // FUNCIÓN COMENTADA - AHORA ESTÁ EN app.js (módulo)
   asignarJerarquiaRepuesto(repuestoId) {
     const repuesto = this.repuestos.find(r => r.id === repuestoId);
     if (!repuesto) {
@@ -40255,11 +40664,14 @@ class InventarioCompleto {
       this.showToast('👆 Selecciona un nodo en el árbol para asignar la ubicación', 'info');
     }, 100);
   }
+  */
 
   /**
    * Continúa el flujo desde jerarquía hacia mapa
    * Se llama después de asignar la jerarquía
    */
+  /*
+  // FUNCIN COMENTADA - AHORA EST EN app.js (mdulo)
   async continuarAMapa() {
     if (!this.repuestoEnFlujo) {
       this.showToast('❌ No hay repuesto en flujo', 'error');
@@ -40282,6 +40694,7 @@ class InventarioCompleto {
       this.showToast('📍 Selecciona un mapa y coloca el marcador', 'info');
     }, 100);
   }
+  */
 
   /**
    * Muestra el panel flotante de asignación de mapa
@@ -41284,7 +41697,37 @@ class InventarioCompleto {
       return this.escapeHtml ? this.escapeHtml(String(text)) : String(text);
     };
 
-    let html = '<div class="visual-v2-tree-container"><div class="tree-container"><div class="tree-node" data-node-type="empresa">';
+    // 🔧 SEPARAR ÁREAS GENÉRICAS de áreas normales
+    const areasGenericas = [];
+    const areasNormales = [];
+    
+    if (Array.isArray(areas)) {
+      areas.forEach(area => {
+        // Usar el campo explícito esAreaGenerica si existe, sino detectar automáticamente
+        const esGenerica = area.esAreaGenerica === true || 
+                          (area.esAreaGenerica !== false && (() => {
+                            const nombreArea = area?.nombre || '';
+                            return /^[🔧📦🔩⚙️🛠️🔌🧰📋]/.test(nombreArea) ||
+                                   /elementos comunes|consumibles|pernería|repuestos transversales|stock central/i.test(nombreArea);
+                          })());
+        
+        console.log(`📍 Área "${area.nombre}": esAreaGenerica=${area.esAreaGenerica}, detectado=${esGenerica}`);
+        
+        if (esGenerica) {
+          areasGenericas.push(area);
+        } else {
+          areasNormales.push(area);
+        }
+      });
+    }
+    
+    console.log(`🔧 Total áreas genéricas: ${areasGenericas.length}`);
+    console.log(`🏢 Total áreas normales: ${areasNormales.length}`);
+
+    let html = '<div class="visual-v2-tree-container">';
+
+    // 🎯 SECCIÓN 1: JERARQUÍA ORGANIZACIONAL NORMAL
+    html += '<div class="tree-section tree-section-organizational"><div class="tree-container"><div class="tree-node" data-node-type="empresa">';
 
     // ID único para la empresa
     const empresaNodeId = `empresa_${escape(empresa.id, 'EMP-01')}`;
@@ -41305,20 +41748,47 @@ class InventarioCompleto {
       </div>
     `;
 
-    if (Array.isArray(areas) && areas.length > 0) {
+    // Solo mostrar áreas NORMALES bajo la empresa
+    if (Array.isArray(areasNormales) && areasNormales.length > 0) {
       const empresaChildrenDisplay = empresaExpanded ? 'block' : 'none';
       html += `<div class="tree-children" style="display: ${empresaChildrenDisplay};">`;
-      areas.forEach((area, index) => {
+      areasNormales.forEach((area, index) => {
         html += this.buildVisualAreaNode(area, index, empresaNodeId, {});
       });
       html += '</div>';
     }
 
     html += '</div></div></div>';
+
+    // 🎯 SECCIÓN 2: ÁREAS GENÉRICAS (al final, si existen)
+    if (areasGenericas.length > 0) {
+      html += `
+        <div class="tree-section tree-section-generic">
+          <div class="tree-section-header">
+            <span class="tree-section-icon">🔧</span>
+            <span class="tree-section-title">Elementos de Uso General</span>
+            <span class="tree-section-badge">${areasGenericas.length}</span>
+          </div>
+          <div class="tree-container">
+      `;
+
+      areasGenericas.forEach((area, globalIndex) => {
+        // 🔧 Usar el índice global del área en jerarquiaAnidada.areas, no el índice local
+        const indexInGlobal = this.jerarquiaAnidada.areas.findIndex(a => a.id === area.id);
+        html += this.buildVisualAreaNode(area, indexInGlobal, 'generic_root', {}, true);
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+    }
+
+    html += '</div>';
     return html;
   }
   
-  buildVisualAreaNode(area, index, parentNodeId, parentPath = {}) {
+  buildVisualAreaNode(area, index, parentNodeId, parentPath = {}, isGeneric = false) {
     const labels = this.getVisualDisplayLabels();
     const childTypeMap = this.getVisualChildTypeMap();
     const childType = childTypeMap.area;
@@ -41346,7 +41816,10 @@ class InventarioCompleto {
     const repuestosExpanded = this.getRepuestosExpandState(areaNodeId);
     const repuestosToggleClass = repuestosExpanded ? 'expanded' : 'collapsed';
 
-    let html = `<div class="tree-node" data-node-type="area" data-node-index="${indexPath}">`;
+    // 🔧 Clase adicional para nodos genéricos
+    const genericClass = isGeneric ? ' node-generic' : '';
+
+    let html = `<div class="tree-node${genericClass}" data-node-type="area" data-node-index="${indexPath}">`;
 
     html += `
       <div class="node-content" data-level="2" data-node-id="${areaNodeId}" data-legacy-id="${areaLegacyId}">
@@ -41354,6 +41827,7 @@ class InventarioCompleto {
         ${hasChildren ? `<span class="node-toggle ${areaToggleClass}" onclick="app.toggleVisualNodeChildren(this)">${toggleIcon}</span>` : '<span style="width: 16px; display: inline-block;"></span>'}
         <span class="node-id">${safeId}</span>
         <span class="node-name">${safeName}</span>
+        ${isGeneric ? '<span class="node-badge node-badge-generic" title="Área de uso general">🔧 GENÉRICO</span>' : ''}
         ${hasRepuestos ? `<span class="node-repuestos-toggle ${repuestosToggleClass}" onclick="event.stopPropagation(); app.toggleRepuestosList('${areaNodeId}')" title="Mostrar/Ocultar repuestos (${repuestosEnAreaPreview.length})">📦</span>` : ''}
         <span class="node-level">${labels.area}</span>
         <div class="node-actions">
@@ -41453,7 +41927,7 @@ class InventarioCompleto {
     const repuestosEnSubArea = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListIdSubArea = `repuestos-list-${nodeId}`;
     
-    if (repuestosEnSubArea.length > 0 && expanded) {
+    if (repuestosEnSubArea.length > 0) {
       const repuestosExpandedSubArea2 = this.getRepuestosExpandState(nodeId);
       const repuestosDisplaySubArea = repuestosExpandedSubArea2 ? 'block' : 'none';
       const repuestosHTMLSubArea = this.renderRepuestosEnNodo(repuestosEnSubArea, 3, currentPath);
@@ -41525,7 +41999,7 @@ class InventarioCompleto {
     const repuestosEnSistema = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListIdSistema = `repuestos-list-${nodeId}`;
     
-    if (repuestosEnSistema.length > 0 && expanded) {
+    if (repuestosEnSistema.length > 0) {
       const repuestosExpandedSistema2 = this.getRepuestosExpandState(nodeId);
       const repuestosDisplaySistema = repuestosExpandedSistema2 ? 'block' : 'none';
       const repuestosHTMLSistema = this.renderRepuestosEnNodo(repuestosEnSistema, 4, currentPath);
@@ -41597,7 +42071,7 @@ class InventarioCompleto {
     const repuestosEnSubSistema = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListIdSubSistema = `repuestos-list-${nodeId}`;
     
-    if (repuestosEnSubSistema.length > 0 && expanded) {
+    if (repuestosEnSubSistema.length > 0) {
       const repuestosExpandedSubSistema2 = this.getRepuestosExpandState(nodeId);
       const repuestosDisplaySubSistema = repuestosExpandedSubSistema2 ? 'block' : 'none';
       const repuestosHTMLSubSistema = this.renderRepuestosEnNodo(repuestosEnSubSistema, 5, currentPath);
@@ -41881,6 +42355,14 @@ class InventarioCompleto {
   // Restaurar estados de expansión de todos los nodos
   restoreExpandStates() {
     console.log('🔄 [RESTORE] Iniciando restauración de estados...');
+    
+    // 🚫 Si venimos de "Ver Jerarquía", NO restaurar estados
+    if (this.skipTreeStateRestore) {
+      console.log('🚫 [RESTORE] Saltando restauración - navegación a repuesto específico');
+      this.skipTreeStateRestore = false; // Resetear bandera
+      return;
+    }
+    
     try {
       const stateKey = 'jerarquia_expand_state';
       const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
@@ -42042,6 +42524,11 @@ class InventarioCompleto {
   
   // Obtener estado de expansión de un nodo
   getNodeExpandState(nodeId, legacyNodeId = null) {
+    // 🚫 Si venimos de "Ver Jerarquía", retornar FALSE (todo colapsado)
+    if (this.skipTreeStateRestore) {
+      return false;
+    }
+    
     try {
       const stateKey = 'jerarquia_expand_state';
       const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
@@ -42067,6 +42554,11 @@ class InventarioCompleto {
   
   // 📦 Obtener estado de expansión de lista de repuestos
   getRepuestosExpandState(nodeId) {
+    // 🚫 Si venimos de "Ver Jerarquía", retornar FALSE (todo colapsado)
+    if (this.skipTreeStateRestore) {
+      return false;
+    }
+    
     try {
       const stateKey = 'jerarquia_repuestos_expand_state';
       const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
@@ -43023,6 +43515,13 @@ class InventarioCompleto {
   
   initUndoRedoKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
+      // 🚫 IGNORAR si estás escribiendo en un input/textarea
+      const isTyping = e.target.tagName === 'INPUT' || 
+                       e.target.tagName === 'TEXTAREA' || 
+                       e.target.isContentEditable;
+      
+      if (isTyping) return; // No interferir con escritura
+      
       // Ctrl+Z o Cmd+Z para Undo
       if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
@@ -43216,7 +43715,42 @@ class InventarioCompleto {
         return;
       }
       
-      // Modal con dos campos: ID y Nombre
+      // 🔧 NUEVO: Si es un área (N2), usar modal especial con checkbox
+      if (tipo === 'area') {
+        const resultado = await this.showAreaEditModalWithGenericOption(
+          `Editar ${label}`,
+          nodo.id || '',
+          ejemploID,
+          nodo.nombre,
+          nodo.esAreaGenerica || false
+        );
+        
+        if (resultado === null) {
+          this.showToast(' Operacin cancelada', 'warning');
+          return;
+        }
+        
+        if (resultado.id.trim() === '' || resultado.nombre.trim() === '') {
+          this.showToast(' El cdigo/ID y nombre no pueden estar vacos', 'warning');
+          return;
+        }
+        
+        nodo.id = resultado.id.trim().toUpperCase();
+        nodo.nombre = resultado.nombre.trim();
+        nodo.esAreaGenerica = resultado.esAreaGenerica;
+        
+        console.log(`🔧 Área actualizada: "${nodo.nombre}", esAreaGenerica=${nodo.esAreaGenerica}`);
+        
+        this.saveJerarquiaAnidada({
+          reason: 'editar-nodo-area-con-generica',
+          meta: { tipo, indices, esAreaGenerica: resultado.esAreaGenerica }
+        });
+        this.renderJerarquiaTree();
+        this.showToast(` ${label} actualizado`, 'success');
+        return;
+      }
+      
+      // Modal con dos campos: ID y Nombre (para otros niveles)
       const resultado = await this.showDualInputModalWithAbbrev(
         `Editar ${label}`,
         'Cdigo/ID abreviado:',
@@ -47496,6 +48030,411 @@ class InventarioCompleto {
     this.showToast(' Filtros jerrquicos eliminados', 'success');
   }
 
+  // 🔴 ASIGNAR JERARQUÍA - Para repuestos sin ubicación
+  async asignarJerarquiaYMostrar(repuestoId) {
+    console.log('🔴 ASIGNANDO JERARQUÍA:', repuestoId);
+    
+    // Verificar que el repuesto existe
+    const repuesto = this.repuestos.find(r => r.id === repuestoId);
+    if (!repuesto) {
+      this.showToast('❌ Repuesto no encontrado', 'error');
+      return;
+    }
+
+    // 📍 Activar modo de flujo guiado de asignación
+    this.repuestoEnFlujo = repuesto;
+    this.nodoSeleccionadoParaAsignacion = null; // Limpiar selección previa
+    
+    // 🔄 Cambiar a la pestaña JERARQUÍA
+    this.switchTab('jerarquia');
+    
+    // 💡 Esperar que el DOM esté completamente listo
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    this.showToast('📍 Selecciona la ubicación en el árbol haciendo clic en el nodo deseado', 'info', 5000);
+    
+    // Agregar indicador visual en la parte superior
+    let jerarquiaContent = document.getElementById('jerarquia');
+    
+    // Si no existe, intentar encontrarlo
+    if (!jerarquiaContent) {
+      console.warn('⚠️ Tab jerarquia no encontrado, esperando...');
+      await new Promise(resolve => setTimeout(resolve, 300));
+      jerarquiaContent = document.getElementById('jerarquia');
+    }
+    
+    if (jerarquiaContent && !document.getElementById('modo-asignacion-banner')) {
+        console.log('✅ Creando banner en tab jerarquia');
+        const banner = document.createElement('div');
+        banner.id = 'modo-asignacion-banner';
+        banner.style.cssText = `
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          padding: 16px;
+          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+          color: white;
+          border-radius: 8px;
+          margin-bottom: 16px;
+          box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          animation: slideDown 0.3s ease-out;
+        `;
+        banner.innerHTML = `
+          <span style="font-size: 1.5rem;">📍</span>
+          <div style="flex: 1;">
+            <div style="font-weight: 700; font-size: 1rem; margin-bottom: 4px;">
+              Asignando ubicación a: "${this.escapeHtml(repuesto.nombre)}"
+            </div>
+            <div id="nodo-seleccionado-preview" style="font-size: 0.85rem; opacity: 0.95;">
+              Haz clic en cualquier nodo del árbol para asignar esa ubicación
+            </div>
+          </div>
+          <button id="btn-guardar-asignacion" onclick="app.confirmarAsignacionJerarquia()" disabled style="padding: 8px 20px; background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.4); border-radius: 4px; color: white; cursor: not-allowed; font-weight: 600; transition: all 0.2s; opacity: 0.6;">
+            ✓ Guardar
+          </button>
+          <button onclick="app.cancelarAsignacionJerarquia()" style="padding: 8px 16px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; cursor: pointer; font-weight: 600; transition: all 0.2s;">
+            ✕ Cancelar
+          </button>
+        `;
+        jerarquiaContent.insertBefore(banner, jerarquiaContent.firstChild);
+        console.log('✅ Banner insertado. Verificando elementos...');
+        
+        // Verificar que los elementos existen
+        setTimeout(() => {
+          const preview = document.getElementById('nodo-seleccionado-preview');
+          const btnGuardar = document.getElementById('btn-guardar-asignacion');
+          console.log('🔍 Verificación post-creación:', { preview: !!preview, btnGuardar: !!btnGuardar });
+        }, 100);
+        
+        // Agregar animación CSS y estilos de modo edición
+        if (!document.getElementById('banner-animation-style')) {
+          const style = document.createElement('style');
+          style.id = 'banner-animation-style';
+          style.textContent = `
+            @keyframes slideDown {
+              from { transform: translateY(-20px); opacity: 0; }
+              to { transform: translateY(0); opacity: 1; }
+            }
+            @keyframes slideUp {
+              from { transform: translateY(0); opacity: 1; }
+              to { transform: translateY(-20px); opacity: 0; }
+            }
+            @keyframes pulse {
+              0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+              50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            }
+            
+            /* Modo edición activo en el árbol */
+            #jerarquiaTreeContainer.modo-edicion-activo .node-content {
+              cursor: pointer !important;
+              transition: all 0.2s ease;
+            }
+            #jerarquiaTreeContainer.modo-edicion-activo .node-content:hover {
+              background: rgba(59, 130, 246, 0.1) !important;
+              border-left-color: #3b82f6 !important;
+              transform: translateX(4px);
+              box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+            }
+            
+            /* Nodo seleccionado */
+            .node-selected-for-assignment {
+              background: rgba(16, 185, 129, 0.15) !important;
+              border-left-color: #10b981 !important;
+              border-left-width: 4px !important;
+              box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3) !important;
+              animation: pulse 2s infinite;
+              position: relative;
+            }
+            .node-selected-for-assignment::before {
+              content: '✓';
+              position: absolute;
+              right: 12px;
+              top: 50%;
+              transform: translateY(-50%);
+              font-size: 1.2rem;
+              color: #10b981;
+              font-weight: bold;
+            }
+            
+            /* Botón guardar activo */
+            #btn-guardar-asignacion:not(:disabled) {
+              background: rgba(16, 185, 129, 0.9) !important;
+              cursor: pointer !important;
+              opacity: 1 !important;
+              box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+            }
+            #btn-guardar-asignacion:not(:disabled):hover {
+              background: rgba(16, 185, 129, 1) !important;
+              transform: scale(1.05);
+            }
+          `;
+          document.head.appendChild(style);
+        }
+        
+        // Activar modo edición en el árbol
+        const treeContainer = document.getElementById('jerarquiaTreeContainer');
+        console.log('🔍 Buscando jerarquiaTreeContainer:', treeContainer);
+        if (treeContainer) {
+          treeContainer.classList.add('modo-edicion-activo');
+          console.log('✅ Modo edición activado. Clases:', treeContainer.className);
+        } else {
+          console.error('❌ No se encontró jerarquiaTreeContainer');
+        }
+      }
+  }
+
+  // 🆕 Cancelar modo de asignación
+  cancelarAsignacionJerarquia() {
+    this.repuestoEnFlujo = null;
+    this.nodoSeleccionadoParaAsignacion = null;
+    
+    const banner = document.getElementById('modo-asignacion-banner');
+    if (banner) {
+      banner.style.animation = 'slideUp 0.3s ease-out';
+      setTimeout(() => banner.remove(), 300);
+    }
+    
+    // Quitar modo edición del árbol
+    const treeContainer = document.getElementById('jerarquiaTreeContainer');
+    if (treeContainer) {
+      treeContainer.classList.remove('modo-edicion-activo');
+    }
+    
+    // Quitar selecciones visuales
+    document.querySelectorAll('.node-selected-for-assignment').forEach(n => {
+      n.classList.remove('node-selected-for-assignment');
+    });
+    
+    this.showToast('❌ Asignación cancelada', 'warning');
+  }
+  
+  // 🆕 Confirmar asignación de jerarquía
+  async confirmarAsignacionJerarquia() {
+    if (!this.repuestoEnFlujo || !this.nodoSeleccionadoParaAsignacion) {
+      this.showToast('❌ Selecciona un nodo primero', 'error');
+      return;
+    }
+    
+    // Usar la función existente
+    await this.asignarRepuestoANodo();
+  }
+
+  // 🆕 NUEVO: Modal interactivo para seleccionar jerarquía navegable
+  async abrirModalSeleccionJerarquia(repuesto) {
+    return new Promise((resolve) => {
+      const overlay = document.createElement('div');
+      overlay.className = 'custom-modal-overlay';
+      overlay.style.zIndex = '100000';
+      
+      overlay.innerHTML = `
+        <div class="custom-modal" style="min-width: 700px; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column;">
+          <div class="custom-modal-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>📍 Seleccionar Ubicación Jerárquica</span>
+            <button onclick="this.closest('.custom-modal-overlay').remove()" style="background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; padding: 0; width: 32px; height: 32px;">×</button>
+          </div>
+          
+          <!-- Información del repuesto -->
+          <div style="padding: 12px; background: var(--bg-secondary); border-radius: 6px; margin-bottom: 16px;">
+            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">${this.escapeHtml(repuesto.nombre)}</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">Código: ${this.escapeHtml(repuesto.codigo || 'N/A')}</div>
+          </div>
+          
+          <!-- Panel de navegación de jerarquía -->
+          <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-primary);">
+            
+            <!-- Breadcrumb de navegación -->
+            <div id="breadcrumb-nav" style="padding: 12px; background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 48px;">
+              <span style="color: var(--text-muted); font-size: 0.85rem;">Navegando en:</span>
+              <span id="breadcrumb-path" style="color: var(--text-primary); font-weight: 500;">Raíz</span>
+            </div>
+            
+            <!-- Árbol navegable -->
+            <div id="jerarquia-tree-navegable" style="flex: 1; overflow-y: auto; padding: 16px;">
+              <div style="text-align: center; color: var(--text-muted); padding: 40px 20px;">
+                <div style="font-size: 2rem; margin-bottom: 12px;">📂</div>
+                <div>Cargando jerarquía...</div>
+              </div>
+            </div>
+            
+            <!-- Ruta seleccionada actual -->
+            <div id="ruta-seleccionada" style="padding: 12px; background: var(--bg-tertiary); border-top: 1px solid var(--border-color); min-height: 60px;">
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">Ubicación seleccionada:</div>
+              <div id="ruta-display" style="color: var(--text-secondary); font-style: italic;">Ninguna ubicación seleccionada</div>
+            </div>
+          </div>
+          
+          <!-- Botones de acción -->
+          <div class="custom-modal-buttons" style="margin-top: 16px;">
+            <button class="custom-modal-btn custom-modal-btn-secondary" data-action="cancel">Cancelar</button>
+            <button class="custom-modal-btn custom-modal-btn-primary" data-action="accept" disabled>Asignar Ubicación</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(overlay);
+      
+      const treeContainer = overlay.querySelector('#jerarquia-tree-navegable');
+      const breadcrumbPath = overlay.querySelector('#breadcrumb-path');
+      const rutaDisplay = overlay.querySelector('#ruta-display');
+      const acceptBtn = overlay.querySelector('[data-action="accept"]');
+      const cancelBtn = overlay.querySelector('[data-action="cancel"]');
+      
+      let seleccionActual = null;
+      let navegacionStack = [];
+      
+      // Renderizar nivel raíz
+      const renderNivel = (nivel, parentPath = []) => {
+        if (!nivel) {
+          treeContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-muted);">No hay datos de jerarquía disponibles</div>';
+          return;
+        }
+        
+        let html = '';
+        
+        // Mostrar empresa
+        if (nivel.empresa && parentPath.length === 0) {
+          html += `
+            <div class="jerarquia-item" style="padding: 12px; margin-bottom: 8px; background: var(--bg-secondary); border-radius: 6px; border-left: 3px solid #3b82f6; cursor: pointer; transition: all 0.2s;" 
+                 data-tipo="empresa" data-nombre="${this.escapeHtml(nivel.empresa.nombre)}">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.2rem;">🏢</span>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; color: var(--text-primary);">${this.escapeHtml(nivel.empresa.nombre)}</div>
+                  <div style="font-size: 0.8rem; color: var(--text-muted);">Empresa (N1)</div>
+                </div>
+                <button class="btn-navegar" style="padding: 6px 12px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+                  Ver áreas →
+                </button>
+              </div>
+            </div>
+          `;
+        }
+        
+        // Mostrar áreas
+        if (nivel.areas && Array.isArray(nivel.areas)) {
+          nivel.areas.forEach((area, idx) => {
+            const tieneHijos = area.subAreas && area.subAreas.length > 0;
+            html += `
+              <div class="jerarquia-item" style="padding: 12px; margin-bottom: 8px; background: var(--bg-secondary); border-radius: 6px; border-left: 3px solid #10b981; cursor: pointer; transition: all 0.2s;" 
+                   data-tipo="area" data-index="${idx}" data-nombre="${this.escapeHtml(area.nombre)}">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.2rem;">${area.esAreaGenerica ? '🔧' : '📍'}</span>
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600; color: var(--text-primary);">${this.escapeHtml(area.nombre)}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Área (N2)${area.esAreaGenerica ? ' • Uso General' : ''}</div>
+                  </div>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="btn-seleccionar" style="padding: 6px 12px; background: var(--success); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
+                      ✓ Seleccionar
+                    </button>
+                    ${tieneHijos ? '<button class="btn-navegar" style="padding: 6px 12px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Ver hijos →</button>' : ''}
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+        }
+        
+        // Botón para agregar nueva área
+        if (parentPath.length === 0) {
+          html += `
+            <div style="padding: 12px; margin-top: 16px; border: 2px dashed var(--border-color); border-radius: 6px; text-align: center;">
+              <button class="btn-agregar-area" style="padding: 8px 16px; background: var(--info); color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">
+                + Crear Nueva Área
+              </button>
+            </div>
+          `;
+        }
+        
+        treeContainer.innerHTML = html || '<div style="padding: 20px; text-align: center; color: var(--text-muted);">No hay elementos en este nivel</div>';
+        
+        // Agregar event listeners
+        treeContainer.querySelectorAll('.btn-seleccionar').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const item = btn.closest('.jerarquia-item');
+            seleccionarItem(item);
+          });
+        });
+        
+        treeContainer.querySelectorAll('.btn-navegar').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const item = btn.closest('.jerarquia-item');
+            navegarHacia(item);
+          });
+        });
+      };
+      
+      const seleccionarItem = (item) => {
+        const tipo = item.dataset.tipo;
+        const nombre = item.dataset.nombre;
+        
+        // Construir ruta completa
+        const rutaCompleta = [...navegacionStack, { tipo, nombre }];
+        
+        // Crear objeto de ubicación
+        seleccionActual = {};
+        rutaCompleta.forEach((paso, idx) => {
+          if (idx === 0 && paso.tipo === 'empresa') {
+            seleccionActual.planta = paso.nombre;
+          } else if (paso.tipo === 'area') {
+            seleccionActual.areaGeneral = paso.nombre;
+          } else if (paso.tipo === 'subArea') {
+            seleccionActual.subArea = paso.nombre;
+          } else if (paso.tipo === 'sistema') {
+            seleccionActual.sistemaEquipo = paso.nombre;
+          }
+        });
+        
+        // Actualizar UI
+        rutaDisplay.textContent = this.formatJerarquiaPath(seleccionActual);
+        rutaDisplay.style.color = 'var(--text-primary)';
+        rutaDisplay.style.fontStyle = 'normal';
+        rutaDisplay.style.fontWeight = '500';
+        acceptBtn.disabled = false;
+        
+        // Highlight visual
+        treeContainer.querySelectorAll('.jerarquia-item').forEach(i => {
+          i.style.background = 'var(--bg-secondary)';
+        });
+        item.style.background = 'rgba(16, 185, 129, 0.15)';
+      };
+      
+      const navegarHacia = (item) => {
+        // Implementar navegación hacia sub-niveles
+        this.showToast('🚧 Navegación a sub-niveles en desarrollo', 'info');
+      };
+      
+      const close = (value) => {
+        overlay.remove();
+        resolve(value);
+      };
+      
+      acceptBtn.onclick = () => close(seleccionActual);
+      cancelBtn.onclick = () => close(null);
+      
+      // Cargar jerarquía inicial
+      setTimeout(() => {
+        renderNivel(this.jerarquiaAnidada);
+      }, 100);
+    });
+  }
+
+  formatJerarquiaPath(ubicacion) {
+    const partes = [];
+    if (ubicacion.planta) partes.push(ubicacion.planta);
+    if (ubicacion.areaGeneral) partes.push(ubicacion.areaGeneral);
+    if (ubicacion.subArea) partes.push(ubicacion.subArea);
+    if (ubicacion.sistemaEquipo) partes.push(ubicacion.sistemaEquipo);
+    if (ubicacion.subSistema) partes.push(ubicacion.subSistema);
+    if (ubicacion.seccion) partes.push(ubicacion.seccion);
+    return partes.join(' → ') || 'Sin ubicación';
+  }
+
   //  ETAPA 5: Ver repuesto en mapa
   //  NUEVA FUNCIN: Agregar ubicacin en mapa (siempre abre modal para nueva ubicacin)
   async agregarUbicacionMapa(id) {
@@ -47553,6 +48492,1542 @@ class InventarioCompleto {
     
     // Siempre abrir modal para agregar nueva ubicacin
     this.abrirModalAsignarAreaMapa(id, repuesto);
+  }
+
+  /**
+   * 🌳 Ver repuesto en jerarquía - Navega y resalta el nodo
+   * @param {string} repuestoId - ID del repuesto
+   */
+  verRepuestoEnJerarquia(repuestoId) {
+    console.log('\n========================================');
+    console.log('🌳 INICIANDO: verRepuestoEnJerarquia');
+    console.log('   repuestoId:', repuestoId);
+    console.log('========================================\n');
+    
+    const repuesto = this.repuestos.find(r => String(r.id) === String(repuestoId));
+    
+    if (!repuesto) {
+      console.error('❌ Repuesto no encontrado con ID:', repuestoId);
+      this.showToast(' Repuesto no encontrado', 'error');
+      return;
+    }
+    
+    console.log('✅ Repuesto encontrado:', repuesto.nombre);
+
+    // Verificar si tiene ubicaciones
+    let ubicaciones = [];
+    console.log('📦 Verificando ubicaciones del repuesto...');
+    
+    // Buscar en el array de ubicaciones (nuevo formato)
+    if (repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
+      ubicaciones = repuesto.ubicaciones;
+      console.log(`   ✅ Encontradas ${ubicaciones.length} ubicación(es) en array:`, ubicaciones);
+    } 
+    // Fallback: buscar en campos antiguos (compatibilidad)
+    else if (repuesto.areaGeneral) {
+      ubicaciones.push({
+        areaGeneral: repuesto.areaGeneral,
+        subArea: repuesto.subArea,
+        sistemaEquipo: repuesto.sistemaEquipo,
+        subSistema: repuesto.subSistema,
+        seccion: repuesto.seccion
+      });
+      console.log('   ✅ Ubicación encontrada en campos legacy:', ubicaciones[0]);
+    } else {
+      console.log('   ⚠️ Repuesto sin ubicación en jerarquía');
+    }
+
+    if (ubicaciones.length === 0) {
+      console.warn('⚠️ Repuesto sin ubicación asignada');
+      
+      // Mostrar toast con opción de asignar ubicación
+      this.showToast(`📍 "${repuesto.nombre}" no tiene ubicación asignada en la jerarquía.\n\nHaz click en "Editar" para asignar una ubicación.`, 'warning');
+      
+      // Cambiar a pestaña inventario y resaltar la tarjeta
+      this.switchTab('inventario');
+      
+      // Opcional: Abrir automáticamente el modal de edición
+      setTimeout(() => {
+        // Preguntar al usuario si quiere asignar ubicación ahora
+        const asignar = confirm(`El repuesto "${repuesto.nombre}" no tiene ubicación en la jerarquía.\n\n¿Deseas asignar una ubicación ahora?`);
+        if (asignar) {
+          this.editarRepuesto(repuestoId);
+          // Después de abrir el modal, cambiar a pestaña de ubicación
+          setTimeout(() => {
+            const tabUbicacion = document.querySelector('[data-tab="ubicacion"]');
+            if (tabUbicacion) {
+              tabUbicacion.click();
+              console.log('   ✅ Modal abierto en pestaña Ubicación');
+            }
+          }, 300);
+        }
+      }, 500);
+      
+      return;
+    }
+
+    // 🔀 Si hay MÚLTIPLES ubicaciones, mostrar selector
+    if (ubicaciones.length > 1) {
+      console.log(`📍 Repuesto con ${ubicaciones.length} ubicaciones diferentes`);
+      this.mostrarSelectorUbicaciones(repuesto, ubicaciones, repuestoId);
+      return;
+    }
+
+    // 🎯 Una sola ubicación: continuar con navegación directa
+    console.log('✅ Repuesto con ubicación única, navegando...');
+    this._navegarAUbicacionEspecifica(repuesto, ubicaciones[0], repuestoId, 0);
+  }
+
+  // Nueva función: Mostrar modal selector de ubicaciones
+  mostrarSelectorUbicaciones(repuesto, ubicaciones, repuestoId) {
+    console.log('🔀 Mostrando selector de ubicaciones...');
+
+    // Crear modal
+    const modalHTML = `
+      <div id="selectorUbicacionesModal" class="modal-overlay" style="display: flex; z-index: 10000;">
+        <div class="modal-content" style="max-width: 700px; max-height: 80vh; overflow-y: auto;">
+          <div class="modal-header">
+            <h2>📍 Selecciona la Ubicación</h2>
+            <button class="modal-close" onclick="document.getElementById('selectorUbicacionesModal').remove()">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="margin-bottom: 20px; color: #64748b;">
+              <strong>"${this.escapeHtml(repuesto.nombre)}"</strong> está en <strong>${ubicaciones.length} ubicaciones diferentes</strong>.<br>
+              Selecciona cuál deseas ver en la jerarquía:
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              ${ubicaciones.map((ub, index) => this._crearTarjetaUbicacion(ub, index, repuesto, repuestoId)).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Insertar modal en el DOM
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Cerrar con ESC
+    const modal = document.getElementById('selectorUbicacionesModal');
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        modal.remove();
+        document.removeEventListener('keydown', handleEsc);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
+
+    // Cerrar al hacer click fuera
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+        document.removeEventListener('keydown', handleEsc);
+      }
+    });
+  }
+
+  // Crear tarjeta individual de ubicación
+  _crearTarjetaUbicacion(ubicacion, index, repuesto, repuestoId) {
+    const buildPath = (ub) => {
+      const parts = [];
+      if (ub.areaGeneral) parts.push(ub.areaGeneral);
+      if (ub.subArea) parts.push(ub.subArea);
+      if (ub.sistemaEquipo) parts.push(ub.sistemaEquipo);
+      if (ub.subSistema) parts.push(ub.subSistema);
+      if (ub.seccion) parts.push(ub.seccion);
+      return parts.join(' → ');
+    };
+
+    const path = buildPath(ubicacion);
+    const cantidad = ubicacion.cantidadEnUbicacion || repuesto.cantidad || 0;
+    const detalle = ubicacion.detalle || ubicacion.detalleUbicacion || '';
+
+    return `
+      <div class="ubicacion-card" 
+           data-ubicacion-index="${index}"
+           onclick="app._seleccionarUbicacion('${repuestoId}', ${index});"
+           style="
+             padding: 16px;
+             border: 2px solid #e2e8f0;
+             border-radius: 12px;
+             cursor: pointer;
+             transition: all 0.2s;
+             background: white;
+           "
+           onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 12px rgba(59,130,246,0.15)'; this.style.transform='translateY(-2px)';"
+           onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'; this.style.transform='translateY(0)';">
+        
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+          <span style="
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+          ">#${index + 1}</span>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; color: #1e293b; font-size: 14px; margin-bottom: 4px;">
+              📍 ${this.escapeHtml(path)}
+            </div>
+            ${detalle ? `
+              <div style="font-size: 12px; color: #64748b; font-style: italic;">
+                💬 ${this.escapeHtml(detalle)}
+              </div>
+            ` : ''}
+          </div>
+          ${cantidad > 0 ? `
+            <span style="
+              padding: 4px 12px;
+              background: #f1f5f9;
+              color: #475569;
+              border-radius: 6px;
+              font-size: 12px;
+              font-weight: 600;
+            ">
+              📦 ${cantidad} ${cantidad === 1 ? 'unidad' : 'unidades'}
+            </span>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  // Función auxiliar: Seleccionar ubicación y cerrar modal
+  _seleccionarUbicacion(repuestoId, ubicacionIndex) {
+    console.log(`✅ Ubicación seleccionada: #${ubicacionIndex + 1}`);
+    
+    // Obtener el repuesto y la ubicación
+    const repuesto = this.repuestos.find(r => r.id === repuestoId);
+    if (!repuesto) {
+      console.error('❌ Repuesto no encontrado');
+      return;
+    }
+
+    // Obtener ubicaciones (primero desde array ubicaciones, luego desde campos directos)
+    let ubicaciones = [];
+    if (repuesto.areaGeneral) {
+      ubicaciones.push({
+        areaGeneral: repuesto.areaGeneral,
+        subArea: repuesto.subArea,
+        sistemaEquipo: repuesto.sistemaEquipo,
+        subSistema: repuesto.subSistema,
+        seccion: repuesto.seccion
+      });
+    }
+    if (repuesto.ubicaciones && Array.isArray(repuesto.ubicaciones)) {
+      ubicaciones = ubicaciones.concat(repuesto.ubicaciones);
+    }
+
+    const ubicacion = ubicaciones[ubicacionIndex];
+    if (!ubicacion) {
+      console.error('❌ Ubicación no encontrada en índice', ubicacionIndex);
+      return;
+    }
+
+    // Cerrar modal
+    const modal = document.getElementById('selectorUbicacionesModal');
+    if (modal) {
+      modal.remove();
+    }
+
+    // Navegar a la ubicación seleccionada
+    this._navegarAUbicacionEspecifica(repuesto, ubicacion, repuestoId, ubicacionIndex);
+  }
+
+  // Nueva función: Navegar a ubicación específica (extraída de verRepuestoEnJerarquia)
+  _navegarAUbicacionEspecifica(repuesto, ubicacion, repuestoId, instanceIndex) {
+    console.log(`\n🎯 Navegando a ubicación #${instanceIndex + 1}:`);
+    console.log('   Ubicación completa:', JSON.stringify(ubicacion, null, 2));
+    console.log('   areaGeneral:', ubicacion.areaGeneral);
+    console.log('   subArea:', ubicacion.subArea);
+    console.log('   sistemaEquipo:', ubicacion.sistemaEquipo);
+
+    // Cambiar a pestaña jerarquía
+    console.log('🔄 Cambiando a pestaña jerarquía...');
+    
+    // 🔒 PASO 0: Guardar estados actuales y colapsar todo en localStorage
+    console.log('🔒 Colapsando todo en localStorage...');
+    const stateKey = 'jerarquia_expand_state';
+    const estadosOriginales = JSON.parse(localStorage.getItem(stateKey) || '{}');
+    
+    // Crear un objeto con TODOS los nodos colapsados (false)
+    const todosColapsados = {};
+    Object.keys(estadosOriginales).forEach(key => {
+      todosColapsados[key] = false;
+    });
+    
+    // Guardar el estado colapsado
+    localStorage.setItem(stateKey, JSON.stringify(todosColapsados));
+    console.log('   ✅ Todos los nodos marcados como colapsados en localStorage');
+    
+    // 🔄 Cambiar a tab (o quedarse si ya estamos ahí)
+    const yaEnJerarquia = this.currentTab === 'jerarquia';
+    this.switchTab('jerarquia');
+    
+    // 🔄 FORZAR re-render del árbol para aplicar estados colapsados
+    if (yaEnJerarquia) {
+      console.log('   🔄 Ya estábamos en jerarquía, forzando re-render...');
+      this.renderJerarquiaTree();
+    }
+
+    // Esperar a que el árbol se renderice completamente colapsado
+    setTimeout(() => {
+      console.log('⏱️ Árbol renderizado colapsado, expandiendo ruta específica...');
+      
+      const treeContainer = document.getElementById('jerarquiaTreeContainer');
+      if (!treeContainer) {
+        console.error('❌ No se encontró contenedor del árbol');
+        return;
+      }
+      
+      // 📊 Verificar que el árbol se haya renderizado
+      const allToggles = treeContainer.querySelectorAll('.node-toggle');
+      console.log(`   📊 Toggles encontrados: ${allToggles.length}`);
+      
+      if (allToggles.length === 0) {
+        console.error('❌ El árbol no se renderizó. Abortando.');
+        return;
+      }
+      
+      // 📊 Verificar estado de los toggles
+      const expandedToggles = treeContainer.querySelectorAll('.node-toggle.expanded');
+      const collapsedToggles = treeContainer.querySelectorAll('.node-toggle.collapsed');
+      console.log(`   📊 Toggles expandidos: ${expandedToggles.length}`);
+      console.log(`   📊 Toggles colapsados: ${collapsedToggles.length}`);
+      
+      console.log('✅ Árbol renderizado');
+      console.log('🔍 Ubicación seleccionada:', ubicacion);
+      
+      console.log('📖 Expandiendo ruta jerárquica SECUENCIALMENTE...');
+      
+      // Construir array de nombres de nodos a expandir
+      const pathToExpand = [];
+      if (ubicacion.areaGeneral) pathToExpand.push(ubicacion.areaGeneral);
+      if (ubicacion.subArea) pathToExpand.push(ubicacion.subArea);
+      if (ubicacion.sistemaEquipo) pathToExpand.push(ubicacion.sistemaEquipo);
+      if (ubicacion.subSistema) pathToExpand.push(ubicacion.subSistema);
+      if (ubicacion.seccion) pathToExpand.push(ubicacion.seccion);
+      
+      console.log('📍 Path a expandir:', pathToExpand);
+      
+      // Función para expandir SOLO el nodo correcto en cada nivel
+      const expandPath = (currentElement, remainingPath, level = 0) => {
+        if (remainingPath.length === 0) {
+          console.log('✅ Ruta completamente expandida');
+          
+          // 📦 PASO ADICIONAL: Expandir lista de repuestos del último nodo
+          console.log('\n📦 Expandiendo lista de repuestos del último nodo...');
+          
+          // El último nodo es el currentElement padre actual
+          if (currentElement) {
+            const parentNode = currentElement.parentElement;
+            if (parentNode) {
+              const lastNodeContent = parentNode.querySelector('.node-content');
+              if (lastNodeContent) {
+                const nodeId = lastNodeContent.getAttribute('data-node-id');
+                console.log(`   ✅ NodeId: ${nodeId}`);
+                
+                // Buscar la lista de repuestos
+                const repuestosList = document.getElementById(`repuestos-list-${nodeId}`);
+                if (repuestosList) {
+                  const isExpanded = repuestosList.style.display !== 'none';
+                  console.log(`   📊 Lista ${isExpanded ? 'ya expandida' : 'colapsada'}`);
+                  
+                  if (!isExpanded) {
+                    // Expandir directamente
+                    const stateKey = 'jerarquia_repuestos_expand_state';
+                    const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
+                    state[nodeId] = true;
+                    localStorage.setItem(stateKey, JSON.stringify(state));
+                    
+                    repuestosList.style.display = 'block';
+                    
+                    // Actualizar toggle
+                    const toggle = lastNodeContent.querySelector('.node-repuestos-toggle');
+                    if (toggle) {
+                      toggle.classList.remove('collapsed');
+                      toggle.classList.add('expanded');
+                    }
+                    console.log('   ✅ Lista expandida');
+                  }
+                } else {
+                  console.log(`   ⚠️ No existe repuestos-list-${nodeId}`);
+                }
+              }
+            }
+          }
+          
+          return true;
+        }
+        
+        const targetName = remainingPath[0];
+        console.log(`\n🔍 Nivel ${level}: Buscando "${targetName}"`);
+        
+        // Buscar SOLO en hijos directos del contenedor actual
+        const container = currentElement || treeContainer;
+        
+        // Estrategia: buscar .tree-node directos según el nivel
+        let directTreeNodes;
+        if (level === 0 && container === treeContainer) {
+          // Nivel 0 (áreas): buscar en AMBAS secciones (organizacional Y genérica)
+          const allAreas = [];
+          
+          // 1. Buscar en áreas organizacionales (dentro de empresa)
+          const empresaNode = container.querySelector('.tree-section-organizational .tree-container > .tree-node[data-node-type="empresa"]');
+          if (empresaNode) {
+            const empresaChildren = empresaNode.querySelector(':scope > .tree-children');
+            if (empresaChildren) {
+              const orgAreas = empresaChildren.querySelectorAll(':scope > .tree-node');
+              console.log(`   📊 Áreas organizacionales encontradas: ${orgAreas.length}`);
+              allAreas.push(...orgAreas);
+            }
+          }
+          
+          // 2. Buscar en áreas genéricas (sección separada)
+          const genericSection = container.querySelector('.tree-section-generic .tree-container');
+          if (genericSection) {
+            const genericAreas = genericSection.querySelectorAll(':scope > .tree-node');
+            console.log(`   📊 Áreas genéricas encontradas: ${genericAreas.length}`);
+            allAreas.push(...genericAreas);
+          }
+          
+          directTreeNodes = allAreas;
+          console.log(`   📊 Total áreas combinadas: ${directTreeNodes.length}`);
+          
+          if (!directTreeNodes || directTreeNodes.length === 0) {
+            console.error('   ❌ No se encontraron áreas');
+            return false;
+          }
+        } else {
+          // Niveles anidados: buscar .tree-node directos del container actual
+          directTreeNodes = container.querySelectorAll(':scope > .tree-node');
+          console.log(`   📊 Nodos directos encontrados: ${directTreeNodes ? directTreeNodes.length : 0}`);
+        }
+        
+        if (!directTreeNodes || directTreeNodes.length === 0) {
+          console.warn(`   ⚠️ No se encontraron nodos en nivel ${level}`);
+          return false;
+        }
+        
+        let found = false;
+        
+        // Usar for...of para poder hacer break
+        for (const treeNode of directTreeNodes) {
+          const nodeContent = treeNode.querySelector(':scope > .node-content');
+          if (!nodeContent) continue;
+          
+          const nodeName = nodeContent.querySelector('.node-name');
+          const nodeNameText = nodeName ? nodeName.textContent.trim() : '';
+          
+          // Búsqueda exacta primero
+          let isMatch = nodeNameText === targetName;
+          
+          // Si no hay match exacto, intentar búsqueda parcial (nodo comienza con el nombre buscado)
+          if (!isMatch && nodeNameText.toLowerCase().includes(targetName.toLowerCase())) {
+            console.log(`   🔍 Match parcial encontrado: "${nodeNameText}" contiene "${targetName}"`);
+            isMatch = true;
+          }
+          
+          if (isMatch) {
+            console.log(`   ✅ Encontrado: "${targetName}" → "${nodeNameText}"`);
+            
+            // Expandir SOLO este nodo
+            const toggle = nodeContent.querySelector('.node-toggle');
+            console.log(`      Toggle encontrado:`, toggle ? 'SÍ' : 'NO');
+            if (toggle) {
+              console.log(`      Clases del toggle:`, toggle.className);
+              console.log(`      ¿Tiene .collapsed?`, toggle.classList.contains('collapsed'));
+              console.log(`      ¿Tiene .expanded?`, toggle.classList.contains('expanded'));
+            }
+            
+            if (toggle && toggle.classList.contains('collapsed')) {
+              toggle.click();
+              console.log(`   ↘️ Expandido`);
+            } else if (toggle && toggle.classList.contains('expanded')) {
+              console.log(`   ⚠️ Ya estaba expandido (no debería pasar)`);
+            }
+            
+            // Continuar con el siguiente nivel en SUS hijos
+            const childrenContainer = treeNode.querySelector(':scope > .tree-children');
+            
+            found = true;
+            
+            // Dar tiempo para que se expanda antes de continuar
+            setTimeout(() => {
+              expandPath(childrenContainer, remainingPath.slice(1), level + 1);
+            }, 50);
+            
+            break; // ✅ IMPORTANTE: Detener búsqueda después del primer match
+          }
+        }
+        
+        if (!found) {
+          console.warn(`   ⚠️ No se encontró "${targetName}" en nivel ${level}`);
+          console.warn(`   📋 Nodos disponibles:`, Array.from(directTreeNodes).map(n => {
+            const content = n.querySelector(':scope > .node-content');
+            const name = content?.querySelector('.node-name');
+            return name ? name.textContent.trim() : 'sin nombre';
+          }));
+        }
+        
+        return found;
+      };
+      
+      // Iniciar expansión secuencial desde la raíz
+      expandPath(null, pathToExpand, 0);
+
+      // 🔍 PASO 2: Buscar el repuesto (después de que se expanda todo)
+      // Esperar más tiempo porque la expansión es recursiva Y ahora expandimos repuestos
+      setTimeout(() => {
+        const repuestoItems = treeContainer.querySelectorAll('.node-repuesto-item');
+        console.log(`\n🔍 BUSCANDO REPUESTO EN ÁRBOL`);
+        console.log(`   Total .node-repuesto-item encontrados: ${repuestoItems.length}`);
+
+        let targetRepuesto = null;
+        repuestoItems.forEach((item, index) => {
+          const onclickAttr = item.getAttribute('onclick');
+          if (onclickAttr && onclickAttr.includes(`'${repuestoId}'`)) {
+            targetRepuesto = item;
+            console.log(`   ✅ ¡REPUESTO ENCONTRADO en índice ${index}!`);
+          }
+        });
+
+        if (!targetRepuesto) {
+          console.error('\n❌ REPUESTO NO ENCONTRADO');
+          console.error('   Nombre:', repuesto.nombre);
+          console.error('   ID:', repuestoId);
+          console.error('   Total items buscados:', repuestoItems.length);
+          this.showToast('⚠️ No se encontró el repuesto en el árbol', 'warning');
+          this.skipTreeStateRestore = false;
+          return;
+        }
+
+        console.log('\n✅ REPUESTO ENCONTRADO:', targetRepuesto);
+
+        // 🎨 PASO 4: Resaltar el repuesto después de expandir
+        setTimeout(() => {
+          console.log('🎨 Aplicando resaltado al REPUESTO...');
+          
+          // Quitar cualquier resaltado previo
+          document.querySelectorAll('.node-repuesto-item').forEach(item => {
+            item.style.backgroundColor = '';
+            item.style.border = '';
+            item.style.boxShadow = '';
+            item.style.outline = '';
+          });
+
+          // 🎨 Aplicar resaltado con FONDO VERDE TRANSPARENTE (no blanco)
+          targetRepuesto.style.backgroundColor = 'rgba(34, 197, 94, 0.2)';  // Verde suave transparente
+          targetRepuesto.style.border = '2px solid #22c55e';
+          targetRepuesto.style.boxShadow = '0 0 12px rgba(34, 197, 94, 0.5)';
+          targetRepuesto.style.outline = '2px solid rgba(34, 197, 94, 0.3)';
+          targetRepuesto.style.outlineOffset = '2px';
+          console.log('✅ Estilos de resaltado aplicados');
+
+          // Hacer scroll al elemento
+          console.log('📜 Haciendo scroll al REPUESTO...');
+          targetRepuesto.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'nearest'
+          });
+          console.log('✅ Scroll completado');
+
+          // Construir ruta completa para el toast
+          const ruta = [];
+          if (ubicacion.areaGeneral) ruta.push(ubicacion.areaGeneral);
+          if (ubicacion.subArea) ruta.push(ubicacion.subArea);
+          if (ubicacion.sistemaEquipo) ruta.push(ubicacion.sistemaEquipo);
+          if (ubicacion.subSistema) ruta.push(ubicacion.subSistema);
+          if (ubicacion.seccion) ruta.push(ubicacion.seccion);
+
+          console.log('📍 Ruta completa:', ruta.join(' > '));
+          this.showToast(`📦 ${repuesto.nombre}\n📍 ${ruta.join(' → ')}`, 'success');
+
+          // 🔄 Permitir restauración normal en futuros cambios de pestaña
+          this.skipTreeStateRestore = false;
+
+          console.log('\n========================================');
+          console.log('✅ PROCESO COMPLETADO: verRepuestoEnJerarquia');
+          console.log('========================================\n');
+        }, 100); // Fin setTimeout resaltado
+      }, 800); // Aumentado a 800ms: expansión recursiva (50ms x niveles) + expansión repuestos
+    }, 500); // Fin setTimeout DOM - aumentado para dar tiempo al re-render
+  }
+
+  /**
+   * 🔍 Validar estado completo de un repuesto
+   * Retorna objeto con información de qué tiene y qué le falta
+   */
+  validarEstadoRepuesto(repuestoId) {
+    const repuesto = this.repuestos.find(r => r.id === repuestoId);
+    if (!repuesto) return null;
+
+    const estado = {
+      repuesto: repuesto,
+      jerarquia: {
+        tiene: false,
+        completa: false,
+        data: null,
+        problemas: []
+      },
+      mapa: {
+        tiene: false,
+        mapaExiste: false,
+        areaExiste: false,
+        marcadorExiste: false,
+        data: null,
+        problemas: []
+      },
+      sugerencias: []
+    };
+
+    // 1. Validar JERARQUÍA
+    if (repuesto.areaGeneral) {
+      estado.jerarquia.tiene = true;
+      estado.jerarquia.data = {
+        areaGeneral: repuesto.areaGeneral,
+        subArea: repuesto.subArea,
+        sistemaEquipo: repuesto.sistemaEquipo,
+        subSistema: repuesto.subSistema,
+        seccion: repuesto.seccion
+      };
+
+      // Validar si la jerarquía es completa (al menos hasta sistema)
+      if (repuesto.areaGeneral && repuesto.subArea && repuesto.sistemaEquipo) {
+        estado.jerarquia.completa = true;
+      } else {
+        estado.jerarquia.problemas.push('Jerarquía incompleta (falta área, subárea o sistema)');
+      }
+    } else {
+      estado.jerarquia.problemas.push('Sin ubicación en jerarquía');
+      estado.sugerencias.push({
+        tipo: 'asignar_jerarquia',
+        mensaje: 'Asignar ubicación en la jerarquía',
+        accion: () => this.editarRepuesto(repuestoId)
+      });
+    }
+
+    // 2. Validar MAPA
+    if (repuesto.ubicacionesMapa && repuesto.ubicacionesMapa.length > 0) {
+      estado.mapa.tiene = true;
+      const ubicacionMapa = repuesto.ubicacionesMapa[0];
+      estado.mapa.data = ubicacionMapa;
+
+      // Validar si el MAPA existe
+      if (window.mapStorage && ubicacionMapa.mapaId) {
+        const mapa = window.mapStorage.state.mapas?.find(m => m.id === ubicacionMapa.mapaId);
+        if (mapa) {
+          estado.mapa.mapaExiste = true;
+
+          // Validar si el ÁREA existe en ese mapa
+          if (ubicacionMapa.zonaId) {
+            const zona = window.mapStorage.state.zonas?.find(z => z.id === ubicacionMapa.zonaId);
+            if (zona) {
+              estado.mapa.areaExiste = true;
+            } else {
+              estado.mapa.problemas.push('El área asignada no existe en el mapa');
+            }
+          } else {
+            estado.mapa.problemas.push('Sin área asignada en el mapa');
+          }
+
+          // Validar si tiene MARCADOR (coordenadas)
+          if (ubicacionMapa.x !== undefined && ubicacionMapa.y !== undefined) {
+            estado.mapa.marcadorExiste = true;
+          } else {
+            estado.mapa.problemas.push('Sin marcador (posición exacta) en el mapa');
+          }
+        } else {
+          estado.mapa.problemas.push('El mapa asignado no existe');
+        }
+      }
+    } else {
+      estado.mapa.problemas.push('Sin ubicación en mapa');
+      
+      // Sugerir según qué tiene en jerarquía
+      if (estado.jerarquia.tiene) {
+        // Si tiene jerarquía, sugerir agregar a mapa
+        const mapaRecomendado = this._sugerirMapaPorJerarquia(repuesto);
+        if (mapaRecomendado) {
+          estado.sugerencias.push({
+            tipo: 'agregar_a_mapa',
+            mensaje: `Agregar al mapa "${mapaRecomendado.nombre}"`,
+            mapaId: mapaRecomendado.id,
+            accion: () => this.agregarUbicacionMapa(repuestoId, mapaRecomendado.id)
+          });
+        } else {
+          estado.sugerencias.push({
+            tipo: 'crear_mapa',
+            mensaje: 'Crear un nuevo mapa para esta área',
+            accion: () => this.mostrarCrearMapa(repuesto.areaGeneral)
+          });
+        }
+      } else {
+        estado.sugerencias.push({
+          tipo: 'asignar_jerarquia_primero',
+          mensaje: 'Primero asigna una ubicación en la jerarquía',
+          accion: () => this.editarRepuesto(repuestoId)
+        });
+      }
+    }
+
+    return estado;
+  }
+
+  /**
+   * 🗺️ Sugerir mapa basado en jerarquía
+   */
+  _sugerirMapaPorJerarquia(repuesto) {
+    if (!window.mapStorage || !window.mapStorage.state.mapas) return null;
+
+    const mapas = window.mapStorage.state.mapas;
+    
+    // Buscar mapa que coincida con el área general
+    if (repuesto.areaGeneral) {
+      // Mapeo de áreas a mapas
+      const mapeo = {
+        'Planta Principal': 'planta-principal',
+        'Recinto Completo': 'recinto-completo',
+        'Acopio': 'recinto-completo'
+      };
+
+      const mapaKey = mapeo[repuesto.areaGeneral] || 'planta-principal';
+      return mapas.find(m => m.id.includes(mapaKey)) || mapas[0];
+    }
+
+    // Por defecto, retornar el primer mapa
+    return mapas[0] || null;
+  }
+
+  /**
+   * 🎯 Mostrar modal de estado del repuesto con opciones de acción
+   */
+  mostrarEstadoYOpciones(repuestoId) {
+    const estado = this.validarEstadoRepuesto(repuestoId);
+    if (!estado) {
+      this.showToast('Repuesto no encontrado', 'error');
+      return;
+    }
+
+    const r = estado.repuesto;
+    
+    // Construir HTML del modal
+    const modalHTML = `
+      <div id="estadoRepuestoModal" class="modal-overlay" style="display: flex; z-index: 10000;">
+        <div class="modal-content" style="max-width: 700px; max-height: 85vh; overflow-y: auto;">
+          <div class="modal-header">
+            <h2>📋 Estado del Repuesto</h2>
+            <button class="modal-close" onclick="document.getElementById('estadoRepuestoModal').remove()">✕</button>
+          </div>
+          <div class="modal-body">
+            
+            <!-- Nombre del repuesto -->
+            <div style="padding: 16px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 8px; color: white; margin-bottom: 20px;">
+              <h3 style="margin: 0 0 8px 0; font-size: 18px;">${this.escapeHtml(r.nombre)}</h3>
+              ${r.codSAP ? `<div style="font-size: 13px; opacity: 0.9;">Código SAP: ${this.escapeHtml(r.codSAP)}</div>` : ''}
+            </div>
+
+            <!-- SECCIÓN: JERARQUÍA -->
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <span style="font-size: 24px;">🌳</span>
+                <h4 style="margin: 0; font-size: 16px; font-weight: 600;">Ubicación en Jerarquía</h4>
+                ${estado.jerarquia.tiene ? 
+                  `<span style="padding: 3px 8px; background: #22c55e; color: white; border-radius: 12px; font-size: 11px; font-weight: 600;">✓ Asignada</span>` :
+                  `<span style="padding: 3px 8px; background: #ef4444; color: white; border-radius: 12px; font-size: 11px; font-weight: 600;">✗ Sin asignar</span>`
+                }
+              </div>
+              
+              ${estado.jerarquia.tiene ? `
+                <div style="padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #22c55e;">
+                  <div style="font-size: 13px; color: #475569; line-height: 1.6;">
+                    📍 ${[
+                      estado.jerarquia.data.areaGeneral,
+                      estado.jerarquia.data.subArea,
+                      estado.jerarquia.data.sistemaEquipo,
+                      estado.jerarquia.data.subSistema
+                    ].filter(Boolean).join(' → ')}
+                  </div>
+                  ${!estado.jerarquia.completa ? `
+                    <div style="margin-top: 8px; padding: 8px; background: #fef3c7; border-radius: 4px; font-size: 12px; color: #92400e;">
+                      ⚠️ Jerarquía incompleta
+                    </div>
+                  ` : ''}
+                </div>
+                <div style="margin-top: 8px;">
+                  <button onclick="app.verRepuestoEnJerarquia('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                          style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer;">
+                    🌳 Ver en Jerarquía
+                  </button>
+                  <button onclick="app.editarRepuesto('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                          style="padding: 8px 16px; background: #8b5cf6; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; margin-left: 8px;">
+                    ✏️ Editar
+                  </button>
+                </div>
+              ` : `
+                <div style="padding: 12px; background: #fef2f2; border-radius: 6px; border-left: 3px solid #ef4444;">
+                  <div style="font-size: 13px; color: #991b1b; margin-bottom: 8px;">
+                    Este repuesto no tiene ubicación en la jerarquía asignada.
+                  </div>
+                  <button onclick="app.editarRepuesto('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                          style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer;">
+                    ➕ Asignar Jerarquía
+                  </button>
+                </div>
+              `}
+            </div>
+
+            <!-- SECCIÓN: MAPA -->
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <span style="font-size: 24px;">🗺️</span>
+                <h4 style="margin: 0; font-size: 16px; font-weight: 600;">Ubicación en Mapa</h4>
+                ${estado.mapa.tiene ? 
+                  `<span style="padding: 3px 8px; background: #22c55e; color: white; border-radius: 12px; font-size: 11px; font-weight: 600;">✓ Asignada</span>` :
+                  `<span style="padding: 3px 8px; background: #ef4444; color: white; border-radius: 12px; font-size: 11px; font-weight: 600;">✗ Sin asignar</span>`
+                }
+              </div>
+              
+              ${estado.mapa.tiene ? `
+                <div style="padding: 12px; background: #f8fafc; border-radius: 6px; border-left: 3px solid ${estado.mapa.mapaExiste && estado.mapa.areaExiste && estado.mapa.marcadorExiste ? '#22c55e' : '#f59e0b'};">
+                  
+                  <!-- Checklist de estado -->
+                  <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; font-size: 13px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      ${estado.mapa.mapaExiste ? '✅' : '❌'} 
+                      <span style="color: ${estado.mapa.mapaExiste ? '#059669' : '#dc2626'};">
+                        Mapa ${estado.mapa.mapaExiste ? 'existe' : 'no existe'}
+                      </span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      ${estado.mapa.areaExiste ? '✅' : '❌'} 
+                      <span style="color: ${estado.mapa.areaExiste ? '#059669' : '#dc2626'};">
+                        Área dibujada ${estado.mapa.areaExiste ? 'existe' : 'no existe'}
+                      </span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      ${estado.mapa.marcadorExiste ? '✅' : '❌'} 
+                      <span style="color: ${estado.mapa.marcadorExiste ? '#059669' : '#dc2626'};">
+                        Marcador ${estado.mapa.marcadorExiste ? 'colocado' : 'sin colocar'}
+                      </span>
+                    </div>
+                  </div>
+
+                  ${estado.mapa.problemas.length > 0 ? `
+                    <div style="padding: 8px; background: #fef3c7; border-radius: 4px; margin-bottom: 8px;">
+                      <div style="font-size: 12px; color: #92400e; font-weight: 600; margin-bottom: 4px;">⚠️ Problemas detectados:</div>
+                      ${estado.mapa.problemas.map(p => `<div style="font-size: 11px; color: #92400e;">• ${p}</div>`).join('')}
+                    </div>
+                  ` : ''}
+
+                  <div style="margin-top: 8px;">
+                    <button onclick="app.verRepuestoEnMapa('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                            style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer;">
+                      🗺️ Ver en Mapa
+                    </button>
+                    <button onclick="app.agregarUbicacionMapa('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                            style="padding: 8px 16px; background: #f59e0b; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; margin-left: 8px;">
+                      ✏️ Editar Ubicación
+                    </button>
+                  </div>
+                </div>
+              ` : `
+                <div style="padding: 12px; background: #fef2f2; border-radius: 6px; border-left: 3px solid #ef4444;">
+                  <div style="font-size: 13px; color: #991b1b; margin-bottom: 12px;">
+                    Este repuesto no tiene ubicación en el mapa asignada.
+                  </div>
+                  
+                  ${estado.sugerencias.length > 0 ? `
+                    <div style="margin-bottom: 12px;">
+                      <div style="font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 8px;">💡 Sugerencias:</div>
+                      ${estado.sugerencias.map(s => `
+                        <button onclick="document.getElementById('estadoRepuestoModal').remove(); ${s.accion ? `(${s.accion.toString()})()` : 'null'}"
+                                style="display: block; width: 100%; text-align: left; padding: 8px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; cursor: pointer; margin-bottom: 6px; transition: all 0.2s;"
+                                onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#3b82f6';"
+                                onmouseout="this.style.background='white'; this.style.borderColor='#e2e8f0';">
+                          ${s.mensaje}
+                        </button>
+                      `).join('')}
+                    </div>
+                  ` : ''}
+                  
+                  <button onclick="app.agregarUbicacionMapa('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                          style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer;">
+                    ➕ Agregar al Mapa
+                  </button>
+                </div>
+              `}
+            </div>
+
+            <!-- Resumen final -->
+            <div style="padding: 12px; background: ${estado.jerarquia.tiene && estado.mapa.tiene && estado.mapa.marcadorExiste ? '#dcfce7' : '#fef3c7'}; border-radius: 6px; text-align: center;">
+              <div style="font-size: 14px; font-weight: 600; color: #374151;">
+                ${estado.jerarquia.tiene && estado.mapa.tiene && estado.mapa.marcadorExiste ? 
+                  '✅ Repuesto completamente configurado' : 
+                  '⚠️ Configuración incompleta'
+                }
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Cerrar con ESC
+    const modal = document.getElementById('estadoRepuestoModal');
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        modal.remove();
+        document.removeEventListener('keydown', handleEsc);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
+
+    // Cerrar al hacer click fuera
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+        document.removeEventListener('keydown', handleEsc);
+      }
+    });
+  }
+
+  /**
+   * 🔍 Detectar repuestos duplicados (mismo codSAP o mismo nombre)
+   * Retorna un objeto con información de duplicados
+   */
+  detectarDuplicados() {
+    const duplicadosPorSAP = {};
+    const duplicadosPorNombre = {};
+    
+    this.repuestos.forEach(r => {
+      // Agrupar por código SAP
+      if (r.codSAP && r.codSAP.trim()) {
+        const sap = r.codSAP.trim().toUpperCase();
+        if (!duplicadosPorSAP[sap]) duplicadosPorSAP[sap] = [];
+        duplicadosPorSAP[sap].push(r);
+      }
+      
+      // Agrupar por nombre (case-insensitive)
+      if (r.nombre && r.nombre.trim()) {
+        const nombre = r.nombre.trim().toLowerCase();
+        if (!duplicadosPorNombre[nombre]) duplicadosPorNombre[nombre] = [];
+        duplicadosPorNombre[nombre].push(r);
+      }
+    });
+    
+    // Filtrar solo los que realmente son duplicados (más de 1)
+    const duplicados = {};
+    
+    Object.keys(duplicadosPorSAP).forEach(sap => {
+      if (duplicadosPorSAP[sap].length > 1) {
+        duplicadosPorSAP[sap].forEach(r => {
+          duplicados[r.id] = {
+            tipo: 'codSAP',
+            key: sap,
+            total: duplicadosPorSAP[sap].length,
+            repuestos: duplicadosPorSAP[sap]
+          };
+        });
+      }
+    });
+    
+    Object.keys(duplicadosPorNombre).forEach(nombre => {
+      if (duplicadosPorNombre[nombre].length > 1) {
+        duplicadosPorNombre[nombre].forEach(r => {
+          // Solo marcar como duplicado si no ya está marcado por SAP
+          if (!duplicados[r.id]) {
+            duplicados[r.id] = {
+              tipo: 'nombre',
+              key: nombre,
+              total: duplicadosPorNombre[nombre].length,
+              repuestos: duplicadosPorNombre[nombre]
+            };
+          }
+        });
+      }
+    });
+    
+    return duplicados;
+  }
+
+  /**
+   * 📋 Mostrar modal con todas las instancias de un repuesto duplicado
+   */
+  mostrarInstanciasDuplicadas(repuestoId) {
+    const duplicados = this.detectarDuplicados();
+    const info = duplicados[repuestoId];
+    
+    if (!info) {
+      this.showToast('Este repuesto no tiene duplicados', 'info');
+      return;
+    }
+    
+    const repuestos = info.repuestos;
+    const criterio = info.tipo === 'codSAP' ? `Código SAP: ${info.key}` : `Nombre: ${info.key}`;
+    
+    const modalHTML = `
+      <div id="duplicadosModal" class="modal-overlay" style="display: flex; z-index: 10000;">
+        <div class="modal-content" style="max-width: 900px; max-height: 85vh; overflow-y: auto;">
+          <div class="modal-header">
+            <h2>📦 Instancias del Repuesto</h2>
+            <button class="modal-close" onclick="document.getElementById('duplicadosModal').remove()">✕</button>
+          </div>
+          <div class="modal-body">
+            <div style="margin-bottom: 20px; padding: 12px; background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; border-radius: 6px;">
+              <strong>Criterio de agrupación:</strong> ${criterio}<br>
+              <strong>Total de instancias:</strong> ${repuestos.length}
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              ${repuestos.map((r, idx) => this._crearTarjetaDuplicado(r, idx + 1, repuestos.length)).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Cerrar con ESC
+    const modal = document.getElementById('duplicadosModal');
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        modal.remove();
+        document.removeEventListener('keydown', handleEsc);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
+    
+    // Cerrar al hacer click fuera
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+        document.removeEventListener('keydown', handleEsc);
+      }
+    });
+  }
+
+  /**
+   * Crear tarjeta de repuesto duplicado
+   */
+  _crearTarjetaDuplicado(repuesto, numero, total) {
+    const buildUbicacion = (r) => {
+      const parts = [];
+      if (r.areaGeneral) parts.push(r.areaGeneral);
+      if (r.subArea) parts.push(r.subArea);
+      if (r.sistemaEquipo) parts.push(r.sistemaEquipo);
+      if (r.subSistema) parts.push(r.subSistema);
+      return parts.length > 0 ? parts.join(' → ') : '<span style="color: #94a3b8;">Sin ubicación</span>';
+    };
+    
+    const ubicacionHTML = buildUbicacion(repuesto);
+    const cantidad = repuesto.cantidad || 0;
+    const stockColor = cantidad === 0 ? '#ef4444' : cantidad < (repuesto.minimo || 0) ? '#f59e0b' : '#22c55e';
+    
+    return `
+      <div style="
+        padding: 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        background: white;
+        transition: all 0.2s;
+      "
+      onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 12px rgba(59,130,246,0.15)';"
+      onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+        
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px;">
+          <div style="flex: 1;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span style="
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 28px;
+                height: 28px;
+                background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+                color: white;
+                border-radius: 6px;
+                font-weight: bold;
+                font-size: 13px;
+              ">${numero}</span>
+              <h4 style="margin: 0; font-size: 15px; font-weight: 600; color: #1e293b;">
+                ${this.escapeHtml(repuesto.nombre)}
+              </h4>
+            </div>
+            
+            <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">
+              📍 ${ubicacionHTML}
+            </div>
+            
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px;">
+              ${repuesto.codSAP ? `
+                <span style="padding: 3px 8px; background: #f1f5f9; border-radius: 4px; color: #475569;">
+                  <strong>SAP:</strong> ${this.escapeHtml(repuesto.codSAP)}
+                </span>
+              ` : ''}
+              <span style="padding: 3px 8px; background: ${stockColor}20; border-radius: 4px; color: ${stockColor}; font-weight: 600;">
+                📦 Stock: ${cantidad}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 8px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+          <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}'); document.getElementById('duplicadosModal').remove();"
+                  style="flex: 1; padding: 8px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s;"
+                  onmouseover="this.style.background='#2563eb';"
+                  onmouseout="this.style.background='#3b82f6';">
+            🌳 Ver en Jerarquía
+          </button>
+          <button onclick="app.editarRepuesto('${repuesto.id}'); document.getElementById('duplicadosModal').remove();"
+                  style="flex: 1; padding: 8px 12px; background: #8b5cf6; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s;"
+                  onmouseover="this.style.background='#7c3aed';"
+                  onmouseout="this.style.background='#8b5cf6';">
+            ✏️ Editar
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * 🗺️ Continuar a mapa - Transición desde jerarquía a mapa
+   */
+  continuarAMapa() {
+    console.log('\n========================================');
+    console.log('🗺️ INICIANDO: continuarAMapa');
+    console.log('========================================\n');
+    
+    console.log('📦 Valor de repuestoEnFlujo:', this.repuestoEnFlujo);
+    
+    if (!this.repuestoEnFlujo) {
+      console.warn('⚠️ No hay repuesto en flujo');
+      this.showToast(' No hay repuesto seleccionado', 'warning');
+      return;
+    }
+
+    console.log('✅ Repuesto en flujo válido:', this.repuestoEnFlujo);
+    console.log('🔄 Cambiando a pestaña mapa...');
+    this.switchTab('mapa');
+    console.log('✅ Cambio de pestaña completado');
+    
+    this.showToast(' Ahora selecciona el plano y ubicación', 'info');
+
+    console.log('\n========================================');
+    console.log('✅ PROCESO COMPLETADO: continuarAMapa');
+    console.log('========================================\n');
+  }
+
+  /**
+   * ✏️ Asignar jerarquía a repuesto - Inicia flujo guiado
+   * @param {string} repuestoId - ID del repuesto
+   */
+  asignarJerarquiaRepuesto(repuestoId) {
+    console.log('\n========================================');
+    console.log('✏️ INICIANDO: asignarJerarquiaRepuesto');
+    console.log('   repuestoId:', repuestoId);
+    console.log('========================================\n');
+    
+    const repuesto = this.repuestos.find(r => String(r.id) === String(repuestoId));
+    
+    if (!repuesto) {
+      console.error('❌ Repuesto no encontrado con ID:', repuestoId);
+      this.showToast(' Repuesto no encontrado', 'error');
+      return;
+    }
+    
+    console.log('✅ Repuesto encontrado:', repuesto.nombre);
+    console.log('💾 Guardando repuesto en flujo...');
+    
+    // Guardar en flujo
+    this.repuestoEnFlujo = repuestoId;
+    console.log('✅ Repuesto guardado en flujo:', this.repuestoEnFlujo);
+    
+    // Cambiar a pestaña jerarquía
+    console.log('🔄 Cambiando a pestaña jerarquía...');
+    this.switchTab('jerarquia');
+    console.log('✅ Cambio de pestaña completado');
+    
+    this.showToast(` Selecciona la ubicación en el árbol para "${repuesto.nombre}"`, 'info');
+
+    console.log('\n========================================');
+    console.log('✅ PROCESO COMPLETADO: asignarJerarquiaRepuesto');
+    console.log('========================================\n');
+  }
+
+  /**
+   * 🔍 Analiza el estado completo de un repuesto y determina qué le falta
+   * @param {Object} repuesto - Objeto repuesto
+   * @returns {Object} Estado detallado con campos: 
+   *   - tieneJerarquia: boolean
+   *   - tieneMapa: boolean
+   *   - tieneArea: boolean
+   *   - tieneMarcador: boolean
+   *   - progreso: number (0-100)
+   *   - faltantes: string[] - Lista de elementos faltantes
+   *   - acciones: string[] - Acciones sugeridas
+   */
+  analizarEstadoRepuesto(repuesto) {
+    const estado = {
+      tieneJerarquia: false,
+      tieneMapa: false,
+      tieneArea: false,
+      tieneMarcador: false,
+      progreso: 0,
+      faltantes: [],
+      acciones: []
+    };
+
+    // 1. Verificar Jerarquía (ubicaciones[])
+    if (repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
+      const ubicacion = repuesto.ubicaciones[0];
+      if (ubicacion.areaGeneral || ubicacion.subArea || ubicacion.sistemaEquipo) {
+        estado.tieneJerarquia = true;
+        estado.progreso += 40; // 40% por jerarquía
+      }
+    }
+
+    // Compatibilidad con formato antiguo
+    if (!estado.tieneJerarquia && (repuesto.areaGeneral || repuesto.area)) {
+      estado.tieneJerarquia = true;
+      estado.progreso += 40;
+    }
+
+    // 2. Verificar Mapa (ubicacionesMapa[])
+    if (repuesto.ubicacionesMapa && repuesto.ubicacionesMapa.length > 0) {
+      const ubicMapa = repuesto.ubicacionesMapa[0];
+      
+      // 2a. Tiene mapa asignado
+      if (ubicMapa.mapId) {
+        estado.tieneMapa = true;
+        estado.progreso += 20; // 20% por mapa
+      }
+      
+      // 2b. Tiene área dentro del mapa
+      if (ubicMapa.areaId) {
+        estado.tieneArea = true;
+        estado.progreso += 20; // 20% por área
+      }
+      
+      // 2c. Tiene marcador (coordenadas X, Y)
+      if (ubicMapa.markerX !== undefined && ubicMapa.markerY !== undefined) {
+        estado.tieneMarcador = true;
+        estado.progreso += 20; // 20% por marcador
+      }
+    }
+
+    // Compatibilidad con formato antiguo (mapId directo)
+    if (!estado.tieneMapa && repuesto.mapId) {
+      estado.tieneMapa = true;
+      estado.progreso += 20;
+      
+      if (repuesto.areaId) {
+        estado.tieneArea = true;
+        estado.progreso += 20;
+      }
+      
+      if (repuesto.markerX !== undefined && repuesto.markerY !== undefined) {
+        estado.tieneMarcador = true;
+        estado.progreso += 20;
+      }
+    }
+
+    // 3. Determinar faltantes y acciones
+    if (!estado.tieneJerarquia) {
+      estado.faltantes.push('Ubicación en Jerarquía');
+      estado.acciones.push('asignar_jerarquia');
+    }
+    
+    if (!estado.tieneMapa) {
+      estado.faltantes.push('Plano/Mapa');
+      estado.acciones.push('asignar_mapa');
+    } else if (!estado.tieneArea) {
+      estado.faltantes.push('Área en Mapa');
+      estado.acciones.push('seleccionar_area');
+    } else if (!estado.tieneMarcador) {
+      estado.faltantes.push('Marcador en Plano');
+      estado.acciones.push('colocar_marcador');
+    }
+
+    return estado;
+  }
+
+  /**
+   * 🎨 Genera HTML de botones dinámicos según el estado del repuesto
+   * @param {Object} repuesto - Objeto repuesto
+   * @returns {string} HTML de los botones condicionales
+   */
+  generarBotonesSegunEstado(repuesto) {
+    const estado = this.analizarEstadoRepuesto(repuesto);
+    let html = '';
+
+    // Panel de progreso si no está completo
+    if (estado.progreso < 100) {
+      html += `
+        <div style="
+          background: rgba(59, 130, 246, 0.08);
+          border-left: 3px solid #3b82f6;
+          padding: 10px 12px;
+          margin: 8px 12px 12px 12px;
+          border-radius: 6px;
+        ">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.75rem; color: #3b82f6; font-weight: 600;">
+              📋 Progreso de Ubicación
+            </span>
+            <span style="
+              font-size: 0.7rem; 
+              color: ${estado.progreso === 0 ? '#ef4444' : estado.progreso < 60 ? '#f59e0b' : '#22c55e'};
+              font-weight: 700;
+            ">
+              ${estado.progreso}%
+            </span>
+          </div>
+          
+          <!-- Barra de progreso -->
+          <div style="
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+          ">
+            <div style="
+              width: ${estado.progreso}%;
+              height: 100%;
+              background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+              transition: width 0.3s ease;
+            "></div>
+          </div>
+          
+          ${estado.faltantes.length > 0 ? `
+            <div style="font-size: 0.65rem; color: rgba(255,255,255,0.6); margin-bottom: 8px;">
+              ⚠️ Falta: ${estado.faltantes.join(', ')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // Contenedor de botones
+    html += '<div style="display: flex; gap: 6px; flex-wrap: wrap; padding: 0 12px 12px 12px;">';
+
+    // 1. Botón Ver en Jerarquía (solo si tiene jerarquía)
+    if (estado.tieneJerarquia) {
+      html += `
+        <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="
+          flex: 1;
+          min-width: 110px;
+          background: rgba(34, 197, 94, 0.15);
+          border: 1px solid rgba(34, 197, 94, 0.3);
+          color: #22c55e;
+          padding: 6px 10px;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+        "
+        onmouseover="this.style.background='rgba(34, 197, 94, 0.25)'"
+        onmouseout="this.style.background='rgba(34, 197, 94, 0.15)'">
+          🌳 Ver Jerarquía
+        </button>
+      `;
+    } else {
+      // Botón Asignar Jerarquía (si no tiene)
+      html += `
+        <button onclick="app.asignarJerarquiaRepuesto('${repuesto.id}')" style="
+          flex: 1;
+          min-width: 110px;
+          background: rgba(251, 191, 36, 0.15);
+          border: 1px solid rgba(251, 191, 36, 0.3);
+          color: #fbbf24;
+          padding: 6px 10px;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+        "
+        onmouseover="this.style.background='rgba(251, 191, 36, 0.25)'"
+        onmouseout="this.style.background='rgba(251, 191, 36, 0.15)'">
+          + Asignar Jerarquía
+        </button>
+      `;
+    }
+
+    // 2. Botón Ver en Mapa o Asignar Mapa
+    if (estado.tieneMapa && estado.tieneArea && estado.tieneMarcador) {
+      // Ver en Mapa (completo)
+      html += `
+        <button onclick="app.verRepuestoEnMapa('${repuesto.id}')" style="
+          flex: 1;
+          min-width: 110px;
+          background: rgba(34, 197, 94, 0.15);
+          border: 1px solid rgba(34, 197, 94, 0.3);
+          color: #22c55e;
+          padding: 6px 10px;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+        "
+        onmouseover="this.style.background='rgba(34, 197, 94, 0.25)'"
+        onmouseout="this.style.background='rgba(34, 197, 94, 0.15)'">
+          🗺️ Ver Mapa
+        </button>
+      `;
+    } else if (!estado.tieneMapa) {
+      // Asignar Mapa (no tiene mapa)
+      html += `
+        <button onclick="app.repuestoEnFlujo='${repuesto.id}'; app.continuarAMapa();" style="
+          flex: 1;
+          min-width: 110px;
+          background: rgba(168, 85, 247, 0.15);
+          border: 1px solid rgba(168, 85, 247, 0.3);
+          color: #a855f7;
+          padding: 6px 10px;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+        "
+        onmouseover="this.style.background='rgba(168, 85, 247, 0.25)'"
+        onmouseout="this.style.background='rgba(168, 85, 247, 0.15)'">
+          + Asignar Mapa
+        </button>
+      `;
+    } else if (!estado.tieneArea) {
+      // Seleccionar Área (tiene mapa pero no área)
+      html += `
+        <button onclick="app.repuestoEnFlujo='${repuesto.id}'; app.continuarAMapa();" style="
+          flex: 1;
+          min-width: 110px;
+          background: rgba(168, 85, 247, 0.15);
+          border: 1px solid rgba(168, 85, 247, 0.3);
+          color: #a855f7;
+          padding: 6px 10px;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+        "
+        onmouseover="this.style.background='rgba(168, 85, 247, 0.25)'"
+        onmouseout="this.style.background='rgba(168, 85, 247, 0.15)'">
+          + Seleccionar Área
+        </button>
+      `;
+    } else if (!estado.tieneMarcador) {
+      // Colocar Marcador (tiene mapa y área, falta marcador)
+      html += `
+        <button onclick="app.repuestoEnFlujo='${repuesto.id}'; app.continuarAMapa();" style="
+          flex: 1;
+          min-width: 110px;
+          background: rgba(168, 85, 247, 0.15);
+          border: 1px solid rgba(168, 85, 247, 0.3);
+          color: #a855f7;
+          padding: 6px 10px;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
+        "
+        onmouseover="this.style.background='rgba(168, 85, 247, 0.25)'"
+        onmouseout="this.style.background='rgba(168, 85, 247, 0.15)'">
+          📍 Colocar Marcador
+        </button>
+      `;
+    }
+
+    // 3. Botón Editar Ubicación (siempre presente)
+    html += `
+      <button onclick="app.editarUbicacionRepuesto('${repuesto.id}')" style="
+        flex: 1;
+        min-width: 110px;
+        background: rgba(59, 130, 246, 0.15);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        color: #3b82f6;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      "
+      onmouseover="this.style.background='rgba(59, 130, 246, 0.25)'"
+      onmouseout="this.style.background='rgba(59, 130, 246, 0.15)'">
+        ✏️ Editar
+      </button>
+    `;
+
+    html += '</div>'; // Cierre del contenedor de botones
+
+    return html;
+  }
+
+  /**
+   * 📊 Muestra en consola el estado detallado de un repuesto (útil para debugging)
+   * @param {string} repuestoId - ID del repuesto
+   */
+  mostrarEstadoRepuesto(repuestoId) {
+    const repuesto = this.repuestos.find(r => r.id === repuestoId);
+    if (!repuesto) {
+      console.error('❌ Repuesto no encontrado');
+      return;
+    }
+
+    const estado = this.analizarEstadoRepuesto(repuesto);
+    
+    console.log('\n========================================');
+    console.log(`📊 ESTADO DEL REPUESTO: ${repuesto.nombre}`);
+    console.log('========================================');
+    console.log(`🆔 ID: ${repuesto.id}`);
+    console.log(`📦 Código SAP: ${repuesto.codSAP || 'N/A'}`);
+    console.log('\n🔍 ANÁLISIS DE UBICACIÓN:');
+    console.log(`  ${estado.tieneJerarquia ? '✅' : '❌'} Jerarquía`);
+    console.log(`  ${estado.tieneMapa ? '✅' : '❌'} Mapa/Plano`);
+    console.log(`  ${estado.tieneArea ? '✅' : '❌'} Área en Mapa`);
+    console.log(`  ${estado.tieneMarcador ? '✅' : '❌'} Marcador (X,Y)`);
+    console.log(`\n📈 Progreso: ${estado.progreso}%`);
+    
+    if (estado.faltantes.length > 0) {
+      console.log(`\n⚠️  FALTA:`);
+      estado.faltantes.forEach(falta => console.log(`  - ${falta}`));
+    }
+    
+    if (estado.acciones.length > 0) {
+      console.log(`\n🎯 ACCIONES SUGERIDAS:`);
+      estado.acciones.forEach(accion => {
+        const acciones = {
+          'asignar_jerarquia': '→ app.asignarJerarquiaRepuesto("' + repuestoId + '")',
+          'asignar_mapa': '→ app.repuestoEnFlujo="' + repuestoId + '"; app.continuarAMapa()',
+          'seleccionar_area': '→ Seleccionar área en tab Mapas',
+          'colocar_marcador': '→ Colocar marcador en plano'
+        };
+        console.log(`  ${acciones[accion] || accion}`);
+      });
+    }
+    
+    if (estado.progreso === 100) {
+      console.log('\n🎉 ¡REPUESTO COMPLETAMENTE UBICADO!');
+    }
+    
+    console.log('========================================\n');
+    
+    return estado;
   }
 
   async verRepuestoEnMapa(id) {
@@ -48244,6 +50719,40 @@ class InventarioCompleto {
     const repuesto = this.repuestos.find(r => String(r.id) === String(repuestoId));
     if (!repuesto) return;
     
+    // Si NO se proporcionó índice, usar flujo guiado (desde botón inventario)
+    if (indice === undefined) {
+      console.log('\n========================================');
+      console.log('✏️ EDITAR UBICACIÓN (Flujo Guiado)');
+      console.log('   repuestoId:', repuestoId);
+      console.log('========================================\n');
+      
+      console.log('✅ Repuesto encontrado:', repuesto.nombre);
+      
+      // Verificar si tiene ubicación actual
+      if (repuesto.areaGeneral) {
+        console.log('📍 Ubicación actual detectada:');
+        console.log('   - Área:', repuesto.areaGeneral);
+        console.log('   - SubÁrea:', repuesto.subArea);
+        console.log('   - Sistema:', repuesto.sistemaEquipo);
+      } else {
+        console.log('⚠️ Repuesto sin ubicación en jerarquía');
+      }
+      
+      // Guardar en flujo para edición
+      console.log('💾 Guardando repuesto en flujo para edición...');
+      this.repuestoEnFlujo = repuestoId;
+      
+      // Cambiar a pestaña jerarquía
+      console.log('🔄 Cambiando a pestaña jerarquía...');
+      this.switchTab('jerarquia');
+      
+      this.showToast(`💡 Selecciona la nueva ubicación para "${repuesto.nombre}"`, 'info');
+      
+      console.log('✅ PROCESO COMPLETADO: editarUbicacionRepuesto (flujo guiado)\n');
+      return;
+    }
+    
+    // Modo edición con índice (desde modal de múltiples ubicaciones)
     let ubicaciones = repuesto.ubicaciones || [];
     if (ubicaciones.length === 0 && repuesto.mapId && repuesto.areaId) {
       ubicaciones = [{
@@ -50587,6 +53096,17 @@ class InventarioCompleto {
       const acceptBtn = overlay.querySelector('[data-action="accept"]');
       const cancelBtn = overlay.querySelector('[data-action="cancel"]');
       
+      // 🔧 PREVENIR que listeners globales bloqueen escritura en los inputs
+      [input1, input2].forEach(input => {
+        input.addEventListener('keydown', (e) => {
+          // Permitir que TODAS las teclas normales funcionen en el input
+          // Solo prevenir propagación al documento para evitar atajos globales
+          if (!e.ctrlKey && !e.metaKey && !e.altKey) {
+            e.stopPropagation();
+          }
+        });
+      });
+      
       // Auto-generar abreviatura mientras se escribe el nombre
       let userEditedAbbrev = !!defaultValue1; // Si ya tiene valor, el usuario lo editó
       
@@ -50627,6 +53147,142 @@ class InventarioCompleto {
       
       input1.onkeydown = (e) => {
         if (e.key === 'Enter') close({ input1: input1.value, input2: input2.value });
+        if (e.key === 'Escape') close(null);
+      };
+      
+      overlay.onclick = (e) => {
+        if (e.target === overlay) close(null);
+      };
+    });
+  }
+
+  // 🔧 NUEVO: Modal especial para editar áreas con opción de marcar como genérica
+  showAreaEditModalWithGenericOption(title, defaultId = '', placeholderId = '', defaultNombre = '', defaultEsGenerica = false) {
+    return new Promise((resolve) => {
+      const escapeHtml = (text) => {
+        if (!text) return '';
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      };
+      
+      const overlay = document.createElement('div');
+      overlay.className = 'custom-modal-overlay';
+      
+      overlay.innerHTML = `
+        <div class="custom-modal" style="min-width: 500px; max-width: 600px;">
+          <div class="custom-modal-title">${escapeHtml(title)}</div>
+          
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-primary);">
+              Nombre completo:
+            </label>
+            <input type="text" class="custom-modal-input" id="modal-nombre-input" value="${escapeHtml(defaultNombre)}" placeholder="Ingrese el nombre del área" autofocus>
+          </div>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-primary);">
+              Código/ID abreviado:
+              <span style="color: var(--info); font-size: 11px; font-weight: normal;"> (se sugiere automáticamente)</span>
+            </label>
+            <input type="text" class="custom-modal-input" id="modal-id-input" value="${escapeHtml(defaultId)}" placeholder="${escapeHtml(placeholderId)}" style="text-transform: uppercase;">
+            ${placeholderId ? `<small style="display: block; margin-top: 4px; color: var(--text-muted); font-size: 11px;">${escapeHtml(placeholderId)}</small>` : ''}
+          </div>
+          
+          <!-- 🔧 CHECKBOX: MARCAR COMO ÁREA GENÉRICA -->
+          <div style="padding: 14px; background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(5,150,105,0.05) 100%); border: 2px solid rgba(16,185,129,0.3); border-radius: 8px; margin-bottom: 20px;">
+            <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; user-select: none;">
+              <input type="checkbox" id="checkbox-area-generica" ${defaultEsGenerica ? 'checked' : ''} style="width: 20px; height: 20px; margin-top: 2px; cursor: pointer; accent-color: #10b981; flex-shrink: 0;" />
+              <div style="flex: 1;">
+                <div style="color: var(--text-primary); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">
+                  🔧 Marcar como Área de Uso General
+                </div>
+                <div style="color: var(--text-secondary); font-size: 0.8rem; line-height: 1.4;">
+                  Si activas esta opción, el área aparecerá en una sección separada visualmente (verde), fuera de la jerarquía organizacional normal. Ideal para elementos comunes, consumibles, pernería, repuestos transversales, etc.
+                </div>
+              </div>
+            </label>
+          </div>
+          
+          <div class="custom-modal-buttons">
+            <button class="custom-modal-btn custom-modal-btn-secondary" data-action="cancel">Cancelar</button>
+            <button class="custom-modal-btn custom-modal-btn-primary" data-action="accept">Guardar</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(overlay);
+      
+      const inputNombre = overlay.querySelector('#modal-nombre-input');
+      const inputId = overlay.querySelector('#modal-id-input');
+      const checkboxGenerica = overlay.querySelector('#checkbox-area-generica');
+      const acceptBtn = overlay.querySelector('[data-action="accept"]');
+      const cancelBtn = overlay.querySelector('[data-action="cancel"]');
+      
+      // 🔧 PREVENIR que listeners globales bloqueen escritura en los inputs
+      [inputNombre, inputId].forEach(input => {
+        input.addEventListener('keydown', (e) => {
+          // Permitir que TODAS las teclas normales funcionen en el input
+          // Solo prevenir propagación al documento para evitar atajos globales
+          if (!e.ctrlKey && !e.metaKey && !e.altKey) {
+            e.stopPropagation();
+          }
+        });
+      });
+      
+      // Auto-generar abreviatura mientras se escribe el nombre
+      let userEditedId = !!defaultId;
+      
+      inputNombre.addEventListener('input', () => {
+        if (!userEditedId) {
+          const abrev = this.generarAbreviatura(inputNombre.value);
+          inputId.value = abrev;
+        }
+      });
+      
+      inputId.addEventListener('input', () => {
+        userEditedId = true;
+      });
+      
+      setTimeout(() => {
+        inputNombre.focus();
+        inputNombre.select();
+      }, 100);
+      
+      const close = (value) => {
+        overlay.remove();
+        resolve(value);
+      };
+      
+      acceptBtn.onclick = () => {
+        close({ 
+          id: inputId.value, 
+          nombre: inputNombre.value,
+          esAreaGenerica: checkboxGenerica.checked
+        });
+      };
+      cancelBtn.onclick = () => close(null);
+      
+      inputNombre.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          inputId.focus();
+          inputId.select();
+        }
+        if (e.key === 'Escape') close(null);
+      };
+      
+      inputId.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          close({ 
+            id: inputId.value, 
+            nombre: inputNombre.value,
+            esAreaGenerica: checkboxGenerica.checked
+          });
+        }
         if (e.key === 'Escape') close(null);
       };
       
@@ -57826,6 +60482,43 @@ app.buildJerarquiaSearchIndex = function() {
   });
 
   this.jerarquiaSearchState.index = index;
+  
+  // 🔍 AGREGAR REPUESTOS AL ÍNDICE DE BÚSQUEDA
+  console.log('🔍 Agregando repuestos al índice de búsqueda...');
+  let repuestosAgregados = 0;
+  
+  this.repuestos.forEach(repuesto => {
+    // Solo agregar repuestos que tengan ubicación en jerarquía
+    if (repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
+      repuesto.ubicaciones.forEach((ubicacion, ubIdx) => {
+        if (ubicacion.areaGeneral) {
+          // Construir path completo
+          const pathParts = [empresaNombre];
+          if (ubicacion.areaGeneral) pathParts.push(ubicacion.areaGeneral);
+          if (ubicacion.subArea) pathParts.push(ubicacion.subArea);
+          if (ubicacion.sistemaEquipo) pathParts.push(ubicacion.sistemaEquipo);
+          if (ubicacion.subSistema) pathParts.push(ubicacion.subSistema);
+          if (ubicacion.seccion) pathParts.push(ubicacion.seccion);
+          pathParts.push(repuesto.nombre);
+          
+          index.push({
+            id: repuesto.codSAP || repuesto.id,
+            nombre: repuesto.nombre,
+            nivel: 'Repuesto',
+            path: pathParts.join(' > '),
+            indices: [], // Los repuestos no tienen indices en el árbol jerárquico
+            repuestoId: repuesto.id,
+            ubicacion: ubicacion,
+            isRepuesto: true
+          });
+          repuestosAgregados++;
+        }
+      });
+    }
+  });
+  
+  console.log(`✅ ${repuestosAgregados} repuestos agregados al índice`);
+  console.log(`📊 Total elementos en índice: ${index.length}`);
 };
 
 app.performJerarquiaSearch = function(rawQuery) {
@@ -58025,6 +60718,20 @@ app.focusJerarquiaSearchResult = function(match) {
     return;
   }
 
+  // 🔍 Si es un REPUESTO, usar la función de navegación especial
+  if (match.isRepuesto && match.repuestoId) {
+    console.log('🔍 Resultado es un repuesto, navegando con filtro...');
+    this.verRepuestoEnJerarquia(match.repuestoId);
+    
+    // Limpiar sugerencias
+    const suggestionsContainer = document.getElementById('jerarquiaSearchSuggestions');
+    if (suggestionsContainer) {
+      suggestionsContainer.classList.remove('active');
+    }
+    return;
+  }
+
+  // 🌳 Si es un NODO de jerarquía, usar la lógica original
   const container = this.getActiveJerarquiaContainer();
   if (!container) return;
 
@@ -58490,7 +61197,12 @@ if (savedZoom) {
 
 // Atajos de teclado para zoom (Ctrl + y Ctrl -)
 document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey || e.metaKey) {
+  // 🚫 IGNORAR si estás escribiendo en un input/textarea
+  const isTyping = e.target.tagName === 'INPUT' || 
+                   e.target.tagName === 'TEXTAREA' || 
+                   e.target.isContentEditable;
+  
+  if ((e.ctrlKey || e.metaKey) && !isTyping) {
     if (e.key === '+' || e.key === '=') {
       e.preventDefault();
       zoomIn();

@@ -444,7 +444,27 @@
       }
     ],
     "ultimoConteo": "2025-10-23T11:55:25.926Z",
-    "ultimaModificacion": "2025-10-23T11:55:25.926Z"
+    "ultimaModificacion": "2025-11-24T00:34:57.108Z",
+    "ubicaciones": [
+      {
+        "areaGeneral": "Uso general",
+        "subArea": "Pernos",
+        "sistemaEquipo": "",
+        "subSistema": "",
+        "seccion": "",
+        "subSeccion": "",
+        "detalle": "",
+        "cantidadEnUbicacion": 1
+      }
+    ],
+    "areaGeneral": "Uso general",
+    "subArea": "Pernos",
+    "sistemaEquipo": "",
+    "subSistema": "",
+    "seccion": "",
+    "detalle": "",
+    "estado_ubicacion": "jerarquia_sola",
+    "progreso_flujo": "Listo para ubicar"
   },
   {
     "id": "17592197776760.8602758964398768",
@@ -465,7 +485,28 @@
         "size": 40748,
         "isFileSystem": true
       }
-    ]
+    ],
+    "ubicaciones": [
+      {
+        "areaGeneral": "Uso general",
+        "subArea": "Pinturas",
+        "sistemaEquipo": "Spray",
+        "subSistema": "",
+        "seccion": "",
+        "subSeccion": "",
+        "detalle": "",
+        "cantidadEnUbicacion": 1
+      }
+    ],
+    "areaGeneral": "Uso general",
+    "subArea": "Pinturas",
+    "sistemaEquipo": "Spray",
+    "subSistema": "",
+    "seccion": "",
+    "detalle": "",
+    "estado_ubicacion": "jerarquia_sola",
+    "progreso_flujo": "Listo para ubicar",
+    "ultimaModificacion": "2025-11-24T00:24:32.978Z"
   },
   {
     "id": "17592199400670.7478335076421804",
@@ -486,7 +527,28 @@
         "size": 677952,
         "isFileSystem": true
       }
-    ]
+    ],
+    "ubicaciones": [
+      {
+        "areaGeneral": "Uso general",
+        "subArea": "Desoxidantes y Lubricantes",
+        "sistemaEquipo": "",
+        "subSistema": "",
+        "seccion": "",
+        "subSeccion": "",
+        "detalle": "",
+        "cantidadEnUbicacion": 1
+      }
+    ],
+    "areaGeneral": "Uso general",
+    "subArea": "Desoxidantes y Lubricantes",
+    "sistemaEquipo": "",
+    "subSistema": "",
+    "seccion": "",
+    "detalle": "",
+    "estado_ubicacion": "jerarquia_sola",
+    "progreso_flujo": "Listo para ubicar",
+    "ultimaModificacion": "2025-11-24T00:35:13.028Z"
   },
   {
     "id": "17592206005860.9394235640437687",
@@ -499,7 +561,28 @@
     "cantidad": 15,
     "minimo": 5,
     "precio": 0,
-    "multimedia": []
+    "multimedia": [],
+    "ubicaciones": [
+      {
+        "areaGeneral": "Uso general",
+        "subArea": "Pinturas",
+        "sistemaEquipo": "Brochas y rodillos",
+        "subSistema": "",
+        "seccion": "",
+        "subSeccion": "",
+        "detalle": "",
+        "cantidadEnUbicacion": 1
+      }
+    ],
+    "areaGeneral": "Uso general",
+    "subArea": "Pinturas",
+    "sistemaEquipo": "Brochas y rodillos",
+    "subSistema": "",
+    "seccion": "",
+    "detalle": "",
+    "estado_ubicacion": "jerarquia_sola",
+    "progreso_flujo": "Listo para ubicar",
+    "ultimaModificacion": "2025-11-24T00:41:49.146Z"
   },
   {
     "id": "17592207705610.3506175212502286",
@@ -520,7 +603,28 @@
         "size": 45008,
         "isFileSystem": true
       }
-    ]
+    ],
+    "ubicaciones": [
+      {
+        "areaGeneral": "Uso general",
+        "subArea": "Piping 32mm",
+        "sistemaEquipo": "",
+        "subSistema": "",
+        "seccion": "",
+        "subSeccion": "",
+        "detalle": "",
+        "cantidadEnUbicacion": 1
+      }
+    ],
+    "areaGeneral": "Uso general",
+    "subArea": "Piping 32mm",
+    "sistemaEquipo": "",
+    "subSistema": "",
+    "seccion": "",
+    "detalle": "",
+    "estado_ubicacion": "jerarquia_sola",
+    "progreso_flujo": "Listo para ubicar",
+    "ultimaModificacion": "2025-11-24T00:35:36.984Z"
   },
   {
     "id": "17592209229850.5499875719973021",
@@ -541,7 +645,28 @@
         "size": 28896,
         "isFileSystem": true
       }
-    ]
+    ],
+    "ubicaciones": [
+      {
+        "areaGeneral": "Uso general",
+        "subArea": "Desoxidantes y Lubricantes",
+        "sistemaEquipo": "",
+        "subSistema": "",
+        "seccion": "",
+        "subSeccion": "",
+        "detalle": "",
+        "cantidadEnUbicacion": 1
+      }
+    ],
+    "areaGeneral": "Uso general",
+    "subArea": "Desoxidantes y Lubricantes",
+    "sistemaEquipo": "",
+    "subSistema": "",
+    "seccion": "",
+    "detalle": "",
+    "estado_ubicacion": "jerarquia_sola",
+    "progreso_flujo": "Listo para ubicar",
+    "ultimaModificacion": "2025-11-24T00:38:53.607Z"
   },
   {
     "id": "17592213904480.9935691841166233",
@@ -562,7 +687,28 @@
         "size": 162636,
         "isFileSystem": true
       }
-    ]
+    ],
+    "ubicaciones": [
+      {
+        "areaGeneral": "Uso general",
+        "subArea": "Iluminacion",
+        "sistemaEquipo": "Iluminacion estanca",
+        "subSistema": "",
+        "seccion": "",
+        "subSeccion": "",
+        "detalle": "",
+        "cantidadEnUbicacion": 1
+      }
+    ],
+    "areaGeneral": "Uso general",
+    "subArea": "Iluminacion",
+    "sistemaEquipo": "Iluminacion estanca",
+    "subSistema": "",
+    "seccion": "",
+    "detalle": "",
+    "estado_ubicacion": "jerarquia_sola",
+    "progreso_flujo": "Listo para ubicar",
+    "ultimaModificacion": "2025-11-24T00:41:05.242Z"
   },
   {
     "id": "17592227103960.9902849805827032",

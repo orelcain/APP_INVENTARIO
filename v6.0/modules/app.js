@@ -27025,6 +27025,298 @@ class InventarioCompleto {
     this.abrirModalAsignarAreaMapa(id, repuesto);
   }
 
+  /**
+   *  Ver repuesto en jerarqua - Navega y resalta el nodo
+   * @param {string} repuestoId - ID del repuesto
+   */
+  verRepuestoEnJerarquia(repuestoId) {
+    console.log('\n========================================');
+    console.log('🌳 INICIANDO: verRepuestoEnJerarquia');
+    console.log('   repuestoId:', repuestoId);
+    console.log('========================================\n');
+    
+    const repuesto = this.repuestos.find(r => String(r.id) === String(repuestoId));
+    
+    if (!repuesto) {
+      console.error('❌ Repuesto no encontrado con ID:', repuestoId);
+      this.showToast(' Repuesto no encontrado', 'error');
+      return;
+    }
+    
+    console.log('✅ Repuesto encontrado:', repuesto.nombre);
+
+    // Verificar si tiene ubicaciones
+    let ubicaciones = [];
+    console.log('📦 Verificando ubicaciones del repuesto...');
+    console.log('   repuesto.ubicaciones:', repuesto.ubicaciones);
+    console.log('   repuesto.areaGeneral:', repuesto.areaGeneral);
+    
+    if (repuesto.ubicaciones && Array.isArray(repuesto.ubicaciones) && repuesto.ubicaciones.length > 0) {
+      ubicaciones = repuesto.ubicaciones;
+      console.log('✅ Usando formato nuevo (ubicaciones[]):', ubicaciones.length);
+    } else if (repuesto.areaGeneral) {
+      // Formato antiguo - convertir temporalmente
+      ubicaciones = [{
+        areaGeneral: repuesto.areaGeneral,
+        subArea: repuesto.subArea || '',
+        sistemaEquipo: repuesto.sistemaEquipo || '',
+        subSistema: repuesto.subSistema || ''
+      }];
+      console.log('✅ Usando formato antiguo (campos directos):', ubicaciones);
+    }
+
+    if (ubicaciones.length === 0) {
+      console.warn('⚠️ El repuesto no tiene ubicaciones en jerarquía');
+      this.showToast(' Este repuesto no tiene ubicacin en la jerarqua', 'warning', 3000);
+      return;
+    }
+
+    console.log('🔄 Cambiando a pestaña jerarquía...');
+    console.log('   this.switchTab:', typeof this.switchTab);
+    
+    // Cambiar a pestaa jerarqua
+    this.switchTab('jerarquia');
+
+    // Obtener la primera ubicacin
+    const ubicacion = ubicaciones[0];
+    console.log('📍 Primera ubicación a buscar:', ubicacion);
+
+    // Esperar a que se renderice el rbol
+    setTimeout(() => {
+      console.log('⏰ Timer ejecutado, buscando nodo en el árbol...');
+      
+      if (!this.jerarquiaAnidada) {
+        console.error('❌ this.jerarquiaAnidada no existe');
+        this.showToast(' Error: Jerarqua no cargada', 'error');
+        return;
+      }
+      
+      if (!this.jerarquiaAnidada.areas) {
+        console.error('❌ this.jerarquiaAnidada.areas no existe');
+        console.log('   jerarquiaAnidada:', this.jerarquiaAnidada);
+        this.showToast(' Error: Jerarqua no cargada', 'error');
+        return;
+      }
+
+      const { areas } = this.jerarquiaAnidada;
+      console.log('✅ Jerarquía cargada con', areas.length, 'áreas');
+      
+      // Buscar el nodo por nombres
+      let nodeId = null;
+      let rutaCompleta = [];
+      
+      console.log('🔍 Buscando nodo en', areas.length, 'áreas...');
+      console.log('   Buscando areaGeneral:', ubicacion.areaGeneral);
+      
+      for (let areaIdx = 0; areaIdx < areas.length; areaIdx++) {
+        const area = areas[areaIdx];
+        console.log(`   [${areaIdx}] Verificando área: "${area.nombre}"`);
+        
+        if (area.nombre === ubicacion.areaGeneral) {
+          console.log('   ✅ Área encontrada!');
+          rutaCompleta.push(area.nombre);
+          
+          if (!ubicacion.subArea) {
+            nodeId = `area_${areaIdx}`;
+            break;
+          }
+
+          if (area.subAreas && Array.isArray(area.subAreas)) {
+            for (let subAreaIdx = 0; subAreaIdx < area.subAreas.length; subAreaIdx++) {
+              const subArea = area.subAreas[subAreaIdx];
+              
+              if (subArea.nombre === ubicacion.subArea) {
+                rutaCompleta.push(subArea.nombre);
+                
+                if (!ubicacion.sistemaEquipo) {
+                  nodeId = `subArea_${areaIdx}_${subAreaIdx}`;
+                  break;
+                }
+
+                if (subArea.sistemas && Array.isArray(subArea.sistemas)) {
+                  for (let sistemaIdx = 0; sistemaIdx < subArea.sistemas.length; sistemaIdx++) {
+                    const sistema = subArea.sistemas[sistemaIdx];
+                    
+                    if (sistema.nombre === ubicacion.sistemaEquipo) {
+                      rutaCompleta.push(sistema.nombre);
+                      
+                      if (!ubicacion.subSistema) {
+                        nodeId = `sistema_${areaIdx}_${subAreaIdx}_${sistemaIdx}`;
+                        break;
+                      }
+
+                      if (sistema.subSistemas && Array.isArray(sistema.subSistemas)) {
+                        for (let subSistemaIdx = 0; subSistemaIdx < sistema.subSistemas.length; subSistemaIdx++) {
+                          const subSistema = sistema.subSistemas[subSistemaIdx];
+                          
+                          if (subSistema.nombre === ubicacion.subSistema) {
+                            rutaCompleta.push(subSistema.nombre);
+                            nodeId = `subSistema_${areaIdx}_${subAreaIdx}_${sistemaIdx}_${subSistemaIdx}`;
+                            break;
+                          }
+                        }
+                      }
+                      break;
+                    }
+                  }
+                }
+                break;
+              }
+            }
+          }
+          break;
+        }
+      }
+
+      console.log('\n🎯 Resultado de búsqueda:');
+      console.log('   nodeId:', nodeId);
+      console.log('   rutaCompleta:', rutaCompleta);
+      
+      if (nodeId) {
+        console.log('\n🔎 Buscando elemento en DOM:', `[data-node-id="${nodeId}"]`);
+        // Buscar el elemento del nodo en el DOM
+        const nodoElement = document.querySelector(`[data-node-id="${nodeId}"]`);
+        console.log('   Elemento encontrado:', nodoElement ? 'SÍ' : 'NO');
+        
+        if (nodoElement) {
+          console.log('   ✅ Elemento DOM encontrado, procediendo a resaltar...');
+          // Expandir todos los nodos padres
+          let parent = nodoElement.parentElement;
+          while (parent) {
+            if (parent.classList && parent.classList.contains('tree-children')) {
+              parent.style.display = 'block';
+              
+              // Buscar el botn de colapso del padre y asegurarse de que est expandido
+              const parentNode = parent.previousElementSibling;
+              if (parentNode) {
+                const collapseBtn = parentNode.querySelector('.collapse-btn');
+                if (collapseBtn && collapseBtn.classList.contains('collapsed')) {
+                  collapseBtn.classList.remove('collapsed');
+                  collapseBtn.textContent = '';
+                }
+              }
+            }
+            parent = parent.parentElement;
+          }
+
+          // Remover resaltado previo
+          document.querySelectorAll('.tree-node-content').forEach(n => {
+            n.style.border = '';
+            n.style.background = '';
+            n.style.boxShadow = '';
+          });
+          
+          // Resaltar el nodo encontrado
+          nodoElement.style.border = '3px solid var(--success)';
+          nodoElement.style.background = 'rgba(46, 204, 113, 0.15)';
+          nodoElement.style.boxShadow = '0 0 15px rgba(46, 204, 113, 0.3)';
+          
+          // Scroll suave hasta el nodo
+          setTimeout(() => {
+            nodoElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center',
+              inline: 'nearest'
+            });
+          }, 100);
+          
+          // Mostrar mensaje con la ruta completa
+          const rutaTexto = rutaCompleta.join('  ');
+          console.log('\n🎉 ÉXITO: Repuesto localizado');
+          console.log('   Ruta:', rutaTexto);
+          this.showToast(` Ubicado en: ${rutaTexto}`, 'success', 4000);
+          
+        } else {
+          console.error('\n❌ ERROR: Elemento no encontrado en DOM');
+          console.error('   nodeId buscado:', nodeId);
+          console.error('   Todos los nodos disponibles:');
+          document.querySelectorAll('[data-node-id]').forEach(el => {
+            console.error('      -', el.getAttribute('data-node-id'));
+          });
+          this.showToast(' No se encontr el nodo en el rbol', 'warning');
+        }
+      } else {
+        console.error('\n❌ ERROR: No se pudo construir nodeId');
+        console.error('   ubicacion:', ubicacion);
+        console.error('   areas disponibles:', areas.map(a => a.nombre));
+        this.showToast(' No se pudo localizar la ubicacin en el rbol', 'warning');
+      }
+      
+      console.log('\n========================================');
+      console.log('🏁 FIN: verRepuestoEnJerarquia');
+      console.log('========================================\n');
+    }, 150);
+  }
+
+  /**
+   *  Continuar al mapa - Transicin desde jerarqua
+   * Mantiene el repuesto en flujo y cambia a pestaa de mapa
+   */
+  continuarAMapa() {
+    console.log('\n========================================');
+    console.log('🗺️  INICIANDO: continuarAMapa');
+    console.log('   repuestoEnFlujo:', this.repuestoEnFlujo);
+    console.log('========================================\n');
+    
+    // El repuestoEnFlujo ya debe estar establecido
+    if (!this.repuestoEnFlujo) {
+      console.error('❌ No hay repuesto en flujo');
+      this.showToast(' No hay repuesto en flujo', 'warning');
+      return;
+    }
+
+    console.log('🔄 Cambiando a pestaña mapa...');
+    // Cambiar a pestaa de mapa
+    this.switchTab('mapa');
+    
+    console.log('✅ Cambio completado');
+    // Mostrar instrucciones
+    this.showToast(' Selecciona un mapa y coloca el marcador', 'info', 3000);
+    
+    console.log('========================================');
+    console.log('🏁 FIN: continuarAMapa');
+    console.log('========================================\n');
+  }
+
+  /**
+   *  Asignar jerarqua a repuesto - Inicia flujo guiado
+   * @param {string} repuestoId - ID del repuesto
+   */
+  asignarJerarquiaRepuesto(repuestoId) {
+    console.log('\n========================================');
+    console.log('➕ INICIANDO: asignarJerarquiaRepuesto');
+    console.log('   repuestoId:', repuestoId);
+    console.log('========================================\n');
+    
+    const repuesto = this.repuestos.find(r => String(r.id) === String(repuestoId));
+    
+    if (!repuesto) {
+      console.error('❌ Repuesto no encontrado con ID:', repuestoId);
+      this.showToast(' Repuesto no encontrado', 'error');
+      return;
+    }
+    
+    console.log('✅ Repuesto encontrado:', repuesto.nombre);
+    console.log('💾 Guardando en flujo de trabajo...');
+
+    // Guardar en el flujo de trabajo
+    this.repuestoEnFlujo = repuestoId;
+    console.log('   repuestoEnFlujo establecido:', this.repuestoEnFlujo);
+
+    console.log('🔄 Cambiando a pestaña jerarquía...');
+    // Cambiar a la pestaa de jerarqua
+    this.switchTab('jerarquia');
+
+    console.log('✅ Cambio completado');
+    // Mostrar instrucciones
+    setTimeout(() => {
+      this.showToast(' Selecciona un nodo en el rbol para asignar la ubicacin', 'info', 3000);
+      console.log('========================================');
+      console.log('🏁 FIN: asignarJerarquiaRepuesto');
+      console.log('========================================\n');
+    }, 150);
+  }
+
   async verRepuestoEnMapa(id) {
     console.log(' Ver repuesto en mapa:', id);
     
