@@ -105,6 +105,14 @@ class FirebaseStorageAdapter {
      */
     async guardarMapas(mapas) {
         try {
+            console.log('🗺️  [DEBUG] guardarMapas llamado:', {
+                recibido: mapas,
+                tipo: typeof mapas,
+                esArray: Array.isArray(mapas),
+                longitud: mapas?.length,
+                primerMapa: mapas?.[0]
+            });
+            
             const batch = this.firebaseService.db.batch();
 
             mapas.forEach(mapa => {
@@ -152,6 +160,14 @@ class FirebaseStorageAdapter {
      */
     async guardarZonas(zonas) {
         try {
+            console.log('📍 [DEBUG] guardarZonas llamado:', {
+                recibido: zonas,
+                tipo: typeof zonas,
+                esArray: Array.isArray(zonas),
+                longitud: zonas?.length,
+                primeraZona: zonas?.[0]
+            });
+            
             const batch = this.firebaseService.db.batch();
 
             zonas.forEach(zona => {
