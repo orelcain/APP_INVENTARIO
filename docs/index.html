@@ -40110,11 +40110,13 @@ class InventarioCompleto {
     
     if (ubicacionesValidas.length === 0) {
       //  RE-HABILITAR BOTN SI HAY ERROR
-      btnGuardar.disabled = false;
-      btnGuardar.style.opacity = '1';
-      btnGuardar.style.cursor = 'pointer';
-      btnText.style.display = 'inline';
-      btnLoading.style.display = 'none';
+      if (btnGuardar) {
+        btnGuardar.disabled = false;
+        btnGuardar.style.opacity = '1';
+        btnGuardar.style.cursor = 'pointer';
+      }
+      if (btnText) btnText.style.display = 'inline';
+      if (btnLoading) btnLoading.style.display = 'none';
       
       this.showToast(' Debes especificar al menos un rea General', 'error');
       return;
@@ -40383,11 +40385,13 @@ class InventarioCompleto {
       this.showToast(' Error al guardar: ' + error.message, 'error');
       
       //  RE-HABILITAR BOTN EN CASO DE ERROR
-      btnGuardar.disabled = false;
-      btnGuardar.style.opacity = '1';
-      btnGuardar.style.cursor = 'pointer';
-      btnText.style.display = 'inline';
-      btnLoading.style.display = 'none';
+      if (btnGuardar) {
+        btnGuardar.disabled = false;
+        btnGuardar.style.opacity = '1';
+        btnGuardar.style.cursor = 'pointer';
+      }
+      if (btnText) btnText.style.display = 'inline';
+      if (btnLoading) btnLoading.style.display = 'none';
     }
   }
 
