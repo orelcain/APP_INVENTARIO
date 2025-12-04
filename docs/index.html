@@ -49914,6 +49914,7 @@ class InventarioCompleto {
    */
   generarSeccionUbicacionUnificada(repuesto) {
     const estado = this.analizarEstadoRepuesto(repuesto);
+    const tieneUbicaciones = repuesto.ubicaciones && repuesto.ubicaciones.length > 0;
     const tieneMultiplesUbicaciones = repuesto.ubicaciones && repuesto.ubicaciones.length > 1;
     
     let html = '<div style="padding: 0 12px 12px 12px;">';
@@ -49921,7 +49922,7 @@ class InventarioCompleto {
     // ══════════════════════════════════════════════════════════════
     // CASO 1: COMPLETO (100%) - Solo mostrar ubicación y botones básicos
     // ══════════════════════════════════════════════════════════════
-    if (estado.progreso === 100) {
+    if (estado.progreso === 100 && tieneUbicaciones) {
       // Mostrar ubicación compacta
       const ubicacion = repuesto.ubicaciones[0];
       const rutaJerarquia = [
@@ -50034,7 +50035,7 @@ class InventarioCompleto {
     // ══════════════════════════════════════════════════════════════
     // CASO 3: CON JERARQUÍA PERO INCOMPLETO - Mostrar progreso y lo que falta
     // ══════════════════════════════════════════════════════════════
-    else {
+    else if (tieneUbicaciones) {
       // Obtener ubicación actual
       const ubicacion = repuesto.ubicaciones[0];
       const rutaJerarquia = [
