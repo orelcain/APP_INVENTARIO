@@ -87,14 +87,14 @@ class LoginUI {
             </div>
 
             <!-- User Menu (después de login) -->
-            <div id="userMenu" style="display: none; position: fixed; top: 12px; right: 20px; z-index: 99999;">
-                <div class="user-menu-container" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 10px 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 12px; border: 2px solid rgba(255,255,255,0.2);">
-                    <div style="display: flex; align-items: center; gap: 12px;">
+            <div id="userMenu" style="display: none; position: fixed; top: 18px; right: 280px; z-index: 9999;">
+                <div class="user-menu-container" style="background: rgba(30, 33, 41, 0.95); padding: 6px 12px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; align-items: center; gap: 8px;">
                         <div style="text-align: left;">
-                            <div id="userEmail" style="font-size: 0.8rem; font-weight: 600; color: white;"></div>
-                            <div id="userRole" style="font-size: 0.7rem; color: rgba(255,255,255,0.9); margin-top: 2px;"></div>
+                            <div id="userEmail" style="font-size: 0.7rem; font-weight: 500; color: rgba(255,255,255,0.9);"></div>
+                            <div id="userRole" style="font-size: 0.65rem; color: rgba(255,255,255,0.6); margin-top: 1px;"></div>
                         </div>
-                        <button id="btnLogout" class="btn btn-sm" style="padding: 6px 14px; font-size: 0.75rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        <button id="btnLogout" class="btn btn-sm" style="padding: 4px 10px; font-size: 0.7rem; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; cursor: pointer; font-weight: 500;">
                             Salir
                         </button>
                     </div>
