@@ -37150,57 +37150,6 @@ class InventarioCompleto {
                 </button>
               ` : ''}
             </div>
-            <div style="display: flex; gap: 8px; width: 100%;">
-              <!-- Botón Jerarquía (dinámico: Verde si tiene, Rojo si no) -->
-              <button onclick="app.${tieneJerarquia ? 'verRepuestoEnJerarquia' : 'asignarJerarquiaYMostrar'}('${r.id}')" 
-                      title="${tieneJerarquia ? 'Ver en la jerarquía organizacional (para gestionar mapa/área/marcador)' : 'Asignar ubicación en jerarquía'}"
-                      style="
-                        flex: 1; 
-                        padding: 10px 12px; 
-                        background: linear-gradient(135deg, ${tieneJerarquia ? '#10b981 0%, #059669' : '#ef4444 0%, #dc2626'} 100%); 
-                        color: white; 
-                        border: none; 
-                        border-radius: 8px; 
-                        font-size: 0.85rem; 
-                        font-weight: 600; 
-                        cursor: pointer; 
-                        transition: all 0.2s;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 6px;
-                        box-shadow: 0 2px 6px ${tieneJerarquia ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'};
-                      "
-                      onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px ${tieneJerarquia ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)'}';"
-                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px ${tieneJerarquia ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}';">
-                ${tieneJerarquia ? '🌳 En Jerarquía' : '➕ Asignar Jerarquía'}
-              </button>
-              
-              <!-- Botón Editar (siempre naranja) -->
-              <button onclick="app.editarRepuesto('${r.id}')" 
-                      title="Editar información del repuesto"
-                      style="
-                        flex: 1; 
-                        padding: 10px 12px; 
-                        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
-                        color: white; 
-                        border: none; 
-                        border-radius: 8px; 
-                        font-size: 0.85rem; 
-                        font-weight: 600; 
-                        cursor: pointer; 
-                        transition: all 0.2s;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 6px;
-                        box-shadow: 0 2px 6px rgba(245,158,11,0.3);
-                      "
-                      onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(245,158,11,0.4)';"
-                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(245,158,11,0.3)';">
-                ✏️ Editar
-              </button>
-            </div>
           </div>
           <div class="card-info">
             ${r.codSAP ? `<div class="info-row"><span class="info-label">Cd. SAP:</span><span class="info-value" style="font-weight: 500; color: var(--primary);">${r.codSAP}</span></div>` : ''}
@@ -37334,111 +37283,8 @@ class InventarioCompleto {
           </div>
         </div>
         
-        <!-- 🎯 BLOQUE: Ubicación Completa -->
-        ${r.ubicaciones && r.ubicaciones.length > 0 ? '<div style="' +
-            'background: rgba(59, 130, 246, 0.08);' +
-            'border-left: 3px solid var(--primary);' +
-            'padding: 10px 12px;' +
-            'margin: 8px 12px;' +
-            'border-radius: 6px;' +
-          '">' +
-            '<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">' +
-              '<div style="font-size: 0.7rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">' +
-                '📍 Ubicación Completa' +
-              '</div>' +
-              '<div style="' +
-                'font-size: 0.65rem;' +
-                'background: ' + (r.estado_ubicacion === 'completo' ? 'rgba(34, 197, 94, 0.15)' : 'rgba(251, 191, 36, 0.15)') + ';' +
-                'color: ' + (r.estado_ubicacion === 'completo' ? '#22c55e' : '#fbbf24') + ';' +
-                'padding: 2px 8px;' +
-                'border-radius: 4px;' +
-                'font-weight: 600;' +
-              '">' +
-                (r.progreso_flujo || 'Borrador') +
-              '</div>' +
-            '</div>' +
-            '<!-- Jerarquía -->' +
-            '<div style="margin-bottom: 6px;">' +
-              '<div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 3px;">🌳 Jerarquía:</div>' +
-              '<div style="font-size: 0.75rem; color: var(--text-primary); line-height: 1.4;">' +
-                ([
-                  r.ubicaciones[0].areaGeneral,
-                  r.ubicaciones[0].subArea,
-                  r.ubicaciones[0].sistemaEquipo,
-                  r.ubicaciones[0].subSistema
-                ].filter(Boolean).join(' → ') || 'Sin asignar') +
-              '</div>' +
-            '</div>' +
-            (r.ubicacionesMapa && r.ubicacionesMapa.length > 0 ? 
-              '<!-- Ubicación en Mapa -->' +
-              '<div style="margin-bottom: 6px; padding-top: 6px; border-top: 1px solid rgba(59, 130, 246, 0.2);">' +
-                '<div style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 3px;">🗺️ Mapa:</div>' +
-                '<div style="font-size: 0.75rem; color: var(--text-primary); line-height: 1.4;">' +
-                  'Coordenadas: (' + r.ubicacionesMapa[0].coordenadas.x.toFixed(1) + ', ' + r.ubicacionesMapa[0].coordenadas.y.toFixed(1) + ')' +
-                '</div>' +
-              '</div>' : '') +
-          '</div>' : ''}
-            
-            <!-- 🎯 BOTONES DINÁMICOS SEGÚN ESTADO DEL FLUJO (solo si tiene jerarquía) -->
-            ${r.ubicaciones && r.ubicaciones.length > 0 && r.ubicaciones[0].areaGeneral ? 
-              this.generarBotonesSegunEstado(r) : ''
-            }
-        
-            <div class="card-footer" style="display: flex; justify-content: center; align-items: center; gap: 8px; padding: 8px 12px; flex-wrap: wrap;">
-          <button class="card-btn" style="
-            background: var(--primary);
-            color: white;
-            border: 1px solid rgba(91, 139, 180, 0.3);
-            padding: 8px 14px;
-            border-radius: 4px;
-            font-weight: 500;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 80px;
-            flex: 0 1 auto;
-          " data-action="edit" data-id="${r.id}" 
-          onmouseover="this.style.background='#6a9dc4'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
-          onmouseout="this.style.background='var(--primary)'; this.style.boxShadow='none';">
-            Editar
-          </button>
-          
-          <button class="card-btn" style="
-            background: var(--success);
-            color: white;
-            border: 1px solid rgba(91, 155, 122, 0.3);
-            padding: 8px 14px;
-            border-radius: 4px;
-            font-weight: 500;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 80px;
-            flex: 0 1 auto;
-          " data-action="contar" data-id="${r.id}"
-          onmouseover="this.style.background='#6bae89'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
-          onmouseout="this.style.background='var(--success)'; this.style.boxShadow='none';">
-            Contar
-          </button>
-          
-          <button class="card-btn" style="
-            background: var(--danger);
-            color: white;
-            border: 1px solid rgba(184, 107, 107, 0.3);
-            padding: 8px 14px;
-            border-radius: 4px;
-            font-weight: 500;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 80px;
-            flex: 0 1 auto;
-          " data-action="delete" data-id="${r.id}"
-          onmouseover="this.style.background='#c88080'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
-          onmouseout="this.style.background='var(--danger)'; this.style.boxShadow='none';">
-            Eliminar
-          </button>
-        </div>
+        <!-- 🎯 SISTEMA UNIFICADO DE UBICACIÓN Y ACCIONES -->
+        ${this.generarSeccionUbicacionUnificada(r)}
       </div>
       `;
     }).join('');
@@ -50060,6 +49906,237 @@ class InventarioCompleto {
     console.log('\n========================================');
     console.log('✅ PROCESO COMPLETADO: asignarJerarquiaRepuesto');
     console.log('========================================\n');
+  }
+
+  /**
+   * 🎯 SISTEMA UNIFICADO: Genera la sección de ubicación y botones dinámicos
+   * Muestra información según el estado del repuesto y botones inteligentes
+   */
+  generarSeccionUbicacionUnificada(repuesto) {
+    const estado = this.analizarEstadoRepuesto(repuesto);
+    const tieneMultiplesUbicaciones = repuesto.ubicaciones && repuesto.ubicaciones.length > 1;
+    
+    let html = '<div style="padding: 0 12px 12px 12px;">';
+    
+    // ══════════════════════════════════════════════════════════════
+    // CASO 1: COMPLETO (100%) - Solo mostrar ubicación y botones básicos
+    // ══════════════════════════════════════════════════════════════
+    if (estado.progreso === 100) {
+      // Mostrar ubicación compacta
+      const ubicacion = repuesto.ubicaciones[0];
+      const rutaJerarquia = [
+        ubicacion.areaGeneral,
+        ubicacion.subArea,
+        ubicacion.sistemaEquipo,
+        ubicacion.subSistema
+      ].filter(Boolean).join(' → ');
+      
+      html += `
+        <div style="
+          background: rgba(34, 197, 94, 0.08);
+          border-left: 3px solid #22c55e;
+          padding: 8px 10px;
+          border-radius: 4px;
+          margin-bottom: 10px;
+        ">
+          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+            <span style="color: #22c55e; font-size: 0.7rem; font-weight: 600;">✅ UBICACIÓN COMPLETA</span>
+            ${tieneMultiplesUbicaciones ? `
+              <span style="background: #f59e0b; color: white; padding: 2px 6px; border-radius: 8px; font-size: 0.6rem; font-weight: 600;">
+                ${repuesto.ubicaciones.length} ubicaciones
+              </span>
+            ` : ''}
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-primary); line-height: 1.4;">
+            📍 ${rutaJerarquia}
+          </div>
+        </div>
+      `;
+      
+      // Botones: Ver Jerarquía, Editar, Contar
+      html += `
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="
+            flex: 1; min-width: 90px; padding: 8px 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white; border: none; border-radius: 6px;
+            font-size: 0.72rem; font-weight: 600; cursor: pointer;
+          " title="Ver ubicación en jerarquía">
+            🌳 Ver
+          </button>
+          <button onclick="app.editarRepuesto('${repuesto.id}')" style="
+            flex: 1; min-width: 90px; padding: 8px 10px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white; border: none; border-radius: 6px;
+            font-size: 0.72rem; font-weight: 600; cursor: pointer;
+          " title="Editar repuesto">
+            ✏️ Editar
+          </button>
+          <button data-action="contar" data-id="${repuesto.id}" style="
+            flex: 1; min-width: 90px; padding: 8px 10px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white; border: none; border-radius: 6px;
+            font-size: 0.72rem; font-weight: 600; cursor: pointer;
+          " title="Contar stock">
+            🔢 Contar
+          </button>
+        </div>
+      `;
+    }
+    // ══════════════════════════════════════════════════════════════
+    // CASO 2: SIN JERARQUÍA - Mostrar solo Asignar Jerarquía
+    // ══════════════════════════════════════════════════════════════
+    else if (!estado.tieneJerarquia) {
+      html += `
+        <div style="
+          background: rgba(239, 68, 68, 0.08);
+          border-left: 3px solid #ef4444;
+          padding: 8px 10px;
+          border-radius: 4px;
+          margin-bottom: 10px;
+        ">
+          <div style="font-size: 0.7rem; color: #ef4444; font-weight: 600; margin-bottom: 4px;">
+            ⚠️ SIN UBICACIÓN ASIGNADA
+          </div>
+          <div style="font-size: 0.65rem; color: var(--text-secondary);">
+            Este repuesto necesita asignarse a la jerarquía organizacional
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <button onclick="app.asignarJerarquiaYMostrar('${repuesto.id}')" style="
+            flex: 2; min-width: 140px; padding: 8px 10px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white; border: none; border-radius: 6px;
+            font-size: 0.72rem; font-weight: 600; cursor: pointer;
+          " title="Asignar ubicación en jerarquía">
+            ➕ Asignar Jerarquía
+          </button>
+          <button onclick="app.editarRepuesto('${repuesto.id}')" style="
+            flex: 1; min-width: 70px; padding: 8px 10px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white; border: none; border-radius: 6px;
+            font-size: 0.72rem; font-weight: 600; cursor: pointer;
+          " title="Editar repuesto">
+            ✏️ Editar
+          </button>
+          <button data-action="contar" data-id="${repuesto.id}" style="
+            flex: 1; min-width: 70px; padding: 8px 10px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white; border: none; border-radius: 6px;
+            font-size: 0.72rem; font-weight: 600; cursor: pointer;
+          " title="Contar stock">
+            🔢 Contar
+          </button>
+        </div>
+      `;
+    }
+    // ══════════════════════════════════════════════════════════════
+    // CASO 3: CON JERARQUÍA PERO INCOMPLETO - Mostrar progreso y lo que falta
+    // ══════════════════════════════════════════════════════════════
+    else {
+      // Obtener ubicación actual
+      const ubicacion = repuesto.ubicaciones[0];
+      const rutaJerarquia = [
+        ubicacion.areaGeneral,
+        ubicacion.subArea,
+        ubicacion.sistemaEquipo,
+        ubicacion.subSistema
+      ].filter(Boolean).join(' → ');
+      
+      // Color según progreso
+      const progresoColor = estado.progreso < 50 ? '#f59e0b' : '#3b82f6';
+      
+      html += `
+        <div style="
+          background: rgba(59, 130, 246, 0.08);
+          border-left: 3px solid ${progresoColor};
+          padding: 8px 10px;
+          border-radius: 4px;
+          margin-bottom: 10px;
+        ">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <span style="font-size: 0.7rem; color: ${progresoColor}; font-weight: 600;">
+              📋 PENDIENTE
+            </span>
+            <span style="font-size: 0.65rem; color: ${progresoColor}; font-weight: 700;">
+              ${estado.progreso}%
+            </span>
+          </div>
+          
+          <!-- Barra de progreso -->
+          <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-bottom: 6px; overflow: hidden;">
+            <div style="width: ${estado.progreso}%; height: 100%; background: ${progresoColor}; transition: width 0.3s;"></div>
+          </div>
+          
+          <!-- Ubicación actual -->
+          <div style="font-size: 0.7rem; color: var(--text-primary); margin-bottom: 4px;">
+            📍 ${rutaJerarquia}
+          </div>
+          
+          <!-- Lo que falta -->
+          ${estado.faltantes.length > 0 ? `
+            <div style="font-size: 0.62rem; color: var(--text-secondary);">
+              ⚠️ Falta: ${estado.faltantes.join(', ')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+      
+      // Botones según lo que falta
+      html += '<div style="display: flex; gap: 6px; flex-wrap: wrap;">';
+      
+      // Siempre mostrar Ver Jerarquía
+      html += `
+        <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="
+          flex: 1; min-width: 80px; padding: 8px 10px;
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          color: white; border: none; border-radius: 6px;
+          font-size: 0.7rem; font-weight: 600; cursor: pointer;
+        " title="Ver en jerarquía">
+          🌳 Ver
+        </button>
+      `;
+      
+      // Si falta mapa/área/marcador, mostrar botón para asignar
+      if (!estado.tieneMapa || !estado.tieneArea || !estado.tieneMarcador) {
+        html += `
+          <button onclick="app.repuestoEnFlujo='${repuesto.id}'; app.continuarAMapa();" style="
+            flex: 1; min-width: 80px; padding: 8px 10px;
+            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+            color: white; border: none; border-radius: 6px;
+            font-size: 0.7rem; font-weight: 600; cursor: pointer;
+          " title="${!estado.tieneMapa ? 'Asignar mapa' : !estado.tieneArea ? 'Seleccionar área' : 'Colocar marcador'}">
+            🗺️ ${!estado.tieneMapa ? 'Mapa' : !estado.tieneArea ? 'Área' : 'Marcador'}
+          </button>
+        `;
+      }
+      
+      // Editar y Contar siempre
+      html += `
+        <button onclick="app.editarRepuesto('${repuesto.id}')" style="
+          flex: 1; min-width: 70px; padding: 8px 10px;
+          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+          color: white; border: none; border-radius: 6px;
+          font-size: 0.7rem; font-weight: 600; cursor: pointer;
+        " title="Editar">
+          ✏️
+        </button>
+        <button data-action="contar" data-id="${repuesto.id}" style="
+          flex: 1; min-width: 70px; padding: 8px 10px;
+          background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+          color: white; border: none; border-radius: 6px;
+          font-size: 0.7rem; font-weight: 600; cursor: pointer;
+        " title="Contar">
+          🔢
+        </button>
+      `;
+      
+      html += '</div>';
+    }
+    
+    html += '</div>';
+    return html;
   }
 
   /**
