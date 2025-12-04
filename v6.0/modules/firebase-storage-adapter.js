@@ -27,6 +27,53 @@ class FirebaseStorageAdapter {
         };
     }
 
+    /**
+     * Sanitizar objeto para Firebase (eliminar undefined, null profundo, convertir IDs a strings)
+     */
+    sanitizeForFirebase(obj) {
+        if (obj === null || obj === undefined) return null;
+        if (typeof obj !== 'object') return obj;
+        if (Array.isArray(obj)) return obj.map(item => this.sanitizeForFirebase(item)).filter(item => item !== null);
+        
+        const sanitized = {};
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const value = obj[key];
+                
+                // Convertir IDs numéricos a strings
+                if ((key === 'id' || key === 'mapId' || key === 'parentId') && typeof value === 'number') {
+                    sanitized[key] = String(value);
+                }
+                // Eliminar undefined y null de nivel superior
+                else if (value === undefined) {
+                    continue;
+                }
+                else if (value === null) {
+                    sanitized[key] = null; // Mantener null explícito
+                }
+                // Recursión para objetos anidados
+                else if (typeof value === 'object' && !Array.isArray(value)) {
+                    const nestedSanitized = this.sanitizeForFirebase(value);
+                    if (nestedSanitized !== null && Object.keys(nestedSanitized).length > 0) {
+                        sanitized[key] = nestedSanitized;
+                    }
+                }
+                // Arrays
+                else if (Array.isArray(value)) {
+                    const sanitizedArray = value.map(item => this.sanitizeForFirebase(item)).filter(item => item !== null);
+                    if (sanitizedArray.length > 0) {
+                        sanitized[key] = sanitizedArray;
+                    }
+                }
+                // Valores primitivos
+                else {
+                    sanitized[key] = value;
+                }
+            }
+        }
+        return sanitized;
+    }
+
     // ========================================
     // MÉTODOS COMPATIBLES CON StorageManager
     // ========================================
@@ -118,16 +165,20 @@ class FirebaseStorageAdapter {
             mapas.forEach(mapa => {
                 // Convertir ID a string para Firebase
                 const mapaId = mapa.id ? String(mapa.id) : this.generateId();
+                
+                // Sanitizar datos antes de guardar
+                const sanitizedMapa = this.sanitizeForFirebase({
+                    ...mapa,
+                    id: mapaId,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: this.firebaseService.currentUser?.uid || 'unknown'
+                });
+                
                 const docRef = this.firebaseService.db
                     .collection(this.COLLECTIONS.MAPAS)
                     .doc(mapaId);
                 
-                batch.set(docRef, {
-                    ...mapa,
-                    id: mapaId, // Asegurar que el ID sea string
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedBy: this.firebaseService.currentUser?.uid || 'unknown'
-                }, { merge: true });
+                batch.set(docRef, sanitizedMapa, { merge: true });
             });
 
             await batch.commit();
@@ -176,16 +227,20 @@ class FirebaseStorageAdapter {
             zonas.forEach(zona => {
                 // Convertir ID a string para Firebase
                 const zonaId = zona.id ? String(zona.id) : this.generateId();
+                
+                // Sanitizar datos antes de guardar
+                const sanitizedZona = this.sanitizeForFirebase({
+                    ...zona,
+                    id: zonaId,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: this.firebaseService.currentUser?.uid || 'unknown'
+                });
+                
                 const docRef = this.firebaseService.db
                     .collection(this.COLLECTIONS.ZONAS)
                     .doc(zonaId);
                 
-                batch.set(docRef, {
-                    ...zona,
-                    id: zonaId, // Asegurar que el ID sea string
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedBy: this.firebaseService.currentUser?.uid || 'unknown'
-                }, { merge: true });
+                batch.set(docRef, sanitizedZona, { merge: true });
             });
 
             await batch.commit();
