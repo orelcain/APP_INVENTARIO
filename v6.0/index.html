@@ -61655,6 +61655,17 @@ async function migrarDatosAFirebase() {
     
         // Obtener datos con valores por defecto si no existen
         const repuestos = window.app.repuestos || [];
+        
+        // ⚠️ DEBUG: Verificar estado de mapStorage
+        console.log('🔍 [PRE-MIGRACIÓN] Estado de mapStorage:', {
+            existe: !!window.mapStorage,
+            mapStorage: window.mapStorage,
+            mapas: window.mapStorage?.mapas,
+            zonas: window.mapStorage?.zonas,
+            longitudMapas: window.mapStorage?.mapas?.length,
+            longitudZonas: window.mapStorage?.zonas?.length
+        });
+        
         // Mapas y zonas están en mapStorage, no en app
         const mapas = window.mapStorage?.mapas || [];
         const zonas = window.mapStorage?.zonas || [];
