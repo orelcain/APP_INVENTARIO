@@ -49271,32 +49271,58 @@ class InventarioCompleto {
             // 📌 Guardar referencia al último nodo encontrado
             lastFoundTreeNode = treeNode;
             
-            // Expandir SOLO este nodo
+            // 🎯 EXPANSIÓN FINA: No usar toggle.click() que expande todo
+            // En su lugar, manipulamos el DOM directamente
             const toggle = nodeContent.querySelector('.node-toggle');
-            console.log(`      Toggle encontrado:`, toggle ? 'SÍ' : 'NO');
-            if (toggle) {
-              console.log(`      Clases del toggle:`, toggle.className);
-              console.log(`      ¿Tiene .collapsed?`, toggle.classList.contains('collapsed'));
-              console.log(`      ¿Tiene .expanded?`, toggle.classList.contains('expanded'));
-            }
-            
-            if (toggle && toggle.classList.contains('collapsed')) {
-              toggle.click();
-              console.log(`   ↘️ Expandido`);
-            } else if (toggle && toggle.classList.contains('expanded')) {
-              console.log(`   ⚠️ Ya estaba expandido (no debería pasar)`);
-            }
-            
-            // Continuar con el siguiente nivel en SUS hijos
             const childrenContainer = treeNode.querySelector(':scope > .tree-children');
+            const isLastInPath = remainingPath.length === 1; // Es el último nodo del path
+            
+            console.log(`      Toggle encontrado:`, toggle ? 'SÍ' : 'NO');
+            console.log(`      Es último en path:`, isLastInPath);
+            
+            if (toggle) {
+              // Actualizar visualmente el toggle (siempre expandido para la ruta)
+              toggle.classList.remove('collapsed');
+              toggle.classList.add('expanded');
+            }
+            
+            if (isLastInPath) {
+              // 🎯 ÚLTIMO NODO: Solo mostrar repuestos, NO hijos
+              console.log(`   🎯 Último nodo - mostrando SOLO repuestos`);
+              
+              // NO mostrar children (sub-áreas, sistemas, etc.)
+              // Solo mostrar el wrapper de repuestos
+              const repuestosWrapper = treeNode.querySelector(':scope > .node-repuestos-wrapper');
+              if (repuestosWrapper) {
+                repuestosWrapper.style.display = 'block';
+                console.log(`   ✅ Wrapper de repuestos visible`);
+                
+                // Actualizar toggle de repuestos
+                const repToggle = nodeContent.querySelector('.node-repuestos-toggle');
+                if (repToggle) {
+                  repToggle.classList.remove('collapsed');
+                  repToggle.classList.add('expanded');
+                }
+              }
+              
+              // Completar la expansión
+              setTimeout(() => {
+                expandPath(null, [], level + 1);
+              }, 50);
+            } else {
+              // 🔄 NODO INTERMEDIO: Mostrar children para poder navegar al siguiente nivel
+              if (childrenContainer) {
+                childrenContainer.style.display = 'block';
+                console.log(`   ↘️ Children visible para navegación`);
+              }
+              
+              // Continuar con el siguiente nivel
+              setTimeout(() => {
+                expandPath(childrenContainer, remainingPath.slice(1), level + 1);
+              }, 50);
+            }
             
             found = true;
-            
-            // Dar tiempo para que se expanda antes de continuar
-            setTimeout(() => {
-              expandPath(childrenContainer, remainingPath.slice(1), level + 1);
-            }, 50);
-            
             break; // ✅ IMPORTANTE: Detener búsqueda después del primer match
           }
         }
