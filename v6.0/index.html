@@ -15871,6 +15871,24 @@
         </div>
 
         <div class="config-card" style="margin-top: 20px;">
+          <h4 style="margin-bottom: 12px; color: rgba(255,255,255,0.9);">🔄 Sincronización en Tiempo Real</h4>
+          <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 15px;">
+            La sincronización en tiempo real permite que los cambios realizados por cualquier usuario se reflejen automáticamente en todos los navegadores conectados.
+          </p>
+          <div id="sync-status" style="margin-bottom: 15px; padding: 12px; border-radius: 6px; background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3);">
+            <span style="color: #fbbf24;">⚪ Sincronización desactivada</span>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button id="btnActivarSync" onclick="window.activarSincronizacionTiempoReal()" class="btn btn-success" style="padding: 10px 20px; font-size: 0.9rem;">
+              ▶️ Activar Sync
+            </button>
+            <button id="btnDesactivarSync" onclick="window.desactivarSincronizacionTiempoReal()" class="btn btn-danger" style="padding: 10px 20px; font-size: 0.9rem; display: none;">
+              ⏸️ Desactivar Sync
+            </button>
+          </div>
+        </div>
+
+        <div class="config-card" style="margin-top: 20px;">
           <h4 style="margin-bottom: 12px; color: rgba(255,255,255,0.9);">📊 Estado de Sincronización</h4>
           <div id="firebase-status" style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">
             <p>🔄 Comprobando estado de Firebase...</p>
@@ -61727,6 +61745,9 @@ async function migrarDatosAFirebase() {
             
             // Actualizar estado de Firebase
             actualizarEstadoFirebase();
+            
+            // Activar sincronización en tiempo real automáticamente después de migración exitosa
+            activarSincronizacionTiempoReal();
         } else {
             throw new Error('La migración fue cancelada o falló');
         }
@@ -61841,6 +61862,209 @@ window.addEventListener('userAuthenticated', () => {
 if (window.firebaseService && window.firebaseService.isAuthenticated()) {
     setTimeout(() => actualizarEstadoFirebase(), 1000);
 }
+
+// ============================================================================
+// SINCRONIZACIÓN EN TIEMPO REAL
+// ============================================================================
+
+let syncListeners = []; // Almacena los listeners para poder desconectarlos
+
+function activarSincronizacionTiempoReal() {
+    if (!window.firebaseStorageAdapter) {
+        console.error('❌ FirebaseStorageAdapter no disponible');
+        return;
+    }
+
+    console.log('🔄 Activando sincronización en tiempo real...');
+
+    // Activar callbacks de sincronización para cada colección
+    window.firebaseStorageAdapter.enableRealtimeSync({
+        repuestos: (data) => {
+            console.log(`🔄 Repuestos sincronizados desde Firebase: ${data.length} items`);
+            
+            // Actualizar datos locales
+            if (window.app && Array.isArray(data)) {
+                window.app.repuestos = data;
+                
+                // Re-renderizar grid si estamos en la pestaña de inventario
+                if (window.app.renderizarGrid) {
+                    window.app.renderizarGrid();
+                }
+                
+                // Actualizar estado UI
+                actualizarEstadoFirebase();
+            }
+        },
+        
+        mapas: (data) => {
+            console.log(`🔄 Mapas sincronizados desde Firebase: ${data.length} items`);
+            
+            // Actualizar mapStorage
+            if (window.mapStorage && Array.isArray(data)) {
+                window.mapStorage.maps = data;
+                
+                // Actualizar selector de mapas si existe
+                if (window.mapController && window.mapController.refreshMapSelector) {
+                    window.mapController.refreshMapSelector();
+                }
+                
+                // Actualizar estado UI
+                actualizarEstadoFirebase();
+            }
+        },
+        
+        zonas: (data) => {
+            console.log(`🔄 Zonas sincronizadas desde Firebase: ${data.length} items`);
+            
+            // Actualizar mapStorage
+            if (window.mapStorage && Array.isArray(data)) {
+                window.mapStorage.areas = data;
+                
+                // Refrescar zonas en el mapa si está activo
+                if (window.mapController && window.mapController.refreshZones) {
+                    window.mapController.refreshZones();
+                }
+                
+                // Actualizar estado UI
+                actualizarEstadoFirebase();
+            }
+        },
+        
+        presupuestos: (data) => {
+            console.log(`🔄 Presupuestos sincronizados desde Firebase: ${data.length} items`);
+            
+            // Actualizar datos locales
+            if (window.app && Array.isArray(data)) {
+                window.app.presupuestos = data;
+                
+                // Actualizar estado UI
+                actualizarEstadoFirebase();
+            }
+        },
+        
+        jerarquia: (data) => {
+            console.log(`🔄 Jerarquía sincronizada desde Firebase: ${data.length} documentos`);
+            
+            // Actualizar jerarquía local
+            if (window.app && Array.isArray(data) && data.length > 0) {
+                // Firebase devuelve array con documento que contiene 'estructura'
+                const estructuraDoc = data[0];
+                if (estructuraDoc && estructuraDoc.estructura) {
+                    window.app.jerarquiaAnidada = estructuraDoc.estructura;
+                    
+                    // Reconstruir árbol visual si hierarchySync está disponible
+                    if (window.hierarchySync && window.hierarchySync.rebuildTree) {
+                        window.hierarchySync.rebuildTree(estructuraDoc.estructura);
+                    }
+                    
+                    // Actualizar estado UI
+                    actualizarEstadoFirebase();
+                }
+            }
+        }
+    });
+
+    console.log('✅ Sincronización en tiempo real activada');
+    
+    // Actualizar UI para mostrar que sync está activo
+    mostrarNotificacionSync('✅ Sincronización en tiempo real activada');
+    
+    // Actualizar estado visual de los botones
+    const syncStatus = document.getElementById('sync-status');
+    const btnActivar = document.getElementById('btnActivarSync');
+    const btnDesactivar = document.getElementById('btnDesactivarSync');
+    
+    if (syncStatus) {
+        syncStatus.style.background = 'rgba(34, 197, 94, 0.1)';
+        syncStatus.style.border = '1px solid rgba(34, 197, 94, 0.3)';
+        syncStatus.innerHTML = '<span style="color: #4ade80;">🟢 Sincronización activa - Los cambios se reflejan en tiempo real</span>';
+    }
+    
+    if (btnActivar) btnActivar.style.display = 'none';
+    if (btnDesactivar) btnDesactivar.style.display = 'inline-block';
+}
+
+function desactivarSincronizacionTiempoReal() {
+    if (window.firebaseStorageAdapter && window.firebaseStorageAdapter.disableRealtimeSync) {
+        window.firebaseStorageAdapter.disableRealtimeSync();
+        console.log('🔴 Sincronización en tiempo real desactivada');
+        mostrarNotificacionSync('🔴 Sincronización en tiempo real desactivada');
+        
+        // Actualizar estado visual de los botones
+        const syncStatus = document.getElementById('sync-status');
+        const btnActivar = document.getElementById('btnActivarSync');
+        const btnDesactivar = document.getElementById('btnDesactivarSync');
+        
+        if (syncStatus) {
+            syncStatus.style.background = 'rgba(234, 179, 8, 0.1)';
+            syncStatus.style.border = '1px solid rgba(234, 179, 8, 0.3)';
+            syncStatus.innerHTML = '<span style="color: #fbbf24;">⚪ Sincronización desactivada</span>';
+        }
+        
+        if (btnActivar) btnActivar.style.display = 'inline-block';
+        if (btnDesactivar) btnDesactivar.style.display = 'none';
+    }
+}
+
+function mostrarNotificacionSync(mensaje) {
+    // Crear notificación temporal
+    const notif = document.createElement('div');
+    notif.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: rgba(34, 197, 94, 0.95);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        font-size: 0.9rem;
+        animation: slideIn 0.3s ease-out;
+    `;
+    notif.textContent = mensaje;
+    document.body.appendChild(notif);
+    
+    // Remover después de 3 segundos
+    setTimeout(() => {
+        notif.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notif.remove(), 300);
+    }, 3000);
+}
+
+// Agregar estilos de animación
+const syncStyles = document.createElement('style');
+syncStyles.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(syncStyles);
+
+// Exponer funciones globalmente
+window.activarSincronizacionTiempoReal = activarSincronizacionTiempoReal;
+window.desactivarSincronizacionTiempoReal = desactivarSincronizacionTiempoReal;
+
+console.log('✅ Sistema de sincronización en tiempo real disponible');
+console.log('💡 Usa: window.activarSincronizacionTiempoReal() para activar');
+console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactivar');
 </script>
 
 </body>
