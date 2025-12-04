@@ -201,7 +201,7 @@ class LoginUI {
      * Mostrar menú de usuario
      */
     showUserMenu(user, role) {
-        console.log('📋 showUserMenu llamado:', { email: user.email, role });
+        console.log('📋 showUserMenu llamado:', { email: user.email, role, roleType: typeof role });
         
         const userMenu = document.getElementById('userMenu');
         const userEmail = document.getElementById('userEmail');
@@ -218,12 +218,15 @@ class LoginUI {
                 'lectura': '👁️ Lectura'
             };
             // Mostrar email completo con rol
-            userEmail.textContent = `${user.email} • ${roleLabels[role] || role}`;
+            const displayRole = roleLabels[role] || role;
+            userEmail.textContent = `${user.email} • ${displayRole}`;
 
-            userMenu.style.display = 'block';
+            userMenu.style.display = 'flex';
             
             console.log('✅ Menú de usuario mostrado:', {
                 email: userEmail.textContent,
+                role: role,
+                displayRole: displayRole,
                 display: userMenu.style.display
             });
         } else {
