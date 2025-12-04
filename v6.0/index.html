@@ -49935,6 +49935,14 @@ class InventarioCompleto {
     const tieneUbicaciones = repuesto.ubicaciones && repuesto.ubicaciones.length > 0;
     const tieneMultiplesUbicaciones = repuesto.ubicaciones && repuesto.ubicaciones.length > 1;
     
+    // Estilos de botones consistentes con la app (sobrios, opacos)
+    const btnBase = 'padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 500; cursor: pointer; transition: all 0.2s; flex: 1; min-width: 70px; text-align: center;';
+    const btnVer = `${btnBase} background: rgba(91, 155, 122, 0.2); border: 1px solid rgba(91, 155, 122, 0.4); color: #6bae89;`;
+    const btnMapa = `${btnBase} background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: #a78bfa;`;
+    const btnEditar = `${btnBase} background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.3); color: #eab308;`;
+    const btnContar = `${btnBase} background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa;`;
+    const btnAsignar = `${btnBase} background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171;`;
+    
     let html = '<div style="padding: 0 12px 12px 12px;">';
     
     // ══════════════════════════════════════════════════════════════
@@ -49952,51 +49960,36 @@ class InventarioCompleto {
       
       html += `
         <div style="
-          background: rgba(34, 197, 94, 0.08);
-          border-left: 3px solid #22c55e;
+          background: rgba(34, 197, 94, 0.06);
+          border-left: 3px solid rgba(34, 197, 94, 0.6);
           padding: 8px 10px;
           border-radius: 4px;
           margin-bottom: 10px;
         ">
           <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-            <span style="color: #22c55e; font-size: 0.7rem; font-weight: 600;">✅ UBICACIÓN COMPLETA</span>
+            <span style="color: rgba(34, 197, 94, 0.85); font-size: 0.68rem; font-weight: 600;">✓ COMPLETO</span>
             ${tieneMultiplesUbicaciones ? `
-              <span style="background: #f59e0b; color: white; padding: 2px 6px; border-radius: 8px; font-size: 0.6rem; font-weight: 600;">
-                ${repuesto.ubicaciones.length} ubicaciones
+              <span style="background: rgba(245, 158, 11, 0.2); color: #d97706; padding: 2px 6px; border-radius: 4px; font-size: 0.58rem; font-weight: 500;">
+                ${repuesto.ubicaciones.length} ubic.
               </span>
             ` : ''}
           </div>
-          <div style="font-size: 0.72rem; color: var(--text-primary); line-height: 1.4;">
+          <div style="font-size: 0.7rem; color: var(--text-secondary); line-height: 1.4;">
             📍 ${rutaJerarquia}
           </div>
         </div>
       `;
       
-      // Botones: Ver Jerarquía, Editar, Contar
+      // Botones sobrios
       html += `
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-          <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="
-            flex: 1; min-width: 90px; padding: 8px 10px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white; border: none; border-radius: 6px;
-            font-size: 0.72rem; font-weight: 600; cursor: pointer;
-          " title="Ver ubicación en jerarquía">
+          <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="${btnVer}" title="Ver en jerarquía">
             🌳 Ver
           </button>
-          <button onclick="app.editarRepuesto('${repuesto.id}')" style="
-            flex: 1; min-width: 90px; padding: 8px 10px;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white; border: none; border-radius: 6px;
-            font-size: 0.72rem; font-weight: 600; cursor: pointer;
-          " title="Editar repuesto">
+          <button onclick="app.editarRepuesto('${repuesto.id}')" style="${btnEditar}" title="Editar">
             ✏️ Editar
           </button>
-          <button data-action="contar" data-id="${repuesto.id}" style="
-            flex: 1; min-width: 90px; padding: 8px 10px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white; border: none; border-radius: 6px;
-            font-size: 0.72rem; font-weight: 600; cursor: pointer;
-          " title="Contar stock">
+          <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="Contar">
             🔢 Contar
           </button>
         </div>
@@ -50008,44 +50001,29 @@ class InventarioCompleto {
     else if (!estado.tieneJerarquia) {
       html += `
         <div style="
-          background: rgba(239, 68, 68, 0.08);
-          border-left: 3px solid #ef4444;
+          background: rgba(239, 68, 68, 0.06);
+          border-left: 3px solid rgba(239, 68, 68, 0.5);
           padding: 8px 10px;
           border-radius: 4px;
           margin-bottom: 10px;
         ">
-          <div style="font-size: 0.7rem; color: #ef4444; font-weight: 600; margin-bottom: 4px;">
-            ⚠️ SIN UBICACIÓN ASIGNADA
+          <div style="font-size: 0.68rem; color: rgba(248, 113, 113, 0.9); font-weight: 600; margin-bottom: 2px;">
+            ⚠️ Sin ubicación
           </div>
-          <div style="font-size: 0.65rem; color: var(--text-secondary);">
-            Este repuesto necesita asignarse a la jerarquía organizacional
+          <div style="font-size: 0.62rem; color: var(--text-muted);">
+            Asignar a jerarquía organizacional
           </div>
         </div>
         
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-          <button onclick="app.asignarJerarquiaYMostrar('${repuesto.id}')" style="
-            flex: 2; min-width: 140px; padding: 8px 10px;
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white; border: none; border-radius: 6px;
-            font-size: 0.72rem; font-weight: 600; cursor: pointer;
-          " title="Asignar ubicación en jerarquía">
+          <button onclick="app.asignarJerarquiaYMostrar('${repuesto.id}')" style="${btnAsignar} flex: 2; min-width: 120px;" title="Asignar jerarquía">
             ➕ Asignar Jerarquía
           </button>
-          <button onclick="app.editarRepuesto('${repuesto.id}')" style="
-            flex: 1; min-width: 70px; padding: 8px 10px;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white; border: none; border-radius: 6px;
-            font-size: 0.72rem; font-weight: 600; cursor: pointer;
-          " title="Editar repuesto">
-            ✏️ Editar
+          <button onclick="app.editarRepuesto('${repuesto.id}')" style="${btnEditar}" title="Editar">
+            ✏️
           </button>
-          <button data-action="contar" data-id="${repuesto.id}" style="
-            flex: 1; min-width: 70px; padding: 8px 10px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white; border: none; border-radius: 6px;
-            font-size: 0.72rem; font-weight: 600; cursor: pointer;
-          " title="Contar stock">
-            🔢 Contar
+          <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="Contar">
+            🔢
           </button>
         </div>
       `;
@@ -50063,40 +50041,42 @@ class InventarioCompleto {
         ubicacion.subSistema
       ].filter(Boolean).join(' → ');
       
-      // Color según progreso
-      const progresoColor = estado.progreso < 50 ? '#f59e0b' : '#3b82f6';
+      // Color según progreso (más suave)
+      const progresoColor = estado.progreso < 50 ? 'rgba(234, 179, 8, 0.8)' : 'rgba(59, 130, 246, 0.8)';
+      const progresoBg = estado.progreso < 50 ? 'rgba(234, 179, 8, 0.06)' : 'rgba(59, 130, 246, 0.06)';
+      const progresoBorder = estado.progreso < 50 ? 'rgba(234, 179, 8, 0.4)' : 'rgba(59, 130, 246, 0.4)';
       
       html += `
         <div style="
-          background: rgba(59, 130, 246, 0.08);
-          border-left: 3px solid ${progresoColor};
+          background: ${progresoBg};
+          border-left: 3px solid ${progresoBorder};
           padding: 8px 10px;
           border-radius: 4px;
           margin-bottom: 10px;
         ">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <span style="font-size: 0.7rem; color: ${progresoColor}; font-weight: 600;">
-              📋 PENDIENTE
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+            <span style="font-size: 0.68rem; color: ${progresoColor}; font-weight: 600;">
+              📋 Pendiente
             </span>
-            <span style="font-size: 0.65rem; color: ${progresoColor}; font-weight: 700;">
+            <span style="font-size: 0.62rem; color: ${progresoColor}; font-weight: 600;">
               ${estado.progreso}%
             </span>
           </div>
           
           <!-- Barra de progreso -->
-          <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-bottom: 6px; overflow: hidden;">
+          <div style="width: 100%; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-bottom: 5px; overflow: hidden;">
             <div style="width: ${estado.progreso}%; height: 100%; background: ${progresoColor}; transition: width 0.3s;"></div>
           </div>
           
           <!-- Ubicación actual -->
-          <div style="font-size: 0.7rem; color: var(--text-primary); margin-bottom: 4px;">
+          <div style="font-size: 0.68rem; color: var(--text-secondary); margin-bottom: 3px;">
             📍 ${rutaJerarquia}
           </div>
           
           <!-- Lo que falta -->
           ${estado.faltantes.length > 0 ? `
-            <div style="font-size: 0.62rem; color: var(--text-secondary);">
-              ⚠️ Falta: ${estado.faltantes.join(', ')}
+            <div style="font-size: 0.6rem; color: var(--text-muted);">
+              Falta: ${estado.faltantes.join(', ')}
             </div>
           ` : ''}
         </div>
@@ -50107,47 +50087,37 @@ class InventarioCompleto {
       
       // Siempre mostrar Ver Jerarquía
       html += `
-        <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="
-          flex: 1; min-width: 80px; padding: 8px 10px;
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-          color: white; border: none; border-radius: 6px;
-          font-size: 0.7rem; font-weight: 600; cursor: pointer;
-        " title="Ver en jerarquía">
+        <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="${btnVer}" title="Ver en jerarquía">
           🌳 Ver
         </button>
       `;
       
       // Si falta mapa/área/marcador, mostrar botón para asignar
       if (!estado.tieneMapa || !estado.tieneArea || !estado.tieneMarcador) {
+        const labelMapa = !estado.tieneMapa ? 'Mapa' : !estado.tieneArea ? 'Área' : 'Marcador';
         html += `
-          <button onclick="app.repuestoEnFlujo='${repuesto.id}'; app.continuarAMapa();" style="
-            flex: 1; min-width: 80px; padding: 8px 10px;
-            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
-            color: white; border: none; border-radius: 6px;
-            font-size: 0.7rem; font-weight: 600; cursor: pointer;
-          " title="${!estado.tieneMapa ? 'Asignar mapa' : !estado.tieneArea ? 'Seleccionar área' : 'Colocar marcador'}">
-            🗺️ ${!estado.tieneMapa ? 'Mapa' : !estado.tieneArea ? 'Área' : 'Marcador'}
+          <button onclick="app.repuestoEnFlujo='${repuesto.id}'; app.continuarAMapa();" style="${btnMapa}" title="Asignar ${labelMapa.toLowerCase()}">
+            🗺️ ${labelMapa}
           </button>
         `;
       }
       
       // Editar y Contar siempre
       html += `
-        <button onclick="app.editarRepuesto('${repuesto.id}')" style="
-          flex: 1; min-width: 70px; padding: 8px 10px;
-          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-          color: white; border: none; border-radius: 6px;
-          font-size: 0.7rem; font-weight: 600; cursor: pointer;
-        " title="Editar">
+        <button onclick="app.editarRepuesto('${repuesto.id}')" style="${btnEditar}" title="Editar">
           ✏️
         </button>
-        <button data-action="contar" data-id="${repuesto.id}" style="
-          flex: 1; min-width: 70px; padding: 8px 10px;
-          background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-          color: white; border: none; border-radius: 6px;
-          font-size: 0.7rem; font-weight: 600; cursor: pointer;
-        " title="Contar">
+        <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="Contar">
           🔢
+        </button>
+      `;
+      
+      html += '</div>';
+    }
+    
+    html += '</div>';
+    return html;
+  }
         </button>
       `;
       
