@@ -6,6 +6,7 @@
 class LoginUI {
     constructor() {
         this.firebaseService = window.firebaseService;
+        this.customAuth = window.customAuth;
         this.isLoginModalCreated = false;
         
         this.init();
@@ -15,13 +16,24 @@ class LoginUI {
         // Crear modal de login
         this.createLoginModal();
         
-        // Escuchar eventos de autenticación
+        // Escuchar eventos de autenticación (Firebase y Custom)
         window.addEventListener('userLoggedIn', (e) => this.handleLoginSuccess(e.detail));
+        window.addEventListener('customAuthSuccess', (e) => this.handleLoginSuccess(e.detail));
         window.addEventListener('userLoggedOut', () => this.handleLogout());
+        window.addEventListener('customAuthLogout', () => this.handleLogout());
         
-        // Verificar si ya hay sesión activa
-        if (!this.firebaseService.isAuthenticated()) {
+        // Verificar si hay sesión activa (Firebase o Custom)
+        const hasFirebaseSession = this.firebaseService.isAuthenticated();
+        const hasCustomSession = this.customAuth.hasActiveSession();
+        
+        if (!hasFirebaseSession && !hasCustomSession) {
             this.showLoginModal();
+        } else if (hasCustomSession) {
+            // Restaurar sesión custom
+            const session = this.customAuth.restoreSession();
+            if (session) {
+                this.handleLoginSuccess(session);
+            }
         }
     }
 
@@ -47,15 +59,18 @@ class LoginUI {
                     <div class="modal-body" style="padding: 32px 24px;">
                         <form id="loginForm">
                             <div class="form-group">
-                                <label for="loginEmail">Email</label>
+                                <label for="loginIdentifier">Usuario o Email</label>
                                 <input 
-                                    type="email" 
-                                    id="loginEmail" 
+                                    type="text" 
+                                    id="loginIdentifier" 
                                     class="form-control" 
-                                    placeholder="usuario@ejemplo.com"
+                                    placeholder="usuario1 o admin@ejemplo.com"
                                     required
-                                    autocomplete="email"
+                                    autocomplete="username"
                                 >
+                                <small style="color: var(--text-muted); font-size: 0.8rem;">
+                                    Email para admin, username para usuarios regulares
+                                </small>
                             </div>
 
                             <div class="form-group">
@@ -75,11 +90,15 @@ class LoginUI {
                             <button type="submit" class="btn btn-primary btn-block" id="btnLogin">
                                 Iniciar Sesión
                             </button>
+                            
+                            <button type="button" class="btn btn-secondary btn-block" id="btnGuest" style="margin-top: 10px;">
+                                👤 Ingresar como Invitado (Solo Lectura)
+                            </button>
                         </form>
 
                         <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
                             <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center;">
-                                ℹ️ Contacta al administrador para obtener una cuenta
+                                ℹ️ Usuarios disponibles: usuario1-5 (pass123, pass456, pass789, pass321, pass654)
                             </p>
                         </div>
                     </div>
@@ -92,13 +111,14 @@ class LoginUI {
 
         // Event listeners
         document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
+        document.getElementById('btnGuest').addEventListener('click', () => this.handleGuestLogin());
         document.getElementById('btnLogout').addEventListener('click', () => this.logout());
         
         // Prevenir que atajos de teclado interfieran con los inputs del login
-        const loginEmail = document.getElementById('loginEmail');
+        const loginIdentifier = document.getElementById('loginIdentifier');
         const loginPassword = document.getElementById('loginPassword');
         
-        [loginEmail, loginPassword].forEach(input => {
+        [loginIdentifier, loginPassword].forEach(input => {
             input.addEventListener('keydown', (e) => {
                 // Detener propagación para que los atajos globales no interfieran
                 e.stopPropagation();
@@ -113,7 +133,7 @@ class LoginUI {
         const modal = document.getElementById('loginModal');
         if (modal) {
             modal.style.display = 'flex';
-            document.getElementById('loginEmail').focus();
+            document.getElementById('loginIdentifier').focus();
         }
     }
 
@@ -133,7 +153,7 @@ class LoginUI {
     async handleLogin(e) {
         e.preventDefault();
 
-        const email = document.getElementById('loginEmail').value.trim();
+        const identifier = document.getElementById('loginIdentifier').value.trim();
         const password = document.getElementById('loginPassword').value;
         const btnLogin = document.getElementById('btnLogin');
         const errorDiv = document.getElementById('loginError');
@@ -143,7 +163,7 @@ class LoginUI {
         errorDiv.textContent = '';
 
         // Validación básica
-        if (!email || !password) {
+        if (!identifier || !password) {
             this.showError('Por favor completa todos los campos');
             return;
         }
@@ -153,11 +173,12 @@ class LoginUI {
         btnLogin.textContent = 'Iniciando sesión...';
 
         try {
-            const result = await this.firebaseService.login(email, password);
+            // Usar sistema híbrido de autenticación
+            const result = await this.customAuth.login(identifier, password);
 
             if (result.success) {
                 console.log('✅ Login exitoso');
-                // El evento 'userLoggedIn' se disparará automáticamente
+                // El evento se disparará automáticamente desde customAuth
             } else {
                 this.showError(result.error);
                 btnLogin.disabled = false;
@@ -168,6 +189,16 @@ class LoginUI {
             this.showError('Error de conexión. Intenta nuevamente.');
             btnLogin.disabled = false;
             btnLogin.textContent = 'Iniciar Sesión';
+        }
+    }
+
+    /**
+     * Manejar login como invitado
+     */
+    handleGuestLogin() {
+        const result = this.customAuth.loginAsGuest();
+        if (result.success) {
+            console.log('👤 Acceso como invitado');
         }
     }
 
@@ -201,7 +232,7 @@ class LoginUI {
      * Mostrar menú de usuario
      */
     showUserMenu(user, role) {
-        console.log('📋 showUserMenu llamado:', { email: user.email, role, roleType: typeof role });
+        console.log('📋 showUserMenu llamado:', { user, role, roleType: typeof role });
         
         const userMenu = document.getElementById('userMenu');
         const userEmail = document.getElementById('userEmail');
@@ -215,16 +246,26 @@ class LoginUI {
             const roleLabels = {
                 'admin': 'Admin',
                 'usuario': 'Usuario',
-                'lectura': 'Lectura'
+                'lectura': 'Invitado'
             };
-            // Mostrar email completo con rol
+            
+            // Determinar nombre a mostrar
+            let displayName = '';
+            if (user.email) {
+                displayName = user.email;
+            } else if (user.displayName) {
+                displayName = user.displayName;
+            } else if (user.username) {
+                displayName = user.username;
+            }
+            
             const displayRole = roleLabels[role] || role;
-            userEmail.textContent = `${user.email} • ${displayRole}`;
+            userEmail.textContent = `${displayName} • ${displayRole}`;
 
             userMenu.style.display = 'flex';
             
             console.log('✅ Menú de usuario mostrado:', {
-                email: userEmail.textContent,
+                displayName,
                 role: role,
                 displayRole: displayRole,
                 display: userMenu.style.display
@@ -250,13 +291,12 @@ class LoginUI {
     async logout() {
         if (!confirm('¿Cerrar sesión?')) return;
 
-        const result = await this.firebaseService.logout();
-
-        if (result.success) {
-            console.log('✅ Logout exitoso');
-            // El evento 'userLoggedOut' se disparará automáticamente
-        } else {
-            alert('Error al cerrar sesión: ' + result.error);
+        try {
+            // Usar customAuth para logout híbrido
+            await this.customAuth.logout();
+            console.log('✅ Logout completado');
+        } catch (error) {
+            console.error('❌ Error en logout:', error);
         }
     }
 
@@ -277,7 +317,6 @@ class LoginUI {
         
         console.log('✅ Sesión cerrada correctamente');
     }
-
     /**
      * Mostrar error en el formulario
      */

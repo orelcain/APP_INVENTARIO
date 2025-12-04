@@ -61645,6 +61645,7 @@ console.log(' Notificaciones cargadas:', window.notifications.length);
 <!-- Firebase Modules -->
 <script src="modules/firebase-service.js"></script>
 <script src="modules/firebase-storage-adapter.js"></script>
+<script src="modules/custom-auth.js"></script>
 <script src="modules/login-ui.js"></script>
 
 <script>
@@ -61856,11 +61857,23 @@ async function actualizarEstadoFirebase() {
 // Actualizar estado al cargar la página si está autenticado
 window.addEventListener('userAuthenticated', () => {
     actualizarEstadoFirebase();
+    
+    // Inicializar usuarios personalizados si es admin
+    if (window.customAuth && window.firebaseService.getUserRole() === 'admin') {
+        window.customAuth.initializeUsers();
+    }
 });
 
 // Si ya está autenticado al cargar, actualizar inmediatamente
 if (window.firebaseService && window.firebaseService.isAuthenticated()) {
-    setTimeout(() => actualizarEstadoFirebase(), 1000);
+    setTimeout(() => {
+        actualizarEstadoFirebase();
+        
+        // Inicializar usuarios personalizados si es admin
+        if (window.customAuth && window.firebaseService.getUserRole() === 'admin') {
+            window.customAuth.initializeUsers();
+        }
+    }, 1000);
 }
 
 // ============================================================================

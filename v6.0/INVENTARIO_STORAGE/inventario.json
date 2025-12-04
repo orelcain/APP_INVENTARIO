@@ -1,333 +1,43 @@
 [
   {
-    "id": "17613843384470.6770781112528935",
-    "codSAP": "Pendiente",
-    "codProv": "",
-    "tipo": "",
-    "categoria": "Repuesto",
-    "nombre": "Chumacera Ovalada de 2 pernos FL206",
-    "ubicaciones": [
-      {
-        "areaGeneral": "Planta Principal",
-        "subArea": "Filete",
-        "sistemaEquipo": "Cinta Curva ( Estructura )",
-        "jerarquiaPath": [
-          {
-            "id": "nivel1-1763524403524-e313",
-            "name": "Aquachile Antarfood Chonchi",
-            "level": "planta",
-            "storageKey": "nivel1"
-          },
-          {
-            "id": "nivel2-1763524403524-ad1a",
-            "name": "Planta Principal",
-            "level": "areaGeneral",
-            "storageKey": "nivel2"
-          },
-          {
-            "id": "nivel3-1763524403524-7339",
-            "name": "Filete",
-            "level": "subArea",
-            "storageKey": "nivel3"
-          },
-          {
-            "id": "nivel4-1763524403524-99d1",
-            "name": "Cinta Curva ( Estructura )",
-            "level": "sistemaEquipo",
-            "storageKey": "nivel4"
-          }
-        ]
-      }
-    ],
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "Planta Principal",
-    "subArea": "Filete",
-    "sistemaEquipo": "Cinta Curva ( Estructura )",
-    "subSistema": "",
-    "seccion": "",
-    "detalle": "",
-    "area": "Planta Principal",
-    "equipo": "Cinta Curva ( Estructura )",
-    "sistema": "",
-    "detalleUbicacion": "",
-    "cantidad": 0,
-    "cantidadInstalada": 4,
-    "minimo": 5,
-    "optimo": 10,
-    "precio": 0,
-    "datosTecnicos": "- Rodamiento SUC 206\n- Chumacera ovalada FL206\n- Eje 30 mm",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/1763398441608_Pendiente_Chumacera_Ovalada_de_2_pernos__foto1.webp",
-        "name": "chumacera ovalada de 2 pernos FL 206.jpg",
-        "size": 109078,
-        "isFileSystem": true
-      }
-    ],
-    "ultimaModificacion": "2025-11-19T03:53:38.295Z",
-    "ultimoConteo": null
-  },
-  {
-    "id": "17613839439910.7621910459836108",
-    "codSAP": "Pendiente",
-    "codProv": "",
-    "tipo": "",
-    "categoria": "Repuesto",
-    "nombre": "Cinta Curva",
-    "ubicaciones": [
-      {
-        "areaGeneral": "Planta Principal",
-        "subArea": "Filete",
-        "sistemaEquipo": "Cinta Curva ( Estructura )",
-        "jerarquiaPath": [
-          {
-            "id": "nivel1-1763524403524-e313",
-            "name": "Aquachile Antarfood Chonchi",
-            "level": "planta",
-            "storageKey": "nivel1"
-          },
-          {
-            "id": "nivel2-1763524403524-ad1a",
-            "name": "Planta Principal",
-            "level": "areaGeneral",
-            "storageKey": "nivel2"
-          },
-          {
-            "id": "nivel3-1763524403524-7339",
-            "name": "Filete",
-            "level": "subArea",
-            "storageKey": "nivel3"
-          },
-          {
-            "id": "nivel4-1763524403524-99d1",
-            "name": "Cinta Curva ( Estructura )",
-            "level": "sistemaEquipo",
-            "storageKey": "nivel4"
-          }
-        ]
-      }
-    ],
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "Planta Principal",
-    "subArea": "Filete",
-    "sistemaEquipo": "Cinta Curva ( Estructura )",
-    "subSistema": "",
-    "seccion": "",
-    "detalle": "",
-    "area": "Planta Principal",
-    "equipo": "Cinta Curva ( Estructura )",
-    "sistema": "",
-    "detalleUbicacion": "",
-    "cantidad": 0,
-    "cantidadInstalada": 1,
-    "minimo": 1,
-    "optimo": 1,
-    "precio": 0,
-    "datosTecnicos": "",
-    "multimedia": [
-      {
-        "tipo": "image",
-        "filename": "1762032176113_cinta curva.webp",
-        "originalName": "cinta curva.jpg",
-        "size": 118859,
-        "mimeType": "image/webp",
-        "uploadDate": "2025-11-01T21:22:56.113Z",
-        "compressed": true,
-        "originalSize": 430009,
-        "url": "./imagenes/1762032176113_cinta curva.webp",
-        "type": "image",
-        "name": "1762032176113_cinta curva.webp",
-        "isFileSystem": true
-      }
-    ],
-    "ultimaModificacion": "2025-11-19T03:53:23.544Z",
-    "ultimoConteo": "2025-11-01T21:06:55.897Z"
-  },
-  {
-    "id": "17613752737800.26683069476947185",
-    "codSAP": "Pendiente",
-    "codProv": "",
-    "tipo": "",
-    "categoria": "Repuesto",
-    "nombre": "Sprocket Cinta Curva Filete",
-    "ubicaciones": [
-      {
-        "areaGeneral": "Planta Principal",
-        "subArea": "Filete",
-        "sistemaEquipo": "Cinta Curva ( Estructura )",
-        "jerarquiaPath": [
-          {
-            "id": "nivel1-1763524403524-e313",
-            "name": "Aquachile Antarfood Chonchi",
-            "level": "planta",
-            "storageKey": "nivel1"
-          },
-          {
-            "id": "nivel2-1763524403524-ad1a",
-            "name": "Planta Principal",
-            "level": "areaGeneral",
-            "storageKey": "nivel2"
-          },
-          {
-            "id": "nivel3-1763524403524-7339",
-            "name": "Filete",
-            "level": "subArea",
-            "storageKey": "nivel3"
-          },
-          {
-            "id": "nivel4-1763524403524-99d1",
-            "name": "Cinta Curva ( Estructura )",
-            "level": "sistemaEquipo",
-            "storageKey": "nivel4"
-          }
-        ]
-      }
-    ],
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "Planta Principal",
-    "subArea": "Filete",
-    "sistemaEquipo": "Cinta Curva ( Estructura )",
-    "subSistema": "",
-    "seccion": "",
-    "detalle": "",
-    "area": "Planta Principal",
-    "equipo": "Cinta Curva ( Estructura )",
-    "sistema": "",
-    "detalleUbicacion": "",
-    "cantidad": 0,
-    "cantidadInstalada": 8,
-    "minimo": 4,
-    "optimo": 8,
-    "precio": 0,
-    "datosTecnicos": "",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/1763398511083_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp",
-        "name": "photo_2025-10-25_23-44-21.jpg",
-        "size": 72878,
-        "isFileSystem": true
-      }
-    ],
-    "ultimaModificacion": "2025-11-19T03:53:50.811Z",
-    "ultimoConteo": "2025-11-01T21:07:05.139Z"
-  },
-  {
-    "id": "17613705032580.9346793152482653",
-    "codSAP": "Pendiente",
-    "codProv": "",
-    "tipo": "Motor",
-    "categoria": "Repuesto",
-    "nombre": "Motor Cinta Curva Filete",
-    "ubicaciones": [
-      {
-        "areaGeneral": "Planta Principal",
-        "subArea": "Filete",
-        "sistemaEquipo": "Cinta Curva ( Estructura )",
-        "jerarquiaPath": [
-          {
-            "id": "nivel1-1763524403524-e313",
-            "name": "Aquachile Antarfood Chonchi",
-            "level": "planta",
-            "storageKey": "nivel1"
-          },
-          {
-            "id": "nivel2-1763524403524-ad1a",
-            "name": "Planta Principal",
-            "level": "areaGeneral",
-            "storageKey": "nivel2"
-          },
-          {
-            "id": "nivel3-1763524403524-7339",
-            "name": "Filete",
-            "level": "subArea",
-            "storageKey": "nivel3"
-          },
-          {
-            "id": "nivel4-1763524403524-99d1",
-            "name": "Cinta Curva ( Estructura )",
-            "level": "sistemaEquipo",
-            "storageKey": "nivel4"
-          }
-        ]
-      }
-    ],
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "Planta Principal",
-    "subArea": "Filete",
-    "sistemaEquipo": "Cinta Curva ( Estructura )",
-    "subSistema": "",
-    "seccion": "",
-    "detalle": "",
-    "area": "Planta Principal",
-    "equipo": "Cinta Curva ( Estructura )",
-    "sistema": "",
-    "detalleUbicacion": "",
-    "cantidad": 0,
-    "cantidadInstalada": 0,
-    "minimo": 5,
-    "optimo": 10,
-    "precio": 0,
-    "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/1763398689705_Pendiente_Motor_Cinta_Curva_Filete_foto2.webp",
-        "name": "motor cinta curva.jpg",
-        "size": 89364,
-        "isFileSystem": true
-      }
-    ],
-    "ultimaModificacion": "2025-11-19T03:54:01.003Z",
-    "ultimoConteo": null
-  },
-  {
     "id": "17592183372830.3565633314252028",
-    "codSAP": "3300105501",
-    "codProv": "",
-    "tipo": "PARADA EMERGENCIA",
     "categoria": "Repuesto",
-    "nombre": "PARADA EMERGENCIA CON CAJA",
+    "detalle": "",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "ubicaciones": [
       {
-        "areaGeneral": "Planta Principal",
-        "subArea": "Eviscerado",
         "sistemaEquipo": "Cinta Transversal Salida Baader",
-        "cantidadEnUbicacion": 4,
         "jerarquiaPath": [
           {
-            "id": "nivel1-1763558706735-8a84",
+            "storageKey": "nivel1",
             "name": "Aquachile Antarfood Chonchi",
             "level": "planta",
-            "storageKey": "nivel1"
+            "id": "nivel1-1763558706735-8a84"
           },
           {
-            "id": "nivel2-1763558706735-ce95",
-            "name": "Planta Principal",
             "level": "areaGeneral",
+            "name": "Planta Principal",
+            "id": "nivel2-1763558706735-ce95",
             "storageKey": "nivel2"
           },
           {
+            "storageKey": "nivel3",
             "id": "nivel3-1763558706735-33c3",
-            "name": "Eviscerado",
             "level": "subArea",
-            "storageKey": "nivel3"
+            "name": "Eviscerado"
           },
           {
-            "id": "nivel4-1763558706735-c510",
             "name": "Cinta Transversal Salida Baader",
-            "level": "sistemaEquipo",
-            "storageKey": "nivel4"
+            "storageKey": "nivel4",
+            "id": "nivel4-1763558706735-c510",
+            "level": "sistemaEquipo"
           }
-        ]
+        ],
+        "subArea": "Eviscerado",
+        "cantidadEnUbicacion": 4,
+        "areaGeneral": "Planta Principal"
       },
       {
-        "areaGeneral": "Planta Principal",
-        "subArea": "Eviscerado",
-        "sistemaEquipo": "Grader",
-        "subSistema": "Cinta Larga Grader",
-        "cantidadEnUbicacion": 2,
         "jerarquiaPath": [
           {
             "id": "nivel1-1763558706735-8a84",
@@ -338,1362 +48,1864 @@
           {
             "id": "nivel2-1763558706735-ce95",
             "name": "Planta Principal",
-            "level": "areaGeneral",
-            "storageKey": "nivel2"
+            "storageKey": "nivel2",
+            "level": "areaGeneral"
           },
           {
-            "id": "nivel3-1763558706735-33c3",
-            "name": "Eviscerado",
             "level": "subArea",
-            "storageKey": "nivel3"
+            "storageKey": "nivel3",
+            "id": "nivel3-1763558706735-33c3",
+            "name": "Eviscerado"
           },
           {
-            "id": "nivel4-1763558706737-897f",
             "name": "Grader",
-            "level": "sistemaEquipo",
-            "storageKey": "nivel4"
+            "storageKey": "nivel4",
+            "id": "nivel4-1763558706737-897f",
+            "level": "sistemaEquipo"
           },
           {
             "id": "nivel5-1763558706737-bce5",
-            "name": "Cinta Larga Grader",
+            "storageKey": "nivel5",
             "level": "subSistema",
-            "storageKey": "nivel5"
+            "name": "Cinta Larga Grader"
           }
-        ]
+        ],
+        "subArea": "Eviscerado",
+        "cantidadEnUbicacion": 2,
+        "areaGeneral": "Planta Principal",
+        "sistemaEquipo": "Grader",
+        "subSistema": "Cinta Larga Grader"
       },
       {
-        "areaGeneral": "Planta Principal",
-        "subArea": "Eviscerado",
-        "sistemaEquipo": "Cinta Azul Marel (Alimentacion Baader 142)",
-        "cantidadEnUbicacion": 2,
         "jerarquiaPath": [
           {
-            "id": "nivel1-1763558706735-8a84",
             "name": "Aquachile Antarfood Chonchi",
             "level": "planta",
+            "id": "nivel1-1763558706735-8a84",
             "storageKey": "nivel1"
           },
           {
             "id": "nivel2-1763558706735-ce95",
-            "name": "Planta Principal",
             "level": "areaGeneral",
-            "storageKey": "nivel2"
+            "storageKey": "nivel2",
+            "name": "Planta Principal"
           },
           {
-            "id": "nivel3-1763558706735-33c3",
             "name": "Eviscerado",
-            "level": "subArea",
-            "storageKey": "nivel3"
+            "storageKey": "nivel3",
+            "id": "nivel3-1763558706735-33c3",
+            "level": "subArea"
           },
           {
+            "storageKey": "nivel4",
             "id": "nivel4-1763558706738-7236",
             "name": "Cinta Azul Marel (Alimentacion Baader 142)",
-            "level": "sistemaEquipo",
-            "storageKey": "nivel4"
+            "level": "sistemaEquipo"
           }
-        ]
+        ],
+        "sistemaEquipo": "Cinta Azul Marel (Alimentacion Baader 142)",
+        "areaGeneral": "Planta Principal",
+        "cantidadEnUbicacion": 2,
+        "subArea": "Eviscerado"
       }
     ],
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "Planta Principal",
-    "subArea": "Eviscerado",
-    "sistemaEquipo": "Cinta Transversal Salida Baader",
     "subSistema": "",
-    "seccion": "",
-    "detalle": "",
-    "area": "Planta Principal",
-    "equipo": "Cinta Transversal Salida Baader",
-    "sistema": "",
-    "detalleUbicacion": "",
-    "cantidad": 5,
-    "cantidadInstalada": 8,
-    "minimo": 5,
-    "optimo": 10,
-    "precio": 0,
+    "sistemaEquipo": "Cinta Transversal Salida Baader",
+    "tipo": "PARADA EMERGENCIA",
+    "ultimaModificacion": "2025-12-04T10:08:42.685Z",
+    "codSAP": "3300105501",
+    "ultimoConteo": "2025-12-04T10:08:42.685Z",
     "datosTecnicos": "",
+    "cantidad": 10,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "codProv": "",
+    "cantidadInstalada": 8,
+    "nombre": "PARADA EMERGENCIA CON CAJA",
+    "precio": 0,
     "multimedia": [
       {
-        "type": "image",
-        "url": "./imagenes/PARADA EMERGENCIA.webp",
         "name": "PARADA EMERGENCIA.webp",
+        "isFileSystem": true,
+        "type": "image",
         "size": 458902,
-        "isFileSystem": true
+        "url": "./imagenes/PARADA EMERGENCIA.webp"
       }
     ],
-    "ultimaModificacion": "2025-11-19T13:25:06.742Z",
-    "ultimoConteo": "2025-10-25T19:09:09.791Z"
+    "equipo": "Cinta Transversal Salida Baader",
+    "detalleUbicacion": "",
+    "optimo": 10,
+    "subArea": "Eviscerado",
+    "sistema": "",
+    "planta": "Aquachile Antarfood Chonchi",
+    "minimo": 5,
+    "seccion": "",
+    "areaGeneral": "Planta Principal",
+    "area": "Planta Principal"
   },
   {
     "id": "17592196064450.2748990470030177",
-    "codSAP": "3300076264",
-    "codProv": "",
-    "tipo": "PERNO",
-    "nombre": "PERNO HEX M8X60",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 20,
-    "minimo": 5,
-    "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PERNO HEX M8X60 INOX.webp",
-        "name": "PERNO HEX M8X60 INOX.webp",
-        "size": 599988,
-        "isFileSystem": true
-      }
-    ],
+    "estado_ubicacion": "jerarquia_sola",
+    "subArea": "Pernos",
     "ultimoConteo": "2025-10-23T11:55:25.926Z",
-    "ultimaModificacion": "2025-11-24T00:34:57.108Z",
+    "minimo": 5,
+    "seccion": "",
+    "precio": 0,
+    "codSAP": "3300076264",
+    "equipo": "GENERAL",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "ubicaciones": [
       {
-        "areaGeneral": "Uso general",
-        "subArea": "Pernos",
-        "sistemaEquipo": "",
-        "subSistema": "",
         "seccion": "",
-        "subSeccion": "",
+        "sistemaEquipo": "",
+        "subArea": "Pernos",
         "detalle": "",
-        "cantidadEnUbicacion": 1
+        "cantidadEnUbicacion": 1,
+        "subSeccion": "",
+        "subSistema": "",
+        "areaGeneral": "Uso general"
       }
     ],
-    "areaGeneral": "Uso general",
-    "subArea": "Pernos",
-    "sistemaEquipo": "",
-    "subSistema": "",
-    "seccion": "",
     "detalle": "",
-    "estado_ubicacion": "jerarquia_sola",
-    "progreso_flujo": "Listo para ubicar"
+    "ultimaModificacion": "2025-11-24T00:34:57.108Z",
+    "multimedia": [
+      {
+        "url": "./imagenes/PERNO HEX M8X60 INOX.webp",
+        "size": 599988,
+        "type": "image",
+        "isFileSystem": true,
+        "name": "PERNO HEX M8X60 INOX.webp"
+      }
+    ],
+    "codProv": "",
+    "subSistema": "",
+    "sistemaEquipo": "",
+    "area": "GENERAL",
+    "progreso_flujo": "Listo para ubicar",
+    "nombre": "PERNO HEX M8X60",
+    "tipo": "PERNO",
+    "cantidad": 20,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "areaGeneral": "Uso general"
   },
   {
     "id": "17592197776760.8602758964398768",
-    "codSAP": "3100003377",
-    "codProv": "",
-    "tipo": "PINTURA SPRAY",
-    "nombre": "PINTURA SPRAY BLANCO",
     "area": "PINTURA",
-    "equipo": "GENERAL",
-    "cantidad": 6,
+    "subArea": "Pinturas",
+    "seccion": "",
     "minimo": 5,
+    "equipo": "GENERAL",
+    "sistemaEquipo": "Spray",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "codProv": "",
+    "subSistema": "",
+    "progreso_flujo": "Listo para ubicar",
+    "areaGeneral": "Uso general",
+    "nombre": "PINTURA SPRAY BLANCO",
+    "codSAP": "3100003377",
+    "estado_ubicacion": "jerarquia_sola",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "ubicaciones": [
+      {
+        "subSistema": "",
+        "areaGeneral": "Uso general",
+        "subSeccion": "",
+        "subArea": "Pinturas",
+        "seccion": "",
+        "detalle": "",
+        "cantidadEnUbicacion": 1,
+        "sistemaEquipo": "Spray"
+      }
+    ],
     "precio": 0,
+    "ultimaModificacion": "2025-11-24T00:24:32.978Z",
+    "detalle": "",
+    "cantidad": 6,
+    "tipo": "PINTURA SPRAY",
     "multimedia": [
       {
         "type": "image",
-        "url": "./imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp",
-        "name": "PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp",
         "size": 40748,
-        "isFileSystem": true
+        "url": "./imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp",
+        "isFileSystem": true,
+        "name": "PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp"
       }
-    ],
-    "ubicaciones": [
-      {
-        "areaGeneral": "Uso general",
-        "subArea": "Pinturas",
-        "sistemaEquipo": "Spray",
-        "subSistema": "",
-        "seccion": "",
-        "subSeccion": "",
-        "detalle": "",
-        "cantidadEnUbicacion": 1
-      }
-    ],
-    "areaGeneral": "Uso general",
-    "subArea": "Pinturas",
-    "sistemaEquipo": "Spray",
-    "subSistema": "",
-    "seccion": "",
-    "detalle": "",
-    "estado_ubicacion": "jerarquia_sola",
-    "progreso_flujo": "Listo para ubicar",
-    "ultimaModificacion": "2025-11-24T00:24:32.978Z"
+    ]
   },
   {
     "id": "17592199400670.7478335076421804",
     "codSAP": "3100013800",
-    "codProv": "",
-    "tipo": "",
-    "nombre": "DESOXIDANTE WURTH ROST OFF 300 ML",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
     "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 10,
-    "minimo": 5,
-    "precio": 0,
+    "detalle": "",
+    "estado_ubicacion": "jerarquia_sola",
+    "ubicaciones": [
+      {
+        "subSistema": "",
+        "sistemaEquipo": "",
+        "detalle": "",
+        "areaGeneral": "Uso general",
+        "subSeccion": "",
+        "seccion": "",
+        "cantidadEnUbicacion": 1,
+        "subArea": "Desoxidantes y Lubricantes"
+      }
+    ],
     "multimedia": [
       {
-        "type": "image",
+        "isFileSystem": true,
         "url": "./imagenes/DESOXIDANTE WURTH.webp",
         "name": "DESOXIDANTE WURTH.webp",
         "size": 677952,
-        "isFileSystem": true
+        "type": "image"
       }
     ],
-    "ubicaciones": [
-      {
-        "areaGeneral": "Uso general",
-        "subArea": "Desoxidantes y Lubricantes",
-        "sistemaEquipo": "",
-        "subSistema": "",
-        "seccion": "",
-        "subSeccion": "",
-        "detalle": "",
-        "cantidadEnUbicacion": 1
-      }
-    ],
-    "areaGeneral": "Uso general",
+    "equipo": "GENERAL",
+    "nombre": "DESOXIDANTE WURTH ROST OFF 300 ML",
+    "minimo": 5,
     "subArea": "Desoxidantes y Lubricantes",
-    "sistemaEquipo": "",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "subSistema": "",
-    "seccion": "",
-    "detalle": "",
-    "estado_ubicacion": "jerarquia_sola",
+    "precio": 0,
+    "codProv": "",
+    "areaGeneral": "Uso general",
     "progreso_flujo": "Listo para ubicar",
-    "ultimaModificacion": "2025-11-24T00:35:13.028Z"
+    "ultimaModificacion": "2025-11-24T00:35:13.028Z",
+    "cantidad": 10,
+    "seccion": "",
+    "tipo": "",
+    "sistemaEquipo": ""
   },
   {
     "id": "17592206005860.9394235640437687",
-    "codSAP": "3100003269",
-    "codProv": "",
-    "tipo": "BROCHA",
-    "nombre": "BROCHA 4\"",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 15,
-    "minimo": 5,
     "precio": 0,
-    "multimedia": [],
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "cantidad": 15,
     "ubicaciones": [
       {
         "areaGeneral": "Uso general",
+        "subSistema": "",
+        "subSeccion": "",
+        "cantidadEnUbicacion": 1,
         "subArea": "Pinturas",
         "sistemaEquipo": "Brochas y rodillos",
-        "subSistema": "",
         "seccion": "",
-        "subSeccion": "",
-        "detalle": "",
-        "cantidadEnUbicacion": 1
+        "detalle": ""
       }
     ],
-    "areaGeneral": "Uso general",
-    "subArea": "Pinturas",
+    "minimo": 5,
+    "multimedia": [],
+    "ultimaModificacion": "2025-11-24T00:41:49.146Z",
     "sistemaEquipo": "Brochas y rodillos",
-    "subSistema": "",
-    "seccion": "",
-    "detalle": "",
-    "estado_ubicacion": "jerarquia_sola",
+    "area": "GENERAL",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "nombre": "BROCHA 4\"",
+    "tipo": "BROCHA",
+    "areaGeneral": "Uso general",
     "progreso_flujo": "Listo para ubicar",
-    "ultimaModificacion": "2025-11-24T00:41:49.146Z"
+    "codProv": "",
+    "codSAP": "3100003269",
+    "subArea": "Pinturas",
+    "detalle": "",
+    "equipo": "GENERAL",
+    "seccion": "",
+    "estado_ubicacion": "jerarquia_sola",
+    "subSistema": ""
   },
   {
     "id": "17592207705610.3506175212502286",
-    "codSAP": "3300105873",
-    "codProv": "",
-    "tipo": "PIPING 32MM",
+    "detalle": "",
+    "sistemaEquipo": "",
+    "progreso_flujo": "Listo para ubicar",
+    "precio": 0,
     "nombre": "VALVULA BOLA PVC HIDRAULICO 32MM",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
+    "tipo": "PIPING 32MM",
     "cantidad": 10,
     "minimo": 5,
-    "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp",
-        "name": "PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp",
-        "size": 45008,
-        "isFileSystem": true
-      }
-    ],
+    "codSAP": "3300105873",
+    "estado_ubicacion": "jerarquia_sola",
+    "area": "GENERAL",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "ubicaciones": [
       {
-        "areaGeneral": "Uso general",
-        "subArea": "Piping 32mm",
-        "sistemaEquipo": "",
-        "subSistema": "",
         "seccion": "",
-        "subSeccion": "",
+        "sistemaEquipo": "",
+        "cantidadEnUbicacion": 1,
         "detalle": "",
-        "cantidadEnUbicacion": 1
+        "subSeccion": "",
+        "subArea": "Piping 32mm",
+        "areaGeneral": "Uso general",
+        "subSistema": ""
       }
     ],
-    "areaGeneral": "Uso general",
     "subArea": "Piping 32mm",
-    "sistemaEquipo": "",
+    "areaGeneral": "Uso general",
     "subSistema": "",
+    "multimedia": [
+      {
+        "name": "PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp",
+        "isFileSystem": true,
+        "size": 45008,
+        "url": "./imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp",
+        "type": "image"
+      }
+    ],
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "equipo": "GENERAL",
+    "ultimaModificacion": "2025-11-24T00:35:36.984Z",
     "seccion": "",
-    "detalle": "",
-    "estado_ubicacion": "jerarquia_sola",
-    "progreso_flujo": "Listo para ubicar",
-    "ultimaModificacion": "2025-11-24T00:35:36.984Z"
+    "codProv": ""
   },
   {
     "id": "17592209229850.5499875719973021",
-    "codSAP": "3100028363",
-    "codProv": "",
-    "tipo": "",
+    "subArea": "Desoxidantes y Lubricantes",
     "nombre": "BEL RAY NO TOX FOOD GRADE WATERPROOF (Grasa Liquida)",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
+    "sistemaEquipo": "",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
     "cantidad": 10,
+    "ultimaModificacion": "2025-11-24T00:38:53.607Z",
+    "seccion": "",
+    "estado_ubicacion": "jerarquia_sola",
+    "equipo": "GENERAL",
+    "area": "GENERAL",
     "minimo": 5,
-    "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp",
-        "name": "PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp",
-        "size": 28896,
-        "isFileSystem": true
-      }
-    ],
+    "codProv": "",
     "ubicaciones": [
       {
-        "areaGeneral": "Uso general",
-        "subArea": "Desoxidantes y Lubricantes",
-        "sistemaEquipo": "",
         "subSistema": "",
+        "subArea": "Desoxidantes y Lubricantes",
+        "areaGeneral": "Uso general",
         "seccion": "",
-        "subSeccion": "",
+        "cantidadEnUbicacion": 1,
+        "sistemaEquipo": "",
         "detalle": "",
-        "cantidadEnUbicacion": 1
+        "subSeccion": ""
       }
     ],
-    "areaGeneral": "Uso general",
-    "subArea": "Desoxidantes y Lubricantes",
-    "sistemaEquipo": "",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "subSistema": "",
-    "seccion": "",
     "detalle": "",
-    "estado_ubicacion": "jerarquia_sola",
+    "multimedia": [
+      {
+        "isFileSystem": true,
+        "size": 28896,
+        "type": "image",
+        "url": "./imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp",
+        "name": "PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp"
+      }
+    ],
     "progreso_flujo": "Listo para ubicar",
-    "ultimaModificacion": "2025-11-24T00:38:53.607Z"
+    "codSAP": "3100028363",
+    "precio": 0,
+    "areaGeneral": "Uso general",
+    "tipo": ""
   },
   {
     "id": "17592213904480.9935691841166233",
-    "codSAP": "3300081040",
-    "codProv": "",
-    "tipo": "ILUMINACION",
-    "nombre": "EQUIPO ESTANCO FLUORECENTE 2X18W",
+    "ultimaModificacion": "2025-11-24T00:41:05.242Z",
+    "seccion": "",
+    "estado_ubicacion": "jerarquia_sola",
     "area": "ILUMINACION",
-    "equipo": "EQUIPO FLUORECENTE",
-    "cantidad": 6,
+    "subArea": "Iluminacion",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "minimo": 5,
-    "precio": 0,
+    "subSistema": "",
+    "codProv": "",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "nombre": "EQUIPO ESTANCO FLUORECENTE 2X18W",
+    "areaGeneral": "Uso general",
     "multimedia": [
       {
-        "type": "image",
         "url": "./imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp",
-        "name": "EQUIPO ESTANCO FLUORECENTE 2X18W.webp",
         "size": 162636,
-        "isFileSystem": true
+        "name": "EQUIPO ESTANCO FLUORECENTE 2X18W.webp",
+        "isFileSystem": true,
+        "type": "image"
       }
     ],
+    "sistemaEquipo": "Iluminacion estanca",
+    "codSAP": "3300081040",
+    "tipo": "ILUMINACION",
+    "equipo": "EQUIPO FLUORECENTE",
+    "progreso_flujo": "Listo para ubicar",
+    "detalle": "",
+    "precio": 0,
     "ubicaciones": [
       {
-        "areaGeneral": "Uso general",
-        "subArea": "Iluminacion",
-        "sistemaEquipo": "Iluminacion estanca",
-        "subSistema": "",
         "seccion": "",
+        "subArea": "Iluminacion",
         "subSeccion": "",
+        "areaGeneral": "Uso general",
+        "sistemaEquipo": "Iluminacion estanca",
         "detalle": "",
+        "subSistema": "",
         "cantidadEnUbicacion": 1
       }
     ],
-    "areaGeneral": "Uso general",
-    "subArea": "Iluminacion",
-    "sistemaEquipo": "Iluminacion estanca",
-    "subSistema": "",
-    "seccion": "",
-    "detalle": "",
-    "estado_ubicacion": "jerarquia_sola",
-    "progreso_flujo": "Listo para ubicar",
-    "ultimaModificacion": "2025-11-24T00:41:05.242Z"
+    "cantidad": 6
   },
   {
     "id": "17592227103960.9902849805827032",
-    "codSAP": "3300098937",
-    "codProv": "",
-    "tipo": "AUTOMATICO",
-    "nombre": "DIFERENCIAL 2P 230V 30MA",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 6,
-    "minimo": 5,
-    "precio": 0,
     "multimedia": [
       {
         "type": "image",
-        "url": "./imagenes/DIFERENCIAL 2P 230V 30MA.webp",
-        "name": "DIFERENCIAL 2P 230V 30MA.webp",
         "size": 146728,
-        "isFileSystem": true
+        "name": "DIFERENCIAL 2P 230V 30MA.webp",
+        "isFileSystem": true,
+        "url": "./imagenes/DIFERENCIAL 2P 230V 30MA.webp"
       }
-    ]
+    ],
+    "codSAP": "3300098937",
+    "precio": 0,
+    "tipo": "AUTOMATICO",
+    "area": "GENERAL",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "cantidad": 6,
+    "codProv": "",
+    "nombre": "DIFERENCIAL 2P 230V 30MA",
+    "equipo": "GENERAL",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "minimo": 5
   },
   {
     "id": "17592228408360.8467621375869214",
-    "codSAP": "3300104518",
     "codProv": "",
-    "tipo": "CAJA HIDROBOX",
-    "nombre": "CAJA HIDROBOX 3 MODULOS",
-    "area": "GENERAL",
     "equipo": "INTERRUPTOR / ENCHUFE",
+    "codSAP": "3300104518",
+    "area": "GENERAL",
     "cantidad": 10,
     "minimo": 5,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "precio": 0,
+    "nombre": "CAJA HIDROBOX 3 MODULOS",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
     "multimedia": [
       {
-        "type": "image",
-        "url": "./imagenes/CAJA HIDROBOX 3 MODULOS.webp",
-        "name": "CAJA HIDROBOX 3 MODULOS.webp",
+        "isFileSystem": true,
         "size": 106964,
-        "isFileSystem": true
+        "name": "CAJA HIDROBOX 3 MODULOS.webp",
+        "url": "./imagenes/CAJA HIDROBOX 3 MODULOS.webp",
+        "type": "image"
       }
-    ]
+    ],
+    "tipo": "CAJA HIDROBOX"
   },
   {
     "id": "17592232458430.04028172247165196",
-    "codSAP": "3100027868",
-    "codProv": "",
-    "tipo": "ADAPTADOR",
     "nombre": "ADAPTADOR PUNTA DADO 8MM",
+    "codSAP": "3100027868",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "area": "GENERAL",
     "equipo": "GENERAL",
-    "cantidad": 10,
-    "minimo": 5,
-    "precio": 0,
+    "tipo": "ADAPTADOR",
     "multimedia": [
       {
-        "type": "image",
+        "isFileSystem": true,
         "url": "./imagenes/ADAPTADOR PUNTA DADO 8MM.webp",
-        "name": "ADAPTADOR PUNTA DADO 8MM.webp",
         "size": 93628,
-        "isFileSystem": true
+        "type": "image",
+        "name": "ADAPTADOR PUNTA DADO 8MM.webp"
       }
-    ]
+    ],
+    "precio": 0,
+    "minimo": 5,
+    "codProv": "",
+    "cantidad": 10
   },
   {
     "id": "17592233569320.7176829466600226",
-    "codSAP": "3300075416",
     "codProv": "",
-    "tipo": "TORNILLO",
-    "nombre": "TORNILLO VOLCANITA 6X1\"",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 6,
-    "minimo": 5,
+    "codSAP": "3300075416",
     "precio": 0,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "area": "GENERAL",
+    "tipo": "TORNILLO",
+    "equipo": "GENERAL",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "nombre": "TORNILLO VOLCANITA 6X1\"",
+    "minimo": 5,
+    "cantidad": 6,
     "multimedia": [
       {
-        "type": "image",
-        "url": "./imagenes/TORNILLO VOLCANITA 6X1.webp",
         "name": "TORNILLO VOLCANITA 6X1.webp",
+        "url": "./imagenes/TORNILLO VOLCANITA 6X1.webp",
         "size": 73346,
-        "isFileSystem": true
+        "isFileSystem": true,
+        "type": "image"
       }
     ]
   },
   {
     "id": "17592236133150.23595482184124117",
-    "codSAP": "3100027208",
-    "codProv": "",
-    "tipo": "TORNILLO",
-    "nombre": "TORNILLO AUTOPERFORANTE C/GOLILLA 5/16 X 3",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 40,
     "minimo": 5,
-    "precio": 0,
+    "codProv": "",
+    "codSAP": "3100027208",
+    "area": "GENERAL",
+    "nombre": "TORNILLO AUTOPERFORANTE C/GOLILLA 5/16 X 3",
     "multimedia": [
       {
         "type": "image",
         "url": "./imagenes/TORNILLO AUTOPERFORANTE C GOLILLA 516X3.webp",
-        "name": "TORNILLO AUTOPERFORANTE C GOLILLA 516X3.webp",
+        "isFileSystem": true,
         "size": 108140,
-        "isFileSystem": true
+        "name": "TORNILLO AUTOPERFORANTE C GOLILLA 516X3.webp"
       }
-    ]
+    ],
+    "precio": 0,
+    "equipo": "GENERAL",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "cantidad": 40,
+    "tipo": "TORNILLO"
   },
   {
     "id": "17592237669010.37761878010908057",
-    "codSAP": "3300105482",
-    "codProv": "",
-    "tipo": "MODULO ENCHUFE",
-    "nombre": "MODULOS ENCHUFE 10-16 A",
     "area": "GENERAL",
-    "equipo": "ENCHUFE",
-    "cantidad": 6,
-    "minimo": 5,
-    "precio": 0,
+    "codSAP": "3300105482",
     "multimedia": [
       {
-        "type": "image",
-        "url": "./imagenes/MODULOS ENCHUFE 10-16 A .webp",
-        "name": "MODULOS ENCHUFE 10-16 A .webp",
         "size": 68398,
-        "isFileSystem": true
+        "name": "MODULOS ENCHUFE 10-16 A .webp",
+        "isFileSystem": true,
+        "url": "./imagenes/MODULOS ENCHUFE 10-16 A .webp",
+        "type": "image"
       }
-    ]
+    ],
+    "codProv": "",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "precio": 0,
+    "nombre": "MODULOS ENCHUFE 10-16 A",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "cantidad": 6,
+    "minimo": 5,
+    "equipo": "ENCHUFE",
+    "tipo": "MODULO ENCHUFE"
   },
   {
     "id": "17592238661610.4367944240184073",
-    "codSAP": "3300104530",
-    "codProv": "",
-    "tipo": "CORDON ELECTRICO",
-    "nombre": "CORDON ELECTRICO 3X1,5MM",
     "area": "GENERAL",
-    "equipo": "GENERAL",
+    "codProv": "",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "nombre": "CORDON ELECTRICO 3X1,5MM",
     "cantidad": 6,
+    "tipo": "CORDON ELECTRICO",
+    "equipo": "GENERAL",
     "minimo": 5,
-    "precio": 0,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "multimedia": [
       {
-        "type": "image",
-        "url": "./imagenes/CORDON ELECTRICO 3X1,5MM.webp",
-        "name": "CORDON ELECTRICO 3X1,5MM.webp",
         "size": 74942,
-        "isFileSystem": true
+        "url": "./imagenes/CORDON ELECTRICO 3X1,5MM.webp",
+        "isFileSystem": true,
+        "type": "image",
+        "name": "CORDON ELECTRICO 3X1,5MM.webp"
       }
-    ]
+    ],
+    "codSAP": "3300104530",
+    "precio": 0
   },
   {
     "id": "17592239751610.9658832513928665",
-    "codSAP": "3300105110",
-    "codProv": "",
-    "tipo": "CAJA ESTANCA",
-    "nombre": "CAJA ESTANCA 100X100X80",
     "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 6,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "codSAP": "3300105110",
+    "tipo": "CAJA ESTANCA",
     "minimo": 5,
     "precio": 0,
+    "nombre": "CAJA ESTANCA 100X100X80",
+    "cantidad": 6,
+    "codProv": "",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "multimedia": [
       {
-        "type": "image",
         "url": "./imagenes/CAJA ESTANCA 100X100X80.webp",
-        "name": "CAJA ESTANCA 100X100X80.webp",
+        "isFileSystem": true,
+        "type": "image",
         "size": 73358,
-        "isFileSystem": true
+        "name": "CAJA ESTANCA 100X100X80.webp"
       }
-    ]
+    ],
+    "equipo": "GENERAL"
   },
   {
     "id": "17592240702720.16100438760262037",
     "codSAP": "3300000943",
-    "codProv": "",
-    "tipo": "AUTOMATICO",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
     "nombre": "AUTOMATICO 1P 16 AMP",
     "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 6,
-    "minimo": 5,
     "precio": 0,
+    "cantidad": 6,
+    "codProv": "",
+    "equipo": "GENERAL",
     "multimedia": [
       {
         "type": "image",
-        "url": "./imagenes/AUTOMATICO 1P 16 A.webp",
-        "name": "AUTOMATICO 1P 16 A.webp",
+        "isFileSystem": true,
         "size": 77120,
-        "isFileSystem": true
+        "name": "AUTOMATICO 1P 16 A.webp",
+        "url": "./imagenes/AUTOMATICO 1P 16 A.webp"
       }
-    ]
+    ],
+    "tipo": "AUTOMATICO",
+    "minimo": 5
   },
   {
     "id": "17592242628090.9795950822105788",
     "codSAP": "3100027202",
-    "codProv": "",
-    "tipo": "MANGUERA",
-    "nombre": "MANGUERA ALTA PRESION MALLAFLEX 3/4",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
     "cantidad": 100,
+    "codProv": "",
     "minimo": 5,
-    "precio": 0,
     "multimedia": [
       {
-        "type": "image",
         "url": "./imagenes/PLANTA_PRINCIPAL__3100027202_MANGUERA_ALTA_PRESION_MALLAFLEX_34_1760288974266_2.webp",
-        "name": "PLANTA_PRINCIPAL__3100027202_MANGUERA_ALTA_PRESION_MALLAFLEX_34_1760288974266_2.webp",
         "size": 50530,
-        "isFileSystem": true
+        "name": "PLANTA_PRINCIPAL__3100027202_MANGUERA_ALTA_PRESION_MALLAFLEX_34_1760288974266_2.webp",
+        "isFileSystem": true,
+        "type": "image"
       }
-    ]
+    ],
+    "equipo": "GENERAL",
+    "precio": 0,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "nombre": "MANGUERA ALTA PRESION MALLAFLEX 3/4",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "tipo": "MANGUERA",
+    "area": "GENERAL"
   },
   {
     "id": "17592243370880.4504385743033742",
-    "codSAP": "3300048548",
-    "codProv": "38010610",
-    "tipo": "RESORTE",
-    "categoria": "Repuesto",
-    "nombre": "RESORTE PALPADOR",
-    "ubicaciones": [
-      {
-        "areaGeneral": "Planta Principal",
-        "subArea": "Eviscerado",
-        "sistemaEquipo": "Baader 142"
-      }
-    ],
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "Planta Principal",
-    "subArea": "Eviscerado",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "sistemaEquipo": "Baader 142",
-    "subSistema": "",
     "seccion": "",
-    "detalle": "",
-    "area": "Planta Principal",
-    "equipo": "Baader 142",
-    "sistema": "",
-    "detalleUbicacion": "",
-    "cantidad": 6,
-    "cantidadInstalada": 0,
-    "minimo": 5,
-    "optimo": 10,
-    "precio": 0,
-    "datosTecnicos": "",
+    "subSistema": "",
     "multimedia": [
       {
         "type": "image",
-        "url": "./imagenes/RESORTE PALPADOR.webp",
         "name": "RESORTE PALPADOR.webp",
         "size": 58054,
-        "isFileSystem": true
+        "isFileSystem": true,
+        "url": "./imagenes/RESORTE PALPADOR.webp"
       }
     ],
+    "optimo": 10,
+    "area": "Planta Principal",
+    "planta": "Aquachile Antarfood Chonchi",
     "ultimaModificacion": "2025-10-26T17:55:12.620Z",
-    "ultimoConteo": null
+    "nombre": "RESORTE PALPADOR",
+    "detalleUbicacion": "",
+    "detalle": "",
+    "tipo": "RESORTE",
+    "precio": 0,
+    "codProv": "38010610",
+    "subArea": "Eviscerado",
+    "categoria": "Repuesto",
+    "areaGeneral": "Planta Principal",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "cantidadInstalada": 0,
+    "cantidad": 6,
+    "datosTecnicos": "",
+    "sistema": "",
+    "minimo": 5,
+    "ubicaciones": [
+      {
+        "subArea": "Eviscerado",
+        "sistemaEquipo": "Baader 142",
+        "areaGeneral": "Planta Principal"
+      }
+    ],
+    "ultimoConteo": null,
+    "codSAP": "3300048548",
+    "equipo": "Baader 142"
   },
   {
     "id": "17592246676480.20247968913222425",
     "codSAP": "3300011875",
-    "codProv": "38010160",
-    "tipo": "RESORTE",
-    "categoria": "Repuesto",
+    "subArea": "Eviscerado",
     "nombre": "RESORTE CARRO",
+    "tipo": "RESORTE",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "multimedia": [
+      {
+        "isFileSystem": true,
+        "name": "RESORTE CARRO.webp",
+        "size": 115738,
+        "url": "./imagenes/RESORTE CARRO.webp",
+        "type": "image"
+      }
+    ],
+    "precio": 0,
+    "seccion": "",
+    "detalle": "",
+    "ultimoConteo": null,
+    "ultimaModificacion": "2025-11-19T17:57:57.793Z",
+    "optimo": 10,
+    "areaGeneral": "Planta Principal",
+    "area": "Planta Principal",
+    "subSistema": "Carro cinta prisma interior",
+    "codProv": "38010160",
+    "cantidad": 6,
+    "categoria": "Repuesto",
+    "detalleUbicacion": "",
+    "equipo": "Baader 142 Antigua N1",
+    "planta": "Aquachile Antarfood Chonchi",
+    "minimo": 5,
+    "cantidadInstalada": 0,
+    "datosTecnicos": "",
+    "sistemaEquipo": "Baader 142 Antigua N1",
     "ubicaciones": [
       {
         "areaGeneral": "Planta Principal",
+        "cantidadEnUbicacion": 6,
         "subArea": "Eviscerado",
         "sistemaEquipo": "Baader 142 Antigua N1",
         "subSistema": "Carro cinta prisma interior",
-        "cantidadEnUbicacion": 6,
         "jerarquiaPath": [
           {
-            "id": "nivel1-1763574784718-2486",
-            "name": "Aquachile Antarfood Chonchi",
+            "storageKey": "nivel1",
             "level": "planta",
-            "storageKey": "nivel1"
+            "id": "nivel1-1763574784718-2486",
+            "name": "Aquachile Antarfood Chonchi"
           },
           {
-            "id": "nivel2-1763574784718-f782",
+            "storageKey": "nivel2",
             "name": "Planta Principal",
             "level": "areaGeneral",
-            "storageKey": "nivel2"
+            "id": "nivel2-1763574784718-f782"
           },
           {
-            "id": "nivel3-1763574784718-47db",
             "name": "Eviscerado",
             "level": "subArea",
-            "storageKey": "nivel3"
+            "storageKey": "nivel3",
+            "id": "nivel3-1763574784718-47db"
           },
           {
-            "id": "nivel4-1763574967579-e981",
-            "name": "Baader 142 Antigua N1",
             "level": "sistemaEquipo",
-            "storageKey": "nivel4"
+            "id": "nivel4-1763574967579-e981",
+            "storageKey": "nivel4",
+            "name": "Baader 142 Antigua N1"
           },
           {
+            "storageKey": "nivel5",
             "id": "nivel5-1763575058209-dcd2",
             "name": "Carro cinta prisma interior",
-            "level": "subSistema",
-            "storageKey": "nivel5"
+            "level": "subSistema"
           }
         ]
       },
       {
         "areaGeneral": "Planta Principal",
-        "subArea": "Eviscerado",
+        "cantidadEnUbicacion": 6,
+        "jerarquiaPath": [
+          {
+            "name": "Aquachile Antarfood Chonchi",
+            "id": "nivel1-1763574784718-2486",
+            "storageKey": "nivel1",
+            "level": "planta"
+          },
+          {
+            "storageKey": "nivel2",
+            "id": "nivel2-1763574784718-f782",
+            "name": "Planta Principal",
+            "level": "areaGeneral"
+          },
+          {
+            "id": "nivel3-1763574784718-47db",
+            "name": "Eviscerado",
+            "storageKey": "nivel3",
+            "level": "subArea"
+          },
+          {
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4",
+            "name": "Baader 142 Nueva N2",
+            "id": "nivel4-1763574967614-24d6"
+          },
+          {
+            "name": "Carro cinta prisma interior",
+            "storageKey": "nivel5",
+            "level": "subSistema",
+            "id": "nivel5-1763575058209-dcd2"
+          }
+        ],
         "sistemaEquipo": "Baader 142 Nueva N2",
         "subSistema": "Carro cinta prisma interior",
-        "cantidadEnUbicacion": 6,
-        "jerarquiaPath": [
-          {
-            "id": "nivel1-1763574784718-2486",
-            "name": "Aquachile Antarfood Chonchi",
-            "level": "planta",
-            "storageKey": "nivel1"
-          },
-          {
-            "id": "nivel2-1763574784718-f782",
-            "name": "Planta Principal",
-            "level": "areaGeneral",
-            "storageKey": "nivel2"
-          },
-          {
-            "id": "nivel3-1763574784718-47db",
-            "name": "Eviscerado",
-            "level": "subArea",
-            "storageKey": "nivel3"
-          },
-          {
-            "id": "nivel4-1763574967614-24d6",
-            "name": "Baader 142 Nueva N2",
-            "level": "sistemaEquipo",
-            "storageKey": "nivel4"
-          },
-          {
-            "id": "nivel5-1763575058209-dcd2",
-            "name": "Carro cinta prisma interior",
-            "level": "subSistema",
-            "storageKey": "nivel5"
-          }
-        ]
+        "subArea": "Eviscerado"
       },
       {
-        "areaGeneral": "Planta Principal",
         "subArea": "Eviscerado",
         "sistemaEquipo": "Baader 142 Nueva N3",
-        "subSistema": "Carro cinta prisma interior",
         "cantidadEnUbicacion": 6,
+        "areaGeneral": "Planta Principal",
         "jerarquiaPath": [
           {
-            "id": "nivel1-1763574784718-2486",
-            "name": "Aquachile Antarfood Chonchi",
+            "storageKey": "nivel1",
             "level": "planta",
-            "storageKey": "nivel1"
+            "id": "nivel1-1763574784718-2486",
+            "name": "Aquachile Antarfood Chonchi"
           },
           {
-            "id": "nivel2-1763574784718-f782",
+            "storageKey": "nivel2",
             "name": "Planta Principal",
             "level": "areaGeneral",
-            "storageKey": "nivel2"
+            "id": "nivel2-1763574784718-f782"
           },
           {
             "id": "nivel3-1763574784718-47db",
-            "name": "Eviscerado",
             "level": "subArea",
+            "name": "Eviscerado",
             "storageKey": "nivel3"
           },
           {
-            "id": "nivel4-1763574967632-ba75",
+            "storageKey": "nivel4",
             "name": "Baader 142 Nueva N3",
-            "level": "sistemaEquipo",
-            "storageKey": "nivel4"
+            "id": "nivel4-1763574967632-ba75",
+            "level": "sistemaEquipo"
           },
           {
-            "id": "nivel5-1763575058209-dcd2",
-            "name": "Carro cinta prisma interior",
             "level": "subSistema",
-            "storageKey": "nivel5"
+            "storageKey": "nivel5",
+            "id": "nivel5-1763575058209-dcd2",
+            "name": "Carro cinta prisma interior"
           }
-        ]
+        ],
+        "subSistema": "Carro cinta prisma interior"
       }
     ],
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "Planta Principal",
-    "subArea": "Eviscerado",
-    "sistemaEquipo": "Baader 142 Antigua N1",
-    "subSistema": "Carro cinta prisma interior",
-    "seccion": "",
-    "detalle": "",
-    "area": "Planta Principal",
-    "equipo": "Baader 142 Antigua N1",
-    "sistema": "Carro cinta prisma interior",
-    "detalleUbicacion": "",
-    "cantidad": 6,
-    "cantidadInstalada": 0,
-    "minimo": 5,
-    "optimo": 10,
-    "precio": 0,
-    "datosTecnicos": "",
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/RESORTE CARRO.webp",
-        "name": "RESORTE CARRO.webp",
-        "size": 115738,
-        "isFileSystem": true
-      }
-    ],
-    "ultimaModificacion": "2025-11-19T17:57:57.793Z",
-    "ultimoConteo": null
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "sistema": "Carro cinta prisma interior"
   },
   {
     "id": "17592247584390.12047762731464762",
+    "precio": 0,
     "codSAP": "3300012407",
-    "codProv": "38010321",
+    "datosTecnicos": "",
+    "equipo": "Baader 142",
+    "subArea": "Eviscerado",
+    "areaGeneral": "Planta Principal",
+    "ultimaModificacion": "2025-10-26T17:54:53.138Z",
     "tipo": "RESORTE",
-    "categoria": "Repuesto",
+    "cantidad": 40,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "sistema": "",
+    "codProv": "38010321",
+    "sistemaEquipo": "Baader 142",
+    "minimo": 5,
+    "cantidadInstalada": 0,
     "nombre": "RESORTE MEDIDOR LARGO",
+    "detalle": "",
+    "ultimoConteo": null,
+    "detalleUbicacion": "",
+    "subSistema": "",
     "ubicaciones": [
       {
+        "sistemaEquipo": "Baader 142",
         "areaGeneral": "Planta Principal",
-        "subArea": "Eviscerado",
-        "sistemaEquipo": "Baader 142"
+        "subArea": "Eviscerado"
       }
     ],
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "Planta Principal",
-    "subArea": "Eviscerado",
-    "sistemaEquipo": "Baader 142",
-    "subSistema": "",
-    "seccion": "",
-    "detalle": "",
-    "area": "Planta Principal",
-    "equipo": "Baader 142",
-    "sistema": "",
-    "detalleUbicacion": "",
-    "cantidad": 40,
-    "cantidadInstalada": 0,
-    "minimo": 5,
+    "categoria": "Repuesto",
     "optimo": 10,
-    "precio": 0,
-    "datosTecnicos": "",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "seccion": "",
+    "planta": "Aquachile Antarfood Chonchi",
+    "area": "Planta Principal",
     "multimedia": [
       {
-        "type": "image",
-        "url": "./imagenes/RESORTE MEDIDOR LARGO.webp",
         "name": "RESORTE MEDIDOR LARGO.webp",
         "size": 78780,
-        "isFileSystem": true
+        "isFileSystem": true,
+        "type": "image",
+        "url": "./imagenes/RESORTE MEDIDOR LARGO.webp"
       }
-    ],
-    "ultimaModificacion": "2025-10-26T17:54:53.138Z",
-    "ultimoConteo": null
+    ]
   },
   {
     "id": "17592252449590.45116786103948137",
-    "codSAP": "3300100051",
-    "codProv": "",
-    "tipo": "ABRAZADERA",
-    "nombre": "ABRAZADERA CREMALLERA INOX 10 A 16MM",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 6,
-    "minimo": 5,
-    "precio": 0,
     "multimedia": [
       {
-        "type": "image",
         "url": "./imagenes/ABRAZADERA CREMALLERA.webp",
+        "isFileSystem": true,
+        "type": "image",
         "name": "ABRAZADERA CREMALLERA.webp",
-        "size": 89462,
-        "isFileSystem": true
+        "size": 89462
       }
-    ]
+    ],
+    "precio": 0,
+    "equipo": "GENERAL",
+    "cantidad": 6,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "minimo": 5,
+    "tipo": "ABRAZADERA",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "codSAP": "3300100051",
+    "nombre": "ABRAZADERA CREMALLERA INOX 10 A 16MM",
+    "codProv": "",
+    "area": "GENERAL"
   },
   {
     "id": "17592253461110.6945119839993569",
-    "codSAP": "3300027535",
     "codProv": "",
-    "tipo": "GOLILLA",
-    "nombre": "GOLILLA PLANA 1/2\" INOX",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 6,
-    "minimo": 5,
+    "codSAP": "3300027535",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "precio": 0,
+    "area": "GENERAL",
+    "cantidad": 6,
+    "nombre": "GOLILLA PLANA 1/2\" INOX",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "tipo": "GOLILLA",
+    "minimo": 5,
     "multimedia": [
       {
         "type": "image",
-        "url": "./imagenes/GOLILLA PLANA 12 INOX.webp",
         "name": "GOLILLA PLANA 12 INOX.webp",
-        "size": 94768,
-        "isFileSystem": true
+        "isFileSystem": true,
+        "url": "./imagenes/GOLILLA PLANA 12 INOX.webp",
+        "size": 94768
       }
-    ]
+    ],
+    "equipo": "GENERAL"
   },
   {
     "id": "17592254375900.19890033471066937",
-    "codSAP": "3300105515",
     "codProv": "",
-    "tipo": "PERNO",
-    "nombre": "PERNO CABEZA HEXAGONAL INOX M10X60MM",
     "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 6,
-    "minimo": 5,
     "precio": 0,
+    "tipo": "PERNO",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "codSAP": "3300105515",
+    "minimo": 5,
+    "cantidad": 6,
     "multimedia": [
       {
-        "type": "image",
-        "url": "./imagenes/PLANTA_PRINCIPAL__3300105515_PERNO_CABEZA_HEXAGONAL_INOX_M10X60MM_1760289008218.webp",
-        "name": "PLANTA_PRINCIPAL__3300105515_PERNO_CABEZA_HEXAGONAL_INOX_M10X60MM_1760289008218.webp",
         "size": 40416,
-        "isFileSystem": true
+        "url": "./imagenes/PLANTA_PRINCIPAL__3300105515_PERNO_CABEZA_HEXAGONAL_INOX_M10X60MM_1760289008218.webp",
+        "type": "image",
+        "isFileSystem": true,
+        "name": "PLANTA_PRINCIPAL__3300105515_PERNO_CABEZA_HEXAGONAL_INOX_M10X60MM_1760289008218.webp"
       }
-    ]
+    ],
+    "nombre": "PERNO CABEZA HEXAGONAL INOX M10X60MM",
+    "equipo": "GENERAL"
   },
   {
     "id": "17592254986790.5721365294146196",
-    "codSAP": "3200016942",
-    "codProv": "",
-    "tipo": "GOLILLA",
-    "nombre": "GOLILLA PRESION M16",
     "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 6,
     "minimo": 5,
+    "equipo": "GENERAL",
+    "nombre": "GOLILLA PRESION M16",
+    "cantidad": 6,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "precio": 0,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "tipo": "GOLILLA",
     "multimedia": [
       {
-        "type": "image",
         "url": "./imagenes/GOLILLA PRESION M16.webp",
+        "isFileSystem": true,
+        "type": "image",
         "name": "GOLILLA PRESION M16.webp",
-        "size": 87528,
-        "isFileSystem": true
+        "size": 87528
       }
-    ]
+    ],
+    "codProv": "",
+    "codSAP": "3200016942"
   },
   {
     "id": "17592259658780.9717516118404113",
-    "codSAP": "3300028537",
-    "codProv": "",
-    "tipo": "PERNO",
-    "nombre": "PERNO HEX 12X60MM INOX",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 6,
-    "minimo": 5,
-    "precio": 0,
     "multimedia": [
       {
-        "type": "image",
-        "url": "./imagenes/PERNO HEX 12X60 MM INOX.webp",
-        "name": "PERNO HEX 12X60 MM INOX.webp",
         "size": 79832,
-        "isFileSystem": true
+        "isFileSystem": true,
+        "type": "image",
+        "name": "PERNO HEX 12X60 MM INOX.webp",
+        "url": "./imagenes/PERNO HEX 12X60 MM INOX.webp"
       }
-    ]
+    ],
+    "minimo": 5,
+    "codProv": "",
+    "precio": 0,
+    "cantidad": 6,
+    "equipo": "GENERAL",
+    "nombre": "PERNO HEX 12X60MM INOX",
+    "tipo": "PERNO",
+    "codSAP": "3300028537",
+    "area": "GENERAL",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    }
   },
   {
     "id": "17592271668920.27099177805021235",
     "codSAP": "3300116693",
-    "codProv": "",
-    "tipo": "BLOCK ELECTROVALVULAS",
-    "nombre": "BLOQUE VALVULA VTUG -10-MSDR-B1T-25V20 (Block 8 electrovalvulas para grader/fishken/acopio)",
-    "area": "GENERAL",
-    "equipo": "GRADER / FISHKEN / ACOPIO",
-    "cantidad": 1,
-    "minimo": 3,
     "precio": 0,
+    "area": "GENERAL",
+    "nombre": "BLOQUE VALVULA VTUG -10-MSDR-B1T-25V20 (Block 8 electrovalvulas para grader/fishken/acopio)",
+    "tipo": "BLOCK ELECTROVALVULAS",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "codProv": "",
+    "cantidad": 1,
     "multimedia": [
       {
-        "type": "image",
         "url": "./imagenes/BLOQUE VALVULA VTUG.webp",
+        "type": "image",
         "name": "BLOQUE VALVULA VTUG.webp",
         "size": 780462,
         "isFileSystem": true
       }
-    ]
+    ],
+    "minimo": 3,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "equipo": "GRADER / FISHKEN / ACOPIO"
   },
   {
     "id": "17592274788510.3233448016777972",
-    "codSAP": "3300083785",
-    "codProv": "",
-    "tipo": "BOMBA DE VACIO (SOPLADORA) BAADER 142",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
     "nombre": "BOMBA DE VACIO",
-    "area": "EVISCERADO",
+    "minimo": 2,
     "equipo": "BAADER 142",
     "cantidad": 1,
-    "minimo": 2,
+    "codSAP": "3300083785",
+    "multimedia": [],
     "precio": 0,
-    "multimedia": []
+    "codProv": "",
+    "area": "EVISCERADO",
+    "tipo": "BOMBA DE VACIO (SOPLADORA) BAADER 142"
   },
   {
     "id": "17592277289800.1772346770272124",
     "codSAP": "3300102762",
-    "codProv": "",
-    "tipo": "REDUCCION NEUMATICA",
-    "nombre": "REDUCCION TUBIN DE 12 A 10 MM",
-    "area": "GENERAL",
     "equipo": "GENERAL",
-    "cantidad": 15,
+    "nombre": "REDUCCION TUBIN DE 12 A 10 MM",
     "minimo": 20,
+    "codProv": "",
+    "area": "GENERAL",
+    "tipo": "REDUCCION NEUMATICA",
     "precio": 0,
-    "multimedia": []
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "cantidad": 15,
+    "multimedia": [],
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    }
   },
   {
     "id": "17592278355150.024459299564461134",
-    "codSAP": "3300031966",
-    "codProv": "",
-    "tipo": "CONEXION NEUMATICA T",
+    "multimedia": [],
     "nombre": "CONEXION NEUMATICA TIPO T 10 MM",
-    "area": "GENERAL",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "codSAP": "3300031966",
     "equipo": "GENERAL",
+    "codProv": "",
     "cantidad": 10,
-    "minimo": 10,
+    "area": "GENERAL",
     "precio": 0,
-    "multimedia": []
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "tipo": "CONEXION NEUMATICA T",
+    "minimo": 10
   },
   {
     "id": "17592279443630.3354994649979087",
-    "codSAP": "3300103989",
     "codProv": "",
-    "tipo": "VALVULA NEUMATICA",
-    "nombre": "VALVULA DE CORTE TUBIN 10 MM",
     "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 10,
-    "minimo": 10,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "tipo": "VALVULA NEUMATICA",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "precio": 0,
+    "codSAP": "3300103989",
+    "minimo": 10,
     "multimedia": [
       {
-        "type": "image",
-        "url": "./imagenes/BLOQUE VALVULA VTUG.webp",
-        "name": "BLOQUE VALVULA VTUG.webp",
         "size": 780462,
-        "isFileSystem": true
+        "isFileSystem": true,
+        "type": "image",
+        "name": "BLOQUE VALVULA VTUG.webp",
+        "url": "./imagenes/BLOQUE VALVULA VTUG.webp"
       }
-    ]
+    ],
+    "equipo": "GENERAL",
+    "cantidad": 10,
+    "nombre": "VALVULA DE CORTE TUBIN 10 MM"
   },
   {
     "id": "17592280848740.9626898345654986",
-    "codSAP": "3300102741",
-    "codProv": "",
-    "tipo": "CONEXION NEUMATICA",
     "nombre": "RACOR RECTO 1/4 TUBIN 10 MM",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 10,
-    "minimo": 10,
     "precio": 0,
-    "multimedia": []
+    "codProv": "",
+    "cantidad": 10,
+    "area": "GENERAL",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "minimo": 10,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "codSAP": "3300102741",
+    "equipo": "GENERAL",
+    "multimedia": [],
+    "tipo": "CONEXION NEUMATICA"
   },
   {
     "id": "17592281960580.15990716754164203",
     "codSAP": "3100000686",
-    "codProv": "",
-    "tipo": "BROCA",
     "nombre": "BROCA 11MM COBALTO",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 5,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "tipo": "BROCA",
     "minimo": 5,
+    "multimedia": [],
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "equipo": "GENERAL",
+    "codProv": "",
+    "area": "GENERAL",
     "precio": 0,
-    "multimedia": []
+    "cantidad": 5
   },
   {
     "id": "17592282869940.3306010413203925",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
     "codSAP": "3300105350",
-    "codProv": "",
-    "tipo": "FOCO LED",
-    "nombre": "FOCO PROYECTOR LED 50W",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 15,
     "minimo": 20,
-    "precio": 0,
     "multimedia": [
       {
+        "isFileSystem": true,
         "type": "image",
-        "url": "./imagenes/FOCO PROYECTOR 150W.webp",
-        "name": "FOCO PROYECTOR 150W.webp",
         "size": 64308,
-        "isFileSystem": true
+        "url": "./imagenes/FOCO PROYECTOR 150W.webp",
+        "name": "FOCO PROYECTOR 150W.webp"
       }
-    ]
+    ],
+    "codProv": "",
+    "equipo": "GENERAL",
+    "area": "GENERAL",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "nombre": "FOCO PROYECTOR LED 50W",
+    "precio": 0,
+    "tipo": "FOCO LED",
+    "cantidad": 15
   },
   {
     "id": "17592283637220.6941511398148752",
-    "codSAP": "3300028196",
-    "codProv": "",
-    "tipo": "TEFLON",
-    "nombre": "TEFLON PARA GAS",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
-    "cantidad": 20,
-    "minimo": 10,
-    "precio": 0,
     "multimedia": [
       {
-        "type": "image",
+        "isFileSystem": true,
+        "size": 27506,
         "url": "./imagenes/1761249794280_3300105501_PARADA_EMERGENCIA_CON_CAJA_foto2.webp",
         "name": "1761249794280_3300105501_PARADA_EMERGENCIA_CON_CAJA_foto2.webp",
-        "size": 27506,
-        "isFileSystem": true
+        "type": "image"
       }
-    ]
+    ],
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "precio": 0,
+    "nombre": "TEFLON PARA GAS",
+    "codSAP": "3300028196",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "codProv": "",
+    "area": "GENERAL",
+    "tipo": "TEFLON",
+    "minimo": 10,
+    "cantidad": 20,
+    "equipo": "GENERAL"
   },
   {
     "id": "17592284877460.4774899031855503",
-    "codSAP": "3100027293",
-    "codProv": "",
-    "tipo": "HUINCHA AISLANTE",
-    "nombre": "HUINCHA AISLANTE SUPER 33 3M",
     "area": "GENERAL",
-    "equipo": "GENERAL",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "multimedia": [],
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "codProv": "",
     "cantidad": 10,
+    "codSAP": "3100027293",
+    "equipo": "GENERAL",
     "minimo": 5,
-    "precio": 0,
-    "multimedia": []
+    "nombre": "HUINCHA AISLANTE SUPER 33 3M",
+    "tipo": "HUINCHA AISLANTE",
+    "precio": 0
   },
   {
     "id": "17592286151940.7847843186043624",
-    "codSAP": "3300102568",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "minimo": 5,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "precio": 0,
     "codProv": "",
     "tipo": "PITON",
-    "nombre": "PITON POLICARBONATO",
-    "area": "GENERAL",
-    "equipo": "GENERAL",
+    "multimedia": [],
     "cantidad": 10,
-    "minimo": 5,
-    "precio": 0,
-    "multimedia": []
-  },
-  {
-    "id": "draft_17592210906030.8920785418427316",
-    "codSAP": "3100027416",
-    "codProv": "",
-    "tipo": "",
-    "nombre": "GRASA ALIMENTARIA BLANCA BEL RAY (Grasa Solida)",
-    "area": "GENERAL",
     "equipo": "GENERAL",
-    "cantidad": 20,
-    "minimo": 5,
-    "precio": 0,
-    "multimedia": [
-      {
-        "type": "image",
-        "url": "./imagenes/GRASA ALIMENTARIA BLANCA BEL RAY.webp",
-        "name": "GRASA ALIMENTARIA BLANCA BEL RAY.webp",
-        "size": 612022,
-        "isFileSystem": true
-      }
-    ]
+    "nombre": "PITON POLICARBONATO",
+    "codSAP": "3300102568",
+    "area": "GENERAL"
   },
   {
-    "id": "draft_17592224546130.5056254889369888",
-    "codSAP": "3300035891",
-    "codProv": "",
-    "tipo": "CAJA HIDROBOX",
-    "nombre": "CAJA HIDROBOX 2 MODULOS",
-    "area": "GENERAL",
-    "equipo": "INTERRUPTOR / ENCHUFE",
-    "cantidad": 6,
-    "minimo": 5,
+    "id": "17613705032580.9346793152482653",
+    "tipo": "Motor",
+    "areaGeneral": "Planta Principal",
     "precio": 0,
+    "subSistema": "",
+    "detalle": "",
+    "planta": "Aquachile Antarfood Chonchi",
+    "nombre": "Motor Cinta Curva Filete",
+    "cantidad": 0,
+    "datosTecnicos": "- Eje 30 mm \n- Chumacera Ovalada de 2 tornillos\n- Rodamiento SUC206",
+    "optimo": 10,
+    "seccion": "",
+    "cantidadInstalada": 0,
+    "subArea": "Filete",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "ultimaModificacion": "2025-11-19T03:54:01.003Z",
+    "sistemaEquipo": "Cinta Curva ( Estructura )",
+    "categoria": "Repuesto",
+    "codSAP": "Pendiente",
+    "ultimoConteo": null,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "minimo": 5,
+    "sistema": "",
+    "ubicaciones": [
+      {
+        "jerarquiaPath": [
+          {
+            "name": "Aquachile Antarfood Chonchi",
+            "id": "nivel1-1763524403524-e313",
+            "storageKey": "nivel1",
+            "level": "planta"
+          },
+          {
+            "storageKey": "nivel2",
+            "name": "Planta Principal",
+            "id": "nivel2-1763524403524-ad1a",
+            "level": "areaGeneral"
+          },
+          {
+            "name": "Filete",
+            "storageKey": "nivel3",
+            "level": "subArea",
+            "id": "nivel3-1763524403524-7339"
+          },
+          {
+            "id": "nivel4-1763524403524-99d1",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4",
+            "name": "Cinta Curva ( Estructura )"
+          }
+        ],
+        "sistemaEquipo": "Cinta Curva ( Estructura )",
+        "subArea": "Filete",
+        "areaGeneral": "Planta Principal"
+      }
+    ],
+    "detalleUbicacion": "",
+    "codProv": "",
     "multimedia": [
       {
         "type": "image",
-        "url": "./imagenes/CAJA HIDROBOX 2 MODULOS.webp",
-        "name": "CAJA HIDROBOX 2 MODULOS.webp",
-        "size": 85580,
+        "size": 89364,
+        "url": "./imagenes/1763398689705_Pendiente_Motor_Cinta_Curva_Filete_foto2.webp",
+        "isFileSystem": true,
+        "name": "motor cinta curva.jpg"
+      }
+    ],
+    "area": "Planta Principal",
+    "equipo": "Cinta Curva ( Estructura )"
+  },
+  {
+    "id": "17613752737800.26683069476947185",
+    "subSistema": "",
+    "categoria": "Repuesto",
+    "minimo": 4,
+    "tipo": "",
+    "planta": "Aquachile Antarfood Chonchi",
+    "codProv": "",
+    "nombre": "Sprocket Cinta Curva Filete",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "datosTecnicos": "",
+    "ultimaModificacion": "2025-11-19T03:53:50.811Z",
+    "codSAP": "Pendiente",
+    "ultimoConteo": "2025-11-01T21:07:05.139Z",
+    "sistemaEquipo": "Cinta Curva ( Estructura )",
+    "optimo": 8,
+    "areaGeneral": "Planta Principal",
+    "seccion": "",
+    "area": "Planta Principal",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "multimedia": [
+      {
+        "size": 72878,
+        "isFileSystem": true,
+        "url": "./imagenes/1763398511083_Pendiente_Sprocket_Cinta_Curva_Filete_foto1.webp",
+        "name": "photo_2025-10-25_23-44-21.jpg",
+        "type": "image"
+      }
+    ],
+    "cantidad": 0,
+    "ubicaciones": [
+      {
+        "jerarquiaPath": [
+          {
+            "storageKey": "nivel1",
+            "level": "planta",
+            "id": "nivel1-1763524403524-e313",
+            "name": "Aquachile Antarfood Chonchi"
+          },
+          {
+            "id": "nivel2-1763524403524-ad1a",
+            "name": "Planta Principal",
+            "storageKey": "nivel2",
+            "level": "areaGeneral"
+          },
+          {
+            "id": "nivel3-1763524403524-7339",
+            "storageKey": "nivel3",
+            "name": "Filete",
+            "level": "subArea"
+          },
+          {
+            "level": "sistemaEquipo",
+            "id": "nivel4-1763524403524-99d1",
+            "storageKey": "nivel4",
+            "name": "Cinta Curva ( Estructura )"
+          }
+        ],
+        "areaGeneral": "Planta Principal",
+        "subArea": "Filete",
+        "sistemaEquipo": "Cinta Curva ( Estructura )"
+      }
+    ],
+    "sistema": "",
+    "cantidadInstalada": 8,
+    "equipo": "Cinta Curva ( Estructura )",
+    "detalleUbicacion": "",
+    "subArea": "Filete",
+    "precio": 0,
+    "detalle": ""
+  },
+  {
+    "id": "17613839439910.7621910459836108",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "seccion": "",
+    "sistemaEquipo": "Cinta Curva ( Estructura )",
+    "subSistema": "",
+    "optimo": 1,
+    "multimedia": [
+      {
+        "name": "1762032176113_cinta curva.webp",
+        "originalName": "cinta curva.jpg",
+        "filename": "1762032176113_cinta curva.webp",
+        "isFileSystem": true,
+        "mimeType": "image/webp",
+        "size": 118859,
+        "tipo": "image",
+        "url": "./imagenes/1762032176113_cinta curva.webp",
+        "compressed": true,
+        "type": "image",
+        "originalSize": 430009,
+        "uploadDate": "2025-11-01T21:22:56.113Z"
+      }
+    ],
+    "area": "Planta Principal",
+    "planta": "Aquachile Antarfood Chonchi",
+    "nombre": "Cinta Curva",
+    "ultimaModificacion": "2025-11-19T03:53:23.544Z",
+    "detalleUbicacion": "",
+    "detalle": "",
+    "tipo": "",
+    "precio": 0,
+    "codProv": "",
+    "subArea": "Filete",
+    "categoria": "Repuesto",
+    "areaGeneral": "Planta Principal",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "cantidadInstalada": 1,
+    "cantidad": 0,
+    "datosTecnicos": "",
+    "sistema": "",
+    "minimo": 1,
+    "ubicaciones": [
+      {
+        "subArea": "Filete",
+        "sistemaEquipo": "Cinta Curva ( Estructura )",
+        "jerarquiaPath": [
+          {
+            "level": "planta",
+            "storageKey": "nivel1",
+            "id": "nivel1-1763524403524-e313",
+            "name": "Aquachile Antarfood Chonchi"
+          },
+          {
+            "storageKey": "nivel2",
+            "id": "nivel2-1763524403524-ad1a",
+            "level": "areaGeneral",
+            "name": "Planta Principal"
+          },
+          {
+            "level": "subArea",
+            "id": "nivel3-1763524403524-7339",
+            "name": "Filete",
+            "storageKey": "nivel3"
+          },
+          {
+            "storageKey": "nivel4",
+            "level": "sistemaEquipo",
+            "name": "Cinta Curva ( Estructura )",
+            "id": "nivel4-1763524403524-99d1"
+          }
+        ],
+        "areaGeneral": "Planta Principal"
+      }
+    ],
+    "ultimoConteo": "2025-11-01T21:06:55.897Z",
+    "codSAP": "Pendiente",
+    "equipo": "Cinta Curva ( Estructura )"
+  },
+  {
+    "id": "17613843384470.6770781112528935",
+    "precio": 0,
+    "datosTecnicos": "- Rodamiento SUC 206\n- Chumacera ovalada FL206\n- Eje 30 mm",
+    "nombre": "Chumacera Ovalada de 2 pernos FL206",
+    "area": "Planta Principal",
+    "cantidadInstalada": 4,
+    "seccion": "",
+    "detalleUbicacion": "",
+    "minimo": 5,
+    "codSAP": "Pendiente",
+    "ultimaModificacion": "2025-12-04T10:06:46.999Z",
+    "codProv": "",
+    "planta": "Aquachile Antarfood Chonchi",
+    "categoria": "Repuesto",
+    "cantidad": 0,
+    "ultimoConteo": "2025-12-04T10:06:46.999Z",
+    "sistema": "",
+    "areaGeneral": "Planta Principal",
+    "ubicaciones": [
+      {
+        "areaGeneral": "Planta Principal",
+        "subArea": "Filete",
+        "sistemaEquipo": "Cinta Curva ( Estructura )",
+        "jerarquiaPath": [
+          {
+            "storageKey": "nivel1",
+            "name": "Aquachile Antarfood Chonchi",
+            "id": "nivel1-1763524403524-e313",
+            "level": "planta"
+          },
+          {
+            "name": "Planta Principal",
+            "id": "nivel2-1763524403524-ad1a",
+            "storageKey": "nivel2",
+            "level": "areaGeneral"
+          },
+          {
+            "name": "Filete",
+            "storageKey": "nivel3",
+            "level": "subArea",
+            "id": "nivel3-1763524403524-7339"
+          },
+          {
+            "level": "sistemaEquipo",
+            "name": "Cinta Curva ( Estructura )",
+            "storageKey": "nivel4",
+            "id": "nivel4-1763524403524-99d1"
+          }
+        ]
+      }
+    ],
+    "sistemaEquipo": "Cinta Curva ( Estructura )",
+    "detalle": "",
+    "subArea": "Filete",
+    "equipo": "Cinta Curva ( Estructura )",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "subSistema": "",
+    "tipo": "",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "optimo": 10,
+    "multimedia": [
+      {
+        "name": "chumacera ovalada de 2 pernos FL 206.jpg",
+        "type": "image",
+        "url": "./imagenes/1763398441608_Pendiente_Chumacera_Ovalada_de_2_pernos__foto1.webp",
+        "size": 109078,
         "isFileSystem": true
       }
     ]
   },
   {
     "id": "9001",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Extintor Polvo QuÃƒÆ’Ã‚Â­mico ABC 10kg",
-    "codSAP": "TEST-EXT-001",
-    "codProv": "TEST-PROV-EXT-001",
-    "cantidad": 15,
     "minimo": 10,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
     "optimo": 20,
-    "precio": 45000,
+    "ubicaciones": [],
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Extintor Polvo QuÃƒÆ’Ã‚Â­mico ABC 10kg",
     "planta": "Aquachile Antarfood Chonchi",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Extintor tipo ABC para fuegos clase A, B y C",
+    "codProv": "TEST-PROV-EXT-001",
+    "codSAP": "TEST-EXT-001",
     "multimedia": [
       {
-        "tipo": "imagen",
         "url": "https://via.placeholder.com/400x300/FF6B35/FFFFFF?text=Extintor+ABC",
-        "nombre": "extintor_test.jpg"
+        "nombre": "extintor_test.jpg",
+        "tipo": "imagen"
       }
     ],
-    "ubicaciones": []
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Extintor tipo ABC para fuegos clase A, B y C",
+    "precio": 45000,
+    "cantidad": 15
   },
   {
     "id": "9002",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª BotiquÃƒÆ’Ã‚Â­n Primeros Auxilios Completo",
-    "codSAP": "TEST-BOT-001",
-    "codProv": "TEST-PROV-BOT-001",
-    "cantidad": 8,
     "minimo": 5,
-    "optimo": 12,
-    "precio": 35000,
+    "codSAP": "TEST-BOT-001",
     "planta": "Aquachile Antarfood Chonchi",
+    "codProv": "TEST-PROV-BOT-001",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
     "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - BotiquÃƒÆ’Ã‚Â­n con elementos bÃƒÆ’Ã‚Â¡sicos de primeros auxilios",
     "multimedia": [
       {
+        "nombre": "botiquin_test.jpg",
         "tipo": "imagen",
-        "url": "https://via.placeholder.com/400x300/4ECDC4/FFFFFF?text=Botiquin",
-        "nombre": "botiquin_test.jpg"
+        "url": "https://via.placeholder.com/400x300/4ECDC4/FFFFFF?text=Botiquin"
       }
     ],
-    "ubicaciones": []
+    "ubicaciones": [],
+    "optimo": 12,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª BotiquÃƒÆ’Ã‚Â­n Primeros Auxilios Completo",
+    "cantidad": 8,
+    "precio": 35000
   },
   {
     "id": "9003",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª VÃƒÆ’Ã‚Â¡lvula Mariposa 6 Pulgadas",
-    "codSAP": "TEST-VAL-MA-006",
-    "codProv": "TEST-PROV-VAL-006",
-    "cantidad": 12,
-    "minimo": 8,
-    "optimo": 15,
-    "precio": 125000,
-    "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - VÃƒÆ’Ã‚Â¡lvula mariposa para control de flujo",
+    "minimo": 8,
+    "ubicaciones": [],
+    "precio": 125000,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "planta": "Aquachile Antarfood Chonchi",
+    "cantidad": 12,
     "multimedia": [
       {
-        "tipo": "imagen",
         "url": "https://via.placeholder.com/400x300/F7B731/FFFFFF?text=Valvula+Mariposa",
+        "tipo": "imagen",
         "nombre": "valvula_test.jpg"
       }
     ],
-    "ubicaciones": []
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª VÃƒÆ’Ã‚Â¡lvula Mariposa 6 Pulgadas",
+    "codSAP": "TEST-VAL-MA-006",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "codProv": "TEST-PROV-VAL-006",
+    "optimo": 15,
+    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - VÃƒÆ’Ã‚Â¡lvula mariposa para control de flujo"
   },
   {
     "id": "9004",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Sensor de Temperatura PT100",
-    "codSAP": "TEST-SEN-TMP-100",
     "codProv": "TEST-PROV-SEN-100",
-    "cantidad": 20,
-    "minimo": 15,
-    "optimo": 25,
-    "precio": 28000,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "codSAP": "TEST-SEN-TMP-100",
+    "cantidad": 20,
+    "optimo": 25,
     "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Sensor PT100 rango -50Ãƒâ€šÃ‚Â°C a +200Ãƒâ€šÃ‚Â°C",
+    "precio": 28000,
+    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
     "multimedia": [
       {
+        "nombre": "sensor_test.jpg",
         "tipo": "imagen",
-        "url": "https://via.placeholder.com/400x300/5F27CD/FFFFFF?text=Sensor+PT100",
-        "nombre": "sensor_test.jpg"
+        "url": "https://via.placeholder.com/400x300/5F27CD/FFFFFF?text=Sensor+PT100"
       }
     ],
+    "minimo": 15,
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Sensor de Temperatura PT100",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
     "ubicaciones": []
   },
   {
     "id": "9005",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Filtro de Cartucho 5 Micras",
-    "codSAP": "TEST-FIL-CAR-005",
-    "codProv": "TEST-PROV-FIL-005",
-    "cantidad": 30,
-    "minimo": 20,
-    "optimo": 40,
-    "precio": 15000,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "subArea": "Sistema de Agua",
     "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Cartucho de filtro de 5 micras",
+    "ubicaciones": [],
     "multimedia": [
       {
-        "tipo": "imagen",
         "url": "https://via.placeholder.com/400x300/00B894/FFFFFF?text=Filtro+5um",
+        "tipo": "imagen",
         "nombre": "filtro_test.jpg"
       }
     ],
-    "ubicaciones": []
+    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "minimo": 20,
+    "subArea": "Sistema de Agua",
+    "codSAP": "TEST-FIL-CAR-005",
+    "precio": 15000,
+    "cantidad": 30,
+    "codProv": "TEST-PROV-FIL-005",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Filtro de Cartucho 5 Micras",
+    "optimo": 40
   },
   {
     "id": "9006",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Bomba CentrÃƒÆ’Ã‚Â­fuga 5HP",
-    "codSAP": "TEST-BOM-CEN-5HP",
-    "codProv": "TEST-PROV-BOM-5HP",
-    "cantidad": 4,
-    "minimo": 2,
-    "optimo": 6,
-    "precio": 450000,
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "subArea": "Sistema de Agua",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Bomba centrÃƒÆ’Ã‚Â­fuga 5HP",
     "multimedia": [
       {
-        "tipo": "imagen",
+        "nombre": "bomba_test.jpg",
         "url": "https://via.placeholder.com/400x300/0984E3/FFFFFF?text=Bomba+5HP",
-        "nombre": "bomba_test.jpg"
+        "tipo": "imagen"
       }
     ],
-    "ubicaciones": []
+    "minimo": 2,
+    "subArea": "Sistema de Agua",
+    "planta": "Aquachile Antarfood Chonchi",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Bomba centrÃƒÆ’Ã‚Â­fuga 5HP",
+    "precio": 450000,
+    "cantidad": 4,
+    "codProv": "TEST-PROV-BOM-5HP",
+    "codSAP": "TEST-BOM-CEN-5HP",
+    "optimo": 6,
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Bomba CentrÃƒÆ’Ã‚Â­fuga 5HP",
+    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "ubicaciones": [],
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    }
   },
   {
     "id": "9007",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Rodamiento SKF 6205-2RS",
-    "codSAP": "TEST-ROD-SKF-6205",
     "codProv": "TEST-SKF-6205-2RS",
-    "cantidad": 25,
-    "minimo": 15,
-    "optimo": 30,
-    "precio": 18500,
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "subArea": "Sistema de Agua",
-    "sistemaEquipo": "Bomba Principal BP-01",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Rodamiento rÃƒÆ’Ã‚Â­gido de bolas",
+    "ubicaciones": [],
+    "codSAP": "TEST-ROD-SKF-6205",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "multimedia": [
       {
-        "tipo": "imagen",
         "url": "https://via.placeholder.com/400x300/6C5CE7/FFFFFF?text=Rodamiento+SKF",
+        "tipo": "imagen",
         "nombre": "rodamiento_test.jpg"
       }
     ],
-    "ubicaciones": []
+    "cantidad": 25,
+    "planta": "Aquachile Antarfood Chonchi",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "optimo": 30,
+    "subArea": "Sistema de Agua",
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Rodamiento SKF 6205-2RS",
+    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Rodamiento rÃƒÆ’Ã‚Â­gido de bolas",
+    "minimo": 15,
+    "sistemaEquipo": "Bomba Principal BP-01",
+    "precio": 18500,
+    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n"
   },
   {
     "id": "9008",
     "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Sello MecÃƒÆ’Ã‚Â¡nico 25mm",
-    "codSAP": "TEST-SEL-MEC-025",
-    "codProv": "TEST-PROV-SEL-025",
-    "cantidad": 8,
-    "minimo": 5,
-    "optimo": 12,
-    "precio": 65000,
-    "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "subArea": "Sistema de Agua",
-    "sistemaEquipo": "Bomba Principal BP-01",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Sello mecÃƒÆ’Ã‚Â¡nico para eje 25mm",
+    "minimo": 5,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "ubicaciones": [],
     "multimedia": [
       {
-        "tipo": "imagen",
         "url": "https://via.placeholder.com/400x300/FD79A8/FFFFFF?text=Sello+Mecanico",
-        "nombre": "sello_test.jpg"
+        "nombre": "sello_test.jpg",
+        "tipo": "imagen"
       }
     ],
-    "ubicaciones": []
+    "planta": "Aquachile Antarfood Chonchi",
+    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Sello mecÃƒÆ’Ã‚Â¡nico para eje 25mm",
+    "codProv": "TEST-PROV-SEL-025",
+    "precio": 65000,
+    "cantidad": 8,
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "sistemaEquipo": "Bomba Principal BP-01",
+    "subArea": "Sistema de Agua",
+    "codSAP": "TEST-SEL-MEC-025",
+    "optimo": 12
   },
   {
     "id": "9009",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Impulsor de Bomba Acero Inox",
-    "codSAP": "TEST-IMP-BOM-INOX",
-    "codProv": "TEST-PROV-IMP-INOX",
-    "cantidad": 6,
-    "minimo": 3,
-    "optimo": 8,
-    "precio": 185000,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "subArea": "Sistema de Agua",
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Impulsor de Bomba Acero Inox",
     "sistemaEquipo": "Bomba Principal BP-01",
-    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
     "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Impulsor acero inoxidable 316L",
+    "subArea": "Sistema de Agua",
+    "optimo": 8,
+    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "precio": 185000,
+    "codSAP": "TEST-IMP-BOM-INOX",
+    "cantidad": 6,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
     "multimedia": [
       {
-        "tipo": "imagen",
         "url": "https://via.placeholder.com/400x300/A29BFE/FFFFFF?text=Impulsor+Inox",
+        "tipo": "imagen",
         "nombre": "impulsor_test.jpg"
       }
     ],
-    "ubicaciones": []
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "ubicaciones": [],
+    "codProv": "TEST-PROV-IMP-INOX",
+    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
+    "minimo": 3
   },
   {
     "id": "9010",
     "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Carcasa de Bomba Con Bridas",
-    "codSAP": "TEST-CAR-BOM-BRID",
-    "codProv": "TEST-PROV-CAR-BRID",
-    "cantidad": 3,
     "minimo": 2,
-    "optimo": 5,
-    "precio": 320000,
+    "codSAP": "TEST-CAR-BOM-BRID",
+    "sistemaEquipo": "Bomba Principal BP-01",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "subArea": "Sistema de Agua",
     "planta": "Aquachile Antarfood Chonchi",
     "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "subArea": "Sistema de Agua",
-    "sistemaEquipo": "Bomba Principal BP-01",
-    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
+    "ubicaciones": [],
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "precio": 320000,
     "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Carcasa con bridas de conexiÃƒÆ’Ã‚Â³n",
+    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
+    "optimo": 5,
     "multimedia": [
       {
         "tipo": "imagen",
@@ -1701,108 +1913,181 @@
         "nombre": "carcasa_test.jpg"
       }
     ],
-    "ubicaciones": []
+    "codProv": "TEST-PROV-CAR-BRID",
+    "cantidad": 3
   },
   {
     "id": "9011",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª O-Ring Viton 25x3mm",
-    "codSAP": "TEST-ORI-VIT-25X3",
-    "codProv": "TEST-PROV-ORI-25X3",
-    "cantidad": 50,
-    "minimo": 30,
-    "optimo": 60,
-    "precio": 3500,
     "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "subArea": "Sistema de Agua",
-    "sistemaEquipo": "Bomba Principal BP-01",
+    "codProv": "TEST-PROV-ORI-25X3",
+    "minimo": 30,
     "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
-    "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - O-Ring Viton alta temperatura",
+    "sistemaEquipo": "Bomba Principal BP-01",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "precio": 3500,
     "multimedia": [
       {
-        "tipo": "imagen",
+        "nombre": "oring_test.jpg",
         "url": "https://via.placeholder.com/400x300/55EFC4/000000?text=O-Ring+Viton",
-        "nombre": "oring_test.jpg"
+        "tipo": "imagen"
       }
     ],
-    "ubicaciones": []
+    "cantidad": 50,
+    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - O-Ring Viton alta temperatura",
+    "optimo": 60,
+    "ubicaciones": [],
+    "codSAP": "TEST-ORI-VIT-25X3",
+    "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
+    "subArea": "Sistema de Agua",
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª O-Ring Viton 25x3mm",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1"
   },
   {
     "id": "9012",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Junta Tapa Bomba TeflÃƒÆ’Ã‚Â³n",
     "codSAP": "TEST-JUN-TAP-TEF",
-    "codProv": "TEST-PROV-JUN-TEF",
     "cantidad": 15,
-    "minimo": 10,
-    "optimo": 20,
-    "precio": 8500,
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "subArea": "Sistema de Agua",
     "sistemaEquipo": "Bomba Principal BP-01",
-    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
     "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Junta de teflÃƒÆ’Ã‚Â³n para tapa",
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Junta Tapa Bomba TeflÃƒÆ’Ã‚Â³n",
+    "minimo": 10,
     "multimedia": [
       {
-        "tipo": "imagen",
+        "nombre": "junta_test.jpg",
         "url": "https://via.placeholder.com/400x300/FFEAA7/000000?text=Junta+Teflon",
-        "nombre": "junta_test.jpg"
+        "tipo": "imagen"
       }
     ],
-    "ubicaciones": []
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "precio": 8500,
+    "codProv": "TEST-PROV-JUN-TEF",
+    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Junta de teflÃƒÆ’Ã‚Â³n para tapa",
+    "ubicaciones": [],
+    "optimo": 20,
+    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "subArea": "Sistema de Agua",
+    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
+    "planta": "Aquachile Antarfood Chonchi",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1"
   },
   {
     "id": "9013",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Tornillo Allen M8x40 Inox A4",
-    "codSAP": "TEST-TOR-ALL-M8X40",
-    "codProv": "TEST-DIN912-M8X40-A4",
-    "cantidad": 100,
-    "minimo": 50,
-    "optimo": 150,
-    "precio": 450,
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "subArea": "Sistema de Agua",
-    "sistemaEquipo": "Bomba Principal BP-01",
     "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
-    "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
-    "detalle": "Conjunto de FijaciÃƒÆ’Ã‚Â³n",
-    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Tornillo allen M8x40mm inox A4-70",
+    "codSAP": "TEST-TOR-ALL-M8X40",
+    "sistemaEquipo": "Bomba Principal BP-01",
     "multimedia": [
       {
         "tipo": "imagen",
-        "url": "https://via.placeholder.com/400x300/DFE6E9/000000?text=Tornillo+M8x40",
-        "nombre": "tornillo_test.jpg"
+        "nombre": "tornillo_test.jpg",
+        "url": "https://via.placeholder.com/400x300/DFE6E9/000000?text=Tornillo+M8x40"
       }
     ],
-    "ubicaciones": []
+    "codProv": "TEST-DIN912-M8X40-A4",
+    "detalle": "Conjunto de FijaciÃƒÆ’Ã‚Â³n",
+    "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Tornillo Allen M8x40 Inox A4",
+    "precio": 450,
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Tornillo allen M8x40mm inox A4-70",
+    "planta": "Aquachile Antarfood Chonchi",
+    "subArea": "Sistema de Agua",
+    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "cantidad": 100,
+    "ubicaciones": [],
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "minimo": 50,
+    "optimo": 150
   },
   {
     "id": "9014",
-    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Arandela PresiÃƒÆ’Ã‚Â³n M8 Inox",
-    "codSAP": "TEST-ARA-PRE-M8",
-    "codProv": "TEST-DIN127-M8-INOX",
-    "cantidad": 150,
-    "minimo": 80,
-    "optimo": 200,
-    "precio": 150,
-    "planta": "Aquachile Antarfood Chonchi",
-    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
-    "subArea": "Sistema de Agua",
-    "sistemaEquipo": "Bomba Principal BP-01",
-    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
-    "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
-    "detalle": "Conjunto de FijaciÃƒÆ’Ã‚Â³n",
     "descripcion": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª TEST - Arandela grower M8 inoxidable",
+    "ubicaciones": [],
+    "precio": 150,
+    "detalle": "Conjunto de FijaciÃƒÆ’Ã‚Â³n",
+    "codProv": "TEST-DIN127-M8-INOX",
+    "subSistema": "Sistema HidrÃƒÆ’Ã‚Â¡ulico",
+    "optimo": 200,
+    "areaGeneral": "ÃƒÆ’Ã‚Ârea de ProducciÃƒÆ’Ã‚Â³n",
+    "planta": "Aquachile Antarfood Chonchi",
+    "minimo": 80,
+    "nombre": "ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Âª Arandela PresiÃƒÆ’Ã‚Â³n M8 Inox",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "cantidad": 150,
+    "codSAP": "TEST-ARA-PRE-M8",
+    "sistemaEquipo": "Bomba Principal BP-01",
+    "subArea": "Sistema de Agua",
+    "seccion": "SecciÃƒÆ’Ã‚Â³n de Sellado",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
     "multimedia": [
       {
         "tipo": "imagen",
-        "url": "https://via.placeholder.com/400x300/B2BEC3/000000?text=Arandela+M8",
-        "nombre": "arandela_test.jpg"
+        "nombre": "arandela_test.jpg",
+        "url": "https://via.placeholder.com/400x300/B2BEC3/000000?text=Arandela+M8"
+      }
+    ]
+  },
+  {
+    "id": "draft_17592210906030.8920785418427316",
+    "tipo": "",
+    "multimedia": [
+      {
+        "size": 612022,
+        "name": "GRASA ALIMENTARIA BLANCA BEL RAY.webp",
+        "type": "image",
+        "url": "./imagenes/GRASA ALIMENTARIA BLANCA BEL RAY.webp",
+        "isFileSystem": true
       }
     ],
-    "ubicaciones": []
+    "codSAP": "3100027416",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "minimo": 5,
+    "cantidad": 20,
+    "area": "GENERAL",
+    "nombre": "GRASA ALIMENTARIA BLANCA BEL RAY (Grasa Solida)",
+    "codProv": "",
+    "equipo": "GENERAL",
+    "precio": 0
+  },
+  {
+    "id": "draft_17592224546130.5056254889369888",
+    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "codSAP": "3300035891",
+    "updatedAt": {
+      "seconds": 1764841213,
+      "nanoseconds": 605000000
+    },
+    "tipo": "CAJA HIDROBOX",
+    "nombre": "CAJA HIDROBOX 2 MODULOS",
+    "codProv": "",
+    "area": "GENERAL",
+    "precio": 0,
+    "multimedia": [
+      {
+        "size": 85580,
+        "isFileSystem": true,
+        "name": "CAJA HIDROBOX 2 MODULOS.webp",
+        "type": "image",
+        "url": "./imagenes/CAJA HIDROBOX 2 MODULOS.webp"
+      }
+    ],
+    "equipo": "INTERRUPTOR / ENCHUFE",
+    "cantidad": 6,
+    "minimo": 5
   }
 ]

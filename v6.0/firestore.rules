@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function para verificar si el usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function para obtener el rol del usuario desde Firestore
+    function getUserRole() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role;
+    }
+    
+    // Helper function para verificar si es admin
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() == 'admin';
+    }
+    
+    // Helper function para verificar si es usuario regular
+    function isUsuario() {
+      return isAuthenticated() && getUserRole() == 'usuario';
+    }
+    
+    // Helper function para verificar si tiene al menos rol de lectura
+    function hasReadAccess() {
+      return isAuthenticated() && getUserRole() in ['admin', 'usuario', 'lectura'];
+    }
+    
+    // Colección de usuarios (solo admin puede escribir)
+    match /usuarios/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Usuarios personalizados (custom_users)
+    match /custom_users/{username} {
+      allow read: if true; // Público para login
+      allow write: if isAdmin();
+    }
+    
+    // Historial de acciones de usuarios
+    match /user_actions/{actionId} {
+      allow read: if isAdmin();
+      allow create: if true; // Permite crear registros para tracking
+      allow update, delete: if isAdmin();
+    }
+    
+    // Repuestos
+    match /repuestos/{repuestoId} {
+      allow read: if hasReadAccess();
+      allow create: if isAuthenticated() && (isAdmin() || isUsuario());
+      allow update: if isAuthenticated() && (isAdmin() || isUsuario());
+      allow delete: if isAdmin();
+    }
+    
+    // Mapas
+    match /mapas/{mapaId} {
+      allow read: if hasReadAccess();
+      allow create: if isAuthenticated() && (isAdmin() || isUsuario());
+      allow update: if isAuthenticated() && (isAdmin() || isUsuario());
+      allow delete: if isAdmin();
+    }
+    
+    // Zonas
+    match /zonas/{zonaId} {
+      allow read: if hasReadAccess();
+      allow create: if isAuthenticated() && (isAdmin() || isUsuario());
+      allow update: if isAuthenticated() && (isAdmin() || isUsuario());
+      allow delete: if isAdmin();
+    }
+    
+    // Presupuestos
+    match /presupuestos/{presupuestoId} {
+      allow read: if hasReadAccess();
+      allow create: if isAuthenticated() && (isAdmin() || isUsuario());
+      allow update: if isAuthenticated() && (isAdmin() || isUsuario());
+      allow delete: if isAdmin();
+    }
+    
+    // Jerarquía
+    match /jerarquia/{jerarquiaId} {
+      allow read: if hasReadAccess();
+      allow write: if isAdmin(); // Solo admin puede modificar estructura
+    }
+    
+    // Metadata
+    match /metadata/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}
