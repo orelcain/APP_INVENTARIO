@@ -42125,16 +42125,7 @@ class InventarioCompleto {
       </div>
     `;
 
-    if (hasChildren) {
-      const areaChildrenDisplay = areaExpanded ? 'block' : 'none';
-      html += `<div class="tree-children" style="display: ${areaChildrenDisplay};">`;
-      area.subAreas.forEach((subArea, subIndex) => {
-        html += this.buildVisualSubAreaNode(subArea, index, subIndex, areaNodeId, currentPath);
-      });
-      html += '</div>';
-    }
-    
-    // 📦 REPUESTOS: Solo mostrar repuestos asignados EXACTAMENTE a este nivel (sin hijos)
+    // 📦 REPUESTOS: Mostrar ANTES de los hijos para que aparezcan justo debajo del nodo
     const repuestosEnArea = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListId = `repuestos-list-${areaNodeId}`;
     const hasRepuestosArea = repuestosEnArea.length > 0;
@@ -42145,6 +42136,15 @@ class InventarioCompleto {
       const repuestosHTML = this.renderRepuestosEnNodo(repuestosEnArea, 2, currentPath);
       
       html += `<div id="${repuestosListId}" class="node-repuestos-wrapper" style="display: ${repuestosDisplay};">${repuestosHTML}</div>`;
+    }
+
+    if (hasChildren) {
+      const areaChildrenDisplay = areaExpanded ? 'block' : 'none';
+      html += `<div class="tree-children" style="display: ${areaChildrenDisplay};">`;
+      area.subAreas.forEach((subArea, subIndex) => {
+        html += this.buildVisualSubAreaNode(subArea, index, subIndex, areaNodeId, currentPath);
+      });
+      html += '</div>';
     }
 
     html += '</div>';
@@ -42199,16 +42199,7 @@ class InventarioCompleto {
       </div>
     `;
 
-    if (hasChildren) {
-      const childrenDisplay = expanded ? 'block' : 'none';
-      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
-      subArea.sistemas.forEach((sistema, sisIndex) => {
-        html += this.buildVisualSistemaNode(sistema, areaIndex, subIndex, sisIndex, nodeId, currentPath);
-      });
-      html += '</div>';
-    }
-    
-    // 📦 REPUESTOS: Solo mostrar repuestos asignados EXACTAMENTE a este nivel
+    // 📦 REPUESTOS: Mostrar ANTES de los hijos para que aparezcan justo debajo del nodo
     const repuestosEnSubArea = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListIdSubArea = `repuestos-list-${nodeId}`;
     
@@ -42218,6 +42209,15 @@ class InventarioCompleto {
       const repuestosHTMLSubArea = this.renderRepuestosEnNodo(repuestosEnSubArea, 3, currentPath);
       
       html += `<div id="${repuestosListIdSubArea}" class="node-repuestos-wrapper" style="display: ${repuestosDisplaySubArea};">${repuestosHTMLSubArea}</div>`;
+    }
+
+    if (hasChildren) {
+      const childrenDisplay = expanded ? 'block' : 'none';
+      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
+      subArea.sistemas.forEach((sistema, sisIndex) => {
+        html += this.buildVisualSistemaNode(sistema, areaIndex, subIndex, sisIndex, nodeId, currentPath);
+      });
+      html += '</div>';
     }
 
     html += '</div>';
@@ -42272,15 +42272,7 @@ class InventarioCompleto {
       </div>
     `;
 
-    if (hasChildren) {
-      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
-      sistema.subSistemas.forEach((subSistema, subSisIndex) => {
-        html += this.buildVisualSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex, nodeId, currentPath);
-      });
-      html += '</div>';
-    }
-    
-    // 📦 REPUESTOS: Solo mostrar repuestos asignados EXACTAMENTE a este sistema (con path completo)
+    // 📦 REPUESTOS: Mostrar ANTES de los hijos para que aparezcan justo debajo del nodo
     const repuestosEnSistema = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListIdSistema = `repuestos-list-${nodeId}`;
     
@@ -42290,6 +42282,14 @@ class InventarioCompleto {
       const repuestosHTMLSistema = this.renderRepuestosEnNodo(repuestosEnSistema, 4, currentPath);
       
       html += `<div id="${repuestosListIdSistema}" class="node-repuestos-wrapper" style="display: ${repuestosDisplaySistema};">${repuestosHTMLSistema}</div>`;
+    }
+
+    if (hasChildren) {
+      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
+      sistema.subSistemas.forEach((subSistema, subSisIndex) => {
+        html += this.buildVisualSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex, nodeId, currentPath);
+      });
+      html += '</div>';
     }
 
     html += '</div>';
@@ -42344,15 +42344,7 @@ class InventarioCompleto {
       </div>
     `;
 
-    if (hasChildren) {
-      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
-      subSistema.secciones.forEach((seccion, secIndex) => {
-        html += this.buildVisualSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, nodeId);
-      });
-      html += '</div>';
-    }
-    
-    // 📦 REPUESTOS: Mostrar repuestos asignados EXACTAMENTE a este subSistema
+    // 📦 REPUESTOS: Mostrar ANTES de los hijos para que aparezcan justo debajo del nodo
     const repuestosEnSubSistema = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListIdSubSistema = `repuestos-list-${nodeId}`;
     
@@ -42362,6 +42354,14 @@ class InventarioCompleto {
       const repuestosHTMLSubSistema = this.renderRepuestosEnNodo(repuestosEnSubSistema, 5, currentPath);
       
       html += `<div id="${repuestosListIdSubSistema}" class="node-repuestos-wrapper" style="display: ${repuestosDisplaySubSistema};">${repuestosHTMLSubSistema}</div>`;
+    }
+
+    if (hasChildren) {
+      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
+      subSistema.secciones.forEach((seccion, secIndex) => {
+        html += this.buildVisualSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, nodeId);
+      });
+      html += '</div>';
     }
 
     html += '</div>';
