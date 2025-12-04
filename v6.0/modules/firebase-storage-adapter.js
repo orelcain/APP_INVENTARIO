@@ -13,7 +13,8 @@ class FirebaseStorageAdapter {
             repuestos: null,
             mapas: null,
             zonas: null,
-            presupuestos: null
+            presupuestos: null,
+            jerarquia: null
         };
 
         // Callbacks para sincronización en tiempo real
@@ -21,7 +22,8 @@ class FirebaseStorageAdapter {
             repuestos: null,
             mapas: null,
             zonas: null,
-            presupuestos: null
+            presupuestos: null,
+            jerarquia: null
         };
     }
 
@@ -430,9 +432,54 @@ class FirebaseStorageAdapter {
     }
 
     /**
+     * Cargar jerarquía desde Firestore
+     */
+    async cargarJerarquia() {
+        try {
+            const result = await this.firebaseService.readAll(this.COLLECTIONS.JERARQUIA);
+            
+            if (result.success && result.data.length > 0) {
+                console.log(`✅ Jerarquía cargada desde Firestore`);
+                // La jerarquía se guarda como un solo documento
+                return result.data[0].estructura || [];
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.error('❌ Error cargando jerarquía:', error);
+            return [];
+        }
+    }
+
+    /**
+     * Guardar jerarquía en Firestore
+     */
+    async guardarJerarquia(jerarquia) {
+        try {
+            // La jerarquía se guarda como un solo documento con ID fijo
+            const docRef = this.firebaseService.db
+                .collection(this.COLLECTIONS.JERARQUIA)
+                .doc('estructura_principal');
+
+            await docRef.set({
+                estructura: jerarquia,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedBy: this.firebaseService.currentUser?.uid || 'unknown',
+                version: '1.0'
+            }, { merge: true });
+
+            console.log(`✅ Jerarquía guardada en Firestore (${jerarquia.length} áreas)`);
+            return true;
+        } catch (error) {
+            console.error('❌ Error guardando jerarquía:', error);
+            return false;
+        }
+    }
+
+    /**
      * Migrar datos locales a Firestore (solo ejecutar una vez)
      */
-    async migrarDatosLocales(repuestos, mapas, zonas, presupuestos) {
+    async migrarDatosLocales(repuestos, mapas, zonas, presupuestos, jerarquia) {
         if (!this.firebaseService.isAdmin()) {
             alert('Solo administradores pueden migrar datos');
             return false;
@@ -449,6 +496,11 @@ class FirebaseStorageAdapter {
             await this.guardarMapas(mapas);
             await this.guardarZonas(zonas);
             await this.guardarPresupuestos(presupuestos);
+            
+            // Migrar jerarquía si existe
+            if (jerarquia && jerarquia.length > 0) {
+                await this.guardarJerarquia(jerarquia);
+            }
 
             console.log('✅ Migración completada exitosamente');
             alert('Migración completada. Los datos ahora están en la nube.');

@@ -61658,13 +61658,18 @@ async function migrarDatosAFirebase() {
         // Mapas y zonas están en mapStorage, no en app
         const mapas = window.mapStorage?.mapas || [];
         const zonas = window.mapStorage?.zonas || [];
-        const presupuestos = window.app.presupuestos || [];    const confirmar = confirm(
+        const presupuestos = window.app.presupuestos || [];
+        // Jerarquía está en app.jerarquiaAnidada
+        const jerarquia = window.app?.jerarquiaAnidada || [];
+    
+    const confirmar = confirm(
         '🔄 ¿Migrar todos los datos locales a Firebase?\n\n' +
         '📦 Se migrarán:\n' +
         `• ${repuestos.length} repuestos\n` +
         `• ${mapas.length} mapas\n` +
         `• ${zonas.length} zonas\n` +
-        `• ${presupuestos.length} presupuestos\n\n` +
+        `• ${presupuestos.length} presupuestos\n` +
+        `• ${jerarquia.length} áreas en jerarquía\n\n` +
         '⚠️ Esta operación sobrescribirá datos existentes en Firebase.\n' +
         '¿Continuar?'
     );
@@ -61688,7 +61693,8 @@ async function migrarDatosAFirebase() {
             repuestos,
             mapas,
             zonas,
-            presupuestos
+            presupuestos,
+            jerarquia
         );
         
         if (resultado) {
@@ -61701,7 +61707,8 @@ async function migrarDatosAFirebase() {
                 • ${repuestos.length} repuestos migrados<br>
                 • ${mapas.length} mapas migrados<br>
                 • ${zonas.length} zonas migradas<br>
-                • ${presupuestos.length} presupuestos migrados
+                • ${presupuestos.length} presupuestos migrados<br>
+                • ${jerarquia.length} áreas en jerarquía migradas
                 </small>
             `;
             btn.textContent = '✅ Migración Completada';
@@ -61739,16 +61746,19 @@ async function actualizarEstadoFirebase() {
         const mapasLocales = window.mapStorage?.mapas?.length || 0;
         const zonasLocales = window.mapStorage?.zonas?.length || 0;
         const presupuestosLocales = window.app?.presupuestos?.length || 0;
+        const jerarquiaLocales = window.app?.jerarquiaAnidada?.length || 0;
         
         const repuestosResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.REPUESTOS);
         const mapasResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.MAPAS);
         const zonasResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.ZONAS);
         const presupuestosResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.PRESUPUESTOS);
+        const jerarquiaResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.JERARQUIA);
         
         const repuestosCount = repuestosResult.success ? repuestosResult.data.length : 0;
         const mapasCount = mapasResult.success ? mapasResult.data.length : 0;
         const zonasCount = zonasResult.success ? zonasResult.data.length : 0;
         const presupuestosCount = presupuestosResult.success ? presupuestosResult.data.length : 0;
+        const jerarquiaCount = jerarquiaResult.success && jerarquiaResult.data.length > 0 ? jerarquiaResult.data[0].estructura?.length || 0 : 0;
         
         const totalFirebase = repuestosCount + mapasCount + zonasCount + presupuestosCount;
         const totalLocal = repuestosLocales + mapasLocales + zonasLocales + presupuestosLocales;
@@ -61760,7 +61770,7 @@ async function actualizarEstadoFirebase() {
                     <div>
                         <strong style="color: #fbbf24;">No hay datos en Firebase</strong><br>
                         <small style="opacity: 0.8;">
-                            Tienes ${totalLocal} elementos locales (${repuestosLocales} repuestos, ${mapasLocales} mapas, ${zonasLocales} zonas).<br>
+                            Tienes ${totalLocal} elementos locales (${repuestosLocales} repuestos, ${mapasLocales} mapas, ${zonasLocales} zonas, ${jerarquiaLocales} áreas).<br>
                             Usa el botón "Migrar Datos a Firebase" para respaldarlos en la nube.
                         </small>
                     </div>
@@ -61771,7 +61781,8 @@ async function actualizarEstadoFirebase() {
             const sincronizado = (
                 repuestosCount === repuestosLocales && 
                 mapasCount === mapasLocales && 
-                zonasCount === zonasLocales
+                zonasCount === zonasLocales &&
+                jerarquiaCount === jerarquiaLocales
             );
             const iconoEstado = sincronizado ? '✅' : '⚠️';
             const colorEstado = sincronizado ? '#4ade80' : '#fbbf24';
@@ -61783,6 +61794,7 @@ async function actualizarEstadoFirebase() {
                 if (repuestosCount !== repuestosLocales) diferencias.push(`Repuestos: ${repuestosLocales} local vs ${repuestosCount} nube`);
                 if (mapasCount !== mapasLocales) diferencias.push(`Mapas: ${mapasLocales} local vs ${mapasCount} nube`);
                 if (zonasCount !== zonasLocales) diferencias.push(`Zonas: ${zonasLocales} local vs ${zonasCount} nube`);
+                if (jerarquiaCount !== jerarquiaLocales) diferencias.push(`Jerarquía: ${jerarquiaLocales} local vs ${jerarquiaCount} nube`);
                 detalleDesincronizacion = '<br><small style="opacity: 0.7; font-size: 0.75rem;">' + diferencias.join(' • ') + '</small>';
             }
             
@@ -61795,7 +61807,8 @@ async function actualizarEstadoFirebase() {
                             📦 ${repuestosCount} repuestos • 
                             🗺️ ${mapasCount} mapas • 
                             📍 ${zonasCount} zonas • 
-                            💰 ${presupuestosCount} presupuestos
+                            💰 ${presupuestosCount} presupuestos •
+                            🌳 ${jerarquiaCount} áreas
                         </div>
                     </div>
                 </div>

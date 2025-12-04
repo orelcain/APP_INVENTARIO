@@ -43,6 +43,7 @@ const COLLECTIONS = {
     MAPAS: 'mapas',
     ZONAS: 'zonas',
     PRESUPUESTOS: 'presupuestos',
+    JERARQUIA: 'jerarquia',
     USUARIOS: 'usuarios',
     METADATA: 'metadata'
 };
