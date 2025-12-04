@@ -87,17 +87,12 @@ class LoginUI {
             </div>
 
             <!-- User Menu (después de login) -->
-            <div id="userMenu" style="display: none; position: fixed; top: 113px; left: 150px; z-index: 9999;">
-                <div class="user-menu-container" style="background: rgba(30, 33, 41, 0.95); padding: 6px 12px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.1);">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <div style="text-align: left;">
-                            <div id="userEmail" style="font-size: 0.7rem; font-weight: 500; color: rgba(255,255,255,0.9);"></div>
-                            <div id="userRole" style="font-size: 0.65rem; color: rgba(255,255,255,0.6); margin-top: 1px;"></div>
-                        </div>
-                        <button id="btnLogout" class="btn btn-sm" style="padding: 4px 10px; font-size: 0.7rem; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; cursor: pointer; font-weight: 500;">
-                            Salir
-                        </button>
-                    </div>
+            <div id="userMenu" style="display: none; position: fixed; top: 52px; right: 300px; z-index: 9999;">
+                <div class="user-menu-container" style="display: flex; align-items: center; gap: 10px;">
+                    <span id="userEmail" style="font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.8); padding: 6px 12px; background: rgba(255,255,255,0.05); border-radius: 5px; border: 1px solid rgba(255,255,255,0.1);"></span>
+                    <button id="btnLogout" class="btn btn-sm" style="padding: 6px 14px; font-size: 0.75rem; background: rgba(220, 53, 69, 0.15); color: #dc3545; border: 1px solid rgba(220, 53, 69, 0.3); border-radius: 5px; cursor: pointer; font-weight: 500; transition: all 0.2s;">
+                        Salir
+                    </button>
                 </div>
             </div>
         `;
@@ -220,29 +215,24 @@ class LoginUI {
         
         const userMenu = document.getElementById('userMenu');
         const userEmail = document.getElementById('userEmail');
-        const userRoleEl = document.getElementById('userRole');
 
         console.log('🔍 Elementos encontrados:', { 
             userMenu: !!userMenu, 
-            userEmail: !!userEmail, 
-            userRoleEl: !!userRoleEl 
+            userEmail: !!userEmail
         });
 
-        if (userMenu && userEmail && userRoleEl) {
-            userEmail.textContent = user.email;
-            
+        if (userMenu && userEmail) {
             const roleLabels = {
-                'admin': '👑 Administrador',
+                'admin': '👑 Admin',
                 'usuario': '✏️ Usuario',
-                'lectura': '👁️ Solo lectura'
+                'lectura': '👁️ Lectura'
             };
-            userRoleEl.textContent = roleLabels[role] || role;
+            userEmail.textContent = `${user.email} • ${roleLabels[role] || role}`;
 
             userMenu.style.display = 'block';
             
             console.log('✅ Menú de usuario mostrado:', {
                 email: userEmail.textContent,
-                role: userRoleEl.textContent,
                 display: userMenu.style.display
             });
         } else {
