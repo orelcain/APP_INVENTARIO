@@ -217,9 +217,8 @@ class LoginUI {
                 'usuario': '✏️ Usuario',
                 'lectura': '👁️ Lectura'
             };
-            // Mostrar solo el nombre de usuario (antes del @)
-            const username = user.email.split('@')[0];
-            userEmail.textContent = `${username} • ${roleLabels[role] || role}`;
+            // Mostrar email completo con rol
+            userEmail.textContent = `${user.email} • ${roleLabels[role] || role}`;
 
             userMenu.style.display = 'block';
             

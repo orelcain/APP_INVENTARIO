@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuestas Menú de Usuario - Toolbar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f1419;
+            color: #fff;
+            padding: 40px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2rem;
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .proposal-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            gap: 30px;
+        }
+
+        .proposal {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .proposal h2 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: rgba(147, 197, 253, 0.9);
+        }
+
+        .toolbar-demo {
+            background: linear-gradient(180deg, #1e2029 0%, #16181f 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow-x: auto;
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toolbar-separator {
+            width: 1px;
+            height: 24px;
+            background: rgba(255,255,255,0.1);
+            margin: 0 8px;
+        }
+
+        .glass-btn {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .glass-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .zoom-display {
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.75rem;
+            min-width: 55px;
+            text-align: center;
+        }
+
+        /* Propuesta 1: Minimalista */
+        .user-menu-1 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 6px;
+        }
+
+        .user-menu-1 .user-icon {
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        .user-menu-1 .user-name {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+        }
+
+        .user-menu-1 .logout-btn {
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 4px;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .user-menu-1 .logout-btn:hover {
+            color: rgba(248, 113, 113, 0.9);
+            border-color: rgba(248, 113, 113, 0.3);
+        }
+
+        /* Propuesta 2: Badge Style */
+        .user-menu-2 {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .user-menu-2 .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 20px;
+        }
+
+        .user-menu-2 .user-name {
+            font-size: 0.72rem;
+            color: rgba(147, 197, 253, 0.9);
+            font-weight: 500;
+        }
+
+        .user-menu-2 .close-btn {
+            background: none;
+            border: none;
+            color: rgba(248, 113, 113, 0.7);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0 4px;
+            line-height: 1;
+        }
+
+        .user-menu-2 .close-btn:hover {
+            color: rgba(248, 113, 113, 1);
+        }
+
+        /* Propuesta 3: Dropdown Style */
+        .user-menu-3 {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .user-menu-3:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .user-menu-3 .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .user-menu-3 .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .user-menu-3 .user-name {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        .user-menu-3 .user-role {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.5);
+            line-height: 1;
+        }
+
+        /* Propuesta 4: Chip Ultra Compacto */
+        .user-menu-4 {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 12px;
+        }
+
+        .user-menu-4 .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+        }
+
+        .user-menu-4 .user-name {
+            font-size: 0.72rem;
+            color: rgba(134, 239, 172, 0.9);
+            font-weight: 500;
+        }
+
+        .user-menu-4 .logout-icon {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+            cursor: pointer;
+            padding: 2px;
+        }
+
+        .user-menu-4 .logout-icon:hover {
+            color: rgba(248, 113, 113, 0.9);
+        }
+
+        /* Propuesta 5: Glass Effect Premium */
+        .user-menu-5 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+
+        .user-menu-5 .user-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .user-menu-5 .user-name {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.85);
+            font-weight: 500;
+        }
+
+        .user-menu-5 .divider {
+            width: 1px;
+            height: 16px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .user-menu-5 .logout-btn {
+            padding: 3px 8px;
+            font-size: 0.7rem;
+            background: rgba(248, 113, 113, 0.15);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            border-radius: 4px;
+            color: rgba(248, 113, 113, 0.9);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .user-menu-5 .logout-btn:hover {
+            background: rgba(248, 113, 113, 0.25);
+        }
+
+        /* Propuesta 6: Tag Style */
+        .user-menu-6 {
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+            overflow: hidden;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-menu-6 .user-part {
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.05);
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+        }
+
+        .user-menu-6 .logout-part {
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.08);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .user-menu-6 .logout-part:hover {
+            background: rgba(248, 113, 113, 0.15);
+            color: rgba(248, 113, 113, 0.9);
+        }
+
+        .description {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255,255,255,0.02);
+            border-left: 3px solid rgba(59, 130, 246, 0.5);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.6;
+        }
+
+        .pros {
+            color: rgba(134, 239, 172, 0.8);
+        }
+
+        .cons {
+            color: rgba(252, 165, 165, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Propuestas de Diseño - Menú de Usuario</h1>
+    
+    <div class="proposal-container">
+        
+        <!-- PROPUESTA 1 -->
+        <div class="proposal">
+            <h2>Propuesta 1: Minimalista Clásico</h2>
+            <div class="toolbar-demo">
+                <button class="glass-btn">−</button>
+                <div class="zoom-display">100%</div>
+                <button class="glass-btn">+</button>
+                <button class="glass-btn">⟲</button>
+                
+                <div class="toolbar-separator"></div>
+                
+                <div class="user-menu-1">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name">orelcain • 👑 Admin</span>
+                    <button class="logout-btn">Salir</button>
+                </div>
+                
+                <div class="toolbar-separator"></div>
+                
+                <input type="text" placeholder="Buscar..." style="padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8rem; width: 200px;">
+            </div>
+            <div class="description">
+                <strong class="pros">✓</strong> Limpio y profesional<br>
+                <strong class="pros">✓</strong> Fácil de leer<br>
+                <strong class="cons">✗</strong> Ocupa bastante espacio horizontal
+            </div>
+        </div>
+
+        <!-- PROPUESTA 2 -->
+        <div class="proposal">
+            <h2>Propuesta 2: Badge Moderno</h2>
+            <div class="toolbar-demo">
+                <button class="glass-btn">−</button>
+                <div class="zoom-display">100%</div>
+                <button class="glass-btn">+</button>
+                <button class="glass-btn">⟲</button>
+                
+                <div class="toolbar-separator"></div>
+                
+                <div class="user-menu-2">
+                    <div class="user-badge">
+                        <span class="user-name">orelcain • 👑 Admin</span>
+                        <button class="close-btn">✕</button>
+                    </div>
+                </div>
+                
+                <div class="toolbar-separator"></div>
+                
+                <input type="text" placeholder="Buscar..." style="padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8rem; width: 200px;">
+            </div>
+            <div class="description">
+                <strong class="pros">✓</strong> Distintivo con gradiente azul-morado<br>
+                <strong class="pros">✓</strong> Bordes redondeados elegantes<br>
+                <strong class="cons">✗</strong> Puede destacar demasiado
+            </div>
+        </div>
+
+        <!-- PROPUESTA 3 -->
+        <div class="proposal">
+            <h2>Propuesta 3: Dropdown con Avatar</h2>
+            <div class="toolbar-demo">
+                <button class="glass-btn">−</button>
+                <div class="zoom-display">100%</div>
+                <button class="glass-btn">+</button>
+                <button class="glass-btn">⟲</button>
+                
+                <div class="toolbar-separator"></div>
+                
+                <div class="user-menu-3">
+                    <div class="user-avatar">O</div>
+                    <div class="user-info">
+                        <span class="user-name">orelcain</span>
+                        <span class="user-role">👑 Admin</span>
+                    </div>
+                </div>
+                
+                <div class="toolbar-separator"></div>
+                
+                <input type="text" placeholder="Buscar..." style="padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8rem; width: 200px;">
+            </div>
+            <div class="description">
+                <strong class="pros">✓</strong> Avatar personalizado con inicial<br>
+                <strong class="pros">✓</strong> Información en dos líneas (compacta verticalmente)<br>
+                <strong class="pros">✓</strong> Aspecto profesional tipo Gmail/Slack<br>
+                <strong class="cons">✗</strong> Requiere hover o click para mostrar "Salir"
+            </div>
+        </div>
+
+        <!-- PROPUESTA 4 -->
+        <div class="proposal">
+            <h2>Propuesta 4: Chip Ultra Compacto</h2>
+            <div class="toolbar-demo">
+                <button class="glass-btn">−</button>
+                <div class="zoom-display">100%</div>
+                <button class="glass-btn">+</button>
+                <button class="glass-btn">⟲</button>
+                
+                <div class="toolbar-separator"></div>
+                
+                <div class="user-menu-4">
+                    <span class="status-dot"></span>
+                    <span class="user-name">orelcain • 👑</span>
+                    <span class="logout-icon">⏻</span>
+                </div>
+                
+                <div class="toolbar-separator"></div>
+                
+                <input type="text" placeholder="Buscar..." style="padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8rem; width: 200px;">
+            </div>
+            <div class="description">
+                <strong class="pros">✓</strong> Súper compacto, mínimo espacio<br>
+                <strong class="pros">✓</strong> Indicador de estado "online" (punto verde)<br>
+                <strong class="pros">✓</strong> Color verde distintivo<br>
+                <strong class="cons">✗</strong> Puede ser difícil de ver el icono de salir
+            </div>
+        </div>
+
+        <!-- PROPUESTA 5 -->
+        <div class="proposal">
+            <h2>Propuesta 5: Glass Effect Premium</h2>
+            <div class="toolbar-demo">
+                <button class="glass-btn">−</button>
+                <div class="zoom-display">100%</div>
+                <button class="glass-btn">+</button>
+                <button class="glass-btn">⟲</button>
+                
+                <div class="toolbar-separator"></div>
+                
+                <div class="user-menu-5">
+                    <div class="user-icon">👤</div>
+                    <span class="user-name">orelcain • 👑 Admin</span>
+                    <div class="divider"></div>
+                    <button class="logout-btn">Salir</button>
+                </div>
+                
+                <div class="toolbar-separator"></div>
+                
+                <input type="text" placeholder="Buscar..." style="padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8rem; width: 200px;">
+            </div>
+            <div class="description">
+                <strong class="pros">✓</strong> Efecto glass con blur (moderno)<br>
+                <strong class="pros">✓</strong> Ícono circular con gradiente<br>
+                <strong class="pros">✓</strong> Botón "Salir" con color rojo sutil<br>
+                <strong class="pros">✓</strong> Sombra para profundidad<br>
+                <strong class="cons">✗</strong> Ocupa más espacio
+            </div>
+        </div>
+
+        <!-- PROPUESTA 6 -->
+        <div class="proposal">
+            <h2>Propuesta 6: Tag Segmentado</h2>
+            <div class="toolbar-demo">
+                <button class="glass-btn">−</button>
+                <div class="zoom-display">100%</div>
+                <button class="glass-btn">+</button>
+                <button class="glass-btn">⟲</button>
+                
+                <div class="toolbar-separator"></div>
+                
+                <div class="user-menu-6">
+                    <span class="user-part">orelcain • 👑 Admin</span>
+                    <span class="logout-part">Salir</span>
+                </div>
+                
+                <div class="toolbar-separator"></div>
+                
+                <input type="text" placeholder="Buscar..." style="padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 0.8rem; width: 200px;">
+            </div>
+            <div class="description">
+                <strong class="pros">✓</strong> Estilo GitHub/GitLab (familiar)<br>
+                <strong class="pros">✓</strong> Compacto sin espacios internos<br>
+                <strong class="pros">✓</strong> Transición suave al hover<br>
+                <strong class="cons">✗</strong> Menos distintivo que otras opciones
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
