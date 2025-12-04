@@ -15085,10 +15085,13 @@
       <!-- GRUPO 3.5: USUARIO (después de login) -->
       <div class="toolbar-group" id="userMenu" style="display: none;">
         <div class="toolbar-separator"></div>
-        <span id="userEmail" style="font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.7); white-space: nowrap; padding: 0 8px;"></span>
-        <button id="btnLogout" class="glass-action-btn" title="Cerrar sesión">
-          Salir
-        </button>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-size: 0.8rem; opacity: 0.5;">👤</span>
+          <span id="userEmail" style="font-size: 0.75rem; font-weight: 500; color: rgba(255,255,255,0.7);"></span>
+          <button id="btnLogout" class="glass-action-btn" style="font-size: 0.7rem; opacity: 0.6; padding: 4px 8px;" title="Cerrar sesión">
+            Salir
+          </button>
+        </div>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
