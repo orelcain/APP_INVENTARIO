@@ -49200,31 +49200,43 @@ class InventarioCompleto {
               }, 50);
             } else {
               // 🔄 NODO INTERMEDIO: Mostrar children para poder navegar al siguiente nivel
-              // PERO: Ocultar TODOS los hermanos del siguiente nodo en la ruta
               if (childrenContainer) {
                 childrenContainer.style.display = 'block';
                 console.log(`   ↘️ Children visible para navegación`);
                 
-                // 🎯 EXPANSIÓN FINA: Ocultar hermanos que NO están en la ruta
+                // 🎯 EXPANSIÓN FINA: Asegurar que los hermanos estén COLAPSADOS
+                // Todos visibles, pero solo el de la ruta expandido
                 const nextTargetName = remainingPath[1]; // El siguiente nodo en la ruta
                 if (nextTargetName) {
                   const allSiblings = childrenContainer.querySelectorAll(':scope > .tree-node');
-                  console.log(`   🔍 Ocultando hermanos... Buscando: "${nextTargetName}"`);
+                  console.log(`   🔍 Colapsando hermanos... Objetivo: "${nextTargetName}"`);
                   
                   allSiblings.forEach(sibling => {
                     const siblingContent = sibling.querySelector(':scope > .node-content');
                     const siblingName = siblingContent?.querySelector('.node-name')?.textContent.trim() || '';
+                    const siblingToggle = siblingContent?.querySelector('.node-toggle');
+                    const siblingChildren = sibling.querySelector(':scope > .tree-children');
+                    const siblingRepuestos = sibling.querySelector(':scope > .node-repuestos-wrapper');
                     
-                    // Solo mostrar el nodo que coincide con la ruta
+                    // ¿Es el nodo que buscamos en la ruta?
                     const isNextTarget = siblingName === nextTargetName || 
                                         siblingName.toLowerCase().includes(nextTargetName.toLowerCase());
                     
                     if (!isNextTarget) {
-                      sibling.style.display = 'none';
-                      console.log(`      🙈 Ocultando hermano: "${siblingName}"`);
+                      // 🔒 COLAPSAR hermanos: ocultar sus hijos y repuestos, pero mantener el nodo visible
+                      if (siblingChildren) {
+                        siblingChildren.style.display = 'none';
+                      }
+                      if (siblingRepuestos) {
+                        siblingRepuestos.style.display = 'none';
+                      }
+                      if (siblingToggle) {
+                        siblingToggle.classList.remove('expanded');
+                        siblingToggle.classList.add('collapsed');
+                      }
+                      console.log(`      🔒 Colapsado hermano: "${siblingName}"`);
                     } else {
-                      sibling.style.display = '';
-                      console.log(`      👁️ Mostrando en ruta: "${siblingName}"`);
+                      console.log(`      ✅ En ruta: "${siblingName}"`);
                     }
                   });
                 }
