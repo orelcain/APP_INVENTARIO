@@ -256,15 +256,12 @@ class LoginUI {
         // Mostrar modal de login
         this.showLoginModal();
 
-        // Limpiar datos de la app
-        if (window.app) {
-            window.app.limpiarDatos();
-        }
-
         // Mostrar toast
-        if (window.app) {
+        if (window.app && window.app.mostrarToast) {
             window.app.mostrarToast('Sesión cerrada', 'info');
         }
+        
+        console.log('✅ Sesión cerrada correctamente');
     }
 
     /**
