@@ -5,7 +5,7 @@
 
 // Credenciales de Firebase - app-inventario-repuestos
 const firebaseConfig = {
-    apiKey: "AIzaSyAMZlonqQ1KS9F6O5md3ybMuoO&SfuPPU",
+    apiKey: "AIzaSyAQNZionq01KS9F6O5m03ybWueO6SFuPPU",
     authDomain: "app-inventario-repuestos.firebaseapp.com",
     projectId: "app-inventario-repuestos",
     storageBucket: "app-inventario-repuestos.firebasestorage.app",
