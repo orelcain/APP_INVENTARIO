@@ -8,7 +8,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyAQNZionq01KS9F6O5m03ybWueO6SFuPPU",
     authDomain: "app-inventario-repuestos.firebaseapp.com",
     projectId: "app-inventario-repuestos",
-    storageBucket: "app-inventario-repuestos-images",
+    storageBucket: "app-inventario-repuestos.firebasestorage.app",
     messagingSenderId: "14780417870",
     appId: "1:14780417870:web:89a7f09383f4e12f2fc01f"
 };
