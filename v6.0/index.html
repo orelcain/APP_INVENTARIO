@@ -61653,13 +61653,19 @@ async function migrarDatosAFirebase() {
         return;
     }
     
+    // Obtener datos con valores por defecto si no existen
+    const repuestos = window.app.repuestos || [];
+    const mapas = window.app.mapas || [];
+    const zonas = window.app.zonas || [];
+    const presupuestos = window.app.presupuestos || [];
+    
     const confirmar = confirm(
         '🔄 ¿Migrar todos los datos locales a Firebase?\n\n' +
         '📦 Se migrarán:\n' +
-        `• ${window.app.repuestos.length} repuestos\n` +
-        `• ${window.app.mapas.length} mapas\n` +
-        `• ${window.app.zonas.length} zonas\n` +
-        `• ${window.app.presupuestos.length} presupuestos\n\n` +
+        `• ${repuestos.length} repuestos\n` +
+        `• ${mapas.length} mapas\n` +
+        `• ${zonas.length} zonas\n` +
+        `• ${presupuestos.length} presupuestos\n\n` +
         '⚠️ Esta operación sobrescribirá datos existentes en Firebase.\n' +
         '¿Continuar?'
     );
@@ -61680,10 +61686,10 @@ async function migrarDatosAFirebase() {
         }
         
         const resultado = await window.firebaseStorageAdapter.migrarDatosLocales(
-            window.app.repuestos,
-            window.app.mapas,
-            window.app.zonas,
-            window.app.presupuestos
+            repuestos,
+            mapas,
+            zonas,
+            presupuestos
         );
         
         if (resultado) {
@@ -61693,10 +61699,10 @@ async function migrarDatosAFirebase() {
             statusDiv.innerHTML = `
                 ✅ <strong>Migración completada exitosamente</strong><br>
                 <small style="opacity: 0.8;">
-                • ${window.app.repuestos.length} repuestos migrados<br>
-                • ${window.app.mapas.length} mapas migrados<br>
-                • ${window.app.zonas.length} zonas migradas<br>
-                • ${window.app.presupuestos.length} presupuestos migrados
+                • ${repuestos.length} repuestos migrados<br>
+                • ${mapas.length} mapas migrados<br>
+                • ${zonas.length} zonas migradas<br>
+                • ${presupuestos.length} presupuestos migrados
                 </small>
             `;
             btn.textContent = '✅ Migración Completada';
