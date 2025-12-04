@@ -116,12 +116,15 @@ class FirebaseStorageAdapter {
             const batch = this.firebaseService.db.batch();
 
             mapas.forEach(mapa => {
+                // Convertir ID a string para Firebase
+                const mapaId = mapa.id ? String(mapa.id) : this.generateId();
                 const docRef = this.firebaseService.db
                     .collection(this.COLLECTIONS.MAPAS)
-                    .doc(mapa.id || this.generateId());
+                    .doc(mapaId);
                 
                 batch.set(docRef, {
                     ...mapa,
+                    id: mapaId, // Asegurar que el ID sea string
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                     updatedBy: this.firebaseService.currentUser?.uid || 'unknown'
                 }, { merge: true });
@@ -171,12 +174,15 @@ class FirebaseStorageAdapter {
             const batch = this.firebaseService.db.batch();
 
             zonas.forEach(zona => {
+                // Convertir ID a string para Firebase
+                const zonaId = zona.id ? String(zona.id) : this.generateId();
                 const docRef = this.firebaseService.db
                     .collection(this.COLLECTIONS.ZONAS)
-                    .doc(zona.id || this.generateId());
+                    .doc(zonaId);
                 
                 batch.set(docRef, {
                     ...zona,
+                    id: zonaId, // Asegurar que el ID sea string
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                     updatedBy: this.firebaseService.currentUser?.uid || 'unknown'
                 }, { merge: true });
