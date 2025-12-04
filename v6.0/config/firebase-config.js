@@ -3,15 +3,14 @@
  * Configuración centralizada para Firebase Authentication y Firestore
  */
 
-// TODO: Reemplazar con tus credenciales de Firebase
-// Obtener de: https://console.firebase.google.com/
+// Credenciales de Firebase - app-inventario-repuestos
 const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "TU_PROJECT_ID.firebaseapp.com",
-    projectId: "TU_PROJECT_ID",
-    storageBucket: "TU_PROJECT_ID.appspot.com",
-    messagingSenderId: "TU_SENDER_ID",
-    appId: "TU_APP_ID"
+    apiKey: "AIzaSyAQNZlonqQ1K59F6O5md3ybMuoO&SfuPPU",
+    authDomain: "app-inventario-repuestos.firebaseapp.com",
+    projectId: "app-inventario-repuestos",
+    storageBucket: "app-inventario-repuestos.firebasestorage.app",
+    messagingSenderId: "14780417870",
+    appId: "1:14780417870:web:89a7f09383f4e12f2fc01f"
 };
 
 /**
