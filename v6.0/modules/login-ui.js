@@ -32,16 +32,16 @@ class LoginUI {
         if (this.isLoginModalCreated) return;
 
         const modalHTML = `
-            <div id="loginModal" class="modal-overlay" style="display: none;">
-                <div class="modal login-modal" style="max-width: 450px;">
-                    <div class="modal-header">
-                        <h2 class="modal-title">🔐 Iniciar Sesión</h2>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">
+            <div id="loginModal" class="modal-overlay" style="display: none; align-items: center; justify-content: center;">
+                <div class="modal-container" style="max-width: 450px; margin: 0;">
+                    <div class="modal-header" style="display: block;">
+                        <h2 class="modal-title" style="margin: 0;">🔐 Iniciar Sesión</h2>
+                        <p style="color: rgba(255,255,255,0.9); font-size: 0.9rem; margin-top: 8px;">
                             Accede a tu cuenta para continuar
                         </p>
                     </div>
                     
-                    <div class="modal-body">
+                    <div class="modal-body" style="padding: 24px;">
                         <form id="loginForm">
                             <div class="form-group">
                                 <label for="loginEmail">Email</label>
