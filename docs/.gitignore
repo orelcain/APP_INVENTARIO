@@ -1,0 +1,16 @@
+# Datos sensibles - No publicar en GitHub Pages
+INVENTARIO_STORAGE/
+*.json
+*.bak
+*.log
+
+# Node modules
+node_modules/
+package-lock.json
+
+# Backups
+backups/
+
+# Documentación interna
+SPARK_INDIVIDUAL/
+docs/*.md
