@@ -42126,13 +42126,14 @@ class InventarioCompleto {
     `;
 
     // 📦 REPUESTOS: Mostrar ANTES de los hijos para que aparezcan justo debajo del nodo
+    // SIEMPRE crear el wrapper para que exista cuando se navegue programáticamente
     const repuestosEnArea = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListId = `repuestos-list-${areaNodeId}`;
-    const hasRepuestosArea = repuestosEnArea.length > 0;
     
-    if (hasRepuestosArea && areaExpanded) {
+    if (repuestosEnArea.length > 0) {
       const repuestosExpanded = this.getRepuestosExpandState(areaNodeId);
-      const repuestosDisplay = repuestosExpanded ? 'block' : 'none';
+      // Solo mostrar si AMBOS: el área está expandida Y los repuestos están expandidos
+      const repuestosDisplay = (areaExpanded && repuestosExpanded) ? 'block' : 'none';
       const repuestosHTML = this.renderRepuestosEnNodo(repuestosEnArea, 2, currentPath);
       
       html += `<div id="${repuestosListId}" class="node-repuestos-wrapper" style="display: ${repuestosDisplay};">${repuestosHTML}</div>`;
@@ -42615,6 +42616,10 @@ class InventarioCompleto {
     const isCurrentlyHidden = children.style.display === 'none';
     
     const legacyNodeId = this.getLegacyIdFromNodeContent(nodeContent);
+    
+    // 📦 Buscar wrapper de repuestos para este nodo
+    const repuestosWrapper = treeNode.querySelector(`:scope > .node-repuestos-wrapper`);
+    const repuestosToggle = nodeContent.querySelector('.node-repuestos-toggle');
 
     if (isCurrentlyHidden) {
       // Mostrar
@@ -42622,6 +42627,19 @@ class InventarioCompleto {
       toggleElement.textContent = '›';
       toggleElement.classList.remove('collapsed');
       toggleElement.classList.add('expanded');
+      
+      // 📦 También mostrar repuestos si existen
+      // Si estamos navegando a un repuesto específico (skipTreeStateRestore), SIEMPRE mostrar
+      if (repuestosWrapper) {
+        // Durante navegación programática (skipTreeStateRestore=true): SIEMPRE mostrar repuestos
+        // Durante uso normal: respetar el estado guardado
+        const shouldShowRepuestos = this.skipTreeStateRestore ? true : this.getRepuestosExpandState(nodeId);
+        repuestosWrapper.style.display = shouldShowRepuestos ? 'block' : 'none';
+        if (repuestosToggle) {
+          repuestosToggle.classList.toggle('expanded', shouldShowRepuestos);
+          repuestosToggle.classList.toggle('collapsed', !shouldShowRepuestos);
+        }
+      }
       
       // Guardar estado expandido
       this.saveNodeExpandState(nodeId, true, legacyNodeId);
@@ -42631,6 +42649,11 @@ class InventarioCompleto {
       toggleElement.textContent = '›';
       toggleElement.classList.remove('expanded');
       toggleElement.classList.add('collapsed');
+      
+      // 📦 También ocultar repuestos
+      if (repuestosWrapper) {
+        repuestosWrapper.style.display = 'none';
+      }
       
       // Guardar estado contraído
       this.saveNodeExpandState(nodeId, false, legacyNodeId);
@@ -49101,6 +49124,9 @@ class InventarioCompleto {
       console.log('📍 Path a expandir:', pathToExpand);
       
       // Función para expandir SOLO el nodo correcto en cada nivel
+      // Guardamos referencia al último tree-node encontrado
+      let lastFoundTreeNode = null;
+      
       const expandPath = (currentElement, remainingPath, level = 0) => {
         if (remainingPath.length === 0) {
           console.log('✅ Ruta completamente expandida');
@@ -49108,43 +49134,66 @@ class InventarioCompleto {
           // 📦 PASO ADICIONAL: Expandir lista de repuestos del último nodo
           console.log('\n📦 Expandiendo lista de repuestos del último nodo...');
           
-          // El último nodo es el currentElement padre actual
-          if (currentElement) {
-            const parentNode = currentElement.parentElement;
-            if (parentNode) {
-              const lastNodeContent = parentNode.querySelector('.node-content');
-              if (lastNodeContent) {
-                const nodeId = lastNodeContent.getAttribute('data-node-id');
-                console.log(`   ✅ NodeId: ${nodeId}`);
+          // Usar el último tree-node encontrado
+          const targetTreeNode = lastFoundTreeNode;
+          if (targetTreeNode) {
+            const lastNodeContent = targetTreeNode.querySelector(':scope > .node-content');
+            if (lastNodeContent) {
+              const nodeId = lastNodeContent.getAttribute('data-node-id');
+              console.log(`   ✅ NodeId: ${nodeId}`);
+              
+              // Buscar la lista de repuestos DIRECTAMENTE en el tree-node (no por ID global)
+              const repuestosList = targetTreeNode.querySelector(':scope > .node-repuestos-wrapper');
+              console.log(`   📊 Buscando .node-repuestos-wrapper en tree-node...`);
+              
+              if (repuestosList) {
+                const isExpanded = repuestosList.style.display !== 'none';
+                console.log(`   📊 Lista encontrada - ${isExpanded ? 'ya expandida' : 'colapsada'}`);
                 
-                // Buscar la lista de repuestos
-                const repuestosList = document.getElementById(`repuestos-list-${nodeId}`);
-                if (repuestosList) {
-                  const isExpanded = repuestosList.style.display !== 'none';
-                  console.log(`   📊 Lista ${isExpanded ? 'ya expandida' : 'colapsada'}`);
+                if (!isExpanded) {
+                  // Expandir directamente
+                  const stateKey = 'jerarquia_repuestos_expand_state';
+                  const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
+                  state[nodeId] = true;
+                  localStorage.setItem(stateKey, JSON.stringify(state));
                   
-                  if (!isExpanded) {
-                    // Expandir directamente
-                    const stateKey = 'jerarquia_repuestos_expand_state';
-                    const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
-                    state[nodeId] = true;
-                    localStorage.setItem(stateKey, JSON.stringify(state));
-                    
-                    repuestosList.style.display = 'block';
-                    
-                    // Actualizar toggle
-                    const toggle = lastNodeContent.querySelector('.node-repuestos-toggle');
-                    if (toggle) {
-                      toggle.classList.remove('collapsed');
-                      toggle.classList.add('expanded');
-                    }
-                    console.log('   ✅ Lista expandida');
+                  repuestosList.style.display = 'block';
+                  
+                  // Actualizar toggle de repuestos
+                  const repToggle = lastNodeContent.querySelector('.node-repuestos-toggle');
+                  if (repToggle) {
+                    repToggle.classList.remove('collapsed');
+                    repToggle.classList.add('expanded');
+                  }
+                  console.log('   ✅ Lista de repuestos expandida');
+                }
+              } else {
+                console.log(`   ⚠️ No existe .node-repuestos-wrapper en el nodo`);
+                console.log(`   📋 Buscando también por ID: repuestos-list-${nodeId}`);
+                
+                // Fallback: buscar por ID global
+                const repuestosListById = document.getElementById(`repuestos-list-${nodeId}`);
+                if (repuestosListById) {
+                  console.log(`   ✅ Encontrado por ID`);
+                  repuestosListById.style.display = 'block';
+                  
+                  const stateKey = 'jerarquia_repuestos_expand_state';
+                  const state = JSON.parse(localStorage.getItem(stateKey) || '{}');
+                  state[nodeId] = true;
+                  localStorage.setItem(stateKey, JSON.stringify(state));
+                  
+                  const repToggle = lastNodeContent.querySelector('.node-repuestos-toggle');
+                  if (repToggle) {
+                    repToggle.classList.remove('collapsed');
+                    repToggle.classList.add('expanded');
                   }
                 } else {
-                  console.log(`   ⚠️ No existe repuestos-list-${nodeId}`);
+                  console.log(`   ❌ No se encontró lista de repuestos por ningún método`);
                 }
               }
             }
+          } else {
+            console.log('   ⚠️ No hay lastFoundTreeNode guardado');
           }
           
           return true;
@@ -49220,6 +49269,9 @@ class InventarioCompleto {
           
           if (isMatch) {
             console.log(`   ✅ Encontrado: "${targetName}" → "${nodeNameText}"`);
+            
+            // 📌 Guardar referencia al último nodo encontrado
+            lastFoundTreeNode = treeNode;
             
             // Expandir SOLO este nodo
             const toggle = nodeContent.querySelector('.node-toggle');
@@ -49341,7 +49393,7 @@ class InventarioCompleto {
           console.log('✅ PROCESO COMPLETADO: verRepuestoEnJerarquia');
           console.log('========================================\n');
         }, 100); // Fin setTimeout resaltado
-      }, 800); // Aumentado a 800ms: expansión recursiva (50ms x niveles) + expansión repuestos
+      }, 1000); // Aumentado a 1000ms: expansión recursiva (50ms x niveles) + mostrar repuestos
     }, 500); // Fin setTimeout DOM - aumentado para dar tiempo al re-render
   }
 
