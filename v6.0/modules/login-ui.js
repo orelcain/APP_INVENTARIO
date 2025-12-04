@@ -87,14 +87,14 @@ class LoginUI {
             </div>
 
             <!-- User Menu (después de login) -->
-            <div id="userMenu" style="display: none; position: fixed; top: 18px; right: 280px; z-index: 999;">
-                <div class="user-menu-container" style="background: var(--bg-card); padding: 8px 14px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; border: 1px solid var(--border-color);">
-                    <div style="display: flex; align-items: center; gap: 8px;">
+            <div id="userMenu" style="display: none; position: fixed; top: 12px; right: 20px; z-index: 99999;">
+                <div class="user-menu-container" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 10px 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 12px; border: 2px solid rgba(255,255,255,0.2);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
                         <div style="text-align: left;">
-                            <div id="userEmail" style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary);"></div>
-                            <div id="userRole" style="font-size: 0.65rem; color: var(--text-muted); margin-top: 1px;"></div>
+                            <div id="userEmail" style="font-size: 0.8rem; font-weight: 600; color: white;"></div>
+                            <div id="userRole" style="font-size: 0.7rem; color: rgba(255,255,255,0.9); margin-top: 2px;"></div>
                         </div>
-                        <button id="btnLogout" class="btn btn-sm btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;">
+                        <button id="btnLogout" class="btn btn-sm" style="padding: 6px 14px; font-size: 0.75rem; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; cursor: pointer; font-weight: 600;">
                             Salir
                         </button>
                     </div>
@@ -216,9 +216,17 @@ class LoginUI {
      * Mostrar menú de usuario
      */
     showUserMenu(user, role) {
+        console.log('📋 showUserMenu llamado:', { email: user.email, role });
+        
         const userMenu = document.getElementById('userMenu');
         const userEmail = document.getElementById('userEmail');
         const userRoleEl = document.getElementById('userRole');
+
+        console.log('🔍 Elementos encontrados:', { 
+            userMenu: !!userMenu, 
+            userEmail: !!userEmail, 
+            userRoleEl: !!userRoleEl 
+        });
 
         if (userMenu && userEmail && userRoleEl) {
             userEmail.textContent = user.email;
@@ -231,6 +239,14 @@ class LoginUI {
             userRoleEl.textContent = roleLabels[role] || role;
 
             userMenu.style.display = 'block';
+            
+            console.log('✅ Menú de usuario mostrado:', {
+                email: userEmail.textContent,
+                role: userRoleEl.textContent,
+                display: userMenu.style.display
+            });
+        } else {
+            console.error('❌ No se encontraron los elementos del menú de usuario');
         }
     }
 
