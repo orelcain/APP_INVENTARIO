@@ -17,11 +17,11 @@ const firebaseConfig = {
  * Inicializar Firebase
  * Se ejecuta automáticamente al cargar el archivo
  */
-let app, auth, db;
+let firebaseApp, auth, db;
 
 try {
     // Inicializar Firebase App
-    app = firebase.initializeApp(firebaseConfig);
+    firebaseApp = firebase.initializeApp(firebaseConfig);
     
     // Inicializar servicios
     auth = firebase.auth();
@@ -60,7 +60,7 @@ const USER_ROLES = {
  * Exportar configuración global
  */
 window.FirebaseApp = {
-    app,
+    app: firebaseApp,
     auth,
     db,
     COLLECTIONS,
