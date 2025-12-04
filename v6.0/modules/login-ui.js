@@ -33,15 +33,18 @@ class LoginUI {
 
         const modalHTML = `
             <div id="loginModal" class="modal-overlay" style="display: none; align-items: center; justify-content: center;">
-                <div class="modal-container" style="max-width: 450px; margin: 0;">
-                    <div class="modal-header" style="display: block;">
-                        <h2 class="modal-title" style="margin: 0;">🔐 Iniciar Sesión</h2>
-                        <p style="color: rgba(255,255,255,0.9); font-size: 0.9rem; margin-top: 8px;">
-                            Accede a tu cuenta para continuar
-                        </p>
+                <div class="modal-container" style="max-width: 420px; margin: 0; background: var(--bg-secondary);">
+                    <div class="modal-header" style="display: block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 32px 24px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 3rem; margin-bottom: 8px;">🔐</div>
+                            <h2 class="modal-title" style="margin: 0; font-size: 1.75rem; font-weight: 700;">Iniciar Sesión</h2>
+                            <p style="color: rgba(255,255,255,0.9); font-size: 0.9rem; margin-top: 8px; font-weight: 400;">
+                                Sistema de Inventario de Repuestos
+                            </p>
+                        </div>
                     </div>
                     
-                    <div class="modal-body" style="padding: 24px;">
+                    <div class="modal-body" style="padding: 32px 24px;">
                         <form id="loginForm">
                             <div class="form-group">
                                 <label for="loginEmail">Email</label>
@@ -103,6 +106,17 @@ class LoginUI {
         // Event listeners
         document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
         document.getElementById('btnLogout').addEventListener('click', () => this.logout());
+        
+        // Prevenir que atajos de teclado interfieran con los inputs del login
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        
+        [loginEmail, loginPassword].forEach(input => {
+            input.addEventListener('keydown', (e) => {
+                // Detener propagación para que los atajos globales no interfieran
+                e.stopPropagation();
+            });
+        });
     }
 
     /**
