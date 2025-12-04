@@ -49200,9 +49200,34 @@ class InventarioCompleto {
               }, 50);
             } else {
               // 🔄 NODO INTERMEDIO: Mostrar children para poder navegar al siguiente nivel
+              // PERO: Ocultar TODOS los hermanos del siguiente nodo en la ruta
               if (childrenContainer) {
                 childrenContainer.style.display = 'block';
                 console.log(`   ↘️ Children visible para navegación`);
+                
+                // 🎯 EXPANSIÓN FINA: Ocultar hermanos que NO están en la ruta
+                const nextTargetName = remainingPath[1]; // El siguiente nodo en la ruta
+                if (nextTargetName) {
+                  const allSiblings = childrenContainer.querySelectorAll(':scope > .tree-node');
+                  console.log(`   🔍 Ocultando hermanos... Buscando: "${nextTargetName}"`);
+                  
+                  allSiblings.forEach(sibling => {
+                    const siblingContent = sibling.querySelector(':scope > .node-content');
+                    const siblingName = siblingContent?.querySelector('.node-name')?.textContent.trim() || '';
+                    
+                    // Solo mostrar el nodo que coincide con la ruta
+                    const isNextTarget = siblingName === nextTargetName || 
+                                        siblingName.toLowerCase().includes(nextTargetName.toLowerCase());
+                    
+                    if (!isNextTarget) {
+                      sibling.style.display = 'none';
+                      console.log(`      🙈 Ocultando hermano: "${siblingName}"`);
+                    } else {
+                      sibling.style.display = '';
+                      console.log(`      👁️ Mostrando en ruta: "${siblingName}"`);
+                    }
+                  });
+                }
               }
               
               // Continuar con el siguiente nivel
