@@ -203,13 +203,11 @@ class LoginUI {
         // Mostrar menú de usuario
         this.showUserMenu(detail.user, detail.role);
 
-        // Mostrar toast de bienvenida
-        if (window.app) {
-            window.app.mostrarToast(`Bienvenido ${detail.user.email}`, 'success');
-        }
+        // Log de bienvenida
+        console.log(`🎉 Bienvenido ${detail.user.email} - Rol: ${detail.role}`);
 
         // Recargar datos
-        if (window.app) {
+        if (window.app && window.app.cargarDatosIniciales) {
             window.app.cargarDatosIniciales();
         }
     }
