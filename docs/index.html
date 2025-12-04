@@ -37387,37 +37387,9 @@ class InventarioCompleto {
               '</div>' : '') +
           '</div>' : ''}
             
-            <!-- 🎯 BOTONES DINÁMICOS SEGÚN ESTADO DEL FLUJO -->
+            <!-- 🎯 BOTONES DINÁMICOS SEGÚN ESTADO DEL FLUJO (solo si tiene jerarquía) -->
             ${r.ubicaciones && r.ubicaciones.length > 0 && r.ubicaciones[0].areaGeneral ? 
-              this.generarBotonesSegunEstado(r) : 
-              '<!-- Sin ubicación asignada -->' +
-              '<div style="' +
-                'background: rgba(251, 191, 36, 0.08);' +
-                'border-left: 3px solid #fbbf24;' +
-                'padding: 10px 12px;' +
-                'margin: 8px 12px;' +
-                'border-radius: 6px;' +
-              '">' +
-                '<div style="font-size: 0.7rem; color: #fbbf24; margin-bottom: 6px;">' +
-                  '⚠️ Sin ubicación en jerarquía' +
-                '</div>' +
-                '<button onclick="app.asignarJerarquiaRepuesto(\'' + r.id + '\')" style="' +
-                  'width: 100%;' +
-                  'background: rgba(251, 191, 36, 0.15);' +
-                  'border: 1px solid rgba(251, 191, 36, 0.3);' +
-                  'color: #fbbf24;' +
-                  'padding: 6px 10px;' +
-                  'border-radius: 4px;' +
-                  'font-size: 0.7rem;' +
-                  'font-weight: 500;' +
-                  'cursor: pointer;' +
-                  'transition: all 0.2s;' +
-                '" ' +
-                'onmouseover="this.style.background=\'rgba(251, 191, 36, 0.25)\'" ' +
-                'onmouseout="this.style.background=\'rgba(251, 191, 36, 0.15)\'">' +
-                  '+ Asignar a Jerarquía' +
-                '</button>' +
-              '</div>'
+              this.generarBotonesSegunEstado(r) : ''
             }
         
             <div class="card-footer" style="display: flex; justify-content: center; align-items: center; gap: 8px; padding: 8px 12px; flex-wrap: wrap;">
@@ -40104,23 +40076,12 @@ class InventarioCompleto {
       });
     });
     
-    // VALIDAR QUE HAY AL MENOS UNA UBICACIN CON REA GENERAL
+    // VALIDAR UBICACIONES (OPCIONAL - permite guardar sin jerarquía)
     const ubicacionesValidas = this.ubicacionesActuales.filter(ub => ub.areaGeneral && ub.areaGeneral.trim() !== '');
     console.log(`\n Ubicaciones vlidas: ${ubicacionesValidas.length} de ${this.ubicacionesActuales.length}`);
     
-    if (ubicacionesValidas.length === 0) {
-      //  RE-HABILITAR BOTN SI HAY ERROR
-      if (btnGuardar) {
-        btnGuardar.disabled = false;
-        btnGuardar.style.opacity = '1';
-        btnGuardar.style.cursor = 'pointer';
-      }
-      if (btnText) btnText.style.display = 'inline';
-      if (btnLoading) btnLoading.style.display = 'none';
-      
-      this.showToast(' Debes especificar al menos un rea General', 'error');
-      return;
-    }
+    // 📝 NOTA: Ahora la ubicación es OPCIONAL - se puede guardar sin jerarquía
+    // El usuario puede asignar jerarquía después usando el botón rojo en la tarjeta
     
     // Limpiar ubicaciones (remover campos vacos)
     let ubicacionesLimpias = ubicacionesValidas.map((ub, idx) => {
@@ -40259,7 +40220,7 @@ class InventarioCompleto {
       categoria: document.getElementById('categoria').value,
       nombre: document.getElementById('nombre').value,
       
-      // UBICACIONES MLTIPLES (nuevo sistema)
+      // UBICACIONES MLTIPLES (nuevo sistema) - puede estar vacío
       ubicaciones: ubicacionesLimpias,
       planta: this.plantaBase, // Empresa siempre fija
       
@@ -40267,17 +40228,17 @@ class InventarioCompleto {
       estado_ubicacion: this.calcularEstadoUbicacion(ubicacionesLimpias),
       progreso_flujo: this.calcularProgresoFlujo(ubicacionesLimpias),
       
-      // COMPATIBILIDAD: Guardar primera ubicacin en formato antiguo
-      areaGeneral: ubicacionesLimpias[0].areaGeneral || '',
-      subArea: ubicacionesLimpias[0].subArea || '',
-      sistemaEquipo: ubicacionesLimpias[0].sistemaEquipo || '',
-      subSistema: ubicacionesLimpias[0].subSistema || '',
-      seccion: ubicacionesLimpias[0].seccion || '',
-      detalle: ubicacionesLimpias[0].detalle || '',
-      area: ubicacionesLimpias[0].areaGeneral || '',
-      equipo: ubicacionesLimpias[0].sistemaEquipo || '',
-      sistema: ubicacionesLimpias[0].subSistema || '',
-      detalleUbicacion: ubicacionesLimpias[0].detalle || '',
+      // COMPATIBILIDAD: Guardar primera ubicacin en formato antiguo (si existe)
+      areaGeneral: ubicacionesLimpias[0]?.areaGeneral || '',
+      subArea: ubicacionesLimpias[0]?.subArea || '',
+      sistemaEquipo: ubicacionesLimpias[0]?.sistemaEquipo || '',
+      subSistema: ubicacionesLimpias[0]?.subSistema || '',
+      seccion: ubicacionesLimpias[0]?.seccion || '',
+      detalle: ubicacionesLimpias[0]?.detalle || '',
+      area: ubicacionesLimpias[0]?.areaGeneral || '',
+      equipo: ubicacionesLimpias[0]?.sistemaEquipo || '',
+      sistema: ubicacionesLimpias[0]?.subSistema || '',
+      detalleUbicacion: ubicacionesLimpias[0]?.detalle || '',
       
       cantidad: parseInt(document.getElementById('cantidad').value) || 0,
       cantidadInstalada: parseInt(document.getElementById('cantidadInstalada').value) || 0,
