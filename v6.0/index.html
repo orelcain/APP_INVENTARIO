@@ -61660,15 +61660,16 @@ async function migrarDatosAFirebase() {
         console.log('🔍 [PRE-MIGRACIÓN] Estado de mapStorage:', {
             existe: !!window.mapStorage,
             mapStorage: window.mapStorage,
-            mapas: window.mapStorage?.mapas,
-            zonas: window.mapStorage?.zonas,
-            longitudMapas: window.mapStorage?.mapas?.length,
-            longitudZonas: window.mapStorage?.zonas?.length
+            state: window.mapStorage?.state,
+            mapas: window.mapStorage?.state?.mapas,
+            zonas: window.mapStorage?.state?.zonas,
+            longitudMapas: window.mapStorage?.state?.mapas?.length,
+            longitudZonas: window.mapStorage?.state?.zonas?.length
         });
         
-        // Mapas y zonas están en mapStorage, no en app
-        const mapas = window.mapStorage?.mapas || [];
-        const zonas = window.mapStorage?.zonas || [];
+        // Mapas y zonas están en mapStorage.state (CORREGIDO)
+        const mapas = window.mapStorage?.state?.mapas || [];
+        const zonas = window.mapStorage?.state?.zonas || [];
         const presupuestos = window.app.presupuestos || [];
         // Jerarquía está en app.jerarquiaAnidada
         const jerarquia = window.app?.jerarquiaAnidada || [];
