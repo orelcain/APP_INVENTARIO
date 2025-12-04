@@ -61653,13 +61653,12 @@ async function migrarDatosAFirebase() {
         return;
     }
     
-    // Obtener datos con valores por defecto si no existen
-    const repuestos = window.app.repuestos || [];
-    const mapas = window.app.mapas || [];
-    const zonas = window.app.zonas || [];
-    const presupuestos = window.app.presupuestos || [];
-    
-    const confirmar = confirm(
+        // Obtener datos con valores por defecto si no existen
+        const repuestos = window.app.repuestos || [];
+        // Mapas y zonas están en mapStorage, no en app
+        const mapas = window.mapStorage?.mapas || [];
+        const zonas = window.mapStorage?.zonas || [];
+        const presupuestos = window.app.presupuestos || [];    const confirmar = confirm(
         '🔄 ¿Migrar todos los datos locales a Firebase?\n\n' +
         '📦 Se migrarán:\n' +
         `• ${repuestos.length} repuestos\n` +
@@ -61735,6 +61734,12 @@ async function actualizarEstadoFirebase() {
     try {
         statusDiv.innerHTML = '<p>🔄 Consultando datos de Firebase...</p>';
         
+        // Obtener datos locales actuales
+        const repuestosLocales = window.app?.repuestos?.length || 0;
+        const mapasLocales = window.mapStorage?.mapas?.length || 0;
+        const zonasLocales = window.mapStorage?.zonas?.length || 0;
+        const presupuestosLocales = window.app?.presupuestos?.length || 0;
+        
         const repuestosResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.REPUESTOS);
         const mapasResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.MAPAS);
         const zonasResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.ZONAS);
@@ -61745,24 +61750,47 @@ async function actualizarEstadoFirebase() {
         const zonasCount = zonasResult.success ? zonasResult.data.length : 0;
         const presupuestosCount = presupuestosResult.success ? presupuestosResult.data.length : 0;
         
-        const total = repuestosCount + mapasCount + zonasCount + presupuestosCount;
+        const totalFirebase = repuestosCount + mapasCount + zonasCount + presupuestosCount;
+        const totalLocal = repuestosLocales + mapasLocales + zonasLocales + presupuestosLocales;
         
-        if (total === 0) {
+        if (totalFirebase === 0) {
             statusDiv.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 10px; padding: 15px; background: rgba(234, 179, 8, 0.1); border-radius: 6px; border: 1px solid rgba(234, 179, 8, 0.3);">
                     <span style="font-size: 1.5rem;">⚠️</span>
                     <div>
                         <strong style="color: #fbbf24;">No hay datos en Firebase</strong><br>
-                        <small style="opacity: 0.8;">Usa el botón "Migrar Datos a Firebase" para subir tus datos locales a la nube.</small>
+                        <small style="opacity: 0.8;">
+                            Tienes ${totalLocal} elementos locales (${repuestosLocales} repuestos, ${mapasLocales} mapas, ${zonasLocales} zonas).<br>
+                            Usa el botón "Migrar Datos a Firebase" para respaldarlos en la nube.
+                        </small>
                     </div>
                 </div>
             `;
         } else {
+            // Verificar sincronización
+            const sincronizado = (
+                repuestosCount === repuestosLocales && 
+                mapasCount === mapasLocales && 
+                zonasCount === zonasLocales
+            );
+            const iconoEstado = sincronizado ? '✅' : '⚠️';
+            const colorEstado = sincronizado ? '#4ade80' : '#fbbf24';
+            const textoEstado = sincronizado ? 'Datos sincronizados en Firebase' : 'Desincronizado - Considera migrar de nuevo';
+            
+            let detalleDesincronizacion = '';
+            if (!sincronizado) {
+                const diferencias = [];
+                if (repuestosCount !== repuestosLocales) diferencias.push(`Repuestos: ${repuestosLocales} local vs ${repuestosCount} nube`);
+                if (mapasCount !== mapasLocales) diferencias.push(`Mapas: ${mapasLocales} local vs ${mapasCount} nube`);
+                if (zonasCount !== zonasLocales) diferencias.push(`Zonas: ${zonasLocales} local vs ${zonasCount} nube`);
+                detalleDesincronizacion = '<br><small style="opacity: 0.7; font-size: 0.75rem;">' + diferencias.join(' • ') + '</small>';
+            }
+            
             statusDiv.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 10px; padding: 15px; background: rgba(34, 197, 94, 0.1); border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.3);">
-                    <span style="font-size: 1.5rem;">✅</span>
+                    <span style="font-size: 1.5rem;">${iconoEstado}</span>
                     <div>
-                        <strong style="color: #4ade80;">Datos sincronizados en Firebase</strong><br>
+                        <strong style="color: ${colorEstado};">${textoEstado}</strong>${detalleDesincronizacion}<br>
                         <div style="margin-top: 8px; font-size: 0.85rem; opacity: 0.9;">
                             📦 ${repuestosCount} repuestos • 
                             🗺️ ${mapasCount} mapas • 
