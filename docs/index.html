@@ -40638,48 +40638,81 @@ class InventarioCompleto {
       }
     }
 
-    // 🔵 Parseado normal (nodos organizacionales)
-    const parts = nodeId.split('_');
-    const tipo = parts[0];
-    const indices = parts.slice(1).map(i => parseInt(i));
-
-    console.log('🔵 Parseando nodo normal:', tipo, indices);
+    // 🔵 Parseado normal (nodos organizacionales con formato nuevo)
+    // Formato: empresa_empresa_principal_area_0_subarea_0_sistema_0_subSistema_0_seccion_0_subSeccion_0
+    console.log('🔵 Parseando nodo con formato nuevo:', nodeId);
 
     try {
       const { areas } = this.jerarquiaAnidada;
       
-      if (tipo === 'empresa') {
+      // Extraer los índices de cada nivel del nodeId
+      const areaMatch = nodeId.match(/_area_(\d+)/);
+      const subareaMatch = nodeId.match(/_subarea_(\d+)/);
+      const sistemaMatch = nodeId.match(/_sistema_(\d+)/);
+      const subSistemaMatch = nodeId.match(/_subSistema_(\d+)/);
+      const seccionMatch = nodeId.match(/_seccion_(\d+)/);
+      const subSeccionMatch = nodeId.match(/_subSeccion_(\d+)/);
+      
+      // Si no tiene ningún nivel específico, es solo empresa
+      if (!areaMatch) {
         throw new Error('Selecciona un nodo más específico (Área, Sistema, etc.)');
       }
-
-      const areaIndex = indices[0];
+      
+      const areaIndex = parseInt(areaMatch[1]);
       const area = areas[areaIndex];
       if (!area) throw new Error('Área no encontrada');
       
       ubicacion.areaGeneral = area.nombre;
-
-      if (tipo === 'area') return ubicacion;
-
-      if (indices.length > 1 && area.subAreas) {
-        const subAreaIndex = indices[1];
-        const subArea = area.subAreas[subAreaIndex];
-        if (subArea) {
-          ubicacion.subArea = subArea.nombre;
-          if (tipo === 'subArea') return ubicacion;
-
-          if (indices.length > 2 && subArea.sistemas) {
-            const sistemaIndex = indices[2];
-            const sistema = subArea.sistemas[sistemaIndex];
-            if (sistema) {
-              ubicacion.sistemaEquipo = sistema.nombre;
-              
-              if (indices.length > 3 && sistema.children) {
-                const child = sistema.children[indices[3]];
-                if (child) ubicacion.subSistema = child.nombre;
-              }
-            }
-          }
-        }
+      console.log('✅ Área encontrada:', area.nombre);
+      
+      // Si solo tiene área, retornar
+      if (!subareaMatch) return ubicacion;
+      
+      // Procesar sub-área
+      const subAreaIndex = parseInt(subareaMatch[1]);
+      if (area.subAreas && area.subAreas[subAreaIndex]) {
+        ubicacion.subArea = area.subAreas[subAreaIndex].nombre;
+        console.log('✅ Sub-Área encontrada:', ubicacion.subArea);
+      }
+      
+      if (!sistemaMatch) return ubicacion;
+      
+      // Procesar sistema
+      const sistemaIndex = parseInt(sistemaMatch[1]);
+      const subArea = area.subAreas[subAreaIndex];
+      if (subArea && subArea.sistemas && subArea.sistemas[sistemaIndex]) {
+        ubicacion.sistemaEquipo = subArea.sistemas[sistemaIndex].nombre;
+        console.log('✅ Sistema encontrado:', ubicacion.sistemaEquipo);
+      }
+      
+      if (!subSistemaMatch) return ubicacion;
+      
+      // Procesar sub-sistema
+      const subSistemaIndex = parseInt(subSistemaMatch[1]);
+      const sistema = subArea.sistemas[sistemaIndex];
+      if (sistema && sistema.children && sistema.children[subSistemaIndex]) {
+        ubicacion.subSistema = sistema.children[subSistemaIndex].nombre;
+        console.log('✅ Sub-Sistema encontrado:', ubicacion.subSistema);
+      }
+      
+      if (!seccionMatch) return ubicacion;
+      
+      // Procesar sección
+      const seccionIndex = parseInt(seccionMatch[1]);
+      const subSistema = sistema.children[subSistemaIndex];
+      if (subSistema && subSistema.children && subSistema.children[seccionIndex]) {
+        ubicacion.seccion = subSistema.children[seccionIndex].nombre;
+        console.log('✅ Sección encontrada:', ubicacion.seccion);
+      }
+      
+      if (!subSeccionMatch) return ubicacion;
+      
+      // Procesar sub-sección
+      const subSeccionIndex = parseInt(subSeccionMatch[1]);
+      const seccion = subSistema.children[seccionIndex];
+      if (seccion && seccion.children && seccion.children[subSeccionIndex]) {
+        ubicacion.subSeccion = seccion.children[subSeccionIndex].nombre;
+        console.log('✅ Sub-Sección encontrada:', ubicacion.subSeccion);
       }
 
       return ubicacion;
