@@ -1,130 +1,135 @@
 [
   {
     "id": "17592183372830.3565633314252028",
-    "categoria": "Repuesto",
-    "detalle": "",
-    "updatedBy": "Q5gpgVUYUkdr32mPdgqU430uRTm1",
+    "codSAP": "3300105501",
+    "codProv": "",
+    "tipo": "PARADA EMERGENCIA",
+    "categoria": "Insumo",
+    "nombre": "PARADA EMERGENCIA CON CAJA",
     "ubicaciones": [
       {
+        "areaGeneral": "Planta Principal",
+        "subArea": "Eviscerado",
         "sistemaEquipo": "Cinta Transversal Salida Baader",
+        "cantidadEnUbicacion": 4,
         "jerarquiaPath": [
           {
-            "storageKey": "nivel1",
+            "id": "nivel1-1764845599625-4e5e",
             "name": "Aquachile Antarfood Chonchi",
             "level": "planta",
-            "id": "nivel1-1763558706735-8a84"
+            "storageKey": "nivel1"
           },
           {
-            "level": "areaGeneral",
+            "id": "nivel2-1764845599626-5daa",
             "name": "Planta Principal",
-            "id": "nivel2-1763558706735-ce95",
+            "level": "areaGeneral",
             "storageKey": "nivel2"
           },
           {
-            "storageKey": "nivel3",
-            "id": "nivel3-1763558706735-33c3",
-            "level": "subArea",
-            "name": "Eviscerado"
-          },
-          {
-            "name": "Cinta Transversal Salida Baader",
-            "storageKey": "nivel4",
-            "id": "nivel4-1763558706735-c510",
-            "level": "sistemaEquipo"
-          }
-        ],
-        "subArea": "Eviscerado",
-        "cantidadEnUbicacion": 4,
-        "areaGeneral": "Planta Principal"
-      },
-      {
-        "jerarquiaPath": [
-          {
-            "id": "nivel1-1763558706735-8a84",
-            "name": "Aquachile Antarfood Chonchi",
-            "level": "planta",
-            "storageKey": "nivel1"
-          },
-          {
-            "id": "nivel2-1763558706735-ce95",
-            "name": "Planta Principal",
-            "storageKey": "nivel2",
-            "level": "areaGeneral"
-          },
-          {
-            "level": "subArea",
-            "storageKey": "nivel3",
-            "id": "nivel3-1763558706735-33c3",
-            "name": "Eviscerado"
-          },
-          {
-            "name": "Grader",
-            "storageKey": "nivel4",
-            "id": "nivel4-1763558706737-897f",
-            "level": "sistemaEquipo"
-          },
-          {
-            "id": "nivel5-1763558706737-bce5",
-            "storageKey": "nivel5",
-            "level": "subSistema",
-            "name": "Cinta Larga Grader"
-          }
-        ],
-        "subArea": "Eviscerado",
-        "cantidadEnUbicacion": 2,
-        "areaGeneral": "Planta Principal",
-        "sistemaEquipo": "Grader",
-        "subSistema": "Cinta Larga Grader"
-      },
-      {
-        "jerarquiaPath": [
-          {
-            "name": "Aquachile Antarfood Chonchi",
-            "level": "planta",
-            "id": "nivel1-1763558706735-8a84",
-            "storageKey": "nivel1"
-          },
-          {
-            "id": "nivel2-1763558706735-ce95",
-            "level": "areaGeneral",
-            "storageKey": "nivel2",
-            "name": "Planta Principal"
-          },
-          {
+            "id": "nivel3-1764845599626-f85c",
             "name": "Eviscerado",
-            "storageKey": "nivel3",
-            "id": "nivel3-1763558706735-33c3",
-            "level": "subArea"
+            "level": "subArea",
+            "storageKey": "nivel3"
           },
           {
-            "storageKey": "nivel4",
-            "id": "nivel4-1763558706738-7236",
-            "name": "Cinta Azul Marel (Alimentacion Baader 142)",
-            "level": "sistemaEquipo"
+            "id": "nivel4-1764845599626-4fb5",
+            "name": "Cinta Transversal Salida Baader",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4"
           }
-        ],
-        "sistemaEquipo": "Cinta Azul Marel (Alimentacion Baader 142)",
+        ]
+      },
+      {
         "areaGeneral": "Planta Principal",
+        "subArea": "Eviscerado",
+        "sistemaEquipo": "Grader",
+        "subSistema": "Cinta Larga Grader",
         "cantidadEnUbicacion": 2,
-        "subArea": "Eviscerado"
+        "jerarquiaPath": [
+          {
+            "id": "nivel1-1764845599625-4e5e",
+            "name": "Aquachile Antarfood Chonchi",
+            "level": "planta",
+            "storageKey": "nivel1"
+          },
+          {
+            "id": "nivel2-1764845599626-5daa",
+            "name": "Planta Principal",
+            "level": "areaGeneral",
+            "storageKey": "nivel2"
+          },
+          {
+            "id": "nivel3-1764845599626-f85c",
+            "name": "Eviscerado",
+            "level": "subArea",
+            "storageKey": "nivel3"
+          },
+          {
+            "id": "nivel4-1764845599626-807c",
+            "name": "Grader",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4"
+          },
+          {
+            "id": "nivel5-1764845599626-acb1",
+            "name": "Cinta Larga Grader",
+            "level": "subSistema",
+            "storageKey": "nivel5"
+          }
+        ]
+      },
+      {
+        "areaGeneral": "Planta Principal",
+        "subArea": "Eviscerado",
+        "sistemaEquipo": "Cinta Azul Marel (Alimentacion Baader 142)",
+        "cantidadEnUbicacion": 2,
+        "jerarquiaPath": [
+          {
+            "id": "nivel1-1764845599625-4e5e",
+            "name": "Aquachile Antarfood Chonchi",
+            "level": "planta",
+            "storageKey": "nivel1"
+          },
+          {
+            "id": "nivel2-1764845599626-5daa",
+            "name": "Planta Principal",
+            "level": "areaGeneral",
+            "storageKey": "nivel2"
+          },
+          {
+            "id": "nivel3-1764845599626-f85c",
+            "name": "Eviscerado",
+            "level": "subArea",
+            "storageKey": "nivel3"
+          },
+          {
+            "id": "nivel4-1764845599627-ca96",
+            "name": "Cinta Azul Marel (Alimentacion Baader 142)",
+            "level": "sistemaEquipo",
+            "storageKey": "nivel4"
+          }
+        ]
       }
     ],
-    "subSistema": "",
+    "planta": "Aquachile Antarfood Chonchi",
+    "estado_ubicacion": "jerarquia_sola",
+    "progreso_flujo": "Listo para ubicar",
+    "areaGeneral": "Planta Principal",
+    "subArea": "Eviscerado",
     "sistemaEquipo": "Cinta Transversal Salida Baader",
-    "tipo": "PARADA EMERGENCIA",
-    "ultimaModificacion": "2025-12-04T10:08:42.685Z",
-    "codSAP": "3300105501",
-    "ultimoConteo": "2025-12-04T10:08:42.685Z",
-    "datosTecnicos": "",
-    "cantidad": 10,
-    "updatedAt": {
-      "seconds": 1764841213,
-      "nanoseconds": 605000000
-    },
-    "codProv": "",
+    "subSistema": "",
+    "seccion": "",
+    "detalle": "",
+    "area": "Planta Principal",
+    "equipo": "Cinta Transversal Salida Baader",
+    "sistema": "",
+    "detalleUbicacion": "",
+    "cantidad": 11,
     "cantidadInstalada": 8,
-    "nombre": "PARADA EMERGENCIA CON CAJA",
+    "minimo": 5,
+    "optimo": 10,
     "precio": 0,
+    "datosTecnicos": "",
     "multimedia": [
       {
         "name": "PARADA EMERGENCIA.webp",
@@ -134,16 +139,8 @@
         "url": "./imagenes/PARADA EMERGENCIA.webp"
       }
     ],
-    "equipo": "Cinta Transversal Salida Baader",
-    "detalleUbicacion": "",
-    "optimo": 10,
-    "subArea": "Eviscerado",
-    "sistema": "",
-    "planta": "Aquachile Antarfood Chonchi",
-    "minimo": 5,
-    "seccion": "",
-    "areaGeneral": "Planta Principal",
-    "area": "Planta Principal"
+    "ultimaModificacion": "2025-12-04T10:53:19.628Z",
+    "ultimoConteo": "2025-12-04T10:53:08.569Z"
   },
   {
     "id": "17592196064450.2748990470030177",

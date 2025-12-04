@@ -361,3 +361,17 @@ class CustomAuth {
 // Crear instancia global
 window.customAuth = new CustomAuth();
 console.log('✅ CustomAuth inicializado');
+
+// Inicializar usuarios automáticamente cuando Firebase esté listo
+window.addEventListener('firebaseReady', async () => {
+    console.log('🔄 Firebase listo - Inicializando usuarios personalizados...');
+    await window.customAuth.initializeUsers();
+});
+
+// Si Firebase ya está listo, inicializar inmediatamente
+setTimeout(async () => {
+    if (window.firebaseService && window.firebaseService.db) {
+        console.log('🔄 Firebase detectado - Inicializando usuarios personalizados...');
+        await window.customAuth.initializeUsers();
+    }
+}, 2000);

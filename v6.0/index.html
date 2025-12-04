@@ -30496,6 +30496,12 @@ class InventarioCompleto {
     this.currentDocuments = [];
     this.currentEditingId = null;
     
+    // Sistema de permisos de usuario
+    this.userRole = null;
+    this.canEdit = true; // Por defecto true hasta que se determine el rol
+    this.canCreate = true;
+    this.canDelete = true;
+    
     // Sistema de eliminación diferida de multimedia
     this.pendingDeletions = [];           // Archivos físicos a eliminar al guardar
     this.originalMultimedia = [];         // Backup para "Cancelar"
@@ -30740,6 +30746,108 @@ class InventarioCompleto {
   }
 
   // Detectar si el navegador es Microsoft Edge
+  // ===============================================
+  // SISTEMA DE PERMISOS
+  // ===============================================
+  
+  /**
+   * Actualizar permisos basados en el rol del usuario
+   */
+  updatePermissions(role) {
+    this.userRole = role;
+    
+    switch(role) {
+      case 'admin':
+        this.canEdit = true;
+        this.canCreate = true;
+        this.canDelete = true;
+        break;
+      case 'usuario':
+        this.canEdit = true;
+        this.canCreate = true;
+        this.canDelete = false;
+        break;
+      case 'lectura':
+        this.canEdit = false;
+        this.canCreate = false;
+        this.canDelete = false;
+        break;
+      default:
+        this.canEdit = false;
+        this.canCreate = false;
+        this.canDelete = false;
+    }
+    
+    console.log(`🔐 Permisos actualizados - Rol: ${role}, Editar: ${this.canEdit}, Crear: ${this.canCreate}, Eliminar: ${this.canDelete}`);
+    
+    // Actualizar UI según permisos
+    this.updateUIForPermissions();
+  }
+  
+  /**
+   * Verificar si el usuario puede editar
+   */
+  checkEditPermission(action = 'editar') {
+    if (!this.canEdit) {
+      this.mostrarToast(`⛔ No tienes permisos para ${action}`, 'warning');
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Verificar si el usuario puede crear
+   */
+  checkCreatePermission() {
+    if (!this.canCreate) {
+      this.mostrarToast('⛔ No tienes permisos para crear nuevos registros', 'warning');
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Verificar si el usuario puede eliminar
+   */
+  checkDeletePermission() {
+    if (!this.canDelete) {
+      this.mostrarToast('⛔ No tienes permisos para eliminar registros', 'warning');
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * Actualizar UI según permisos del usuario
+   */
+  updateUIForPermissions() {
+    // Deshabilitar botones de crear/editar/eliminar para usuarios de solo lectura
+    if (!this.canCreate) {
+      const btnNuevo = document.getElementById('btnNuevoRepuesto');
+      if (btnNuevo) {
+        btnNuevo.disabled = true;
+        btnNuevo.title = 'No tienes permisos para crear';
+        btnNuevo.style.opacity = '0.5';
+        btnNuevo.style.cursor = 'not-allowed';
+      }
+    }
+    
+    // Ocultar botones de eliminar en las tarjetas
+    if (!this.canDelete) {
+      document.querySelectorAll('.card-actions .btn-danger').forEach(btn => {
+        btn.style.display = 'none';
+      });
+    }
+    
+    // Deshabilitar edición en conteo
+    if (!this.canEdit && this.currentTab === 'conteo') {
+      document.querySelectorAll('.conteo-input').forEach(input => {
+        input.disabled = true;
+        input.style.cursor = 'not-allowed';
+      });
+    }
+  }
+
   detectEdge() {
     const userAgent = navigator.userAgent.toLowerCase();
     const isEdgeChromium = userAgent.includes('edg/'); // Edge Chromium (PC y mvil)
@@ -38296,6 +38404,16 @@ class InventarioCompleto {
     console.log(`ID recibido: ${id} (tipo: ${typeof id})`);
     console.log(`Total repuestos en memoria: ${this.repuestos.length}`);
     
+    // 🔐 VERIFICAR PERMISOS
+    if (mode === 'edit' && !this.canEdit) {
+      this.mostrarToast('⛔ No tienes permisos para editar', 'warning');
+      return;
+    }
+    if (mode === 'new' && !this.canCreate) {
+      this.mostrarToast('⛔ No tienes permisos para crear nuevos registros', 'warning');
+      return;
+    }
+    
     this.currentEditingId = id;
     
     // Inicializar estado multimedia con nuevo sistema
@@ -39803,6 +39921,15 @@ class InventarioCompleto {
     // preventDefault solo si el evento existe (form submit vs click)
     if (e && e.preventDefault) {
       e.preventDefault();
+    }
+    
+    // 🔐 VERIFICAR PERMISOS
+    const isEdit = this.currentEditingId !== null;
+    if (isEdit && !this.checkEditPermission('editar este repuesto')) {
+      return;
+    }
+    if (!isEdit && !this.checkCreatePermission()) {
+      return;
     }
     
     // 🔴 Si forceValidation=true, saltar wizard y guardar inmediatamente (desde botones Steps)
@@ -45081,7 +45208,8 @@ class InventarioCompleto {
                     </div>
                     <input type="number" class="conteo-input" value="${conteo.nuevo}" min="0" 
                       data-action="update-conteo" data-id="${r.id}" placeholder="Cantidad fsica"
-                      style="width: 100%; padding: 10px; font-size: 1.1rem; text-align: center; font-weight: 700;">
+                      ${!this.canEdit ? 'disabled' : ''}
+                      style="width: 100%; padding: 10px; font-size: 1.1rem; text-align: center; font-weight: 700; ${!this.canEdit ? 'cursor: not-allowed; opacity: 0.6;' : ''}">
                   </div>
                 </div>
               `;
@@ -54940,6 +55068,35 @@ app.startConnectionMonitoring();
 
 // Inicializar atajos de teclado para undo/redo
 app.initUndoRedoKeyboardShortcuts();
+
+// ========================================
+// LISTENERS DE AUTENTICACIÓN Y PERMISOS
+// ========================================
+// Actualizar permisos cuando el usuario se autentica
+window.addEventListener('customAuthSuccess', (event) => {
+  const { role, user, type } = event.detail;
+  console.log(`🔐 Autenticación exitosa - Tipo: ${type}, Rol: ${role}`);
+  
+  // Actualizar permisos en la app
+  app.updatePermissions(role);
+  
+  // Mensaje de bienvenida según rol
+  const roleMessages = {
+    'admin': 'Acceso completo al sistema',
+    'usuario': 'Puedes crear y editar registros',
+    'lectura': 'Modo solo lectura - No puedes modificar datos'
+  };
+  
+  if (roleMessages[role]) {
+    app.mostrarToast(`✅ ${roleMessages[role]}`, 'info');
+  }
+});
+
+// Actualizar permisos al logout
+window.addEventListener('customAuthLogout', () => {
+  console.log('👋 Usuario desconectado - Limpiando permisos');
+  app.updatePermissions(null);
+});
 
 // ========================================
 // LISTENERS DE SINCRONIZACIÓN MULTIMEDIA
