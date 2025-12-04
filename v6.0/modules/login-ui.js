@@ -213,9 +213,9 @@ class LoginUI {
 
         if (userMenu && userEmail) {
             const roleLabels = {
-                'admin': '👑 Admin',
-                'usuario': '✏️ Usuario',
-                'lectura': '👁️ Lectura'
+                'admin': 'Admin',
+                'usuario': 'Usuario',
+                'lectura': 'Lectura'
             };
             // Mostrar email completo con rol
             const displayRole = roleLabels[role] || role;
