@@ -36636,20 +36636,12 @@ class InventarioCompleto {
     
     if (tab === 'jerarquia') {
       // 🌲 Renderizar árbol visual de jerarquía
-      // ⚠️ PERO: Si skipTreeStateRestore está activo, NO re-renderizar
-      // (significa que verRepuestoEnJerarquia ya renderizó el árbol colapsado)
-      if (!this.skipTreeStateRestore) {
-        setTimeout(() => {
-          this.renderJerarquiaTree();
-          this.initJerarquiaSearch();
-        }, 100);
-      } else {
-        console.log('   ⏭️ Saltando renderJerarquiaTree - navegación a repuesto específico activa');
-        // Solo inicializar búsqueda
-        setTimeout(() => {
-          this.initJerarquiaSearch();
-        }, 100);
-      }
+      // ⚠️ Si skipTreeStateRestore está activo, renderizar PERO sin restaurar estados
+      // (significa que verRepuestoEnJerarquia necesita el árbol colapsado para expansión selectiva)
+      setTimeout(() => {
+        this.renderJerarquiaTree();
+        this.initJerarquiaSearch();
+      }, 100);
     } else if (tab === 'stats') {
       this.renderStats();
     } else if (tab === 'valores') {
@@ -42665,9 +42657,9 @@ class InventarioCompleto {
     console.log('🔄 [RESTORE] Iniciando restauración de estados...');
     
     // 🚫 Si venimos de "Ver Jerarquía", NO restaurar estados
+    // NOTA: NO resetear el flag aquí, se resetea al final de _navegarAUbicacionEspecifica
     if (this.skipTreeStateRestore) {
       console.log('🚫 [RESTORE] Saltando restauración - navegación a repuesto específico');
-      this.skipTreeStateRestore = false; // Resetear bandera
       return;
     }
     
@@ -49073,17 +49065,16 @@ class InventarioCompleto {
     localStorage.setItem(stateKey, JSON.stringify(todosColapsados));
     console.log('   ✅ Todos los nodos marcados como colapsados en localStorage');
     
-    // 🔄 Cambiar a tab (o quedarse si ya estamos ahí)
-    const yaEnJerarquia = this.currentTab === 'jerarquia';
-    this.switchTab('jerarquia');
+    // 🚫 IMPORTANTE: Activar flag ANTES de cualquier render para evitar restauración de estados
+    this.skipTreeStateRestore = true;
+    console.log('   🚫 skipTreeStateRestore = true (evitando restauración automática)');
     
-    // 🔄 FORZAR re-render del árbol para aplicar estados colapsados
-    if (yaEnJerarquia) {
-      console.log('   🔄 Ya estábamos en jerarquía, forzando re-render...');
-      this.renderJerarquiaTree();
-    }
+    // 🔄 Cambiar a tab - switchTab renderizará el árbol
+    // El flag skipTreeStateRestore evitará que restoreExpandStates restaure estados
+    this.switchTab('jerarquia');
 
     // Esperar a que el árbol se renderice completamente colapsado
+    // switchTab tiene un setTimeout de 100ms, esperamos 500ms para asegurar
     setTimeout(() => {
       console.log('⏱️ Árbol renderizado colapsado, expandiendo ruta específica...');
       
