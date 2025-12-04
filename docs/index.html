@@ -49214,6 +49214,13 @@ class InventarioCompleto {
           // 1. Buscar en áreas organizacionales (dentro de empresa)
           const empresaNode = container.querySelector('.tree-section-organizational .tree-container > .tree-node[data-node-type="empresa"]');
           if (empresaNode) {
+            // 🔓 PRIMERO: Expandir la empresa si está colapsada
+            const empresaToggle = empresaNode.querySelector(':scope > .node-content .node-toggle');
+            if (empresaToggle && empresaToggle.classList.contains('collapsed')) {
+              console.log('   🏢 Expandiendo empresa primero...');
+              empresaToggle.click();
+            }
+            
             const empresaChildren = empresaNode.querySelector(':scope > .tree-children');
             if (empresaChildren) {
               const orgAreas = empresaChildren.querySelectorAll(':scope > .tree-node');
