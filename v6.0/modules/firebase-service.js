@@ -106,13 +106,18 @@ class FirebaseService {
         if (!this.currentUser) return null;
 
         try {
+            console.log('🔍 Buscando rol para UID:', this.currentUser.uid);
             const doc = await this.db.collection(this.COLLECTIONS.USUARIOS)
                 .doc(this.currentUser.uid)
                 .get();
 
             if (doc.exists) {
-                this.userRole = doc.data().role || this.USER_ROLES.LECTURA;
+                const userData = doc.data();
+                console.log('📄 Documento encontrado:', userData);
+                this.userRole = userData.role || this.USER_ROLES.LECTURA;
+                console.log('✅ Rol asignado:', this.userRole);
             } else {
+                console.warn('⚠️ Usuario no encontrado en Firestore, asignando rol lectura');
                 // Usuario nuevo, asignar rol por defecto
                 this.userRole = this.USER_ROLES.LECTURA;
                 await this.setUserRole(this.currentUser.uid, this.userRole);

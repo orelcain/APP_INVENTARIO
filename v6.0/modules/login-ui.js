@@ -87,14 +87,14 @@ class LoginUI {
             </div>
 
             <!-- User Menu (después de login) -->
-            <div id="userMenu" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 1000;">
-                <div class="user-menu-container" style="background: var(--bg-card); padding: 12px 20px; border-radius: 8px; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px;">
+            <div id="userMenu" style="display: none; position: fixed; top: 70px; right: 20px; z-index: 999;">
+                <div class="user-menu-container" style="background: var(--bg-card); padding: 12px 16px; border-radius: 8px; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 10px; border: 1px solid var(--border-color);">
                     <div style="text-align: right;">
-                        <div id="userEmail" style="font-size: 0.85rem; font-weight: 600;"></div>
-                        <div id="userRole" style="font-size: 0.75rem; color: var(--text-muted);"></div>
+                        <div id="userEmail" style="font-size: 0.8rem; font-weight: 600; color: var(--text-primary);"></div>
+                        <div id="userRole" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;"></div>
                     </div>
-                    <button id="btnLogout" class="btn btn-sm btn-secondary" style="padding: 6px 16px;">
-                        Cerrar Sesión
+                    <button id="btnLogout" class="btn btn-sm btn-secondary" style="padding: 4px 12px; font-size: 0.8rem;">
+                        Salir
                     </button>
                 </div>
             </div>
