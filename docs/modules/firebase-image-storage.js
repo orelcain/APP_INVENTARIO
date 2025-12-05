@@ -541,6 +541,84 @@ class FirebaseImageStorage {
     }
     
     /**
+     * 🔄 Sincronizar multimedia DESDE Firebase Storage
+     * Escanea la carpeta del repuesto y agrega imágenes que no estén en el array local
+     * @param {string} repuestoId - ID del repuesto
+     * @param {Array} currentMultimedia - Array actual de multimedia del repuesto
+     * @returns {Promise<{updated: boolean, multimedia: Array, added: number}>}
+     */
+    async syncFromFirebase(repuestoId, currentMultimedia = []) {
+        if (!this.isReady() || !this.isAuthenticated()) {
+            console.log('⚠️ [SYNC-FROM] Firebase no disponible');
+            return { updated: false, multimedia: currentMultimedia, added: 0 };
+        }
+        
+        console.log(`🔄 [SYNC-FROM] Sincronizando repuesto ${repuestoId} desde Firebase...`);
+        
+        try {
+            // Obtener todas las imágenes en Firebase para este repuesto
+            const firebaseImages = await this.listRepuestoImages(repuestoId);
+            
+            if (firebaseImages.length === 0) {
+                console.log(`📁 [SYNC-FROM] No hay imágenes en Firebase para repuesto ${repuestoId}`);
+                return { updated: false, multimedia: currentMultimedia, added: 0 };
+            }
+            
+            console.log(`☁️ [SYNC-FROM] Encontradas ${firebaseImages.length} imágenes en Firebase`);
+            
+            // Crear set de URLs actuales para comparación rápida
+            const currentUrls = new Set(
+                currentMultimedia
+                    .filter(m => m.isFirebaseStorage && m.url)
+                    .map(m => m.url)
+            );
+            
+            // También comparar por path
+            const currentPaths = new Set(
+                currentMultimedia
+                    .filter(m => m.isFirebaseStorage && m.path)
+                    .map(m => m.path)
+            );
+            
+            // Encontrar imágenes nuevas (en Firebase pero no en local)
+            const newImages = firebaseImages.filter(img => 
+                !currentUrls.has(img.url) && !currentPaths.has(img.path)
+            );
+            
+            if (newImages.length === 0) {
+                console.log(`✅ [SYNC-FROM] Multimedia ya sincronizada, no hay nuevas imágenes`);
+                return { updated: false, multimedia: currentMultimedia, added: 0 };
+            }
+            
+            console.log(`🆕 [SYNC-FROM] Agregando ${newImages.length} imágenes nuevas desde Firebase`);
+            
+            // Convertir imágenes de Firebase a formato multimedia
+            const newMultimediaItems = newImages.map(img => ({
+                type: 'image',
+                url: img.url,
+                path: img.path,
+                name: img.name,
+                isFirebaseStorage: true
+            }));
+            
+            // Combinar: primero las existentes, luego las nuevas
+            const updatedMultimedia = [...currentMultimedia, ...newMultimediaItems];
+            
+            console.log(`✅ [SYNC-FROM] Sincronización completada: ${currentMultimedia.length} → ${updatedMultimedia.length} items`);
+            
+            return {
+                updated: true,
+                multimedia: updatedMultimedia,
+                added: newImages.length
+            };
+            
+        } catch (error) {
+            console.error('❌ [SYNC-FROM] Error sincronizando desde Firebase:', error);
+            return { updated: false, multimedia: currentMultimedia, added: 0 };
+        }
+    }
+    
+    /**
      * Convertir dataURL a Blob
      */
     async dataURLtoBlob(dataURL) {

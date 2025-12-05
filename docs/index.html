@@ -38410,6 +38410,16 @@ class InventarioCompleto {
           console.log(` Cargados: ${this.currentMultimedia.length} imgenes, ${this.currentDocuments.length} documentos`);
           console.log(` [MODAL EDIT] currentMultimedia:`, this.currentMultimedia);
 
+          // 🔄 SINCRONIZAR DESDE FIREBASE: Agregar imágenes que estén en la nube pero no en local
+          if (window.firebaseImageStorage && window.firebaseImageStorage.isReady() && window.firebaseImageStorage.isAuthenticated()) {
+            const syncResult = await window.firebaseImageStorage.syncFromFirebase(id, this.currentMultimedia);
+            if (syncResult.updated && syncResult.added > 0) {
+              this.currentMultimedia = syncResult.multimedia.filter(m => m.type === 'image');
+              console.log(`☁️ [SYNC-FROM] Se agregaron ${syncResult.added} imágenes desde Firebase`);
+              this.showToast(`☁️ ${syncResult.added} imagen(es) sincronizada(s) desde la nube`, 'info');
+            }
+          }
+
           this.refreshModalMultimediaBadge();
           
           if (isFileSystemMode && this.currentMultimedia.length === 0 && multimediaNormalizada.some(m => m.type === 'image')) {
@@ -38419,6 +38429,18 @@ class InventarioCompleto {
           await this.updateMultimediaPreview();
         } else {
           console.log(' Sin multimedia existente');
+          
+          // 🔄 SINCRONIZAR DESDE FIREBASE incluso si no hay multimedia local
+          if (window.firebaseImageStorage && window.firebaseImageStorage.isReady() && window.firebaseImageStorage.isAuthenticated()) {
+            const syncResult = await window.firebaseImageStorage.syncFromFirebase(id, []);
+            if (syncResult.updated && syncResult.added > 0) {
+              this.currentMultimedia = syncResult.multimedia.filter(m => m.type === 'image');
+              console.log(`☁️ [SYNC-FROM] Se agregaron ${syncResult.added} imágenes desde Firebase (sin multimedia local)`);
+              this.showToast(`☁️ ${syncResult.added} imagen(es) encontrada(s) en la nube`, 'info');
+              await this.updateMultimediaPreview();
+            }
+          }
+          
           this.refreshModalMultimediaBadge();
         }
       } else {
