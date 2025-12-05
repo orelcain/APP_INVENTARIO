@@ -23,13 +23,36 @@
   <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
 
   <!-- 🔧 ERUDA: Consola de desarrollo para móvil -->
-  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+  <script src="https://cdn.jsdelivr.net/npm/eruda" onerror="console.warn('Eruda CDN falló')"></script>
   <script>
-    // Inicializar Eruda solo en móvil o con parámetro ?debug
-    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || location.search.includes('debug')) {
-      eruda.init();
-      console.log('🔧 Eruda: Consola de desarrollo activada');
-    }
+    // Inicializar Eruda en móvil o con ?debug
+    document.addEventListener('DOMContentLoaded', function() {
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isDebug = location.search.includes('debug');
+      
+      if ((isMobile || isDebug) && typeof eruda !== 'undefined') {
+        try {
+          eruda.init({
+            container: document.body,
+            tool: ['console', 'network', 'elements', 'resources']
+          });
+          console.log('🔧 Eruda: Consola activada');
+          
+          // Asegurar que el botón sea visible (z-index alto)
+          setTimeout(() => {
+            const erudaBtn = document.querySelector('.eruda-entry-btn');
+            if (erudaBtn) {
+              erudaBtn.style.zIndex = '999999';
+              erudaBtn.style.bottom = '80px'; // Arriba de la nav inferior
+            }
+          }, 1000);
+        } catch (e) {
+          console.error('Error iniciando Eruda:', e);
+        }
+      } else if (isMobile && typeof eruda === 'undefined') {
+        console.warn('⚠️ Eruda no cargó - CDN no disponible');
+      }
+    });
   </script>
 
   <!-- CSS Modular para Jerarquía de Mapas -->
