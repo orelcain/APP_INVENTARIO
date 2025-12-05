@@ -191,6 +191,89 @@
         console.error('❌ Test ERROR - Esto es un error de prueba');
       };
       
+      // 📋 COPIAR LOGS AL PORTAPAPELES
+      window.copyDebugLogs = function() {
+        if (window.debugLogs.length === 0) {
+          alert('No hay logs para copiar');
+          return;
+        }
+        
+        const header = `═══════════════════════════════════════════════════
+🔧 DEBUG LOGS - APP INVENTARIO
+📅 ${new Date().toLocaleString()}
+📱 ${navigator.userAgent}
+🖥️ Pantalla: ${window.innerWidth}x${window.innerHeight}
+═══════════════════════════════════════════════════\n\n`;
+        
+        const logsText = window.debugLogs.map(entry => {
+          const icon = entry.type === 'error' ? '❌' : entry.type === 'warn' ? '⚠️' : 'ℹ️';
+          return `[${entry.time}] ${icon} ${entry.msg}`;
+        }).join('\n');
+        
+        const fullText = header + logsText;
+        
+        // Intentar copiar al portapapeles
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(fullText).then(() => {
+            alert('✅ Logs copiados al portapapeles!\n\nPuedes pegarlos en WhatsApp, Email, etc.');
+          }).catch(err => {
+            // Fallback para iOS
+            window.fallbackCopyLogs(fullText);
+          });
+        } else {
+          window.fallbackCopyLogs(fullText);
+        }
+      };
+      
+      // Fallback para copiar (iOS Safari)
+      window.fallbackCopyLogs = function(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.cssText = 'position: fixed; top: 50%; left: 10%; width: 80%; height: 40%; z-index: 999999; font-size: 10px;';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        
+        try {
+          document.execCommand('copy');
+          alert('✅ Logs copiados! (Selecciona todo y copia si no funcionó automáticamente)');
+        } catch (err) {
+          alert('📋 Selecciona todo el texto y cópialo manualmente');
+        }
+        
+        setTimeout(() => textarea.remove(), 100);
+      };
+      
+      // 📤 COMPARTIR LOGS (API nativa de compartir)
+      window.shareDebugLogs = function() {
+        if (window.debugLogs.length === 0) {
+          alert('No hay logs para compartir');
+          return;
+        }
+        
+        const logsText = window.debugLogs.map(entry => {
+          const icon = entry.type === 'error' ? '❌' : entry.type === 'warn' ? '⚠️' : 'ℹ️';
+          return `[${entry.time}] ${icon} ${entry.msg}`;
+        }).join('\n');
+        
+        const shareData = {
+          title: '🔧 Debug Logs - App Inventario',
+          text: `📅 ${new Date().toLocaleString()}\n📱 ${window.innerWidth}x${window.innerHeight}\n\n${logsText}`
+        };
+        
+        if (navigator.share) {
+          navigator.share(shareData).then(() => {
+            console.log('✅ Logs compartidos');
+          }).catch(err => {
+            // Si cancela o falla, usar copiar
+            window.copyDebugLogs();
+          });
+        } else {
+          // Si no hay API de compartir, usar copiar
+          window.copyDebugLogs();
+        }
+      };
+      
       window.renderConfigDebugLogs = function() {
         const logsDiv = document.getElementById('debugLogsConfig');
         if (!logsDiv) return;
@@ -16703,6 +16786,16 @@
             </button>
             <button onclick="window.testDebugLog()" class="btn btn-info" style="padding: 10px 20px;">
               🧪 Test Log
+            </button>
+          </div>
+          
+          <!-- Botones de Compartir/Copiar -->
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <button onclick="window.copyDebugLogs()" class="btn btn-success" style="padding: 10px 20px;">
+              📋 Copiar Logs
+            </button>
+            <button onclick="window.shareDebugLogs()" class="btn btn-secondary" style="padding: 10px 20px; background: #6366f1;">
+              📤 Compartir Logs
             </button>
           </div>
           
