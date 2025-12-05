@@ -31127,6 +31127,14 @@ class InventarioCompleto {
         normalized.isFileSystem = true;
       }
     }
+    
+    // 🔥 Detectar Firebase Storage URL automáticamente
+    if (normalized.type === 'image' && normalized.isFirebaseStorage === undefined && typeof normalized.url === 'string') {
+      if (normalized.url.includes('firebasestorage.googleapis.com') || normalized.url.includes('.firebasestorage.app')) {
+        normalized.isFirebaseStorage = true;
+        console.log(`☁️ [NORMALIZE] Detectada URL de Firebase Storage: ${normalized.url.substring(0, 60)}...`);
+      }
+    }
 
     return normalized;
   }

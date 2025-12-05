@@ -31127,6 +31127,14 @@ class InventarioCompleto {
         normalized.isFileSystem = true;
       }
     }
+    
+    // 🔥 Detectar Firebase Storage URL automáticamente
+    if (normalized.type === 'image' && normalized.isFirebaseStorage === undefined && typeof normalized.url === 'string') {
+      if (normalized.url.includes('firebasestorage.googleapis.com') || normalized.url.includes('.firebasestorage.app')) {
+        normalized.isFirebaseStorage = true;
+        console.log(`☁️ [NORMALIZE] Detectada URL de Firebase Storage: ${normalized.url.substring(0, 60)}...`);
+      }
+    }
 
     return normalized;
   }
@@ -31197,7 +31205,12 @@ class InventarioCompleto {
       
       // 🌐 URL externa (https://, http://) - retornar directamente
       if (media.url.startsWith('https://') || media.url.startsWith('http://')) {
-        console.log('    URL externa detectada, retornando directamente');
+        // 🔥 Detectar Firebase Storage por URL aunque no tenga flag
+        if (media.url.includes('firebasestorage.googleapis.com') || media.url.includes('.firebasestorage.app')) {
+          console.log('    ☁️ URL de Firebase Storage detectada por patrón, retornando directamente');
+        } else {
+          console.log('    🌐 URL externa detectada, retornando directamente');
+        }
         return media.url;
       }
       
