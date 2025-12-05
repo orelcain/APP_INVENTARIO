@@ -32761,7 +32761,7 @@ class InventarioCompleto {
             <span class="repuesto-codigo">${this.escapeHtml(r.codigoInterno || 'Sin código')}</span>
           </div>
           <div class="repuesto-actions">
-            <button onclick="app.editarRepuestoModal('${r.id}')" class="btn-repuesto-edit" title="Editar">✏️</button>
+            <button onclick="app.openModal('edit', '${r.id}')" class="btn-repuesto-edit" title="Editar">✏️</button>
             ${tieneInstancia ? `<button onclick="app.eliminarInstancia('${r.id}')" class="btn-repuesto-delete" title="Eliminar instancia">🗑️</button>` : ''}
           </div>
         </div>
@@ -37837,7 +37837,7 @@ class InventarioCompleto {
                   Contar
                 </button>
                 <button 
-                  onclick="app.editarRepuesto('${r.id}')"
+                  onclick="app.openModal('edit', '${r.id}')"
                   style="
                     background: linear-gradient(135deg, #004d73, #003B5C);
                     color: white;
@@ -48710,7 +48710,7 @@ class InventarioCompleto {
         // Preguntar al usuario si quiere asignar ubicación ahora
         const asignar = confirm(`El repuesto "${repuesto.nombre}" no tiene ubicación en la jerarquía.\n\n¿Deseas asignar una ubicación ahora?`);
         if (asignar) {
-          this.editarRepuesto(repuestoId);
+          this.openModal('edit', repuestoId);
           // Después de abrir el modal, cambiar a pestaña de ubicación
           setTimeout(() => {
             const tabUbicacion = document.querySelector('[data-tab="ubicacion"]');
@@ -49365,7 +49365,7 @@ class InventarioCompleto {
       estado.sugerencias.push({
         tipo: 'asignar_jerarquia',
         mensaje: 'Asignar ubicación en la jerarquía',
-        accion: () => this.editarRepuesto(repuestoId)
+        accion: () => this.openModal('edit', repuestoId)
       });
     }
 
@@ -49428,7 +49428,7 @@ class InventarioCompleto {
         estado.sugerencias.push({
           tipo: 'asignar_jerarquia_primero',
           mensaje: 'Primero asigna una ubicación en la jerarquía',
-          accion: () => this.editarRepuesto(repuestoId)
+          accion: () => this.openModal('edit', repuestoId)
         });
       }
     }
@@ -49521,7 +49521,7 @@ class InventarioCompleto {
                           style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer;">
                     🌳 Ver en Jerarquía
                   </button>
-                  <button onclick="app.editarRepuesto('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                  <button onclick="app.openModal('edit', '${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
                           style="padding: 8px 16px; background: #8b5cf6; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; margin-left: 8px;">
                     ✏️ Editar
                   </button>
@@ -49531,7 +49531,7 @@ class InventarioCompleto {
                   <div style="font-size: 13px; color: #991b1b; margin-bottom: 8px;">
                     Este repuesto no tiene ubicación en la jerarquía asignada.
                   </div>
-                  <button onclick="app.editarRepuesto('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                  <button onclick="app.openModal('edit', '${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
                           style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer;">
                     ➕ Asignar Jerarquía
                   </button>
@@ -49844,7 +49844,7 @@ class InventarioCompleto {
                   onmouseout="this.style.background='#3b82f6';">
             🌳 Ver en Jerarquía
           </button>
-          <button onclick="app.editarRepuesto('${repuesto.id}'); document.getElementById('duplicadosModal').remove();"
+          <button onclick="app.openModal('edit', '${repuesto.id}'); document.getElementById('duplicadosModal').remove();"
                   style="flex: 1; padding: 8px 12px; background: #8b5cf6; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s;"
                   onmouseover="this.style.background='#7c3aed';"
                   onmouseout="this.style.background='#8b5cf6';">
@@ -49987,7 +49987,7 @@ class InventarioCompleto {
           <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="${btnVer}" title="${tipVer}">
             Jerarquía
           </button>
-          <button onclick="app.editarRepuesto('${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
+          <button onclick="app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
             Editar
           </button>
           <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
@@ -50020,7 +50020,7 @@ class InventarioCompleto {
           <button onclick="app.asignarJerarquiaYMostrar('${repuesto.id}')" style="${btnAsignar} flex: 2; min-width: 100px;" title="${tipAsignar}">
             + Ubicación
           </button>
-          <button onclick="app.editarRepuesto('${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
+          <button onclick="app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
             Editar
           </button>
           <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
@@ -50104,7 +50104,7 @@ class InventarioCompleto {
       
       // Editar y Contar siempre
       html += `
-        <button onclick="app.editarRepuesto('${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
+        <button onclick="app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
           Editar
         </button>
         <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
