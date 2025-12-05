@@ -31372,10 +31372,12 @@ class InventarioCompleto {
 
   // Mostrar advertencia si no es Edge
   showBrowserWarning() {
-    // PRIORIDAD 1: Mostrar banner de mvil simplificado si no hay FileSystem
+    // Ya NO mostramos banner de móvil simplificado porque Firebase Storage permite multimedia
+    // Si hay Firebase Storage configurado, el multimedia funciona en móvil
     if (this.isMobile && !this.hasFileSystemAPI) {
-      console.log(' Modo Mvil Simplificado detectado');
-      this.showMobileSimplifiedBanner();
+      // Solo log informativo, ya no mostramos banner molesto
+      console.log('📱 Modo Móvil detectado - Multimedia via Firebase Storage');
+      // No llamamos a showMobileSimplifiedBanner() - ya no es necesario
       return;
     }
     
@@ -63116,6 +63118,198 @@ window.desactivarSincronizacionTiempoReal = desactivarSincronizacionTiempoReal;
 console.log('✅ Sistema de sincronización en tiempo real disponible');
 console.log('💡 Usa: window.activarSincronizacionTiempoReal() para activar');
 console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactivar');
+</script>
+
+<!-- ================================================================== -->
+<!-- 📱 PWA: NAVEGACIÓN INFERIOR MÓVIL                                  -->
+<!-- ================================================================== -->
+<nav id="mobileBottomNav" class="mobile-bottom-nav">
+  <button class="nav-item active" data-tab="inventario" onclick="switchMobileTab('inventario')">
+    <span class="nav-icon">📦</span>
+    <span class="nav-label">Inventario</span>
+  </button>
+  <button class="nav-item" data-tab="jerarquia" onclick="switchMobileTab('jerarquia')">
+    <span class="nav-icon">🏢</span>
+    <span class="nav-label">Jerarquía</span>
+  </button>
+  <button class="nav-item nav-item-fab" data-action="add" onclick="app.openModal('new')">
+    <span class="nav-icon">➕</span>
+  </button>
+  <button class="nav-item" data-tab="mapas" onclick="switchMobileTab('mapas')">
+    <span class="nav-icon">🗺️</span>
+    <span class="nav-label">Mapas</span>
+  </button>
+  <button class="nav-item" data-tab="config" onclick="switchMobileTab('config')">
+    <span class="nav-icon">⚙️</span>
+    <span class="nav-label">Config</span>
+  </button>
+</nav>
+
+<style>
+/* ================================================================== */
+/* 📱 PWA: NAVEGACIÓN INFERIOR MÓVIL                                  */
+/* ================================================================== */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(26, 29, 35, 0.95) 0%, rgba(26, 29, 35, 1) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(91, 139, 180, 0.2);
+  padding: 8px 0;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  z-index: 9999;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-bottom-nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--gray-600);
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-width: 60px;
+}
+
+.mobile-bottom-nav .nav-item:active {
+  transform: scale(0.95);
+}
+
+.mobile-bottom-nav .nav-item.active {
+  color: var(--primary);
+}
+
+.mobile-bottom-nav .nav-item.active .nav-icon {
+  transform: scale(1.1);
+}
+
+.mobile-bottom-nav .nav-icon {
+  font-size: 1.4rem;
+  margin-bottom: 2px;
+  transition: transform 0.2s ease;
+}
+
+.mobile-bottom-nav .nav-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* Floating Action Button (FAB) central */
+.mobile-bottom-nav .nav-item-fab {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white !important;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin-top: -28px;
+  box-shadow: 0 4px 15px rgba(91, 139, 180, 0.4);
+  padding: 0;
+  min-width: 56px;
+}
+
+.mobile-bottom-nav .nav-item-fab:active {
+  transform: scale(0.9);
+  box-shadow: 0 2px 8px rgba(91, 139, 180, 0.3);
+}
+
+.mobile-bottom-nav .nav-item-fab .nav-icon {
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+/* Mostrar solo en móvil */
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+  }
+  
+  /* Agregar padding inferior al contenido para no tapar con el nav */
+  body {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom)) !important;
+  }
+  
+  /* Ocultar tabs superiores en móvil (reemplazadas por bottom nav) */
+  .nav-tabs-container,
+  .nav-tabs {
+    display: none !important;
+  }
+  
+  /* Ajustar el header sticky sin las tabs */
+  .sticky-header-container {
+    min-height: auto;
+  }
+  
+  /* Ajustar el floating button de agregar si existe */
+  .fs-button {
+    bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+  }
+}
+</style>
+
+<script>
+// ================================================================== 
+// 📱 NAVEGACIÓN INFERIOR MÓVIL
+// ==================================================================
+
+function switchMobileTab(tabName) {
+  // Actualizar estado activo en nav
+  document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  document.querySelector(`.mobile-bottom-nav [data-tab="${tabName}"]`)?.classList.add('active');
+  
+  // Mapear tabs al sistema existente - usar la función global si existe
+  if (window.app && window.app.showTab) {
+    // Mapear nombres de tabs móviles a nombres del sistema
+    const tabMap = {
+      'inventario': 'inventario',
+      'jerarquia': 'jerarquia',
+      'mapas': 'mapa',
+      'config': 'configuracion'
+    };
+    window.app.showTab(tabMap[tabName] || tabName);
+  } else {
+    // Fallback: simular click en tab
+    const navTab = document.querySelector(`.nav-tab[data-tab="${tabName}"]`);
+    if (navTab) navTab.click();
+  }
+}
+
+// Sincronizar nav inferior con tabs superiores
+document.addEventListener('click', (e) => {
+  const tab = e.target.closest('.nav-tab');
+  if (tab) {
+    const tabName = tab.dataset.tab || tab.textContent.toLowerCase().trim();
+    const mobileTabMap = {
+      'inventario': 'inventario',
+      'jerarquia': 'jerarquia',
+      'mapa': 'mapas',
+      'configuracion': 'config',
+      'config': 'config'
+    };
+    const mobileTab = mobileTabMap[tabName];
+    if (mobileTab) {
+      document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      document.querySelector(`.mobile-bottom-nav [data-tab="${mobileTab}"]`)?.classList.add('active');
+    }
+  }
+});
+
+console.log('📱 Navegación móvil PWA inicializada');
 </script>
 
 <!-- PWA Service Worker Registration -->

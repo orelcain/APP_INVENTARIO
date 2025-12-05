@@ -31384,10 +31384,12 @@ class InventarioCompleto {
 
   // Mostrar advertencia si no es Edge
   showBrowserWarning() {
-    // PRIORIDAD 1: Mostrar banner de mvil simplificado si no hay FileSystem
+    // Ya NO mostramos banner de móvil simplificado porque Firebase Storage permite multimedia
+    // Si hay Firebase Storage configurado, el multimedia funciona en móvil
     if (this.isMobile && !this.hasFileSystemAPI) {
-      console.log(' Modo Mvil Simplificado detectado');
-      this.showMobileSimplifiedBanner();
+      // Solo log informativo, ya no mostramos banner molesto
+      console.log('📱 Modo Móvil detectado - Multimedia via Firebase Storage');
+      // No llamamos a showMobileSimplifiedBanner() - ya no es necesario
       return;
     }
     
@@ -63243,8 +63245,14 @@ console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactiv
   }
   
   /* Ocultar tabs superiores en móvil (reemplazadas por bottom nav) */
-  .nav-tabs-container {
+  .nav-tabs-container,
+  .nav-tabs {
     display: none !important;
+  }
+  
+  /* Ajustar el header sticky sin las tabs */
+  .sticky-header-container {
+    min-height: auto;
   }
   
   /* Ajustar el floating button de agregar si existe */
