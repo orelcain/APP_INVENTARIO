@@ -39868,10 +39868,26 @@ class InventarioCompleto {
     
     try {
       console.log('\n ========== GUARDANDO REPUESTO ==========');
-      const id = this.currentEditingId || Date.now().toString() + Math.random();
+      const id = this.currentEditingId || Date.now().toString() + Math.random().toString(36).substr(2, 9);
       
-      const multimediaTotal = [...(this.currentMultimedia || []), ...(this.currentDocuments || [])];
+      let multimediaTotal = [...(this.currentMultimedia || []), ...(this.currentDocuments || [])];
       console.log(` Multimedia a guardar: ${multimediaTotal.length} items (${this.currentMultimedia?.length || 0} imgenes, ${this.currentDocuments?.length || 0} documentos)`);
+      
+      // 🔥 SINCRONIZAR MULTIMEDIA CON FIREBASE STORAGE (evita duplicados)
+      if (window.firebaseImageStorage && window.firebaseImageStorage.isReady() && window.firebaseImageStorage.isAuthenticated()) {
+        console.log('☁️ Sincronizando multimedia con Firebase Storage...');
+        
+        // Obtener multimedia anterior para comparar
+        let oldMultimedia = [];
+        if (this.currentEditingId) {
+          const repuestoAnterior = this.repuestos.find(r => r.id === this.currentEditingId);
+          oldMultimedia = repuestoAnterior?.multimedia || [];
+        }
+        
+        // Sincronizar: sube nuevas, reutiliza existentes, elimina huérfanas
+        multimediaTotal = await window.firebaseImageStorage.syncMultimedia(multimediaTotal, id, oldMultimedia);
+        console.log(`✅ Multimedia sincronizada: ${multimediaTotal.length} items finales`);
+      }
       
       //  GUARDAR UBICACIONES ANTIGUAS (para detectar cambios y mover imgenes)
       let ubicacionesAntiguas = null;
