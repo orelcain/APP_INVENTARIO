@@ -39001,12 +39001,9 @@ class InventarioCompleto {
     console.log(`📸 [OPTIMIZER] currentMultimedia.length: ${this.currentMultimedia.length}`);
     
     const timestamp = Date.now();
-    const codSAP = document.getElementById('codSAP')?.value || 'SAP';
-    const nombreRepuesto = document.getElementById('nombre')?.value || 'REPUESTO';
     const imageIndex = this.currentMultimedia.length + 1;
-    const cleanCodSAP = codSAP.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
-    const cleanNombre = nombreRepuesto.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
-    const filename = `${timestamp}_${cleanCodSAP}_${cleanNombre}_foto${imageIndex}.webp`;
+    // 🔥 NOMBRE FIJO basado en índice para evitar duplicados
+    const filename = `foto_${imageIndex}.webp`;
     
     if (isFirebaseReady) {
       // 🔥 MODO FIREBASE STORAGE - Subir directamente a la nube
@@ -39114,13 +39111,9 @@ class InventarioCompleto {
       const isFileSystemMode = fsManager && fsManager.isFileSystemMode;
       
       const timestamp = Date.now();
-      const codSAP = document.getElementById('codSAP')?.value || 'SAP';
-      const nombreRepuesto = document.getElementById('nombre')?.value || 'REPUESTO';
       const imageIndex = this.currentMultimedia.length + 1;
-      const cleanCodSAP = codSAP.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
-      const cleanNombre = nombreRepuesto.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
-      const ext = this.currentImageFile.name.split('.').pop();
-      const filename = `${timestamp}_${cleanCodSAP}_${cleanNombre}_foto${imageIndex}.${ext}`;
+      // 🔥 NOMBRE FIJO basado en índice para evitar duplicados (siempre webp)
+      const filename = `foto_${imageIndex}.webp`;
       
       if (isFirebaseReady) {
         // 🔥 MODO FIREBASE STORAGE
@@ -39838,23 +39831,40 @@ class InventarioCompleto {
 
   async removeMultimedia(index) {
     if (!this.currentMultimedia || !this.currentMultimedia[index]) {
-      console.warn(` [REMOVE] Índice inválido: ${index}`);
+      console.warn(`🗑️ [REMOVE] Índice inválido: ${index}`);
       return;
     }
 
     const media = this.currentMultimedia[index];
-    console.log(` [REMOVE] Marcando imagen para eliminación:`, media.name || media.url?.substring(0, 50));
+    console.log(`🗑️ [REMOVE] Eliminando imagen:`, media.name || media.url?.substring(0, 50));
     
+    // 🔥 Si es imagen de Firebase Storage, eliminar INMEDIATAMENTE
+    if (media.isFirebaseStorage && media.path) {
+      console.log(`☁️ [REMOVE] Eliminando de Firebase Storage: ${media.path}`);
+      try {
+        if (window.firebaseImageStorage && window.firebaseImageStorage.isReady()) {
+          const result = await window.firebaseImageStorage.deleteImage(media.path);
+          if (result.success) {
+            console.log(`✅ [REMOVE] Eliminada de Firebase: ${media.path}`);
+            this.showToast('☁️ Imagen eliminada de la nube', 'success');
+          } else {
+            console.warn(`⚠️ [REMOVE] No se pudo eliminar de Firebase: ${result.error}`);
+          }
+        }
+      } catch (error) {
+        console.error(`❌ [REMOVE] Error eliminando de Firebase:`, error);
+      }
+    }
     // Si es imagen existente en FileSystem, marcar para eliminación física
-    if (media.isFileSystem && media.url) {
+    else if (media.isFileSystem && media.url) {
       this.pendingDeletions.push(media.url);
-      console.log(` [REMOVE] Agregada a pendingDeletions: ${media.url}`);
-      console.log(` [REMOVE] Total pendientes: ${this.pendingDeletions.length}`);
+      console.log(`📁 [REMOVE] Agregada a pendingDeletions: ${media.url}`);
+      console.log(`📁 [REMOVE] Total pendientes: ${this.pendingDeletions.length}`);
     }
     
     // Eliminar del array temporal
     this.currentMultimedia.splice(index, 1);
-    console.log(` [REMOVE] Eliminada de currentMultimedia. Total: ${this.currentMultimedia.length}`);
+    console.log(`🗑️ [REMOVE] Eliminada de currentMultimedia. Total: ${this.currentMultimedia.length}`);
     
     // Actualizar preview visual
     await this.updateMultimediaPreview();
@@ -39862,9 +39872,10 @@ class InventarioCompleto {
     // Resetear input para permitir agregar nuevas imágenes
     this.resetFileInput();
     
-    // ℹ️ La sincronización se hará al guardar el repuesto (botón Guardar)
-    // NO guardar ni eliminar archivo físico aún - esperar botón "Guardar"
-    this.showToast(' Imagen marcada para eliminar (presiona Guardar para confirmar)', 'info');
+    // Mostrar mensaje apropiado
+    if (!media.isFirebaseStorage) {
+      this.showToast('🗑️ Imagen marcada para eliminar (presiona Guardar para confirmar)', 'info');
+    }
   }
 
   sincronizarUbicacionesDesdeDOM() {
