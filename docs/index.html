@@ -4464,6 +4464,73 @@
       box-shadow: var(--shadow-lg);
     }
 
+    /* 🔄 BOTÓN DE REFRESH PWA - MÓVIL */
+    .pwa-refresh-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      display: none; /* Oculto por defecto, solo visible en móvil */
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #6b7280; /* Gris por defecto */
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+      z-index: 4002;
+    }
+
+    /* Estados del botón refresh */
+    .pwa-refresh-btn.state-default {
+      color: #6b7280; /* Gris - sin actualización pendiente */
+      border-color: #4b5563;
+    }
+
+    .pwa-refresh-btn.state-updated {
+      color: #10b981; /* Verde - actualizado */
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .pwa-refresh-btn.state-updating {
+      color: #3b82f6; /* Azul - actualizando */
+      border-color: #3b82f6;
+      animation: pwa-spin 1s linear infinite;
+    }
+
+    .pwa-refresh-btn:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pwa-refresh-btn:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes pwa-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Mostrar solo en móvil */
+    @media (max-width: 768px) {
+      .pwa-refresh-btn {
+        display: flex;
+      }
+      
+      /* Ajustar posición de la campana en móvil para no chocar */
+      .notification-bell {
+        width: 48px;
+        height: 48px;
+        font-size: 1.3rem;
+      }
+    }
+
     /* Contador de notificaciones - minimalista */
     .notification-counter {
       position: absolute;
@@ -15868,6 +15935,11 @@
     <div class="loading-modal-tip" id="loadingModalTip">Consejo: No cierres la ventana mientras sincronizamos tu carpeta.</div>
   </div>
 </div>
+
+<!-- 🔄 BOTÓN REFRESH PWA (MÓVIL) -->
+<button id="pwaRefreshBtn" class="pwa-refresh-btn state-default" title="Actualizar App" onclick="window.refreshPWA()">
+  🔄
+</button>
 
 <!--  CAMPANA DE NOTIFICACIONES PERSISTENTE -->
 <div id="notificationBell" class="notification-bell" title="Notificaciones" onclick="
@@ -63982,6 +64054,98 @@ function showUpdateBanner() {
     window.location.reload();
   }
 }
+
+// ================================================================== 
+// 🔄 BOTÓN REFRESH PWA (MÓVIL)
+// ==================================================================
+
+window.refreshPWA = function() {
+  const btn = document.getElementById('pwaRefreshBtn');
+  
+  console.log('🔄 Refrescando PWA...');
+  
+  // Cambiar a estado "actualizando"
+  if (btn) {
+    btn.classList.remove('state-default', 'state-updated');
+    btn.classList.add('state-updating');
+  }
+  
+  // Si hay Service Worker, forzar actualización
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.getRegistration().then(registration => {
+      if (registration) {
+        console.log('🔄 Solicitando actualización del Service Worker...');
+        registration.update().then(() => {
+          console.log('🔄 Service Worker actualizado, recargando...');
+          // Recargar después de un pequeño delay para que se vea la animación
+          setTimeout(() => {
+            window.location.reload(true);
+          }, 500);
+        }).catch(err => {
+          console.warn('⚠️ Error actualizando SW:', err);
+          // Recargar de todos modos
+          window.location.reload(true);
+        });
+      } else {
+        // No hay registro de SW, recargar directamente
+        window.location.reload(true);
+      }
+    });
+  } else {
+    // Sin Service Worker, recargar directamente
+    window.location.reload(true);
+  }
+};
+
+// Detectar cuando hay una actualización disponible del Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    console.log('🔄 Service Worker actualizado');
+    const btn = document.getElementById('pwaRefreshBtn');
+    if (btn) {
+      btn.classList.remove('state-default', 'state-updating');
+      btn.classList.add('state-updated');
+    }
+  });
+  
+  // Verificar si hay actualizaciones pendientes al cargar
+  navigator.serviceWorker.ready.then(registration => {
+    registration.addEventListener('updatefound', () => {
+      console.log('🔔 Nueva versión del Service Worker encontrada');
+      const btn = document.getElementById('pwaRefreshBtn');
+      if (btn) {
+        btn.classList.remove('state-default');
+        btn.classList.add('state-updated');
+        btn.title = '✨ Nueva versión disponible - Click para actualizar';
+      }
+    });
+  });
+}
+
+// Marcar como "actualizado" cuando la página carga exitosamente
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const btn = document.getElementById('pwaRefreshBtn');
+    if (btn && !btn.classList.contains('state-updating')) {
+      // Si no está actualizando, verificar estado
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then(reg => {
+          if (reg && reg.waiting) {
+            // Hay una actualización esperando
+            btn.classList.remove('state-default');
+            btn.classList.add('state-updated');
+            btn.title = '✨ Nueva versión disponible - Click para actualizar';
+          } else {
+            // Todo actualizado
+            btn.classList.remove('state-updating');
+            btn.classList.add('state-default');
+            btn.title = 'Actualizar App';
+          }
+        });
+      }
+    }
+  }, 2000);
+});
 
 // ================================================================== 
 // 📱 NAVEGACIÓN INFERIOR MÓVIL

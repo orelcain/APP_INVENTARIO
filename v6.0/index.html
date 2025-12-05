@@ -4454,6 +4454,73 @@
       box-shadow: var(--shadow-lg);
     }
 
+    /* 🔄 BOTÓN DE REFRESH PWA - MÓVIL */
+    .pwa-refresh-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      display: none; /* Oculto por defecto, solo visible en móvil */
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #6b7280; /* Gris por defecto */
+      box-shadow: var(--shadow-md);
+      transition: all 0.3s ease;
+      z-index: 4002;
+    }
+
+    /* Estados del botón refresh */
+    .pwa-refresh-btn.state-default {
+      color: #6b7280; /* Gris - sin actualización pendiente */
+      border-color: #4b5563;
+    }
+
+    .pwa-refresh-btn.state-updated {
+      color: #10b981; /* Verde - actualizado */
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .pwa-refresh-btn.state-updating {
+      color: #3b82f6; /* Azul - actualizando */
+      border-color: #3b82f6;
+      animation: pwa-spin 1s linear infinite;
+    }
+
+    .pwa-refresh-btn:hover {
+      transform: scale(1.1);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pwa-refresh-btn:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes pwa-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Mostrar solo en móvil */
+    @media (max-width: 768px) {
+      .pwa-refresh-btn {
+        display: flex;
+      }
+      
+      /* Ajustar posición de la campana en móvil para no chocar */
+      .notification-bell {
+        width: 48px;
+        height: 48px;
+        font-size: 1.3rem;
+      }
+    }
+
     /* Contador de notificaciones - minimalista */
     .notification-counter {
       position: absolute;
@@ -15858,6 +15925,11 @@
     <div class="loading-modal-tip" id="loadingModalTip">Consejo: No cierres la ventana mientras sincronizamos tu carpeta.</div>
   </div>
 </div>
+
+<!-- 🔄 BOTÓN DE ACTUALIZACIÓN PWA -->
+<button id="pwaRefreshBtn" class="pwa-refresh-btn state-default" title="Actualizar aplicación" onclick="triggerPWARefresh()">
+  🔄
+</button>
 
 <!--  CAMPANA DE NOTIFICACIONES PERSISTENTE -->
 <div id="notificationBell" class="notification-bell" title="Notificaciones" onclick="
@@ -63673,6 +63745,106 @@ if (document.readyState === 'loading') {
 console.log('✅ Sistema de sincronización en tiempo real disponible');
 console.log('💡 Usa: window.activarSincronizacionTiempoReal() para activar');
 console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactivar');
+</script>
+
+<!-- ================================================================== -->
+<!-- 🔄 PWA: SISTEMA DE ACTUALIZACIÓN                                   -->
+<!-- ================================================================== -->
+<script>
+// Inicializar botón de actualización PWA
+function initPWARefreshButton() {
+    const btn = document.getElementById('pwaRefreshBtn');
+    if (!btn) return;
+    
+    // Verificar si hay Service Worker registrado
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(registration => {
+            // Detectar actualizaciones del Service Worker
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        // Nueva versión disponible
+                        btn.classList.remove('state-default', 'state-updated');
+                        btn.classList.add('state-updating');
+                        btn.title = 'Nueva versión disponible - Click para actualizar';
+                    }
+                });
+            });
+            
+            // Verificar actualizaciones periódicamente
+            setInterval(() => {
+                registration.update();
+            }, 60000); // Cada minuto
+        });
+        
+        // Escuchar cuando la app se recargue y esté actualizada
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            const btn = document.getElementById('pwaRefreshBtn');
+            if (btn) {
+                btn.classList.remove('state-default', 'state-updating');
+                btn.classList.add('state-updated');
+                btn.title = 'Aplicación actualizada';
+            }
+        });
+    }
+    
+    // Al cargar, mostrar estado actualizado brevemente
+    btn.classList.remove('state-default');
+    btn.classList.add('state-updated');
+    btn.title = 'Aplicación al día';
+    
+    // Volver a estado normal después de 3 segundos
+    setTimeout(() => {
+        btn.classList.remove('state-updated');
+        btn.classList.add('state-default');
+        btn.title = 'Actualizar aplicación';
+    }, 3000);
+}
+
+// Función para forzar actualización
+function triggerPWARefresh() {
+    const btn = document.getElementById('pwaRefreshBtn');
+    if (btn) {
+        btn.classList.remove('state-default', 'state-updated');
+        btn.classList.add('state-updating');
+        btn.title = 'Actualizando...';
+    }
+    
+    // Si hay Service Worker, intentar actualizar primero
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(registration => {
+            registration.update().then(() => {
+                // Limpiar caches
+                if ('caches' in window) {
+                    caches.keys().then(names => {
+                        names.forEach(name => caches.delete(name));
+                    });
+                }
+                // Recargar la página
+                setTimeout(() => location.reload(true), 500);
+            }).catch(() => {
+                location.reload(true);
+            });
+        });
+    } else {
+        // Sin Service Worker, solo recargar
+        location.reload(true);
+    }
+}
+
+// Exponer funciones globalmente
+window.initPWARefreshButton = initPWARefreshButton;
+window.triggerPWARefresh = triggerPWARefresh;
+
+// Inicializar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPWARefreshButton);
+} else {
+    initPWARefreshButton();
+}
+
+console.log('🔄 Sistema de actualización PWA disponible');
 </script>
 
 <!-- ================================================================== -->
