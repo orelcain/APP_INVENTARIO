@@ -2,8 +2,25 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>APP Inventario v6.0</title>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="description" content="Sistema de inventario con mapas interactivos, multimedia y sincronización en la nube">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Inventario">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-TileColor" content="#1a1a2e">
+  <meta name="msapplication-tap-highlight" content="no">
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- PWA Icons -->
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
 
   <!-- CSS Modular para Jerarquía de Mapas -->
   <link rel="stylesheet" href="styles/main.css">
@@ -63099,6 +63116,36 @@ window.desactivarSincronizacionTiempoReal = desactivarSincronizacionTiempoReal;
 console.log('✅ Sistema de sincronización en tiempo real disponible');
 console.log('💡 Usa: window.activarSincronizacionTiempoReal() para activar');
 console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactivar');
+</script>
+
+<!-- PWA Service Worker Registration -->
+<script>
+  // Registrar Service Worker para PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register('service-worker.js');
+        console.log('✅ PWA: Service Worker registrado correctamente');
+        
+        // Verificar actualizaciones
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          console.log('🔄 PWA: Nueva versión detectada, instalando...');
+          
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // Mostrar notificación de actualización disponible
+              if (confirm('🆕 Nueva versión disponible. ¿Actualizar ahora?')) {
+                window.location.reload();
+              }
+            }
+          });
+        });
+      } catch (error) {
+        console.warn('⚠️ PWA: Error al registrar Service Worker:', error);
+      }
+    });
+  }
 </script>
 
 </body>
