@@ -31170,9 +31170,15 @@ class InventarioCompleto {
     // Si es objeto con type === 'image'
     if (media.type === 'image' && media.url) {
       console.log('    Es objeto con type=image, url:', media.url?.substring(0, 50));
-      console.log('    isFileSystem:', media.isFileSystem, 'isIndexedDB:', media.isIndexedDB);
+      console.log('    isFirebaseStorage:', media.isFirebaseStorage, 'isFileSystem:', media.isFileSystem, 'isIndexedDB:', media.isIndexedDB);
       
-      //  CORRECCIN: Verificar isFileSystem PRIMERO
+      // 🔥 FIREBASE STORAGE: URL directa de la nube
+      if (media.isFirebaseStorage === true) {
+        console.log('    ☁️ Detectado isFirebaseStorage=true, retornando URL de Firebase directamente');
+        return media.url;
+      }
+      
+      // 📁 FILESYSTEM: Cargar desde carpeta local
       if (media.isFileSystem === true) {
         console.log('     Detectado isFileSystem=true, cargando desde FileSystem...');
         return await this.loadImageFromFileSystem(media.url);
@@ -31187,6 +31193,12 @@ class InventarioCompleto {
       if (media.url.startsWith('./imagenes/') || media.url.startsWith('imagenes/') || media.url.startsWith('/imagenes/')) {
         console.log('    URL con formato FileSystem, cargando...');
         return await this.loadImageFromFileSystem(media.url);
+      }
+      
+      // 🌐 URL externa (https://, http://) - retornar directamente
+      if (media.url.startsWith('https://') || media.url.startsWith('http://')) {
+        console.log('    URL externa detectada, retornando directamente');
+        return media.url;
       }
       
       // Base64 u otro formato
