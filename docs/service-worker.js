@@ -100,11 +100,18 @@ self.addEventListener('fetch', (event) => {
     fetch(event.request)
       .then((networkResponse) => {
         // Si la respuesta es válida, guardar en cache
-        if (networkResponse && networkResponse.status === 200) {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
           const responseClone = networkResponse.clone();
           caches.open(DYNAMIC_CACHE)
             .then((cache) => {
-              cache.put(event.request, responseClone);
+              // Solo cachear URLs http/https válidas
+              try {
+                if (event.request.url.startsWith('http')) {
+                  cache.put(event.request, responseClone);
+                }
+              } catch (e) {
+                console.warn('[SW] No se pudo cachear:', event.request.url);
+              }
             });
         }
         return networkResponse;

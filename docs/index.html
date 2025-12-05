@@ -26,37 +26,122 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="apple-touch-startup-image" href="icons/icon-512x512.svg">
 
-  <!-- 🔧 ERUDA: Consola de desarrollo para móvil -->
-  <script src="https://cdn.jsdelivr.net/npm/eruda" onerror="console.warn('Eruda CDN falló')"></script>
+  <!-- 🔧 MINI DEBUG: Consola propia para móvil (sin CDN externo) -->
   <script>
-    // Inicializar Eruda en móvil o con ?debug
-    document.addEventListener('DOMContentLoaded', function() {
+    // Mini Debug Panel - Funciona siempre en móvil
+    (function() {
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       const isDebug = location.search.includes('debug');
       
-      if ((isMobile || isDebug) && typeof eruda !== 'undefined') {
-        try {
-          eruda.init({
-            container: document.body,
-            tool: ['console', 'network', 'elements', 'resources']
-          });
-          console.log('🔧 Eruda: Consola activada');
+      if (!isMobile && !isDebug) return;
+      
+      // Crear panel de debug
+      const debugPanel = document.createElement('div');
+      debugPanel.id = 'miniDebugPanel';
+      debugPanel.innerHTML = `
+        <style>
+          #miniDebugPanel {
+            position: fixed;
+            bottom: 75px;
+            right: 10px;
+            z-index: 999999;
+          }
+          #debugToggleBtn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            cursor: pointer;
+          }
+          #debugConsole {
+            display: none;
+            position: fixed;
+            bottom: 130px;
+            left: 10px;
+            right: 10px;
+            max-height: 40vh;
+            background: rgba(0,0,0,0.95);
+            border-radius: 12px;
+            padding: 10px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 11px;
+            color: #0f0;
+            z-index: 999998;
+          }
+          #debugConsole.show { display: block; }
+          #debugConsole .log-entry { 
+            padding: 4px 0; 
+            border-bottom: 1px solid #333;
+            word-break: break-all;
+          }
+          #debugConsole .log-error { color: #f66; }
+          #debugConsole .log-warn { color: #fa0; }
+          #debugConsole .log-info { color: #6af; }
+          #clearDebugBtn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #f44;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+          }
+        </style>
+        <button id="debugToggleBtn">🔧</button>
+        <div id="debugConsole">
+          <button id="clearDebugBtn">Limpiar</button>
+          <div id="debugLogs"></div>
+        </div>
+      `;
+      
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.appendChild(debugPanel);
+        
+        const toggleBtn = document.getElementById('debugToggleBtn');
+        const console_div = document.getElementById('debugConsole');
+        const logsDiv = document.getElementById('debugLogs');
+        const clearBtn = document.getElementById('clearDebugBtn');
+        
+        let logs = [];
+        const maxLogs = 100;
+        
+        toggleBtn.onclick = () => console_div.classList.toggle('show');
+        clearBtn.onclick = () => { logs = []; logsDiv.innerHTML = ''; };
+        
+        // Interceptar console.log, warn, error
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        
+        function addLog(type, args) {
+          const msg = Array.from(args).map(a => 
+            typeof a === 'object' ? JSON.stringify(a, null, 2).substring(0, 200) : String(a)
+          ).join(' ');
           
-          // Asegurar que el botón sea visible (z-index alto)
-          setTimeout(() => {
-            const erudaBtn = document.querySelector('.eruda-entry-btn');
-            if (erudaBtn) {
-              erudaBtn.style.zIndex = '999999';
-              erudaBtn.style.bottom = '80px'; // Arriba de la nav inferior
-            }
-          }, 1000);
-        } catch (e) {
-          console.error('Error iniciando Eruda:', e);
+          logs.push({ type, msg, time: new Date().toLocaleTimeString() });
+          if (logs.length > maxLogs) logs.shift();
+          
+          const entry = document.createElement('div');
+          entry.className = 'log-entry log-' + type;
+          entry.textContent = logs[logs.length-1].time + ' ' + msg;
+          logsDiv.appendChild(entry);
+          logsDiv.scrollTop = logsDiv.scrollHeight;
         }
-      } else if (isMobile && typeof eruda === 'undefined') {
-        console.warn('⚠️ Eruda no cargó - CDN no disponible');
-      }
-    });
+        
+        console.log = function() { originalLog.apply(console, arguments); addLog('info', arguments); };
+        console.warn = function() { originalWarn.apply(console, arguments); addLog('warn', arguments); };
+        console.error = function() { originalError.apply(console, arguments); addLog('error', arguments); };
+        
+        console.log('🔧 Mini Debug Panel activado');
+      });
+    })();
   </script>
 
   <!-- CSS Modular para Jerarquía de Mapas -->
