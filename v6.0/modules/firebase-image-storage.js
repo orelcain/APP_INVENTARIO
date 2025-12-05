@@ -526,17 +526,10 @@ class FirebaseImageStorage {
             }
         }
         
-        // 2. Eliminar imágenes huérfanas (que estaban antes pero ya no están)
-        const newPaths = syncedMultimedia.map(m => m.path).filter(Boolean);
-        for (const oldMedia of oldMultimedia) {
-            if (oldMedia.isFirebaseStorage && oldMedia.path && !newPaths.includes(oldMedia.path)) {
-                console.log(`🗑️ Eliminando huérfana: ${oldMedia.path}`);
-                await this.deleteImage(oldMedia.path);
-                deleted++;
-            }
-        }
-        
-        console.log(`📊 Sync completado: ${uploaded} subidas, ${reused} reutilizadas, ${deleted} eliminadas`);
+        // 2. NO eliminar huérfanas automáticamente aquí
+        // La eliminación se hace en removeMultimedia() cuando el usuario quita una imagen explícitamente
+        // Esto evita borrar imágenes que fueron sincronizadas desde Firebase pero aún no guardadas
+        console.log(`📊 Sync completado: ${uploaded} subidas, ${reused} reutilizadas`);
         return syncedMultimedia;
     }
     
