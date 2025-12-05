@@ -22,6 +22,16 @@
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
   <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
 
+  <!-- 🔧 ERUDA: Consola de desarrollo para móvil -->
+  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+  <script>
+    // Inicializar Eruda solo en móvil o con parámetro ?debug
+    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || location.search.includes('debug')) {
+      eruda.init();
+      console.log('🔧 Eruda: Consola de desarrollo activada');
+    }
+  </script>
+
   <!-- CSS Modular para Jerarquía de Mapas -->
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/prototype-mapas.css">
