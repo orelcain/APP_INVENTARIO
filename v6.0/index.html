@@ -38826,6 +38826,24 @@ class InventarioCompleto {
       return;
     }
     
+    // 📱🔥 RE-VERIFICAR MULTIMEDIA EN MÓVIL: Mostrar sección si Firebase está autenticado
+    const multimediaSection = document.querySelector('.multimedia-section');
+    const mobileNoPhotosMsg = document.getElementById('mobile-no-photos-message');
+    const hasFirebaseStorage = window.firebaseImageStorage && 
+                               window.firebaseImageStorage.isReady && 
+                               window.firebaseImageStorage.isReady() &&
+                               window.firebaseImageStorage.isAuthenticated();
+    
+    if (this.isMobile && hasFirebaseStorage) {
+      console.log('📱☁️ [MODAL] Firebase Storage autenticado - Habilitando multimedia');
+      if (multimediaSection) {
+        multimediaSection.style.display = 'block';
+      }
+      if (mobileNoPhotosMsg) {
+        mobileNoPhotosMsg.remove();
+      }
+    }
+    
     this.currentEditingId = id;
     
     // Inicializar estado multimedia con nuevo sistema
