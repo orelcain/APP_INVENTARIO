@@ -35402,9 +35402,11 @@ class InventarioCompleto {
     const oldInput = document.getElementById('imagenFile');
     const multimediaSection = document.querySelector('.multimedia-section');
     
-    // 🔥 Detectar si Firebase Storage está disponible
+    // 🔥 Detectar si Firebase Storage está disponible Y autenticado
     const hasFirebaseStorage = window.firebaseImageStorage && 
-                               typeof window.firebaseImageStorage.isReady === 'function';
+                               typeof window.firebaseImageStorage.isReady === 'function' &&
+                               window.firebaseImageStorage.isReady() &&
+                               window.firebaseImageStorage.isAuthenticated();
     
     console.log(`📱 setupPhotoInputs - isMobile: ${this.isMobile}, hasFileSystemAPI: ${this.hasFileSystemAPI}, hasFirebaseStorage: ${hasFirebaseStorage}`);
     

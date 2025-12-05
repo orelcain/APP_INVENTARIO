@@ -226,6 +226,15 @@ class LoginUI {
         if (window.app && window.app.cargarDatosIniciales) {
             window.app.cargarDatosIniciales();
         }
+        
+        // 📱🔥 Reconfigurar inputs de foto ahora que Firebase está autenticado
+        // Esto habilita multimedia en móviles cuando Firebase Storage está disponible
+        setTimeout(() => {
+            if (window.app && typeof window.app.setupPhotoInputs === 'function') {
+                console.log('📱 Reconfigurando inputs de foto post-login...');
+                window.app.setupPhotoInputs();
+            }
+        }, 500);
     }
 
     /**
