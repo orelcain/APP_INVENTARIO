@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html><html><head><title>Gen</title></head><body>
+<canvas id="c"></canvas>
+<script>
+const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+sizes.forEach(s => {
+  const c = document.createElement('canvas');
+  c.width = c.height = s;
+  const ctx = c.getContext('2d');
+  
+  // Background
+  const bg = ctx.createLinearGradient(0,0,s,s);
+  bg.addColorStop(0,'#1a1a2e');
+  bg.addColorStop(1,'#16213e');
+  ctx.fillStyle = bg;
+  ctx.beginPath();
+  ctx.roundRect(0,0,s,s,s*0.2);
+  ctx.fill();
+  
+  // Icon
+  ctx.fillStyle = '#5b8bb4';
+  ctx.font = s*0.5+'px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('📦',s/2,s/2);
+  
+  console.log('icon-'+s+'x'+s+'.png');
+});
+</script></body></html>

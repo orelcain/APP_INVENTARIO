@@ -1,0 +1,207 @@
+/**
+ * Service Worker para PWA - Inventario de Repuestos
+ * Maneja cache offline y actualizaciones en segundo plano
+ */
+
+const CACHE_NAME = 'inventario-v1.0.0';
+const DYNAMIC_CACHE = 'inventario-dynamic-v1';
+
+// Archivos esenciales para funcionar offline
+const STATIC_ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './config/firebase-config.js',
+  './modules/firebase-service.js',
+  './modules/firebase-storage-adapter.js',
+  './modules/firebase-image-storage.js',
+  './modules/custom-auth.js',
+  './modules/login-ui.js',
+  './icons/icon-192x192.png',
+  './icons/icon-512x512.png'
+];
+
+// URLs de Firebase y APIs que NO se deben cachear
+const NO_CACHE_URLS = [
+  'firebaseio.com',
+  'googleapis.com',
+  'firebasestorage.googleapis.com',
+  'firebaseinstallations.googleapis.com',
+  'identitytoolkit.googleapis.com',
+  'securetoken.googleapis.com'
+];
+
+// Instalación del Service Worker
+self.addEventListener('install', (event) => {
+  console.log('🔧 [SW] Instalando Service Worker...');
+  
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('📦 [SW] Cacheando archivos estáticos...');
+        return cache.addAll(STATIC_ASSETS);
+      })
+      .then(() => {
+        console.log('✅ [SW] Instalación completada');
+        return self.skipWaiting(); // Activar inmediatamente
+      })
+      .catch((error) => {
+        console.error('❌ [SW] Error en instalación:', error);
+      })
+  );
+});
+
+// Activación - limpiar caches antiguos
+self.addEventListener('activate', (event) => {
+  console.log('🚀 [SW] Activando Service Worker...');
+  
+  event.waitUntil(
+    caches.keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME && cacheName !== DYNAMIC_CACHE) {
+              console.log('🗑️ [SW] Eliminando cache antiguo:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => {
+        console.log('✅ [SW] Activación completada');
+        return self.clients.claim(); // Tomar control inmediato
+      })
+  );
+});
+
+// Interceptar requests de red
+self.addEventListener('fetch', (event) => {
+  const requestUrl = event.request.url;
+  
+  // No cachear requests de Firebase/APIs
+  if (NO_CACHE_URLS.some(url => requestUrl.includes(url))) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+  
+  // No cachear requests POST
+  if (event.request.method !== 'GET') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+  
+  // Estrategia: Network First, fallback to Cache
+  event.respondWith(
+    fetch(event.request)
+      .then((networkResponse) => {
+        // Si la respuesta es válida, guardar en cache
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(DYNAMIC_CACHE)
+            .then((cache) => {
+              cache.put(event.request, responseClone);
+            });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // Si no hay red, buscar en cache
+        return caches.match(event.request)
+          .then((cachedResponse) => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            
+            // Si es una navegación, mostrar página offline
+            if (event.request.mode === 'navigate') {
+              return caches.match('./index.html');
+            }
+            
+            // Para imágenes, retornar placeholder
+            if (event.request.destination === 'image') {
+              return new Response(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#2d3748" width="200" height="200"/><text fill="#718096" font-family="Arial" font-size="14" x="50%" y="50%" text-anchor="middle" dy=".3em">Sin conexión</text></svg>',
+                { headers: { 'Content-Type': 'image/svg+xml' } }
+              );
+            }
+          });
+      })
+  );
+});
+
+// Escuchar mensajes desde la app
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+  
+  if (event.data && event.data.type === 'CLEAR_CACHE') {
+    caches.keys().then((cacheNames) => {
+      cacheNames.forEach((cacheName) => {
+        caches.delete(cacheName);
+      });
+    });
+  }
+});
+
+// Notificaciones push (preparado para futuro)
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  
+  const data = event.data.json();
+  
+  const options = {
+    body: data.body || 'Nueva notificación',
+    icon: './icons/icon-192x192.png',
+    badge: './icons/icon-72x72.png',
+    vibrate: [100, 50, 100],
+    data: {
+      url: data.url || './'
+    },
+    actions: [
+      { action: 'open', title: 'Abrir' },
+      { action: 'close', title: 'Cerrar' }
+    ]
+  };
+  
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'Inventario', options)
+  );
+});
+
+// Click en notificación
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  
+  if (event.action === 'open' || !event.action) {
+    const urlToOpen = event.notification.data?.url || './';
+    
+    event.waitUntil(
+      clients.matchAll({ type: 'window', includeUncontrolled: true })
+        .then((windowClients) => {
+          // Si ya hay una ventana abierta, enfocarla
+          for (const client of windowClients) {
+            if (client.url.includes('index.html') && 'focus' in client) {
+              return client.focus();
+            }
+          }
+          // Si no hay ventana, abrir una nueva
+          if (clients.openWindow) {
+            return clients.openWindow(urlToOpen);
+          }
+        })
+    );
+  }
+});
+
+// Sincronización en segundo plano (cuando vuelva la conexión)
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-inventory') {
+    event.waitUntil(
+      // Aquí se pueden sincronizar cambios pendientes
+      Promise.resolve()
+    );
+  }
+});
+
+console.log('📱 [SW] Service Worker cargado');
