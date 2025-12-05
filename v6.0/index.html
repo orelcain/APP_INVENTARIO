@@ -22,121 +22,225 @@
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
   <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
 
-  <!-- 🔧 MINI DEBUG: Consola propia para móvil (sin CDN externo) -->
+  <!-- 🔧 SISTEMA DE DEBUG UNIVERSAL - Funciona en móvil Y en configuración -->
   <script>
-    // Mini Debug Panel - Funciona siempre en móvil
+    // 🔧 SISTEMA DE DEBUG UNIVERSAL - Funciona en móvil Y en configuración
     (function() {
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       const isDebug = location.search.includes('debug');
       
-      if (!isMobile && !isDebug) return;
+      // Almacén global de logs
+      window.debugLogs = window.debugLogs || [];
+      const maxLogs = 150;
       
-      // Crear panel de debug
-      const debugPanel = document.createElement('div');
-      debugPanel.id = 'miniDebugPanel';
-      debugPanel.innerHTML = `
-        <style>
+      // Interceptar console desde el inicio
+      const originalLog = console.log;
+      const originalWarn = console.warn;
+      const originalError = console.error;
+      
+      function addLogEntry(type, args) {
+        const msg = Array.from(args).map(a => 
+          typeof a === 'object' ? JSON.stringify(a, null, 2).substring(0, 300) : String(a)
+        ).join(' ');
+        
+        const entry = { 
+          type, 
+          msg, 
+          time: new Date().toLocaleTimeString(),
+          timestamp: Date.now()
+        };
+        
+        window.debugLogs.push(entry);
+        if (window.debugLogs.length > maxLogs) window.debugLogs.shift();
+        
+        // Actualizar panel flotante si existe
+        if (window.updateFloatingDebug) window.updateFloatingDebug(entry);
+        // Actualizar panel de config si existe
+        if (window.updateConfigDebug) window.updateConfigDebug(entry);
+      }
+      
+      console.log = function() { originalLog.apply(console, arguments); addLogEntry('info', arguments); };
+      console.warn = function() { originalWarn.apply(console, arguments); addLogEntry('warn', arguments); };
+      console.error = function() { originalError.apply(console, arguments); addLogEntry('error', arguments); };
+      
+      // 📱 PANEL FLOTANTE SOLO EN MÓVIL
+      if (isMobile || isDebug) {
+        const style = document.createElement('style');
+        style.textContent = `
           #miniDebugPanel {
             position: fixed;
-            bottom: 75px;
-            right: 10px;
+            bottom: 85px;
+            right: 15px;
             z-index: 999999;
           }
           #debugToggleBtn {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            background: #4CAF50;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
             color: white;
-            border: none;
-            font-size: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.3);
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
+          #debugToggleBtn:active { transform: scale(0.95); }
           #debugConsole {
             display: none;
             position: fixed;
-            bottom: 130px;
+            bottom: 140px;
             left: 10px;
             right: 10px;
-            max-height: 40vh;
+            max-height: 45vh;
             background: rgba(0,0,0,0.95);
             border-radius: 12px;
-            padding: 10px;
+            padding: 12px;
             overflow-y: auto;
             font-family: monospace;
             font-size: 11px;
             color: #0f0;
             z-index: 999998;
+            border: 1px solid rgba(76, 175, 80, 0.5);
           }
           #debugConsole.show { display: block; }
-          #debugConsole .log-entry { 
+          .debug-log-entry { 
             padding: 4px 0; 
             border-bottom: 1px solid #333;
             word-break: break-all;
           }
-          #debugConsole .log-error { color: #f66; }
-          #debugConsole .log-warn { color: #fa0; }
-          #debugConsole .log-info { color: #6af; }
+          .debug-log-error { color: #f66; }
+          .debug-log-warn { color: #fa0; }
+          .debug-log-info { color: #6af; }
           #clearDebugBtn {
             position: absolute;
-            top: 5px;
-            right: 5px;
+            top: 8px;
+            right: 8px;
             background: #f44;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 5px 12px;
             border-radius: 4px;
-            font-size: 10px;
+            font-size: 11px;
+            cursor: pointer;
           }
-        </style>
-        <button id="debugToggleBtn">🔧</button>
-        <div id="debugConsole">
-          <button id="clearDebugBtn">Limpiar</button>
-          <div id="debugLogs"></div>
-        </div>
-      `;
+        `;
+        document.head.appendChild(style);
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          const panel = document.createElement('div');
+          panel.id = 'miniDebugPanel';
+          panel.innerHTML = `
+            <button id="debugToggleBtn">🔧</button>
+            <div id="debugConsole">
+              <button id="clearDebugBtn">🗑️ Limpiar</button>
+              <div id="debugLogsFloating" style="margin-top: 25px;"></div>
+            </div>
+          `;
+          document.body.appendChild(panel);
+          
+          const toggleBtn = document.getElementById('debugToggleBtn');
+          const consoleDiv = document.getElementById('debugConsole');
+          const logsDiv = document.getElementById('debugLogsFloating');
+          const clearBtn = document.getElementById('clearDebugBtn');
+          
+          toggleBtn.onclick = () => consoleDiv.classList.toggle('show');
+          clearBtn.onclick = () => { window.debugLogs = []; logsDiv.innerHTML = ''; };
+          
+          // Función para actualizar panel flotante
+          window.updateFloatingDebug = function(entry) {
+            if (!logsDiv) return;
+            const div = document.createElement('div');
+            div.className = 'debug-log-entry debug-log-' + entry.type;
+            div.textContent = entry.time + ' ' + entry.msg;
+            logsDiv.appendChild(div);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+          };
+          
+          // Cargar logs existentes
+          window.debugLogs.forEach(entry => window.updateFloatingDebug(entry));
+          
+          console.log('🔧 Debug Panel móvil activado');
+        });
+      }
       
-      document.addEventListener('DOMContentLoaded', function() {
-        document.body.appendChild(debugPanel);
+      // 🖥️ FUNCIONES PARA PANEL DE CONFIGURACIÓN
+      window.toggleDebugConsole = function() {
+        const panel = document.getElementById('debugConsoleConfig');
+        if (panel) {
+          panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+          if (panel.style.display === 'block') {
+            window.renderConfigDebugLogs();
+          }
+        }
+      };
+      
+      window.clearDebugLogs = function() {
+        window.debugLogs = [];
+        const floatingLogs = document.getElementById('debugLogsFloating');
+        const configLogs = document.getElementById('debugLogsConfig');
+        if (floatingLogs) floatingLogs.innerHTML = '';
+        if (configLogs) configLogs.innerHTML = '<div style="color: #888;">Logs limpiados</div>';
+      };
+      
+      window.testDebugLog = function() {
+        console.log('🧪 Test LOG - ' + new Date().toLocaleString());
+        console.warn('⚠️ Test WARNING - Esto es una advertencia de prueba');
+        console.error('❌ Test ERROR - Esto es un error de prueba');
+      };
+      
+      window.renderConfigDebugLogs = function() {
+        const logsDiv = document.getElementById('debugLogsConfig');
+        if (!logsDiv) return;
         
-        const toggleBtn = document.getElementById('debugToggleBtn');
-        const console_div = document.getElementById('debugConsole');
-        const logsDiv = document.getElementById('debugLogs');
-        const clearBtn = document.getElementById('clearDebugBtn');
-        
-        let logs = [];
-        const maxLogs = 100;
-        
-        toggleBtn.onclick = () => console_div.classList.toggle('show');
-        clearBtn.onclick = () => { logs = []; logsDiv.innerHTML = ''; };
-        
-        // Interceptar console.log, warn, error
-        const originalLog = console.log;
-        const originalWarn = console.warn;
-        const originalError = console.error;
-        
-        function addLog(type, args) {
-          const msg = Array.from(args).map(a => 
-            typeof a === 'object' ? JSON.stringify(a, null, 2).substring(0, 200) : String(a)
-          ).join(' ');
-          
-          logs.push({ type, msg, time: new Date().toLocaleTimeString() });
-          if (logs.length > maxLogs) logs.shift();
-          
-          const entry = document.createElement('div');
-          entry.className = 'log-entry log-' + type;
-          entry.textContent = logs[logs.length-1].time + ' ' + msg;
-          logsDiv.appendChild(entry);
-          logsDiv.scrollTop = logsDiv.scrollHeight;
+        if (window.debugLogs.length === 0) {
+          logsDiv.innerHTML = '<div style="color: #888;">No hay logs todavía...</div>';
+          return;
         }
         
-        console.log = function() { originalLog.apply(console, arguments); addLog('info', arguments); };
-        console.warn = function() { originalWarn.apply(console, arguments); addLog('warn', arguments); };
-        console.error = function() { originalError.apply(console, arguments); addLog('error', arguments); };
-        
-        console.log('🔧 Mini Debug Panel activado');
+        logsDiv.innerHTML = window.debugLogs.map(entry => {
+          const colors = { error: '#f66', warn: '#fa0', info: '#6af' };
+          return `<div style="color: ${colors[entry.type] || '#0f0'}; padding: 3px 0; border-bottom: 1px solid #333;">${entry.time} ${entry.msg}</div>`;
+        }).join('');
+        logsDiv.scrollTop = logsDiv.scrollHeight;
+      };
+      
+      window.updateConfigDebug = function(entry) {
+        const logsDiv = document.getElementById('debugLogsConfig');
+        const panel = document.getElementById('debugConsoleConfig');
+        if (logsDiv && panel && panel.style.display === 'block') {
+          const colors = { error: '#f66', warn: '#fa0', info: '#6af' };
+          const div = document.createElement('div');
+          div.style.cssText = `color: ${colors[entry.type] || '#0f0'}; padding: 3px 0; border-bottom: 1px solid #333;`;
+          div.textContent = entry.time + ' ' + entry.msg;
+          logsDiv.appendChild(div);
+          logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+      };
+      
+      // Actualizar info del sistema cuando DOM esté listo
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+          const infoDiv = document.getElementById('debugSystemInfo');
+          if (infoDiv) {
+            const ua = navigator.userAgent;
+            const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(ua);
+            const browser = ua.includes('Chrome') ? 'Chrome' : ua.includes('Safari') ? 'Safari' : ua.includes('Firefox') ? 'Firefox' : 'Otro';
+            infoDiv.innerHTML = `
+              <strong>Dispositivo:</strong> ${isMobileDevice ? '📱 Móvil' : '🖥️ PC'}<br>
+              <strong>Navegador:</strong> ${browser}<br>
+              <strong>Pantalla:</strong> ${window.innerWidth}x${window.innerHeight}<br>
+              <strong>Firebase Storage:</strong> ${window.firebaseImageStorage ? '✅ Activo' : '❌ No disponible'}<br>
+              <strong>Service Worker:</strong> ${navigator.serviceWorker ? '✅ Soportado' : '❌ No soportado'}<br>
+              <strong>Logs capturados:</strong> ${window.debugLogs.length}
+            `;
+          }
+        }, 3000);
       });
+      
+      console.log('🔧 Sistema de Debug Universal inicializado');
     })();
   </script>
 
@@ -16570,6 +16674,56 @@
       </div>
       </div> <!-- Fin herramientas-config-content -->
     </div>
+
+    <!-- 🔧 CONSOLA DE DEBUG (MÓVIL) -->
+    <div class="config-section">
+      <div class="config-section-header-row">
+        <div onclick="toggleConfigSection('debug-config')" class="config-section-clickable">
+          <div class="config-section-title-row">
+            <span id="debug-config-icon">🔧</span>
+            <h3 class="config-section-title">
+              🔧 Consola de Debug (Móvil)
+            </h3>
+          </div>
+        </div>
+      </div>
+      
+      <div id="debug-config-content" class="config-section-content-hidden">
+        <p class="config-description">
+          Panel de diagnóstico para ver logs de la aplicación en dispositivos móviles donde no hay acceso a las herramientas de desarrollador.
+        </p>
+
+        <div class="config-card" style="margin-bottom: 15px;">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+            <button onclick="window.toggleDebugConsole()" class="btn btn-primary" style="padding: 10px 20px;">
+              📺 Mostrar/Ocultar Consola
+            </button>
+            <button onclick="window.clearDebugLogs()" class="btn btn-warning" style="padding: 10px 20px;">
+              🗑️ Limpiar Logs
+            </button>
+            <button onclick="window.testDebugLog()" class="btn btn-info" style="padding: 10px 20px;">
+              🧪 Test Log
+            </button>
+          </div>
+          
+          <div id="debugConsoleConfig" style="display: none; background: rgba(0,0,0,0.9); border-radius: 8px; padding: 15px; max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 12px;">
+            <div id="debugLogsConfig" style="color: #0f0;"></div>
+          </div>
+        </div>
+
+        <div class="config-info-box">
+          <div class="config-info-content">
+            <span class="config-info-icon">💡</span>
+            <div>
+              <p class="config-info-title">Información de Debug</p>
+              <p class="config-info-description" id="debugSystemInfo">
+                Cargando información del sistema...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -31082,7 +31236,8 @@ function initConfigSections() {
     'export-config',
     'backup-config',
     'listas-config',
-    'herramientas-config'
+    'herramientas-config',
+    'debug-config'
   ];
   
   sections.forEach(sectionId => {
@@ -63035,10 +63190,11 @@ if (window.firebaseService && window.firebaseService.isAuthenticated()) {
 }
 
 // ============================================================================
-// SINCRONIZACIÓN EN TIEMPO REAL
+// SINCRONIZACIÓN EN TIEMPO REAL CON PERSISTENCIA
 // ============================================================================
 
 let syncListeners = []; // Almacena los listeners para poder desconectarlos
+let syncActive = false; // Estado de sincronización
 
 function activarSincronizacionTiempoReal() {
     if (!window.firebaseStorageAdapter) {
@@ -63047,6 +63203,10 @@ function activarSincronizacionTiempoReal() {
     }
 
     console.log('🔄 Activando sincronización en tiempo real...');
+    
+    // 💾 GUARDAR preferencia en localStorage
+    localStorage.setItem('firebaseSyncEnabled', 'true');
+    syncActive = true;
 
     // Activar callbacks de sincronización para cada colección
     window.firebaseStorageAdapter.enableRealtimeSync({
@@ -63161,6 +63321,10 @@ function desactivarSincronizacionTiempoReal() {
         console.log('🔴 Sincronización en tiempo real desactivada');
         mostrarNotificacionSync('🔴 Sincronización en tiempo real desactivada');
         
+        // 💾 GUARDAR preferencia en localStorage
+        localStorage.setItem('firebaseSyncEnabled', 'false');
+        syncActive = false;
+        
         // Actualizar estado visual de los botones
         const syncStatus = document.getElementById('sync-status');
         const btnActivar = document.getElementById('btnActivarSync');
@@ -63232,6 +63396,33 @@ document.head.appendChild(syncStyles);
 // Exponer funciones globalmente
 window.activarSincronizacionTiempoReal = activarSincronizacionTiempoReal;
 window.desactivarSincronizacionTiempoReal = desactivarSincronizacionTiempoReal;
+
+// 🔄 RESTAURAR ESTADO DE SINCRONIZACIÓN AL CARGAR
+function restaurarEstadoSync() {
+    const syncEnabled = localStorage.getItem('firebaseSyncEnabled');
+    console.log('🔄 Verificando estado de sincronización guardado:', syncEnabled);
+    
+    if (syncEnabled === 'true') {
+        // Esperar a que Firebase esté listo antes de activar sync
+        const checkFirebase = setInterval(() => {
+            if (window.firebaseStorageAdapter && window.firebaseService && window.firebaseService.isAuthenticated()) {
+                clearInterval(checkFirebase);
+                console.log('🔄 Restaurando sincronización automáticamente...');
+                activarSincronizacionTiempoReal();
+            }
+        }, 500);
+        
+        // Timeout después de 15 segundos
+        setTimeout(() => clearInterval(checkFirebase), 15000);
+    }
+}
+
+// Ejecutar restauración cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(restaurarEstadoSync, 2000));
+} else {
+    setTimeout(restaurarEstadoSync, 2000);
+}
 
 console.log('✅ Sistema de sincronización en tiempo real disponible');
 console.log('💡 Usa: window.activarSincronizacionTiempoReal() para activar');
