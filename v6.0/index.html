@@ -63274,26 +63274,35 @@ console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactiv
 // ==================================================================
 
 function switchMobileTab(tabName) {
-  // Actualizar estado activo en nav
+  console.log('📱 switchMobileTab:', tabName);
+  
+  // Actualizar estado activo en nav inferior
   document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(item => {
     item.classList.remove('active');
   });
   document.querySelector(`.mobile-bottom-nav [data-tab="${tabName}"]`)?.classList.add('active');
   
-  // Mapear tabs al sistema existente - usar la función global si existe
-  if (window.app && window.app.showTab) {
-    // Mapear nombres de tabs móviles a nombres del sistema
-    const tabMap = {
-      'inventario': 'inventario',
-      'jerarquia': 'jerarquia',
-      'mapas': 'mapa',
-      'config': 'configuracion'
-    };
-    window.app.showTab(tabMap[tabName] || tabName);
+  // Mapear nombres de tabs móviles a nombres reales del sistema
+  const tabMap = {
+    'inventario': 'inventario',
+    'jerarquia': 'jerarquia', 
+    'mapas': 'mapa',           // móvil usa "mapas", sistema usa "mapa"
+    'config': 'configuracion'  // móvil usa "config", sistema usa "configuracion"
+  };
+  
+  const realTabName = tabMap[tabName] || tabName;
+  
+  // Llamar directamente a app.switchTab si existe
+  if (window.app && typeof window.app.switchTab === 'function') {
+    window.app.switchTab(realTabName);
   } else {
-    // Fallback: simular click en tab
-    const navTab = document.querySelector(`.nav-tab[data-tab="${tabName}"]`);
-    if (navTab) navTab.click();
+    // Fallback: simular click en tab superior
+    const navTab = document.querySelector(`.nav-tab[data-tab="${realTabName}"]`);
+    if (navTab) {
+      navTab.click();
+    } else {
+      console.warn('⚠️ Tab no encontrado:', realTabName);
+    }
   }
 }
 

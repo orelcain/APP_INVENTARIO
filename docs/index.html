@@ -63441,38 +63441,36 @@ function showUpdateBanner() {
 // ==================================================================
 
 function switchMobileTab(tabName) {
-  // Actualizar estado activo en nav
+  console.log('📱 switchMobileTab:', tabName);
+  
+  // Actualizar estado activo en nav inferior
   document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(item => {
     item.classList.remove('active');
   });
   document.querySelector(`.mobile-bottom-nav [data-tab="${tabName}"]`)?.classList.add('active');
   
-  // Mapear tabs a las funciones existentes
+  // Mapear nombres de tabs móviles a nombres reales del sistema
   const tabMap = {
-    'inventario': () => {
-      // Click en tab de inventario existente
-      const inventarioTab = document.querySelector('[data-tab="inventario"]') || 
-                           document.querySelector('.nav-tab:first-child');
-      inventarioTab?.click();
-    },
-    'jerarquia': () => {
-      const jerarquiaTab = document.querySelector('[data-tab="jerarquia"]') ||
-                          document.querySelector('.nav-tab:nth-child(2)');
-      jerarquiaTab?.click();
-    },
-    'mapas': () => {
-      const mapasTab = document.querySelector('[data-tab="mapas"]') ||
-                       document.querySelector('.nav-tab:nth-child(3)');
-      mapasTab?.click();
-    },
-    'config': () => {
-      const configTab = document.querySelector('[data-tab="config"]') ||
-                        document.querySelector('.nav-tab:last-child');
-      configTab?.click();
-    }
+    'inventario': 'inventario',
+    'jerarquia': 'jerarquia', 
+    'mapas': 'mapa',           // móvil usa "mapas", sistema usa "mapa"
+    'config': 'configuracion'  // móvil usa "config", sistema usa "configuracion"
   };
   
-  tabMap[tabName]?.();
+  const realTabName = tabMap[tabName] || tabName;
+  
+  // Llamar directamente a app.switchTab si existe
+  if (window.app && typeof window.app.switchTab === 'function') {
+    window.app.switchTab(realTabName);
+  } else {
+    // Fallback: simular click en tab superior
+    const navTab = document.querySelector(`.nav-tab[data-tab="${realTabName}"]`);
+    if (navTab) {
+      navTab.click();
+    } else {
+      console.warn('⚠️ Tab no encontrado:', realTabName);
+    }
+  }
 }
 
 // Sincronizar nav inferior con tabs superiores
