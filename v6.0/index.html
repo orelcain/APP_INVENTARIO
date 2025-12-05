@@ -38992,24 +38992,76 @@ class InventarioCompleto {
     // Agregar a multimedia
     if (!this.currentMultimedia) this.currentMultimedia = [];
     
-    //  CORRECCIN: Usar la variable global fsManager
+    // 🔥 PRIORIDAD: Firebase Storage > FileSystem > Memoria
+    const isFirebaseReady = window.firebaseImageStorage && window.firebaseImageStorage.isReady() && window.firebaseImageStorage.isAuthenticated();
     const isFileSystemMode = fsManager && fsManager.isFileSystemMode;
     
-    console.log(` [OPTIMIZER] isFileSystemMode: ${isFileSystemMode}`);
-    console.log(` [OPTIMIZER] currentMultimedia.length: ${this.currentMultimedia.length}`);
+    console.log(`📸 [OPTIMIZER] Firebase Storage: ${isFirebaseReady}`);
+    console.log(`📸 [OPTIMIZER] FileSystem Mode: ${isFileSystemMode}`);
+    console.log(`📸 [OPTIMIZER] currentMultimedia.length: ${this.currentMultimedia.length}`);
     
-    if (isFileSystemMode) {
+    const timestamp = Date.now();
+    const codSAP = document.getElementById('codSAP')?.value || 'SAP';
+    const nombreRepuesto = document.getElementById('nombre')?.value || 'REPUESTO';
+    const imageIndex = this.currentMultimedia.length + 1;
+    const cleanCodSAP = codSAP.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+    const cleanNombre = nombreRepuesto.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
+    const filename = `${timestamp}_${cleanCodSAP}_${cleanNombre}_foto${imageIndex}.webp`;
+    
+    if (isFirebaseReady) {
+      // 🔥 MODO FIREBASE STORAGE - Subir directamente a la nube
+      console.log(`☁️ Subiendo a Firebase Storage: ${filename}`);
+      
+      // Obtener ID del repuesto (editando existente o nuevo)
+      let repuestoId = this.currentEditingId;
+      if (!repuestoId) {
+        // Si es nuevo repuesto, usar ID temporal que se actualizará al guardar
+        repuestoId = `temp_${timestamp}`;
+        console.log(`☁️ Nuevo repuesto, usando ID temporal: ${repuestoId}`);
+      } else {
+        console.log(`☁️ Editando repuesto existente, ID: ${repuestoId}`);
+      }
+      
+      // Mostrar indicador de carga
+      this.showToast('☁️ Subiendo imagen a la nube...', 'info');
+      
+      const result = await window.firebaseImageStorage.uploadRepuestoImage(
+        blob, 
+        repuestoId, 
+        filename,
+        (progress) => {
+          console.log(`☁️ Progreso: ${progress.toFixed(1)}%`);
+        }
+      );
+      
+      if (result.success) {
+        const newImage = {
+          type: 'image',
+          url: result.url,
+          path: result.path,
+          name: this.currentImageFile.name,
+          size: blob.size,
+          isFirebaseStorage: true
+        };
+        console.log(`✅ Imagen subida a Firebase: ${result.url}`);
+        this.currentMultimedia.push(newImage);
+        this.showToast(`✅ Imagen subida a la nube (${(blob.size / 1024).toFixed(1)} KB)`, 'success');
+      } else {
+        console.error('❌ Error subiendo a Firebase:', result.error);
+        // Fallback a memoria si falla Firebase
+        this.currentMultimedia.push({
+          type: 'image',
+          url: this.currentOptimizedDataUrl,
+          name: this.currentImageFile.name,
+          size: blob.size,
+          blob: blob,
+          pendingUpload: true // Marcar para reintentar después
+        });
+        this.showToast(`⚠️ Imagen guardada localmente (${result.error})`, 'warning');
+      }
+    } else if (isFileSystemMode) {
       // Guardar en FileSystem
-      const timestamp = Date.now();
-      const codSAP = document.getElementById('codSAP')?.value || 'SAP';
-      const nombreRepuesto = document.getElementById('nombre')?.value || 'REPUESTO';
-      const imageIndex = this.currentMultimedia.length + 1;
-      
-      const cleanCodSAP = codSAP.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
-      const cleanNombre = nombreRepuesto.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
-      const filename = `${timestamp}_${cleanCodSAP}_${cleanNombre}_foto${imageIndex}.webp`;
-      
-      console.log(` Guardando en FileSystem: ${filename}`);
+      console.log(`📁 Guardando en FileSystem: ${filename}`);
       const imagePath = await fsManager.saveImage(blob, filename);
       
       if (imagePath) {
@@ -39020,16 +39072,15 @@ class InventarioCompleto {
           size: blob.size,
           isFileSystem: true
         };
-        console.log(` Imagen guardada en: ${imagePath}`);
-        console.log(` Objeto a agregar:`, newImage);
+        console.log(`✅ Imagen guardada en: ${imagePath}`);
         this.currentMultimedia.push(newImage);
+        this.showToast(`📁 Imagen guardada localmente (${(blob.size / 1024).toFixed(1)} KB)`, 'success');
       } else {
-        console.error(' fsManager.saveImage retorn null/undefined');
+        console.error('❌ fsManager.saveImage retornó null/undefined');
       }
     } else {
-      // Guardar en IndexedDB o memoria
-      console.log(` Guardando en memoria/IndexedDB`);
-      const blobUrl = URL.createObjectURL(blob);
+      // Guardar en memoria (modo sin conexión)
+      console.log(`💾 Guardando en memoria`);
       const newImage = {
         type: 'image',
         url: this.currentOptimizedDataUrl,
@@ -39037,16 +39088,12 @@ class InventarioCompleto {
         size: blob.size,
         blob: blob
       };
-      console.log(` Imagen en memoria, agregando a currentMultimedia:`, newImage);
       this.currentMultimedia.push(newImage);
+      this.showToast(`💾 Imagen en memoria (${(blob.size / 1024).toFixed(1)} KB) - Inicia sesión para guardar en la nube`, 'info');
     }
     
-    console.log(` Total imgenes en currentMultimedia: ${this.currentMultimedia.length}`);
-    console.log(` Actualizando preview...`);
+    console.log(`📸 Total imágenes en currentMultimedia: ${this.currentMultimedia.length}`);
     await this.updateMultimediaPreview();
-    this.showToast(`Imagen optimizada agregada (${(blob.size / 1024).toFixed(1)} KB)`, 'success');
-    
-    // ℹ️ La sincronización se hará al guardar el repuesto (botón Guardar)
     
     if (this.optimizerResolve) {
       this.optimizerResolve();
@@ -39062,19 +39109,63 @@ class InventarioCompleto {
     reader.onload = async (e) => {
       if (!this.currentMultimedia) this.currentMultimedia = [];
       
+      // 🔥 PRIORIDAD: Firebase Storage > FileSystem > Memoria
+      const isFirebaseReady = window.firebaseImageStorage && window.firebaseImageStorage.isReady() && window.firebaseImageStorage.isAuthenticated();
       const isFileSystemMode = fsManager && fsManager.isFileSystemMode;
       
-      if (isFileSystemMode) {
-        const timestamp = Date.now();
-        const codSAP = document.getElementById('codSAP')?.value || 'SAP';
-        const nombreRepuesto = document.getElementById('nombre')?.value || 'REPUESTO';
-        const imageIndex = this.currentMultimedia.length + 1;
+      const timestamp = Date.now();
+      const codSAP = document.getElementById('codSAP')?.value || 'SAP';
+      const nombreRepuesto = document.getElementById('nombre')?.value || 'REPUESTO';
+      const imageIndex = this.currentMultimedia.length + 1;
+      const cleanCodSAP = codSAP.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+      const cleanNombre = nombreRepuesto.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
+      const ext = this.currentImageFile.name.split('.').pop();
+      const filename = `${timestamp}_${cleanCodSAP}_${cleanNombre}_foto${imageIndex}.${ext}`;
+      
+      if (isFirebaseReady) {
+        // 🔥 MODO FIREBASE STORAGE
+        console.log(`☁️ Subiendo original a Firebase Storage: ${filename}`);
         
-        const cleanCodSAP = codSAP.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
-        const cleanNombre = nombreRepuesto.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
-        const ext = this.currentImageFile.name.split('.').pop();
-        const filename = `${timestamp}_${cleanCodSAP}_${cleanNombre}_foto${imageIndex}.${ext}`;
+        // Obtener ID del repuesto (editando existente o nuevo)
+        let repuestoId = this.currentEditingId;
+        if (!repuestoId) {
+          repuestoId = `temp_${timestamp}`;
+          console.log(`☁️ Nuevo repuesto, usando ID temporal: ${repuestoId}`);
+        } else {
+          console.log(`☁️ Editando repuesto existente, ID: ${repuestoId}`);
+        }
         
+        this.showToast('☁️ Subiendo imagen a la nube...', 'info');
+        
+        const result = await window.firebaseImageStorage.uploadRepuestoImage(
+          this.currentImageFile, 
+          repuestoId, 
+          filename
+        );
+        
+        if (result.success) {
+          this.currentMultimedia.push({
+            type: 'image',
+            url: result.url,
+            path: result.path,
+            name: this.currentImageFile.name,
+            size: this.currentImageFile.size,
+            isFirebaseStorage: true
+          });
+          this.showToast(`✅ Imagen subida a la nube`, 'success');
+        } else {
+          // Fallback a memoria
+          this.currentMultimedia.push({
+            type: 'image',
+            url: e.target.result,
+            name: this.currentImageFile.name,
+            size: this.currentImageFile.size,
+            blob: this.currentImageFile,
+            pendingUpload: true
+          });
+          this.showToast(`⚠️ Guardado local: ${result.error}`, 'warning');
+        }
+      } else if (isFileSystemMode) {
         const imagePath = await fsManager.saveImage(this.currentImageFile, filename);
         
         if (imagePath) {
@@ -39085,6 +39176,7 @@ class InventarioCompleto {
             size: this.currentImageFile.size,
             isFileSystem: true
           });
+          this.showToast('📁 Imagen guardada localmente', 'success');
         }
       } else {
         this.currentMultimedia.push({
@@ -39094,12 +39186,10 @@ class InventarioCompleto {
           size: this.currentImageFile.size,
           blob: this.currentImageFile
         });
+        this.showToast('💾 Imagen en memoria - Inicia sesión para guardar en la nube', 'info');
       }
       
       await this.updateMultimediaPreview();
-      this.showToast('Imagen original agregada', 'info');
-      
-      // ℹ️ La sincronización se hará al guardar el repuesto (botón Guardar)
       
       if (this.optimizerResolve) {
         this.optimizerResolve();

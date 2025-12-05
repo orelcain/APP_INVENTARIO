@@ -38956,11 +38956,14 @@ class InventarioCompleto {
       // 🔥 MODO FIREBASE STORAGE - Subir directamente a la nube
       console.log(`☁️ Subiendo a Firebase Storage: ${filename}`);
       
-      // Obtener o generar ID del repuesto
-      let repuestoId = document.getElementById('repuestoId')?.value;
+      // Obtener ID del repuesto (editando existente o nuevo)
+      let repuestoId = this.currentEditingId;
       if (!repuestoId) {
         // Si es nuevo repuesto, usar ID temporal que se actualizará al guardar
         repuestoId = `temp_${timestamp}`;
+        console.log(`☁️ Nuevo repuesto, usando ID temporal: ${repuestoId}`);
+      } else {
+        console.log(`☁️ Editando repuesto existente, ID: ${repuestoId}`);
       }
       
       // Mostrar indicador de carga
@@ -39067,9 +39070,13 @@ class InventarioCompleto {
         // 🔥 MODO FIREBASE STORAGE
         console.log(`☁️ Subiendo original a Firebase Storage: ${filename}`);
         
-        let repuestoId = document.getElementById('repuestoId')?.value;
+        // Obtener ID del repuesto (editando existente o nuevo)
+        let repuestoId = this.currentEditingId;
         if (!repuestoId) {
           repuestoId = `temp_${timestamp}`;
+          console.log(`☁️ Nuevo repuesto, usando ID temporal: ${repuestoId}`);
+        } else {
+          console.log(`☁️ Editando repuesto existente, ID: ${repuestoId}`);
         }
         
         this.showToast('☁️ Subiendo imagen a la nube...', 'info');
