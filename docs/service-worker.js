@@ -78,6 +78,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const requestUrl = event.request.url;
   
+  // 🚫 IGNORAR: URLs de extensiones del navegador (chrome-extension://, moz-extension://, etc.)
+  if (!requestUrl.startsWith('http://') && !requestUrl.startsWith('https://')) {
+    return; // No interceptar, dejar que el navegador lo maneje
+  }
+  
   // No cachear requests de Firebase/APIs
   if (NO_CACHE_URLS.some(url => requestUrl.includes(url))) {
     event.respondWith(fetch(event.request));
