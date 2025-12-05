@@ -57,8 +57,6 @@
         window.debugLogs.push(entry);
         if (window.debugLogs.length > maxLogs) window.debugLogs.shift();
         
-        // Actualizar panel flotante si existe
-        if (window.updateFloatingDebug) window.updateFloatingDebug(entry);
         // Actualizar panel de config si existe
         if (window.updateConfigDebug) window.updateConfigDebug(entry);
       }
@@ -66,109 +64,6 @@
       console.log = function() { originalLog.apply(console, arguments); addLogEntry('info', arguments); };
       console.warn = function() { originalWarn.apply(console, arguments); addLogEntry('warn', arguments); };
       console.error = function() { originalError.apply(console, arguments); addLogEntry('error', arguments); };
-      
-      // 📱 PANEL FLOTANTE SOLO EN MÓVIL
-      if (isMobile || isDebug) {
-        const style = document.createElement('style');
-        style.textContent = `
-          #miniDebugPanel {
-            position: fixed;
-            bottom: 85px;
-            right: 15px;
-            z-index: 999999;
-          }
-          #debugToggleBtn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #4CAF50, #2E7D32);
-            color: white;
-            border: 2px solid rgba(255,255,255,0.3);
-            font-size: 18px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          #debugToggleBtn:active { transform: scale(0.95); }
-          #debugConsole {
-            display: none;
-            position: fixed;
-            bottom: 140px;
-            left: 10px;
-            right: 10px;
-            max-height: 45vh;
-            background: rgba(0,0,0,0.95);
-            border-radius: 12px;
-            padding: 12px;
-            overflow-y: auto;
-            font-family: monospace;
-            font-size: 11px;
-            color: #0f0;
-            z-index: 999998;
-            border: 1px solid rgba(76, 175, 80, 0.5);
-          }
-          #debugConsole.show { display: block; }
-          .debug-log-entry { 
-            padding: 4px 0; 
-            border-bottom: 1px solid #333;
-            word-break: break-all;
-          }
-          .debug-log-error { color: #f66; }
-          .debug-log-warn { color: #fa0; }
-          .debug-log-info { color: #6af; }
-          #clearDebugBtn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #f44;
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-size: 11px;
-            cursor: pointer;
-          }
-        `;
-        document.head.appendChild(style);
-        
-        document.addEventListener('DOMContentLoaded', function() {
-          const panel = document.createElement('div');
-          panel.id = 'miniDebugPanel';
-          panel.innerHTML = `
-            <button id="debugToggleBtn">🔧</button>
-            <div id="debugConsole">
-              <button id="clearDebugBtn">🗑️ Limpiar</button>
-              <div id="debugLogsFloating" style="margin-top: 25px;"></div>
-            </div>
-          `;
-          document.body.appendChild(panel);
-          
-          const toggleBtn = document.getElementById('debugToggleBtn');
-          const consoleDiv = document.getElementById('debugConsole');
-          const logsDiv = document.getElementById('debugLogsFloating');
-          const clearBtn = document.getElementById('clearDebugBtn');
-          
-          toggleBtn.onclick = () => consoleDiv.classList.toggle('show');
-          clearBtn.onclick = () => { window.debugLogs = []; logsDiv.innerHTML = ''; };
-          
-          // Función para actualizar panel flotante
-          window.updateFloatingDebug = function(entry) {
-            if (!logsDiv) return;
-            const div = document.createElement('div');
-            div.className = 'debug-log-entry debug-log-' + entry.type;
-            div.textContent = entry.time + ' ' + entry.msg;
-            logsDiv.appendChild(div);
-            logsDiv.scrollTop = logsDiv.scrollHeight;
-          };
-          
-          // Cargar logs existentes
-          window.debugLogs.forEach(entry => window.updateFloatingDebug(entry));
-          
-          console.log('🔧 Debug Panel móvil activado');
-        });
-      }
       
       // 🖥️ FUNCIONES PARA PANEL DE CONFIGURACIÓN
       window.toggleDebugConsole = function() {
@@ -183,9 +78,7 @@
       
       window.clearDebugLogs = function() {
         window.debugLogs = [];
-        const floatingLogs = document.getElementById('debugLogsFloating');
         const configLogs = document.getElementById('debugLogsConfig');
-        if (floatingLogs) floatingLogs.innerHTML = '';
         if (configLogs) configLogs.innerHTML = '<div style="color: #888;">Logs limpiados</div>';
       };
       
@@ -6973,16 +6866,47 @@
     /* Estilos responsive para el modal de conteo */
     @media (max-width: 600px) {
       .modal-dialog-custom {
-        margin: 10px;
-        max-width: calc(100% - 20px) !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      .modal-backdrop-custom {
+        padding: 0 !important;
+      }
+
+      .modal-content-custom {
+        border-radius: 0 !important;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
       }
 
       .modal-body-custom {
-        padding: 20px 15px;
+        padding: 16px;
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .modal-footer-custom {
-        padding: 15px;
+        padding: 12px 16px;
+        position: sticky;
+        bottom: 0;
+        background: #1e293b;
+        border-top: 1px solid #334155;
+      }
+
+      .modal-header-custom {
+        padding: 16px !important;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .modal-header-custom h3 {
+        font-size: 1.1rem !important;
       }
     }
 
@@ -15742,6 +15666,163 @@
   .image-upload-zone {
     background: var(--bg-primary) !important;
     border-color: var(--border-color) !important;
+  }
+}
+
+/* === 📱 JERARQUÍA OPTIMIZADA PARA MÓVIL === */
+@media (max-width: 768px) {
+  /* Barra de controles en jerarquía */
+  .jerarquia-controls-bar {
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  .jerarquia-search-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: unset !important;
+  }
+
+  .jerarquia-search-input {
+    font-size: 16px !important; /* Evita zoom en iOS */
+  }
+
+  /* Ocultar botones secundarios en móvil */
+  .jerarquia-controls-bar .toolbar-separator,
+  .jerarquia-controls-bar .debug-btn,
+  .jerarquia-controls-bar .reset-btn {
+    display: none !important;
+  }
+
+  /* Botones en fila */
+  .jerarquia-controls-bar .glass-action-btn,
+  .jerarquia-controls-bar .jerarquia-expand-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    flex: 1 !important;
+  }
+
+  .jerarquia-expand-btn .expand-label {
+    font-size: 0.8rem !important;
+  }
+
+  /* Árbol jerárquico */
+  #jerarquiaTreeContainer {
+    padding: 10px !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Nodos más grandes para touch */
+  .tree-node,
+  .palette-visual .node {
+    padding: 12px !important;
+    margin: 6px 0 !important;
+    min-height: 48px !important;
+  }
+
+  /* Botón guardar fijo en la parte inferior */
+  .jerarquia-save-container {
+    position: fixed !important;
+    bottom: 70px !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 12px !important;
+    background: var(--bg-primary) !important;
+    border-top: 1px solid var(--border-color) !important;
+    z-index: 100 !important;
+  }
+
+  .jerarquia-save-btn {
+    width: 100% !important;
+    min-height: 50px !important;
+    font-size: 1rem !important;
+  }
+
+  /* Panel de asignación de repuesto */
+  .panel-asignacion-repuesto {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 200 !important;
+    border-radius: 0 0 12px 12px !important;
+    max-height: 40vh !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* === 📱 MAPAS OPTIMIZADOS PARA MÓVIL === */
+@media (max-width: 768px) {
+  /* Contenedor de mapa a pantalla completa */
+  #mapa .map-container,
+  .map-viewer-container {
+    padding: 0 !important;
+    height: calc(100vh - 140px) !important;
+  }
+
+  /* Controles de mapa */
+  .map-controls {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 10px !important;
+  }
+
+  .map-controls .tool-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    flex: 1 !important;
+  }
+
+  /* Selector de mapas */
+  .map-selector {
+    width: 100% !important;
+    min-height: 44px !important;
+    font-size: 16px !important;
+  }
+
+  /* Zoom controls */
+  .zoom-controls {
+    position: fixed !important;
+    bottom: 80px !important;
+    right: 10px !important;
+    z-index: 100 !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .zoom-controls button {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 1.2rem !important;
+    border-radius: 50% !important;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+  }
+
+  /* Canvas del mapa */
+  .map-canvas-container {
+    touch-action: pan-x pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Panel lateral de información de nodo */
+  .node-info-panel,
+  .mapa-node-panel {
+    position: fixed !important;
+    bottom: 70px !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-height: 40vh !important;
+    border-radius: 16px 16px 0 0 !important;
+    z-index: 150 !important;
+  }
+
+  /* Lista de repuestos en mapa */
+  .map-repuestos-list {
+    max-height: 200px !important;
+    overflow-y: auto !important;
   }
 }
 
@@ -38594,17 +38675,36 @@ class InventarioCompleto {
     });
   }
 
-  //  NUEVA FUNCIN: Vista de lista mvil limpia (sin tarjetas ni imgenes)
+  //  NUEVA FUNCIN: Vista de lista mvil con imgenes desde Firebase Storage
   async renderMobileListView(repuestos) {
     const grid = document.getElementById('cardsGrid');
     const list = document.getElementById('listView');
     grid.style.display = 'none';
     list.style.display = 'block';
 
+    console.log('📱 [MÓVIL] Renderizando vista móvil con', repuestos.length, 'repuestos');
+
     if (repuestos.length === 0) {
-      list.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-secondary);"> No se encontraron repuestos</div>';
+      list.innerHTML = '<div style="text-align: center; padding: 60px 20px; color: var(--text-secondary);">📦 No se encontraron repuestos</div>';
       return;
     }
+
+    // 📸 Cargar URLs de imágenes desde Firebase Storage en paralelo
+    console.log('📱 [MÓVIL] Cargando imágenes desde Firebase Storage...');
+    const repuestosWithImages = await Promise.all(repuestos.map(async (r) => {
+      const multimedia = r.multimedia || [];
+      let imageUrl = null;
+      try {
+        imageUrl = await this.getFirstImage(multimedia);
+        if (imageUrl && !imageUrl.startsWith('data:')) {
+          console.log('📱 [MÓVIL] Imagen cargada para:', r.nombre?.substring(0, 20));
+        }
+      } catch (err) {
+        console.warn('📱 [MÓVIL] Error cargando imagen:', r.nombre, err.message);
+      }
+      return { ...r, imageUrl };
+    }));
+    console.log('📱 [MÓVIL] Imágenes cargadas completamente');
 
     // Calcular totales
     const totalItems = repuestos.length;
@@ -38647,11 +38747,13 @@ class InventarioCompleto {
 
       <!-- LISTA DE REPUESTOS -->
       <div style="display: flex; flex-direction: column; gap: 12px;">
-        ${repuestos.map(r => {
+        ${repuestosWithImages.map(r => {
           const minimo = r.minimo || r.stockMinimo || 5;
           const cantidad = r.cantidad || 0;
           const optimo = r.optimo || 10; // Usar stock ptimo manual
           const porcentaje = Math.min((cantidad / optimo) * 100, 100);
+          const imageUrl = r.imageUrl || this.getPlaceholderImage();
+          const hasRealImage = r.imageUrl && !r.imageUrl.startsWith('data:');
           
           // Determinar color y estado (Paleta Niebla y Bosque)
           let stockColor = '#6B8E7F'; // Verde bosque suave
@@ -38682,38 +38784,82 @@ class InventarioCompleto {
               transition: all 0.2s ease;
             " ontouchstart="this.style.transform='scale(0.98)'" ontouchend="this.style.transform='scale(1)'">
               
-              <!-- HEADER: Nombre y Stock -->
-              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; gap: 12px;">
+              <!-- 📸 IMAGEN + HEADER -->
+              <div style="display: flex; gap: 12px; margin-bottom: 10px;">
+                <!-- Miniatura de imagen -->
+                <div 
+                  onclick="app.openModal('edit', '${r.id}')"
+                  style="
+                    width: 70px;
+                    height: 70px;
+                    min-width: 70px;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    background: var(--bg-primary);
+                    border: 2px solid ${hasRealImage ? 'var(--primary)' : 'var(--border-color)'};
+                    cursor: pointer;
+                    position: relative;
+                  "
+                >
+                  <img 
+                    src="${imageUrl}" 
+                    alt="${r.nombre}"
+                    style="
+                      width: 100%;
+                      height: 100%;
+                      object-fit: cover;
+                    "
+                    onerror="this.src='${this.getPlaceholderImage()}'"
+                  />
+                  ${hasRealImage ? `
+                    <div style="
+                      position: absolute;
+                      bottom: 2px;
+                      right: 2px;
+                      background: var(--primary);
+                      color: white;
+                      font-size: 8px;
+                      padding: 2px 4px;
+                      border-radius: 4px;
+                    ">📷</div>
+                  ` : ''}
+                </div>
+                
+                <!-- Info principal -->
                 <div style="flex: 1; min-width: 0;">
-                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px; word-wrap: break-word;">
+                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px; word-wrap: break-word; line-height: 1.2;">
                     ${r.nombre}
                   </div>
-                  ${r.tipo ? `<div style="font-size: 0.75rem; color: var(--text-secondary);">${r.tipo}</div>` : ''}
-                </div>
-                <!-- Stock 3 valores: Mnimo/Actual/ptimo -->
-                <div style="
-                  background: #334155;
-                  border-left: 3px solid ${stockColor};
-                  border-radius: 6px;
-                  padding: 8px;
-                  min-width: 160px;
-                ">
-                  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; text-align: center;">
-                    <div>
-                      <div style="font-size: 0.6rem; text-transform: uppercase; color: var(--text-secondary);">Mn</div>
-                      <div style="font-weight: 700; color: #C75300; font-size: 0.95rem;">${minimo}</div>
-                    </div>
-                    <div style="background: rgba(91,124,153,0.2); padding: 4px; border-radius: 4px;">
-                      <div style="font-size: 0.6rem; text-transform: uppercase; color: var(--text-secondary);">Act</div>
-                      <div style="font-weight: 700; color: ${stockColor}; font-size: 1.1rem;">${cantidad}</div>
-                    </div>
-                    <div>
-                      <div style="font-size: 0.6rem; text-transform: uppercase; color: var(--text-secondary);">pt</div>
-                      <div style="font-weight: 700; color: #527853; font-size: 0.95rem;">${optimo}</div>
-                    </div>
+                  ${r.tipo ? `<div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">${r.tipo}</div>` : ''}
+                  <div style="font-size: 0.7rem; color: var(--text-secondary);">
+                    SAP: <span style="color: var(--primary); font-weight: 600;">${r.codSAP || 'N/A'}</span>
                   </div>
-                  <div style="font-size: 0.65rem; color: ${stockColor}; font-weight: 600; margin-top: 4px; text-align: center;">${stockText}</div>
                 </div>
+              </div>
+              
+              <!-- STOCK: Mínimo/Actual/Óptimo -->
+              <div style="
+                background: #334155;
+                border-left: 3px solid ${stockColor};
+                border-radius: 6px;
+                padding: 8px;
+                margin-bottom: 10px;
+              ">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; text-align: center;">
+                  <div>
+                    <div style="font-size: 0.6rem; text-transform: uppercase; color: var(--text-secondary);">Mín</div>
+                    <div style="font-weight: 700; color: #C75300; font-size: 0.95rem;">${minimo}</div>
+                  </div>
+                  <div style="background: rgba(91,124,153,0.2); padding: 4px; border-radius: 4px;">
+                    <div style="font-size: 0.6rem; text-transform: uppercase; color: var(--text-secondary);">Act</div>
+                    <div style="font-weight: 700; color: ${stockColor}; font-size: 1.1rem;">${cantidad}</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.6rem; text-transform: uppercase; color: var(--text-secondary);">Ópt</div>
+                    <div style="font-weight: 700; color: #527853; font-size: 0.95rem;">${optimo}</div>
+                  </div>
+                </div>
+                <div style="font-size: 0.65rem; color: ${stockColor}; font-weight: 600; margin-top: 4px; text-align: center;">${stockText}</div>
               </div>
 
               <!-- BARRA DE PROGRESO -->
@@ -38733,35 +38879,24 @@ class InventarioCompleto {
                 "></div>
               </div>
 
-              <!-- INFO: Cdigos y Ubicacin -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; font-size: 0.8rem;">
-                <div style="background: var(--bg-primary); padding: 6px 8px; border-radius: 6px;">
-                  <div style="color: var(--text-secondary); font-size: 0.7rem; margin-bottom: 2px;">Cd. SAP</div>
-                  <div style="font-weight: 600; color: var(--primary);">${r.codSAP || 'N/A'}</div>
-                </div>
-                <div style="background: var(--bg-primary); padding: 6px 8px; border-radius: 6px;">
-                  <div style="color: var(--text-secondary); font-size: 0.7rem; margin-bottom: 2px;">Cd. Prov</div>
-                  <div style="font-weight: 600; color: var(--info);">${r.codProv || 'N/A'}</div>
-                </div>
-              </div>
-
-              <div style="display: flex; gap: 6px; margin-bottom: 12px; font-size: 0.75rem; flex-wrap: wrap;">
+              <!-- INFO: Ubicación y Código Proveedor -->
+              <div style="display: flex; gap: 6px; margin-bottom: 10px; font-size: 0.75rem; flex-wrap: wrap;">
                 <span style="background: var(--bg-primary); padding: 4px 8px; border-radius: 6px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
                   <span style="display: inline-block; width: 6px; height: 6px; background: #5B7C99; border-radius: 50%;"></span>
-                  ${r.area || 'Sin rea'}
+                  ${r.area || r.areaGeneral || 'Sin área'}
                 </span>
                 <span style="background: var(--bg-primary); padding: 4px 8px; border-radius: 6px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
                   <span style="display: inline-block; width: 6px; height: 6px; background: #C75300; border-radius: 50%;"></span>
-                  ${r.equipo || 'Sin equipo'}
+                  ${r.equipo || r.sistemaEquipo || 'Sin equipo'}
                 </span>
-                ${r.ultimoConteo ? `
-                <span style="background: var(--bg-primary); padding: 4px 8px; border-radius: 6px; color: var(--text-secondary); font-size: 0.7rem;">
-                  Contado: ${new Date(r.ultimoConteo).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' })}
+                ${r.codProv ? `
+                <span style="background: var(--bg-primary); padding: 4px 8px; border-radius: 6px; color: var(--info); font-size: 0.7rem;">
+                  Prov: ${r.codProv}
                 </span>
                 ` : ''}
               </div>
 
-              <!-- BOTONES DE ACCIN CORPORATIVOS -->
+              <!-- BOTONES DE ACCIÓN CORPORATIVOS -->
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
                 <button 
                   onclick="app.abrirModalConteoIndividual('${r.id}')"
