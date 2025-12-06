@@ -64836,25 +64836,7 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 <!-- 📱 PWA: NAVEGACIÓN INFERIOR MÓVIL                                  -->
 <!-- ================================================================== -->
 <nav id="mobileBottomNav" class="mobile-bottom-nav">
-  <button class="nav-item active" data-tab="inventario" onclick="switchMobileTab('inventario')">
-    <span class="nav-icon">📦</span>
-    <span class="nav-label">Inventario</span>
-  </button>
-  <button class="nav-item" data-tab="jerarquia" onclick="switchMobileTab('jerarquia')">
-    <span class="nav-icon">🏢</span>
-    <span class="nav-label">Jerarquía</span>
-  </button>
-  <button class="nav-item nav-item-fab" data-action="add" onclick="app.openModal('new')">
-    <span class="nav-icon">➕</span>
-  </button>
-  <button class="nav-item" data-tab="mapas" onclick="switchMobileTab('mapas')">
-    <span class="nav-icon">🗺️</span>
-    <span class="nav-label">Mapas</span>
-  </button>
-  <button class="nav-item" data-tab="config" onclick="switchMobileTab('config')">
-    <span class="nav-icon">⚙️</span>
-    <span class="nav-label">Config</span>
-  </button>
+  <!-- Los botones se generan dinámicamente según el contexto -->
 </nav>
 
 <style>
@@ -64941,6 +64923,25 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   margin: 0;
 }
 
+/* Footer contextual - acciones secundarias */
+.mobile-bottom-nav .nav-item-action {
+  background: rgba(91, 139, 180, 0.15);
+  border: 1px solid rgba(91, 139, 180, 0.3);
+}
+
+.mobile-bottom-nav .nav-item-action:active {
+  background: rgba(91, 139, 180, 0.3);
+}
+
+/* Home button siempre visible */
+.mobile-bottom-nav .nav-item-home {
+  color: var(--primary) !important;
+}
+
+.mobile-bottom-nav .nav-item-home .nav-icon {
+  font-size: 1.3rem;
+}
+
 /* Mostrar solo en móvil */
 @media (max-width: 768px) {
   .mobile-bottom-nav {
@@ -64972,26 +64973,97 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 
 <script>
 // ================================================================== 
-// 📱 NAVEGACIÓN INFERIOR MÓVIL
+// 📱 NAVEGACIÓN INFERIOR MÓVIL - CONTEXTUAL INTELIGENTE
 // ==================================================================
+
+// Estado del footer contextual
+window.mobileFooterState = {
+  currentContext: 'inventario',
+  lastUpdate: 0
+};
+
+// Configuración de contextos del footer
+const footerContexts = {
+  // Inventario: navegación principal + agregar repuesto
+  inventario: [
+    { icon: '🏠', label: 'Home', action: () => switchMobileTab('inventario'), isHome: true },
+    { icon: '🏢', label: 'Jerarquía', tab: 'jerarquia', action: () => switchMobileTab('jerarquia') },
+    { icon: '➕', label: '', fab: true, action: () => app.openModal('new') },
+    { icon: '🗺️', label: 'Mapas', tab: 'mapas', action: () => switchMobileTab('mapas') },
+    { icon: '⚙️', label: 'Config', tab: 'config', action: () => switchMobileTab('config') }
+  ],
+  // Jerarquía: navegación + expandir/colapsar
+  jerarquia: [
+    { icon: '🏠', label: 'Home', action: () => switchMobileTab('inventario'), isHome: true },
+    { icon: '📦', label: 'Inventario', tab: 'inventario', action: () => switchMobileTab('inventario') },
+    { icon: '🔍', label: '', fab: true, action: () => document.getElementById('jerarquiaSearch')?.focus() },
+    { icon: '🗺️', label: 'Mapas', tab: 'mapas', action: () => switchMobileTab('mapas') },
+    { icon: '⚙️', label: 'Config', tab: 'config', action: () => switchMobileTab('config') }
+  ],
+  // Mapas: navegación + crear mapa
+  mapas: [
+    { icon: '🏠', label: 'Home', action: () => switchMobileTab('inventario'), isHome: true },
+    { icon: '📦', label: 'Inventario', tab: 'inventario', action: () => switchMobileTab('inventario') },
+    { icon: '➕', label: '', fab: true, action: () => { if(window.MapasUI && MapasUI.crearMapa) MapasUI.crearMapa(); else alert('Crear mapa'); } },
+    { icon: '🏢', label: 'Jerarquía', tab: 'jerarquia', action: () => switchMobileTab('jerarquia') },
+    { icon: '⚙️', label: 'Config', tab: 'config', action: () => switchMobileTab('config') }
+  ],
+  // Configuración: navegación + sync
+  config: [
+    { icon: '🏠', label: 'Home', action: () => switchMobileTab('inventario'), isHome: true },
+    { icon: '📦', label: 'Inventario', tab: 'inventario', action: () => switchMobileTab('inventario') },
+    { icon: '🔄', label: '', fab: true, action: () => { if(window.app && app.syncWithFirebase) app.syncWithFirebase(); else alert('Sincronizar'); } },
+    { icon: '🏢', label: 'Jerarquía', tab: 'jerarquia', action: () => switchMobileTab('jerarquia') },
+    { icon: '🗺️', label: 'Mapas', tab: 'mapas', action: () => switchMobileTab('mapas') }
+  ]
+};
+
+// Renderizar footer según contexto
+window.renderMobileFooter = function(context) {
+  const nav = document.getElementById('mobileBottomNav');
+  if (!nav) return;
+  
+  const ctx = context || mobileFooterState.currentContext;
+  const buttons = footerContexts[ctx] || footerContexts.inventario;
+  
+  nav.innerHTML = buttons.map(btn => {
+    const classes = ['nav-item'];
+    if (btn.fab) classes.push('nav-item-fab');
+    if (btn.isHome) classes.push('nav-item-home');
+    if (btn.tab === ctx) classes.push('active');
+    
+    return `
+      <button class="${classes.join(' ')}" ${btn.tab ? `data-tab="${btn.tab}"` : ''} data-action="${btn.label || 'fab'}">
+        <span class="nav-icon">${btn.icon}</span>
+        ${btn.label ? `<span class="nav-label">${btn.label}</span>` : ''}
+      </button>
+    `;
+  }).join('');
+  
+  // Agregar event listeners
+  nav.querySelectorAll('.nav-item').forEach((item, idx) => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const btn = buttons[idx];
+      if (btn && btn.action) btn.action();
+    });
+  });
+  
+  mobileFooterState.currentContext = ctx;
+  console.log('📱 Footer contextual renderizado:', ctx);
+};
 
 // 🔥 Función GLOBAL para cambiar tabs desde móvil
 window.switchMobileTab = function(tabName) {
   console.log('📱 switchMobileTab llamado:', tabName);
   
   try {
-    // Actualizar estado activo en nav inferior
-    document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(item => {
-      item.classList.remove('active');
-    });
-    document.querySelector(`.mobile-bottom-nav [data-tab="${tabName}"]`)?.classList.add('active');
-    
     // Mapear nombres de tabs móviles a nombres reales del sistema
     const tabMap = {
       'inventario': 'inventario',
       'jerarquia': 'jerarquia', 
-      'mapas': 'mapa',           // móvil usa "mapas", sistema usa "mapa"
-      'config': 'configuracion'  // móvil usa "config", sistema usa "configuracion"
+      'mapas': 'mapa',
+      'config': 'configuracion'
     };
     
     const realTabName = tabMap[tabName] || tabName;
@@ -65003,18 +65075,15 @@ window.switchMobileTab = function(tabName) {
       window.app.switchTab(realTabName);
     } else {
       console.warn('⚠️ app.switchTab no disponible, intentando click...');
-      // Fallback: simular click en tab superior
       const navTab = document.querySelector(`.nav-tab[data-tab="${realTabName}"]`);
-      if (navTab) {
-        navTab.click();
-      } else {
-        console.error('❌ Tab no encontrado:', realTabName);
-        alert('Error: Tab no encontrado: ' + realTabName);
-      }
+      if (navTab) navTab.click();
     }
+    
+    // Actualizar footer contextual
+    renderMobileFooter(tabName);
+    
   } catch (error) {
     console.error('❌ Error en switchMobileTab:', error);
-    alert('Error: ' + error.message);
   }
 };
 
@@ -65023,7 +65092,7 @@ function switchMobileTab(tabName) {
   window.switchMobileTab(tabName);
 }
 
-// Sincronizar nav inferior con tabs superiores
+// Sincronizar footer cuando cambian tabs superiores
 document.addEventListener('click', (e) => {
   const tab = e.target.closest('.nav-tab');
   if (tab) {
@@ -65037,15 +65106,17 @@ document.addEventListener('click', (e) => {
     };
     const mobileTab = mobileTabMap[tabName];
     if (mobileTab) {
-      document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(item => {
-        item.classList.remove('active');
-      });
-      document.querySelector(`.mobile-bottom-nav [data-tab="${mobileTab}"]`)?.classList.add('active');
+      setTimeout(() => renderMobileFooter(mobileTab), 50);
     }
   }
 });
 
-console.log('📱 Navegación móvil PWA inicializada');
+// Inicializar footer al cargar
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => renderMobileFooter('inventario'), 100);
+});
+
+console.log('📱 Footer contextual inteligente inicializado');
 </script>
 
 <!-- PWA Service Worker Registration -->
