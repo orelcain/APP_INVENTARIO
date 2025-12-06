@@ -1,0 +1,417 @@
+APP_INVENTARIO/:65 🔧 Sistema de Debug Universal inicializado
+APP_INVENTARIO/:65 ✅ Sistema de eventos global creado
+APP_INVENTARIO/:65 ✅ HierarchySync cargado y disponible globalmente
+APP_INVENTARIO/:65  MapStorage inicializado
+APP_INVENTARIO/:66   appEvents no disponible todavia para mapController
+console.warn @ APP_INVENTARIO/:66
+(anonymous) @ APP_INVENTARIO/:32305
+APP_INVENTARIO/:65  MapController definido
+APP_INVENTARIO/:65 === INVENTARIO PRO - INICIANDO ===
+APP_INVENTARIO/:65 Versin: 2.0
+APP_INVENTARIO/:65  Jerarqua anidada cargada desde localStorage
+APP_INVENTARIO/:65  Opciones cargadas desde localStorage
+APP_INVENTARIO/:65  fsManager asignado:  OK
+APP_INVENTARIO/:65  fsManager.rootFolder:  NO CONECTADO
+APP_INVENTARIO/:65  Dispositivo: PC
+APP_INVENTARIO/:65  Modo de almacenamiento: FILESYSTEM
+APP_INVENTARIO/:65  File System API:  Disponible
+APP_INVENTARIO/:65  Sistema de sincronización multimedia inicializado
+APP_INVENTARIO/:65 
+ Iniciando aplicacin...
+
+APP_INVENTARIO/:65 App disponible en: window.app
+APP_INVENTARIO/:65 === SISTEMA LISTO ===
+APP_INVENTARIO/:65  Controles de zoom inicializados (zoom CSS puro - navegador)
+APP_INVENTARIO/:65 ⌨️ Atajos de teclado: Ctrl+Z (Deshacer) | Ctrl+Y (Rehacer)
+APP_INVENTARIO/:65  Resolucin actual: 15121245
+APP_INVENTARIO/:65  Creando funcin global toggleCampana...
+APP_INVENTARIO/:65  window.toggleCampana creada: function
+APP_INVENTARIO/:65  Notificaciones cargadas: 20
+APP_INVENTARIO/:65  Contador actualizado: 20
+APP_INVENTARIO/:65  Sistema de campana sper simple listo
+APP_INVENTARIO/:65  Notificaciones cargadas: 20
+APP_INVENTARIO/:65  Zoom ajustado: 80% (zoom CSS puro)
+APP_INVENTARIO/:65  Zoom restaurado: 80%
+APP_INVENTARIO/:65 ✅ Firebase inicializado correctamente
+APP_INVENTARIO/:65 ✅ Firebase Storage inicializado correctamente
+APP_INVENTARIO/:65 📸 FirebaseImageStorage cargado
+APP_INVENTARIO/:65 ✅ CustomAuth inicializado
+APP_INVENTARIO/:65 ✅ Sistema de sincronización en tiempo real disponible
+APP_INVENTARIO/:65 💡 Usa: window.activarSincronizacionTiempoReal() para activar
+APP_INVENTARIO/:65 💡 Usa: window.desactivarSincronizacionTiempoReal() para desactivar
+APP_INVENTARIO/:65 💡 Usa: window.migrarJerarquiaAFirebase() para subir la jerarquía a Firebase
+APP_INVENTARIO/:65 🔄 Sistema de actualización PWA disponible
+APP_INVENTARIO/:65 🖼️ Visor de imágenes fullscreen disponible
+APP_INVENTARIO/:65 📱 Footer contextual inteligente inicializado
+APP_INVENTARIO/:65 ✅ Map Enhancements Module loaded successfully (FULL VERSION)
+APP_INVENTARIO/:65  Auto-reconexin desactivada por el usuario
+APP_INVENTARIO/:65  Microsoft Edge detectado - Experiencia optimizada
+APP_INVENTARIO/:65  Limpieza: Backups antiguos de marcadores eliminados
+APP_INVENTARIO/:65  Sin datos guardados, iniciando vaco
+APP_INVENTARIO/:65 ☁️ Firebase Sync activa - Omitiendo datos de prueba, esperando datos de Firebase...
+APP_INVENTARIO/:65 📱 setupPhotoInputs - isMobile: false, hasFileSystemAPI: true, hasFirebaseStorage: false
+APP_INVENTARIO/:65  Inputs de foto configurados para PC (Galera)
+APP_INVENTARIO/:65  Modo Auto activado
+APP_INVENTARIO/:65  Jerarqua cargada: {nivel1: Array(2), nivel2: Array(4), nivel3: Array(3), nivel4: Array(2), nivel5: Array(0), …}
+APP_INVENTARIO/:65 
+============================================================
+APP_INVENTARIO/:65  PLATAFORMA: PC
+APP_INVENTARIO/:65  ALMACENAMIENTO: FILESYSTEM
+APP_INVENTARIO/:65  File System API:  Disponible
+APP_INVENTARIO/:65  NAVEGADOR: Microsoft Edge (Optimizado)
+APP_INVENTARIO/:65  Optimizaciones activadas:
+APP_INVENTARIO/:65    CSS Grid avanzado
+APP_INVENTARIO/:65    Backdrop filters
+APP_INVENTARIO/:65    Container queries
+APP_INVENTARIO/:65    Scroll snap
+APP_INVENTARIO/:65    File System Access API completa
+APP_INVENTARIO/:65 ============================================================
+
+APP_INVENTARIO/:65  Se omiti la inicializacin del mdulo OKR (contenedor no presente).
+APP_INVENTARIO/:65 App inicializada: InventarioCompleto {ubicacionesActuales: Array(0), currentImageFile: null, currentOptimizeSize: 1200, currentQuality: 0.85, draggedSAPNode: null, …}
+APP_INVENTARIO/:65 Repuestos cargados: 0
+APP_INVENTARIO/:65  Backup Manager inicializado
+APP_INVENTARIO/:65  MapController inicializado correctamente
+APP_INVENTARIO/:65 🔄 Inicializando jerarquía en Tab Mapas...
+APP_INVENTARIO/:65 ⏳ Esperando carga de mapStorage...
+APP_INVENTARIO/:65 ✅ Jerarquía de mapas configurada
+APP_INVENTARIO/:65  Aplicación completamente inicializada
+APP_INVENTARIO/:65 ✅ MapasUI eventos inicializados
+APP_INVENTARIO/:65 ✅ MapasUI inicializado
+APP_INVENTARIO/:65 ✅ Chart.js cargado
+APP_INVENTARIO/:65  FORZANDO INICIALIZACIN...
+APP_INVENTARIO/:65  Funcin global window.toggleCampana() creada
+APP_INVENTARIO/:65  Sistema sper simple listo
+APP_INVENTARIO/:65 📱 Footer contextual renderizado: inventario
+APP_INVENTARIO/:65 🔍 Búsqueda de jerarquía inicializada
+APP_INVENTARIO/:65 ✅ PWA: Service Worker registrado correctamente
+rightclick.js:25 allow right click processing https://orelcain.github.io/APP_INVENTARIO/
+manifest.json:1   GET https://orelcain.github.io/APP_INVENTARIO/manifest.json 404 (Not Found)
+APP_INVENTARIO/:1  Manifest fetch from https://orelcain.github.io/APP_INVENTARIO/manifest.json failed, code 404
+[Violation] 'setTimeout' handler took 80ms
+APP_INVENTARIO/:65 🔍 Buscando rol para UID: Q5gpgVUYUkdr32mPdgqU430uRTm1
+APP_INVENTARIO/:65 📄 Documento encontrado: {email: 'orelcain@hotmail.com', role: 'admin', createdAt: ti}
+APP_INVENTARIO/:65 ✅ Rol asignado: admin
+APP_INVENTARIO/:65 ✅ Usuario autenticado: orelcain@hotmail.com | Rol: admin
+APP_INVENTARIO/:65 ✅ Usuario autenticado: {user: gi, role: 'admin'}
+APP_INVENTARIO/:65 📋 showUserMenu llamado: {user: gi, role: 'admin', roleType: 'string'}
+APP_INVENTARIO/:65 🔍 Elementos encontrados: {userMenu: true, userEmail: true}
+APP_INVENTARIO/:65 ✅ Menú de usuario mostrado: {displayName: 'orelcain@hotmail.com', role: 'admin', displayRole: 'Admin', display: 'flex'}
+APP_INVENTARIO/:65 🎉 Bienvenido orelcain@hotmail.com - Rol: admin
+map-enhancements.js:887 [Violation] 'setTimeout' handler took 105ms
+APP_INVENTARIO/:65 📱 Reconfigurando inputs de foto post-login...
+APP_INVENTARIO/:65 📱 setupPhotoInputs - isMobile: false, hasFileSystemAPI: true, hasFirebaseStorage: true
+APP_INVENTARIO/:65  Inputs de foto configurados para PC (Galera)
+APP_INVENTARIO/:65 🔄 Firebase detectado - Inicializando usuarios personalizados...
+APP_INVENTARIO/:65 🔄 Verificando estado de sincronización guardado: true
+APP_INVENTARIO/:65 ✅ Usuarios personalizados ya existen
+APP_INVENTARIO/:65 🔄 Restaurando sincronización automáticamente (intento 1)...
+APP_INVENTARIO/:65 🔄 Activando sincronización en tiempo real...
+APP_INVENTARIO/:65 ✅ Sincronización en tiempo real activada
+APP_INVENTARIO/:65 ✅ Sincronización en tiempo real activada
+APP_INVENTARIO/:65 🔄 Repuestos sincronizados desde Firebase: 57 items
+ 📸 getFirstImage - multimedia recibida: 1 items
+ 📸 Analizando media: {type: 'image', url: './imagenes/PARADA EMERGENCIA.webp...', isFirebaseStorage: undefined}
+  getImageUrl llamado con: {name: 'PARADA EMERGENCIA.webp', url: './imagenes/PARADA EMERGENCIA.webp', size: 458902, isFileSystem: true, type: 'image'}
+     Es objeto con type=image, url: ./imagenes/PARADA EMERGENCIA.webp
+     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+      Detectado isFileSystem=true, cargando desde FileSystem...
+  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PARADA EMERGENCIA.webp
+    storageMode: filesystem
+    fsManager.isFileSystemMode: false
+    fsManager.imagesFolder: NO EXISTE 
+ 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: PARADA EMERGENCIA.webp
+ 📸 getFirstImage - multimedia recibida: 1 items
+ 📸 Analizando media: {type: 'image', url: './imagenes/PERNO HEX M8X60 INOX.webp...', isFirebaseStorage: undefined}
+  getImageUrl llamado con: {name: 'PERNO HEX M8X60 INOX.webp', isFileSystem: true, size: 599988, url: './imagenes/PERNO HEX M8X60 INOX.webp', type: 'image'}
+     Es objeto con type=image, url: ./imagenes/PERNO HEX M8X60 INOX.webp
+     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+      Detectado isFileSystem=true, cargando desde FileSystem...
+  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PERNO HEX M8X60 INOX.webp
+    storageMode: filesystem
+    fsManager.isFileSystemMode: false
+    fsManager.imagesFolder: NO EXISTE 
+ 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: PERNO HEX M8X60 INOX.webp
+ 📸 getFirstImage - multimedia recibida: 1 items
+ 📸 Analizando media: {type: 'image', url: './imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SP...', isFirebaseStorage: undefined}
+  getImageUrl llamado con: {url: './imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp', type: 'image', name: 'PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp', isFileSystem: true, size: 40748}
+     Es objeto con type=image, url: ./imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SP
+     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+      Detectado isFileSystem=true, cargando desde FileSystem...
+  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp
+    storageMode: filesystem
+    fsManager.isFileSystemMode: false
+    fsManager.imagesFolder: NO EXISTE 
+ 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp
+ 📸 getFirstImage - multimedia recibida: 1 items
+ 📸 Analizando media: {type: 'image', url: './imagenes/DESOXIDANTE WURTH.webp...', isFirebaseStorage: undefined}
+  getImageUrl llamado con: {url: './imagenes/DESOXIDANTE WURTH.webp', isFileSystem: true, size: 677952, type: 'image', name: 'DESOXIDANTE WURTH.webp'}
+     Es objeto con type=image, url: ./imagenes/DESOXIDANTE WURTH.webp
+     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/DESOXIDANTE WURTH.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: DESOXIDANTE WURTH.webp
+APP_INVENTARIO/:65 📸 getFirstImage - multimedia recibida: 1 items
+APP_INVENTARIO/:65 📸 Analizando media: {type: 'image', url: './imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105...', isFirebaseStorage: undefined}
+APP_INVENTARIO/:65  getImageUrl llamado con: {name: 'PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp', url: './imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105…LVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp', size: 45008, type: 'image', isFileSystem: true}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp
+APP_INVENTARIO/:65 📸 getFirstImage - multimedia recibida: 1 items
+APP_INVENTARIO/:65 📸 Analizando media: {type: 'image', url: './imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO...', isFirebaseStorage: undefined}
+APP_INVENTARIO/:65  getImageUrl llamado con: {isFileSystem: true, url: './imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp', type: 'image', name: 'PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp', size: 28896}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp
+APP_INVENTARIO/:65 📸 getFirstImage - multimedia recibida: 1 items
+APP_INVENTARIO/:65 📸 Analizando media: {type: 'image', url: './imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp...', isFirebaseStorage: undefined}
+APP_INVENTARIO/:65  getImageUrl llamado con: {name: 'EQUIPO ESTANCO FLUORECENTE 2X18W.webp', size: 162636, type: 'image', url: './imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp', isFileSystem: true}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: EQUIPO ESTANCO FLUORECENTE 2X18W.webp
+APP_INVENTARIO/:65 📸 getFirstImage - multimedia recibida: 1 items
+APP_INVENTARIO/:65 📸 Analizando media: {type: 'image', url: './imagenes/DIFERENCIAL 2P 230V 30MA.webp...', isFirebaseStorage: undefined}
+APP_INVENTARIO/:65  getImageUrl llamado con: {url: './imagenes/DIFERENCIAL 2P 230V 30MA.webp', isFileSystem: true, type: 'image', name: 'DIFERENCIAL 2P 230V 30MA.webp', size: 146728}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/DIFERENCIAL 2P 230V 30MA.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/DIFERENCIAL 2P 230V 30MA.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: DIFERENCIAL 2P 230V 30MA.webp
+APP_INVENTARIO/:65 📸 getFirstImage - multimedia recibida: 1 items
+APP_INVENTARIO/:65 📸 Analizando media: {type: 'image', url: './imagenes/CAJA HIDROBOX 3 MODULOS.webp...', isFirebaseStorage: undefined}
+APP_INVENTARIO/:65  getImageUrl llamado con: {size: 106964, type: 'image', url: './imagenes/CAJA HIDROBOX 3 MODULOS.webp', name: 'CAJA HIDROBOX 3 MODULOS.webp', isFileSystem: true}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/CAJA HIDROBOX 3 MODULOS.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/CAJA HIDROBOX 3 MODULOS.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: CAJA HIDROBOX 3 MODULOS.webp
+APP_INVENTARIO/:65 📸 getFirstImage - multimedia recibida: 1 items
+APP_INVENTARIO/:65 📸 Analizando media: {type: 'image', url: './imagenes/ADAPTADOR PUNTA DADO 8MM.webp...', isFirebaseStorage: undefined}
+APP_INVENTARIO/:65  getImageUrl llamado con: {name: 'ADAPTADOR PUNTA DADO 8MM.webp', url: './imagenes/ADAPTADOR PUNTA DADO 8MM.webp', isFileSystem: true, type: 'image', size: 93628}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/ADAPTADOR PUNTA DADO 8MM.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/ADAPTADOR PUNTA DADO 8MM.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: ADAPTADOR PUNTA DADO 8MM.webp
+APP_INVENTARIO/:65 📸 getFirstImage - multimedia recibida: 1 items
+APP_INVENTARIO/:65 📸 Analizando media: {type: 'image', url: './imagenes/TORNILLO VOLCANITA 6X1.webp...', isFirebaseStorage: undefined}
+APP_INVENTARIO/:65  getImageUrl llamado con: {size: 73346, type: 'image', url: './imagenes/TORNILLO VOLCANITA 6X1.webp', name: 'TORNILLO VOLCANITA 6X1.webp', isFileSystem: true}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/TORNILLO VOLCANITA 6X1.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/TORNILLO VOLCANITA 6X1.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: TORNILLO VOLCANITA 6X1.webp
+APP_INVENTARIO/:65 🔄 Grid re-renderizado con datos de Firebase
+firebase-firestore-compat.js:1 [Violation] 'setTimeout' handler took 66ms
+APP_INVENTARIO/:65  getImageUrl llamado con: {name: 'PARADA EMERGENCIA.webp', url: './imagenes/PARADA EMERGENCIA.webp', size: 458902, isFileSystem: true, type: 'image'}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/PARADA EMERGENCIA.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PARADA EMERGENCIA.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: PARADA EMERGENCIA.webp
+APP_INVENTARIO/:65  getImageUrl llamado con: {name: 'PERNO HEX M8X60 INOX.webp', isFileSystem: true, size: 599988, url: './imagenes/PERNO HEX M8X60 INOX.webp', type: 'image'}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/PERNO HEX M8X60 INOX.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PERNO HEX M8X60 INOX.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: PERNO HEX M8X60 INOX.webp
+APP_INVENTARIO/:65  getImageUrl llamado con: {url: './imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp', type: 'image', name: 'PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp', isFileSystem: true, size: 40748}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SP
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: PLANTA_PRINCIPAL__3100003377_PINTURA_SPRAY_BLANCO_1760198227939_2.webp
+APP_INVENTARIO/:65  getImageUrl llamado con: {url: './imagenes/DESOXIDANTE WURTH.webp', isFileSystem: true, size: 677952, type: 'image', name: 'DESOXIDANTE WURTH.webp'}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/DESOXIDANTE WURTH.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/DESOXIDANTE WURTH.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: DESOXIDANTE WURTH.webp
+APP_INVENTARIO/:65  getImageUrl llamado con: {name: 'PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp', url: './imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105…LVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp', size: 45008, type: 'image', isFileSystem: true}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: PLANTA_PRINCIPAL__PIPING_32_MM__3300105873_VALVULA_BOLA_PVC_HIDRAULICO_32MM_1760288510033.webp
+APP_INVENTARIO/:65  getImageUrl llamado con: {isFileSystem: true, url: './imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp', type: 'image', name: 'PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp', size: 28896}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: PLANTA_PRINCIPAL__3100028363_BEL_RAY_NO_TOX_FOOD_GRADE_WATERPROOF_GRA_1760199418785.webp
+APP_INVENTARIO/:65  getImageUrl llamado con: {name: 'EQUIPO ESTANCO FLUORECENTE 2X18W.webp', size: 162636, type: 'image', url: './imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp', isFileSystem: true}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/EQUIPO ESTANCO FLUORECENTE 2X18W.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: EQUIPO ESTANCO FLUORECENTE 2X18W.webp
+APP_INVENTARIO/:65  getImageUrl llamado con: {url: './imagenes/DIFERENCIAL 2P 230V 30MA.webp', isFileSystem: true, type: 'image', name: 'DIFERENCIAL 2P 230V 30MA.webp', size: 146728}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/DIFERENCIAL 2P 230V 30MA.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/DIFERENCIAL 2P 230V 30MA.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: DIFERENCIAL 2P 230V 30MA.webp
+APP_INVENTARIO/:65  getImageUrl llamado con: {size: 106964, type: 'image', url: './imagenes/CAJA HIDROBOX 3 MODULOS.webp', name: 'CAJA HIDROBOX 3 MODULOS.webp', isFileSystem: true}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/CAJA HIDROBOX 3 MODULOS.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/CAJA HIDROBOX 3 MODULOS.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: CAJA HIDROBOX 3 MODULOS.webp
+APP_INVENTARIO/:65  getImageUrl llamado con: {name: 'ADAPTADOR PUNTA DADO 8MM.webp', url: './imagenes/ADAPTADOR PUNTA DADO 8MM.webp', isFileSystem: true, type: 'image', size: 93628}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/ADAPTADOR PUNTA DADO 8MM.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/ADAPTADOR PUNTA DADO 8MM.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: ADAPTADOR PUNTA DADO 8MM.webp
+APP_INVENTARIO/:65  getImageUrl llamado con: {size: 73346, type: 'image', url: './imagenes/TORNILLO VOLCANITA 6X1.webp', name: 'TORNILLO VOLCANITA 6X1.webp', isFileSystem: true}
+APP_INVENTARIO/:65     Es objeto con type=image, url: ./imagenes/TORNILLO VOLCANITA 6X1.webp
+APP_INVENTARIO/:65     isFirebaseStorage: undefined isFileSystem: true isIndexedDB: undefined
+APP_INVENTARIO/:65      Detectado isFileSystem=true, cargando desde FileSystem...
+APP_INVENTARIO/:65  [DEBUG] loadImageFromFileSystem llamado con: ./imagenes/TORNILLO VOLCANITA 6X1.webp
+APP_INVENTARIO/:65    storageMode: filesystem
+APP_INVENTARIO/:65    fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65    fsManager.imagesFolder: NO EXISTE 
+APP_INVENTARIO/:65 🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube: TORNILLO VOLCANITA 6X1.webp
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65 📸 ❌ No se encontró imagen válida, usando placeholder
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: PARADA EMERGENCIA CON CAJA
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: PERNO HEX M8X60
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: PINTURA SPRAY BLANCO
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: DESOXIDANTE WURTH ROST OFF 300 ML
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: BROCHA 4"
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: []
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: VALVULA BOLA PVC HIDRAULICO 32MM
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: BEL RAY NO TOX FOOD GRADE WATERPROOF (Grasa Liquida)
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: EQUIPO ESTANCO FLUORECENTE 2X18W
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: DIFERENCIAL 2P 230V 30MA
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: CAJA HIDROBOX 3 MODULOS
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: ADAPTADOR PUNTA DADO 8MM
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65  [TARJETA] Renderizando repuesto: TORNILLO VOLCANITA 6X1"
+APP_INVENTARIO/:65    imageUrl: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACWCAYAAACb3McZAAAACXBIWXMAAAsTAAALEwEAmpwYAAADGklEQVR4nO3dy0pDQRRF0ZOI///L4sPIQNAY86h0n7X2gDvJoKu7TqeqngEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgP/q9cV7AK7w+uXlbYwxvr5/f/sewKV+hOPx+Ph8fHwc3wW40I9wjDHG4/Fx8R7Ahb6F4/n5+eE9gAt9C8cY4+49gAt9D8er9wAu9CMcz+N1eA/gQj/CMcZr8x7AhSYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9gZomIYz1BGqahDDWE6hpEsJYT6CmSQhjPYGaJiGM9QRqmoQw1hOoaRLCWE+gpkkIYz2BmiYhjPUEapqEMNYTqGkSwlhPoKZJCGM9AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgFv6AyRmU3vlastLAAAAAElFTkSuQmCC
+APP_INVENTARIO/:65    multimedia: [{…}]
+APP_INVENTARIO/:65 🔄 Mapas sincronizados desde Firebase: 2 items
+APP_INVENTARIO/:65 🔄 Zonas sincronizadas desde Firebase: 12 items
+APP_INVENTARIO/:65 🔄 Presupuestos sincronizados desde Firebase: 0 items
+APP_INVENTARIO/:65 🔄 Jerarquía sincronizada desde Firebase: 0 documentos
+APP_INVENTARIO/:65 ✅ mapStorage cargado después de 3000ms, inicializando jerarquía
+APP_INVENTARIO/:65 ✅ Jerarquía de app cargada: 2 áreas
+APP_INVENTARIO/:65 ✅ Repuestos de app cargados: 57 repuestos
+APP_INVENTARIO/:65 📦 Datos cargados: 2 mapas, 12 zonas, 57 repuestos
+APP_INVENTARIO/:65 ✅ Instancia HierarchySync creada con 2 mapas
+APP_INVENTARIO/:65 📋 Construyendo árbol desde app.jerarquiaAnidada: 2 áreas
+APP_INVENTARIO/:65 ✅ Árbol de jerarquía renderizado
+APP_INVENTARIO/:65 ✅ HierarchySync inicializado
+APP_INVENTARIO/:65 ✅ Jerarquía inicializada correctamente
+APP_INVENTARIO/:65  Imagen cargada en DOM: PARADA EMERGENCIA CON CAJA
+APP_INVENTARIO/:65  Imagen cargada en DOM: PERNO HEX M8X60
+APP_INVENTARIO/:65  Imagen cargada en DOM: PINTURA SPRAY BLANCO
+APP_INVENTARIO/:65  Imagen cargada en DOM: DESOXIDANTE WURTH ROST OFF 300 ML
+APP_INVENTARIO/:65  Imagen cargada en DOM: BROCHA 4
+APP_INVENTARIO/:65  Imagen cargada en DOM: VALVULA BOLA PVC HIDRAULICO 32MM
+APP_INVENTARIO/:65  Imagen cargada en DOM: BEL RAY NO TOX FOOD GRADE WATERPROOF (Grasa Liquida)
+APP_INVENTARIO/:65  Imagen cargada en DOM: EQUIPO ESTANCO FLUORECENTE 2X18W
+APP_INVENTARIO/:65  Imagen cargada en DOM: DIFERENCIAL 2P 230V 30MA
+APP_INVENTARIO/:65  Imagen cargada en DOM: CAJA HIDROBOX 3 MODULOS
+APP_INVENTARIO/:65  Imagen cargada en DOM: ADAPTADOR PUNTA DADO 8MM
+APP_INVENTARIO/:65  Imagen cargada en DOM: TORNILLO VOLCANITA 6X1
+APP_INVENTARIO/:65 
+ ===== TIMER EXPIRADO - Verificando condiciones para backup =====
+APP_INVENTARIO/:65  Estado actual:
+APP_INVENTARIO/:65    - hayCambiosPendientes: false
+APP_INVENTARIO/:65    - backupEnProgreso: false
+APP_INVENTARIO/:65    - fsManager.isFileSystemMode: false
+APP_INVENTARIO/:65  BACKUP OMITIDO: No hay cambios pendientes
+APP_INVENTARIO/:65  Toast normal permitido: [INFO]  No hay cambios para respaldar
+APP_INVENTARIO/:65  Agregando notificacin a campana:  No hay cambios para respaldar
+APP_INVENTARIO/:65  Notificaciones guardadas
+APP_INVENTARIO/:65  Contador actualizado: 20

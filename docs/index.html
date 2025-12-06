@@ -18,8 +18,8 @@
   <meta name="msapplication-TileColor" content="#1a1a2e">
   <meta name="msapplication-tap-highlight" content="no">
   
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json">
+  <!-- PWA Manifest - Ubicado en raíz del repo para GitHub Pages -->
+  <link rel="manifest" href="../manifest.json">
   
   <!-- PWA Icons -->
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
@@ -287,6 +287,22 @@
         const syncEnabled = localStorage.getItem('firebaseSyncEnabled') === 'true';
         const fsConnected = window.fsManager?.rootFolder ? true : false;
         
+        // Contar imágenes FileSystem vs Firebase
+        let imagenesFileSystem = 0;
+        let imagenesFirebase = 0;
+        let imagenesSinImagen = 0;
+        
+        repuestosMemoria.forEach(r => {
+          if (r.multimedia && r.multimedia.length > 0) {
+            r.multimedia.forEach(m => {
+              if (m.isFirebaseStorage) imagenesFirebase++;
+              else if (m.isFileSystem) imagenesFileSystem++;
+            });
+          } else {
+            imagenesSinImagen++;
+          }
+        });
+        
         const info = `
 📊 ESTADO DE DATOS
 ═══════════════════════════════
@@ -295,6 +311,11 @@
    • localStorage: ${repuestosLocal.length}
    • En memoria (app): ${repuestosMemoria.length}
    • Firebase sync: ${syncEnabled ? '✅ Activa' : '❌ Inactiva'}
+
+🖼️ IMÁGENES:
+   • En FileSystem (local): ${imagenesFileSystem}
+   • En Firebase Storage: ${imagenesFirebase}
+   • Sin imagen: ${imagenesSinImagen}
 
 🗂️ JERARQUÍA:
    • Áreas locales: ${jerarquiaLocal.length}
@@ -310,6 +331,155 @@
         
         console.log(info);
         alert(info);
+      };
+      
+      // 🖼️ MIGRAR IMÁGENES DE FILESYSTEM A FIREBASE STORAGE
+      window.migrarImagenesAFirebase = async function() {
+        // Verificar Firebase Storage disponible
+        if (!window.firebaseImageStorage || !window.firebaseImageStorage.isReady() || !window.firebaseImageStorage.isAuthenticated()) {
+          alert('❌ Firebase Storage no está disponible o no estás autenticado.\n\nInicia sesión primero.');
+          return;
+        }
+        
+        // Verificar FileSystem conectado
+        if (!window.fsManager || !window.fsManager.rootFolder) {
+          alert('❌ FileSystem no está conectado.\n\nDebes conectar la carpeta INVENTARIO_STORAGE primero (en PC local).');
+          return;
+        }
+        
+        const repuestos = window.app?.repuestos || [];
+        let imagenesAMigrar = [];
+        
+        // Buscar imágenes FileSystem
+        repuestos.forEach(r => {
+          if (r.multimedia && r.multimedia.length > 0) {
+            r.multimedia.forEach((m, idx) => {
+              if (m.isFileSystem && !m.isFirebaseStorage) {
+                imagenesAMigrar.push({
+                  repuestoId: r.id,
+                  repuestoNombre: r.descripcion || r.codSAP,
+                  mediaIndex: idx,
+                  media: m
+                });
+              }
+            });
+          }
+        });
+        
+        if (imagenesAMigrar.length === 0) {
+          alert('✅ No hay imágenes FileSystem para migrar.\n\nTodas las imágenes ya están en Firebase Storage o no hay imágenes.');
+          return;
+        }
+        
+        const confirmar = confirm(
+          `🖼️ MIGRAR IMÁGENES A FIREBASE STORAGE\n\n` +
+          `Se encontraron ${imagenesAMigrar.length} imágenes en FileSystem local.\n\n` +
+          `⚠️ IMPORTANTE:\n` +
+          `• Debes estar en tu PC donde están las imágenes\n` +
+          `• La carpeta INVENTARIO_STORAGE debe estar conectada\n` +
+          `• Este proceso puede tardar varios minutos\n\n` +
+          `¿Deseas continuar?`
+        );
+        
+        if (!confirmar) return;
+        
+        console.log(`🖼️ Iniciando migración de ${imagenesAMigrar.length} imágenes...`);
+        
+        let exitosas = 0;
+        let fallidas = 0;
+        const errores = [];
+        
+        for (let i = 0; i < imagenesAMigrar.length; i++) {
+          const item = imagenesAMigrar[i];
+          console.log(`🔄 [${i+1}/${imagenesAMigrar.length}] Migrando: ${item.repuestoNombre}`);
+          
+          try {
+            // Cargar imagen desde FileSystem
+            const imageData = await window.fsManager.loadImage(item.media.url || item.media.name);
+            
+            if (!imageData) {
+              throw new Error('No se pudo cargar la imagen desde FileSystem');
+            }
+            
+            // Convertir a Blob
+            let blob;
+            if (typeof imageData === 'string' && imageData.startsWith('data:')) {
+              // Es dataURL
+              const response = await fetch(imageData);
+              blob = await response.blob();
+            } else if (imageData instanceof Blob) {
+              blob = imageData;
+            } else {
+              throw new Error('Formato de imagen no reconocido');
+            }
+            
+            // Subir a Firebase Storage
+            const filename = item.media.name || `migrated_${Date.now()}.webp`;
+            const result = await window.firebaseImageStorage.uploadRepuestoImage(
+              blob,
+              item.repuestoId,
+              filename,
+              (progress) => {
+                if (progress % 25 === 0) console.log(`   ↳ Progreso: ${progress.toFixed(0)}%`);
+              }
+            );
+            
+            if (result.success) {
+              // Actualizar multimedia del repuesto
+              const repuesto = window.app.repuestos.find(r => r.id === item.repuestoId);
+              if (repuesto && repuesto.multimedia && repuesto.multimedia[item.mediaIndex]) {
+                repuesto.multimedia[item.mediaIndex] = {
+                  ...repuesto.multimedia[item.mediaIndex],
+                  url: result.url,
+                  path: result.path,
+                  isFirebaseStorage: true,
+                  isFileSystem: false,
+                  migratedAt: new Date().toISOString()
+                };
+                
+                // Guardar cambios en Firebase
+                if (window.firebaseStorageAdapter) {
+                  await window.firebaseStorageAdapter.guardarRepuesto(repuesto);
+                }
+              }
+              
+              exitosas++;
+              console.log(`   ✅ Migrada: ${filename}`);
+            } else {
+              throw new Error(result.error || 'Error desconocido');
+            }
+            
+          } catch (error) {
+            fallidas++;
+            errores.push(`${item.repuestoNombre}: ${error.message}`);
+            console.error(`   ❌ Error: ${error.message}`);
+          }
+          
+          // Pequeña pausa para no saturar
+          await new Promise(resolve => setTimeout(resolve, 200));
+        }
+        
+        // Resultado final
+        const resumen = `
+🖼️ MIGRACIÓN COMPLETADA
+═══════════════════════════════
+
+✅ Exitosas: ${exitosas}
+❌ Fallidas: ${fallidas}
+📊 Total: ${imagenesAMigrar.length}
+
+${errores.length > 0 ? '⚠️ Errores:\n' + errores.slice(0, 5).join('\n') + (errores.length > 5 ? `\n...y ${errores.length - 5} más` : '') : ''}
+
+${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
+`;
+        
+        console.log(resumen);
+        alert(resumen);
+        
+        // Re-renderizar grid si hubo cambios
+        if (exitosas > 0 && window.app) {
+          window.app.renderInventario();
+        }
       };
       
       console.log('🔧 Sistema de Debug Universal inicializado');
@@ -17812,6 +17982,16 @@
             </button>
             <button onclick="window.verEstadoDatos()" class="btn btn-info" style="padding: 10px 20px;">
               📊 Ver Estado Datos
+            </button>
+          </div>
+          
+          <!-- 🔄 Herramientas de Migración a Firebase -->
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <button onclick="window.migrarImagenesAFirebase()" class="btn btn-success" style="padding: 10px 20px; background: #f59e0b;">
+              🖼️ Migrar Imágenes a Firebase
+            </button>
+            <button onclick="window.migrarJerarquiaAFirebase()" class="btn btn-success" style="padding: 10px 20px; background: #10b981;">
+              🗂️ Migrar Jerarquía a Firebase
             </button>
           </div>
           
