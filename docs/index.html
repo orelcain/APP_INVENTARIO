@@ -469,9 +469,10 @@
                   migratedAt: new Date().toISOString()
                 };
                 
-                // Guardar cambios en Firebase
-                if (window.firebaseStorageAdapter) {
-                  await window.firebaseStorageAdapter.guardarRepuesto(repuesto);
+                // Guardar cambios en Firebase (usar guardarRepuestos con array)
+                if (window.firebaseStorageAdapter && window.firebaseStorageAdapter.guardarRepuestos) {
+                  await window.firebaseStorageAdapter.guardarRepuestos([repuesto]);
+                  console.log(`   💾 Repuesto actualizado en Firebase: ${repuesto.nombre}`);
                 }
               }
               
