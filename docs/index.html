@@ -64556,17 +64556,35 @@ function restaurarEstadoSync() {
     console.log('🔄 Verificando estado de sincronización guardado:', syncEnabled);
     
     if (syncEnabled === 'true') {
-        // Esperar a que Firebase esté listo antes de activar sync
+        let attempts = 0;
+        const maxAttempts = 30; // Máximo 30 intentos (15 segundos)
+        
+        // Esperar a que Firebase esté completamente listo antes de activar sync
         const checkFirebase = setInterval(() => {
-            if (window.firebaseStorageAdapter && window.firebaseService && window.firebaseService.isAuthenticated()) {
+            attempts++;
+            
+            const firebaseReady = window.firebaseStorageAdapter && 
+                                  window.firebaseService && 
+                                  window.firebaseService.isAuthenticated() &&
+                                  window.firebaseService.db; // Verificar que Firestore esté disponible
+            
+            if (firebaseReady) {
                 clearInterval(checkFirebase);
-                console.log('🔄 Restaurando sincronización automáticamente...');
-                activarSincronizacionTiempoReal();
+                console.log(`🔄 Restaurando sincronización automáticamente (intento ${attempts})...`);
+                
+                // Pequeño delay adicional para asegurar que todo esté listo
+                setTimeout(() => {
+                    activarSincronizacionTiempoReal();
+                }, 500);
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkFirebase);
+                console.warn('⚠️ No se pudo restaurar sincronización: Firebase no está listo después de 15 segundos');
+                console.log('💡 Puedes activar manualmente desde Configuración > Sincronización Firebase');
+            } else if (attempts % 6 === 0) {
+                // Log cada 3 segundos para debug
+                console.log(`⏳ Esperando Firebase... (${attempts * 500 / 1000}s) - Auth: ${window.firebaseService?.isAuthenticated()}, DB: ${!!window.firebaseService?.db}`);
             }
         }, 500);
-        
-        // Timeout después de 15 segundos
-        setTimeout(() => clearInterval(checkFirebase), 15000);
     }
 }
 

@@ -357,6 +357,18 @@ class FirebaseStorageAdapter {
             );
         }
 
+        // Listener de jerarquía
+        if (callbacks.jerarquia) {
+            this.activeListeners.jerarquia = this.firebaseService.listenToCollection(
+                this.COLLECTIONS.JERARQUIA,
+                (result) => {
+                    if (result.success) {
+                        callbacks.jerarquia(result.data);
+                    }
+                }
+            );
+        }
+
         console.log('✅ Sincronización en tiempo real activada');
     }
 

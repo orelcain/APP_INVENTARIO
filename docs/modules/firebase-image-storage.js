@@ -12,6 +12,8 @@ class FirebaseImageStorage {
         this.isInitialized = false;
         this.uploadQueue = [];
         this.isProcessingQueue = false;
+        this.initAttempts = 0;
+        this.maxInitAttempts = 10; // Máximo 10 intentos (10 segundos)
         
         // Configuración de rutas
         this.PATHS = {
@@ -35,11 +37,17 @@ class FirebaseImageStorage {
             if (typeof firebase !== 'undefined' && firebase.storage) {
                 this.storage = firebase.storage();
                 this.isInitialized = true;
+                this.initAttempts = 0; // Reset contador
                 console.log('✅ Firebase Storage inicializado correctamente');
             } else {
-                console.warn('⚠️ Firebase Storage SDK no disponible, esperando...');
-                // Reintentar en 1 segundo
-                setTimeout(() => this.init(), 1000);
+                this.initAttempts++;
+                if (this.initAttempts < this.maxInitAttempts) {
+                    console.warn(`⚠️ Firebase Storage SDK no disponible, reintentando (${this.initAttempts}/${this.maxInitAttempts})...`);
+                    // Reintentar en 1 segundo
+                    setTimeout(() => this.init(), 1000);
+                } else {
+                    console.error('❌ Firebase Storage SDK no se pudo inicializar después de 10 intentos. Las imágenes se guardarán solo localmente.');
+                }
             }
         } catch (error) {
             console.error('❌ Error inicializando Firebase Storage:', error);
