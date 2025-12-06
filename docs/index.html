@@ -335,22 +335,40 @@
       
       // 🖼️ MIGRAR IMÁGENES DE FILESYSTEM A FIREBASE STORAGE
       window.migrarImagenesAFirebase = async function() {
+        console.log('🔍 Verificando requisitos para migración...');
+        console.log('  - firebaseImageStorage:', !!window.firebaseImageStorage);
+        console.log('  - isReady:', window.firebaseImageStorage?.isReady?.());
+        console.log('  - isAuthenticated:', window.firebaseImageStorage?.isAuthenticated?.());
+        console.log('  - fsManager:', !!window.fsManager);
+        console.log('  - fsManager.rootFolder:', !!window.fsManager?.rootFolder);
+        console.log('  - fsManager.isFileSystemMode:', window.fsManager?.isFileSystemMode);
+        console.log('  - fsManager.imagesFolder:', !!window.fsManager?.imagesFolder);
+        
         // Verificar Firebase Storage disponible
-        if (!window.firebaseImageStorage || !window.firebaseImageStorage.isReady() || !window.firebaseImageStorage.isAuthenticated()) {
-          alert('❌ Firebase Storage no está disponible o no estás autenticado.\n\nInicia sesión primero.');
+        if (!window.firebaseImageStorage) {
+          alert('❌ Firebase Storage no está inicializado.\n\nRecarga la página.');
           return;
         }
         
-        // Verificar FileSystem conectado (verificar tanto rootFolder como isFileSystemMode)
-        const fsConnected = window.fsManager && (window.fsManager.rootFolder || window.fsManager.isFileSystemMode);
+        if (!window.firebaseImageStorage.isReady || !window.firebaseImageStorage.isReady()) {
+          alert('❌ Firebase Storage no está listo.\n\nEspera un momento y vuelve a intentar.');
+          return;
+        }
+        
+        if (!window.firebaseImageStorage.isAuthenticated || !window.firebaseImageStorage.isAuthenticated()) {
+          alert('❌ No estás autenticado en Firebase.\n\nInicia sesión primero.');
+          return;
+        }
+        
+        // Verificar FileSystem conectado - ser más flexible
+        const fsConnected = window.fsManager && (
+          window.fsManager.rootFolder || 
+          window.fsManager.isFileSystemMode || 
+          window.fsManager.imagesFolder
+        );
+        
         if (!fsConnected) {
-          alert('❌ FileSystem no está conectado.\n\nDebes conectar la carpeta INVENTARIO_STORAGE primero (en PC local).\n\nVe a Configuración → Conectar Carpeta');
-          return;
-        }
-        
-        // Verificar que la carpeta de imágenes exista
-        if (!window.fsManager.imagesFolder) {
-          alert('❌ La carpeta de imágenes no está disponible.\n\nAsegúrate de que INVENTARIO_STORAGE/imagenes existe.');
+          alert('❌ FileSystem no está conectado.\n\nDebes conectar la carpeta INVENTARIO_STORAGE primero (en PC local).\n\nVe a Configuración → Conectar Carpeta\n\n🔍 Debug:\n- fsManager: ' + !!window.fsManager + '\n- rootFolder: ' + !!window.fsManager?.rootFolder + '\n- isFileSystemMode: ' + window.fsManager?.isFileSystemMode + '\n- imagesFolder: ' + !!window.fsManager?.imagesFolder);
           return;
         }
         
