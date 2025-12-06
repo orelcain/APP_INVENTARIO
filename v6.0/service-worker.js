@@ -3,8 +3,8 @@
  * Maneja cache offline y actualizaciones en segundo plano
  */
 
-const CACHE_NAME = 'inventario-v1.0.0';
-const DYNAMIC_CACHE = 'inventario-dynamic-v1';
+const CACHE_NAME = 'inventario-v1.1.0-firebase-only';
+const DYNAMIC_CACHE = 'inventario-dynamic-v1.1';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
