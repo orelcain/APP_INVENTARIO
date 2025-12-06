@@ -64495,6 +64495,14 @@ window.addEventListener('userAuthenticated', () => {
     if (window.customAuth && window.firebaseService.getUserRole() === 'admin') {
         window.customAuth.initializeUsers();
     }
+    
+    // 🔥 MODO FIREBASE-ONLY: Activar sincronización automáticamente al autenticarse
+    console.log('🔥 Usuario autenticado - Activando sincronización Firebase automática...');
+    setTimeout(() => {
+        if (window.activarSincronizacionTiempoReal && !syncActive) {
+            window.activarSincronizacionTiempoReal();
+        }
+    }, 1000);
 });
 
 // Si ya está autenticado al cargar, actualizar inmediatamente
@@ -64506,6 +64514,14 @@ if (window.firebaseService && window.firebaseService.isAuthenticated()) {
         if (window.customAuth && window.firebaseService.getUserRole() === 'admin') {
             window.customAuth.initializeUsers();
         }
+        
+        // 🔥 MODO FIREBASE-ONLY: Activar sincronización automáticamente
+        console.log('🔥 Ya autenticado - Activando sincronización Firebase automática...');
+        setTimeout(() => {
+            if (window.activarSincronizacionTiempoReal && !syncActive) {
+                window.activarSincronizacionTiempoReal();
+            }
+        }, 500);
     }, 1000);
 }
 
@@ -64719,41 +64735,45 @@ window.activarSincronizacionTiempoReal = activarSincronizacionTiempoReal;
 window.desactivarSincronizacionTiempoReal = desactivarSincronizacionTiempoReal;
 
 // 🔄 RESTAURAR ESTADO DE SINCRONIZACIÓN AL CARGAR
+// 🔥 MODO FIREBASE-ONLY: Siempre intentar activar sincronización
 function restaurarEstadoSync() {
     const syncEnabled = localStorage.getItem('firebaseSyncEnabled');
     console.log('🔄 Verificando estado de sincronización guardado:', syncEnabled);
     
-    if (syncEnabled === 'true') {
-        let attempts = 0;
-        const maxAttempts = 30; // Máximo 30 intentos (15 segundos)
+    // 🔥 FIREBASE-ONLY: Siempre intentar activar (no solo si syncEnabled === 'true')
+    // Esto asegura que nuevos usuarios o después de limpiar caché siempre sincronicen
+    let attempts = 0;
+    const maxAttempts = 30; // Máximo 30 intentos (15 segundos)
+    
+    // Esperar a que Firebase esté completamente listo antes de activar sync
+    const checkFirebase = setInterval(() => {
+        attempts++;
         
-        // Esperar a que Firebase esté completamente listo antes de activar sync
-        const checkFirebase = setInterval(() => {
-            attempts++;
+        const firebaseReady = window.firebaseStorageAdapter && 
+                              window.firebaseService && 
+                              window.firebaseService.isAuthenticated() &&
+                              window.firebaseService.db; // Verificar que Firestore esté disponible
+        
+        if (firebaseReady && !syncActive) {
+            clearInterval(checkFirebase);
+            console.log(`🔥 Firebase listo - Activando sincronización automáticamente (intento ${attempts})...`);
             
-            const firebaseReady = window.firebaseStorageAdapter && 
-                                  window.firebaseService && 
-                                  window.firebaseService.isAuthenticated() &&
-                                  window.firebaseService.db; // Verificar que Firestore esté disponible
-            
-            if (firebaseReady) {
-                clearInterval(checkFirebase);
-                console.log(`🔄 Restaurando sincronización automáticamente (intento ${attempts})...`);
-                
-                // Pequeño delay adicional para asegurar que todo esté listo
-                setTimeout(() => {
-                    activarSincronizacionTiempoReal();
-                }, 500);
-            } else if (attempts >= maxAttempts) {
-                clearInterval(checkFirebase);
-                console.warn('⚠️ No se pudo restaurar sincronización: Firebase no está listo después de 15 segundos');
-                console.log('💡 Puedes activar manualmente desde Configuración > Sincronización Firebase');
-            } else if (attempts % 6 === 0) {
-                // Log cada 3 segundos para debug
-                console.log(`⏳ Esperando Firebase... (${attempts * 500 / 1000}s) - Auth: ${window.firebaseService?.isAuthenticated()}, DB: ${!!window.firebaseService?.db}`);
-            }
-        }, 500);
-    }
+            // Pequeño delay adicional para asegurar que todo esté listo
+            setTimeout(() => {
+                activarSincronizacionTiempoReal();
+            }, 500);
+        } else if (syncActive) {
+            clearInterval(checkFirebase);
+            console.log('✅ Sincronización ya activa');
+        } else if (attempts >= maxAttempts) {
+            clearInterval(checkFirebase);
+            console.warn('⚠️ No se pudo restaurar sincronización: Firebase no está listo después de 15 segundos');
+            console.log('💡 Puedes activar manualmente con: window.activarSincronizacionTiempoReal()');
+        } else if (attempts % 6 === 0) {
+            // Log cada 3 segundos para debug
+            console.log(`⏳ Esperando Firebase... (${attempts * 500 / 1000}s) - Auth: ${window.firebaseService?.isAuthenticated()}, DB: ${!!window.firebaseService?.db}`);
+        }
+    }, 500);
 }
 
 // Ejecutar restauración cuando el DOM esté listo
