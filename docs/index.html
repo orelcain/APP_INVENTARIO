@@ -2,12 +2,12 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>APP Inventario v6.0</title>
   
   <!-- PWA Meta Tags -->
-  <meta name="description" content="Sistema de gestión de inventario de repuestos industriales">
   <meta name="theme-color" content="#1a1a2e">
+  <meta name="description" content="Sistema de inventario con mapas interactivos, multimedia y sincronización en la nube">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Inventario">
@@ -19,14 +19,10 @@
   <link rel="manifest" href="manifest.json">
   
   <!-- PWA Icons -->
-  <link rel="icon" type="image/svg+xml" href="icons/icon-512x512.svg">
-  <link rel="apple-touch-icon" href="icons/icon-512x512.svg">
-  
-  <!-- Splash Screens para iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="apple-touch-startup-image" href="icons/icon-512x512.svg">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
 
-  <!-- 🔧 MINI DEBUG: Consola propia para móvil (sin CDN externo) -->
+  <!-- 🔧 SISTEMA DE DEBUG UNIVERSAL - Funciona en móvil Y en configuración -->
   <script>
     // 🔧 SISTEMA DE DEBUG UNIVERSAL - Funciona en móvil Y en configuración
     (function() {
@@ -57,6 +53,8 @@
         window.debugLogs.push(entry);
         if (window.debugLogs.length > maxLogs) window.debugLogs.shift();
         
+        // Actualizar panel flotante si existe
+        if (window.updateFloatingDebug) window.updateFloatingDebug(entry);
         // Actualizar panel de config si existe
         if (window.updateConfigDebug) window.updateConfigDebug(entry);
       }
@@ -250,19 +248,11 @@
   <link rel="stylesheet" href="styles/mapas-hierarchy.css">
 
   <style>
-    /* CACHE-BUST: 2025-12-05-PWA-MOBILE */
+    /* CACHE-BUST: 2025-11-19-v50-CORRELATIVOS-GLOBALES-EN-MAPAS */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-    }
-    
-    /* PWA: Safe area para notch de iPhone */
-    body {
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
     }
 
     :root {
@@ -15893,6 +15883,446 @@
   }
 }
 
+/* ================================================================== */
+/* 🖼️ VISOR DE IMÁGENES FULLSCREEN (LIGHTBOX TÁCTIL)                  */
+/* ================================================================== */
+.image-fullscreen-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: fadeInViewer 0.3s ease;
+  touch-action: none;
+}
+
+@keyframes fadeInViewer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.image-fullscreen-viewer .viewer-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+  z-index: 10;
+}
+
+.image-fullscreen-viewer .viewer-title {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image-fullscreen-viewer .viewer-counter {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.85rem;
+  background: rgba(255,255,255,0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.image-fullscreen-viewer .viewer-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 20;
+}
+
+.image-fullscreen-viewer .viewer-close:hover,
+.image-fullscreen-viewer .viewer-close:active {
+  background: rgba(255,255,255,0.3);
+  transform: scale(1.1);
+}
+
+.image-fullscreen-viewer .viewer-image-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.image-fullscreen-viewer .viewer-image {
+  max-width: 95%;
+  max-height: 80vh;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  cursor: zoom-in;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.image-fullscreen-viewer .viewer-image.zoomed {
+  cursor: zoom-out;
+}
+
+.image-fullscreen-viewer .viewer-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 80px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 5;
+}
+
+.image-fullscreen-viewer .viewer-nav:hover,
+.image-fullscreen-viewer .viewer-nav:active {
+  background: rgba(255,255,255,0.25);
+}
+
+.image-fullscreen-viewer .viewer-nav.prev {
+  left: 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.image-fullscreen-viewer .viewer-nav.next {
+  right: 0;
+  border-radius: 8px 0 0 8px;
+}
+
+.image-fullscreen-viewer .viewer-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.image-fullscreen-viewer .viewer-dots {
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+  justify-content: center;
+}
+
+.image-fullscreen-viewer .viewer-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.image-fullscreen-viewer .viewer-dot.active {
+  background: white;
+  transform: scale(1.3);
+}
+
+/* Mobile optimizations for viewer */
+@media (max-width: 768px) {
+  .image-fullscreen-viewer .viewer-nav {
+    width: 40px;
+    height: 60px;
+    font-size: 22px;
+    opacity: 0.6;
+  }
+  
+  .image-fullscreen-viewer .viewer-image {
+    max-width: 100%;
+    max-height: 75vh;
+  }
+  
+  .image-fullscreen-viewer .viewer-header {
+    padding: 12px 60px 12px 16px;
+  }
+  
+  .image-fullscreen-viewer .viewer-title {
+    font-size: 0.85rem;
+  }
+}
+
+/* ================================================================== */
+/* 📱 MODAL PRINCIPAL - CORRECCIONES MÓVIL CRÍTICAS                   */
+/* ================================================================== */
+@media (max-width: 768px) {
+  /* Modal ocupa toda la pantalla sin desbordarse */
+  .modal {
+    padding: 0 !important;
+  }
+  
+  .modal-content {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Botón cerrar en posición segura (no detrás de campana) */
+  #modal .modal-close {
+    position: fixed !important;
+    top: 10px !important;
+    left: 10px !important;
+    right: auto !important;
+    z-index: 10010 !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(200, 80, 80, 0.95) !important;
+    border-radius: 8px !important;
+    font-size: 22px !important;
+  }
+  
+  /* Contenido scroll con padding para botón cerrar */
+  #modal .modal-scroll {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 60px 12px 120px 12px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Wizard timeline compacta y scrollable */
+  #modal .wizard-timeline {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 4px !important;
+    padding: 8px !important;
+    background: var(--bg-secondary) !important;
+    border-radius: 8px !important;
+    margin-bottom: 12px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+  }
+  
+  #modal .wizard-step-indicator {
+    flex: 0 0 auto !important;
+    min-width: 70px !important;
+    padding: 8px !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+  
+  #modal .wizard-step-number {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 0.8rem !important;
+  }
+  
+  #modal .wizard-step-meta {
+    display: block !important;
+  }
+  
+  #modal .wizard-step-label {
+    display: block !important;
+    font-size: 0.65rem !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+  
+  #modal .wizard-step-helper {
+    display: none !important;
+  }
+  
+  /* Botón guardar fijo en la parte inferior */
+  #modal .step-actions-bottom {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 12px !important;
+    background: var(--bg-secondary) !important;
+    border-top: 1px solid var(--border-color) !important;
+    z-index: 10005 !important;
+    display: flex !important;
+    gap: 10px !important;
+  }
+  
+  #modal .step-actions-bottom .btn {
+    flex: 1 !important;
+    min-height: 48px !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* ================================================================== */
+/* 📱 CONTEO MODAL - SIN SCROLL LATERAL                               */
+/* ================================================================== */
+@media (max-width: 768px) {
+  #modalConteoIndividual {
+    padding: 0 !important;
+  }
+  
+  #modalConteoIndividual .modal-dialog-custom {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  
+  #modalConteoIndividual .modal-content-custom {
+    height: 100vh !important;
+    border-radius: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+  
+  #modalConteoIndividual .modal-body-custom {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  #modalConteoIndividual .modal-footer-custom {
+    position: sticky !important;
+    bottom: 0 !important;
+    padding: 12px !important;
+    background: var(--bg-secondary) !important;
+    border-top: 1px solid var(--border-color) !important;
+  }
+  
+  /* Botón actualizar conteo siempre visible */
+  #modalConteoIndividual .modal-footer-custom .btn {
+    width: 100% !important;
+    min-height: 50px !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* ================================================================== */
+/* 📱 OCULTAR ELEMENTOS REDUNDANTES EN MÓVIL                          */
+/* ================================================================== */
+@media (max-width: 768px) {
+  /* Ocultar botón agregar del header (ya existe en footer) */
+  .header-actions .glass-btn-primary[onclick*="openModal('add')"],
+  .header-actions [onclick*="openModal('new')"] {
+    display: none !important;
+  }
+  
+  /* Ocultar indicador conectado/desconectado (no se usa con Firebase) */
+  #estadoSincronizacion,
+  .sync-status-indicator,
+  [data-sync-indicator] {
+    display: none !important;
+  }
+  
+  /* Campana de notificaciones - mover para no tapar modal */
+  .notification-bell {
+    top: auto !important;
+    bottom: 80px !important;
+    right: 16px !important;
+    z-index: 9000 !important;
+  }
+  
+  .notification-panel {
+    top: auto !important;
+    bottom: 140px !important;
+    right: 16px !important;
+    max-height: 50vh !important;
+  }
+  
+  /* Botón PWA refresh - junto a campana */
+  .pwa-refresh-btn {
+    top: auto !important;
+    bottom: 130px !important;
+    right: 16px !important;
+  }
+}
+
+/* ================================================================== */
+/* 📱 MINIATURA DE IMAGEN CON FONDO DE RESPALDO                       */
+/* ================================================================== */
+.mobile-thumbnail {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+}
+
+.mobile-thumbnail.has-image {
+  border-color: var(--primary);
+}
+
+.mobile-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mobile-thumbnail .thumb-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: var(--primary);
+  color: white;
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mobile-thumbnail .thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+}
+
 /* ===== RESTO DEL CSS OMITIDO POR BREVEDAD - SE APLICAR COMPLETO ===== */
     
   </style>
@@ -15936,8 +16366,8 @@
   </div>
 </div>
 
-<!-- 🔄 BOTÓN REFRESH PWA (MÓVIL) -->
-<button id="pwaRefreshBtn" class="pwa-refresh-btn state-default" title="Actualizar App" onclick="window.refreshPWA()">
+<!-- 🔄 BOTÓN DE ACTUALIZACIÓN PWA -->
+<button id="pwaRefreshBtn" class="pwa-refresh-btn state-default" title="Actualizar aplicación" onclick="triggerPWARefresh()">
   🔄
 </button>
 
@@ -32262,7 +32692,12 @@ class InventarioCompleto {
       
       // 🌐 URL externa (https://, http://) - retornar directamente
       if (media.url.startsWith('https://') || media.url.startsWith('http://')) {
-        console.log('    URL externa detectada, retornando directamente');
+        // 🔥 Detectar Firebase Storage por URL aunque no tenga flag
+        if (media.url.includes('firebasestorage.googleapis.com') || media.url.includes('.firebasestorage.app')) {
+          console.log('    ☁️ URL de Firebase Storage detectada por patrón, retornando directamente');
+        } else {
+          console.log('    🌐 URL externa detectada, retornando directamente');
+        }
         return media.url;
       }
       
@@ -36061,7 +36496,7 @@ class InventarioCompleto {
       if (multimediaSection) {
         multimediaSection.style.display = 'block';
       }
-      console.log('📱 Inputs de foto configurados para MVIL (Cmara + Galera)');
+      console.log(' Inputs de foto configurados para MVIL (Cmara + Galera)');
     } 
     // PC: Mostrar todo normalmente
     else {
@@ -38394,8 +38829,64 @@ class InventarioCompleto {
           </div>
         </div>
         
-        <!-- 🎯 SISTEMA UNIFICADO DE UBICACIÓN Y ACCIONES -->
+        <!-- 🎯 SECCIÓN UNIFICADA: Ubicación + Acciones Inteligentes -->
         ${this.generarSeccionUbicacionUnificada(r)}
+            
+            <!-- Footer simplificado: solo Editar, Contar y Eliminar -->
+          <button class="card-btn" style="
+            background: var(--primary);
+            color: white;
+            border: 1px solid rgba(91, 139, 180, 0.3);
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 80px;
+            flex: 0 1 auto;
+          " data-action="edit" data-id="${r.id}" 
+          onmouseover="this.style.background='#6a9dc4'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
+          onmouseout="this.style.background='var(--primary)'; this.style.boxShadow='none';">
+            Editar
+          </button>
+          
+          <button class="card-btn" style="
+            background: var(--success);
+            color: white;
+            border: 1px solid rgba(91, 155, 122, 0.3);
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 80px;
+            flex: 0 1 auto;
+          " data-action="contar" data-id="${r.id}"
+          onmouseover="this.style.background='#6bae89'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
+          onmouseout="this.style.background='var(--success)'; this.style.boxShadow='none';">
+            Contar
+          </button>
+          
+          <button class="card-btn" style="
+            background: var(--danger);
+            color: white;
+            border: 1px solid rgba(184, 107, 107, 0.3);
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 80px;
+            flex: 0 1 auto;
+          " data-action="delete" data-id="${r.id}"
+          onmouseover="this.style.background='#c88080'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
+          onmouseout="this.style.background='var(--danger)'; this.style.boxShadow='none';">
+            Eliminar
+          </button>
+        </div>
       </div>
       `;
     }).join('');
@@ -38822,27 +39313,23 @@ class InventarioCompleto {
         ${repuestosWithImages.map(r => {
           const minimo = r.minimo || r.stockMinimo || 5;
           const cantidad = r.cantidad || 0;
-          const optimo = r.optimo || 10; // Usar stock ptimo manual
+          const optimo = r.optimo || 10;
           const porcentaje = Math.min((cantidad / optimo) * 100, 100);
           const imageUrl = r.imageUrl || this.getPlaceholderImage();
           const hasRealImage = r.imageUrl && !r.imageUrl.startsWith('data:');
           
-          // Determinar color y estado (Paleta Niebla y Bosque)
-          let stockColor = '#6B8E7F'; // Verde bosque suave
-          let stockBg = 'rgba(107, 142, 127, 0.15)';
+          // Determinar color y estado
+          let stockColor = '#6B8E7F';
           let stockText = 'OK';
           
           if (cantidad === 0) {
-            stockColor = '#C76B6B'; // Rojo suave (alta legibilidad)
-            stockBg = 'rgba(199, 107, 107, 0.15)';
+            stockColor = '#C76B6B';
             stockText = 'Sin Stock';
           } else if (cantidad < minimo) {
-            stockColor = '#D4976C'; // Naranja tierra clido
-            stockBg = 'rgba(212, 151, 108, 0.15)';
-            stockText = 'Crtico';
+            stockColor = '#D4976C';
+            stockText = 'Crítico';
           } else if (cantidad < optimo) {
-            stockColor = '#5B7C99'; // Azul-gris brumoso
-            stockBg = 'rgba(91, 124, 153, 0.15)';
+            stockColor = '#5B7C99';
             stockText = 'Bajo';
           }
           
@@ -38858,43 +39345,23 @@ class InventarioCompleto {
               
               <!-- 📸 IMAGEN + HEADER -->
               <div style="display: flex; gap: 12px; margin-bottom: 10px;">
-                <!-- Miniatura de imagen -->
+                <!-- Miniatura de imagen (click abre visor si hay imagen, sino abre editar) -->
                 <div 
-                  onclick="app.openModal('edit', '${r.id}')"
-                  style="
-                    width: 70px;
-                    height: 70px;
-                    min-width: 70px;
-                    border-radius: 10px;
-                    overflow: hidden;
-                    background: var(--bg-primary);
-                    border: 2px solid ${hasRealImage ? 'var(--primary)' : 'var(--border-color)'};
-                    cursor: pointer;
-                    position: relative;
-                  "
+                  class="mobile-thumbnail ${hasRealImage ? 'has-image' : ''}"
+                  onclick="${hasRealImage ? `event.stopPropagation(); app.openRepuestoImages('${r.id}')` : `app.openModal('edit', '${r.id}')`}"
+                  data-repuesto-id="${r.id}"
                 >
-                  <img 
-                    src="${imageUrl}" 
-                    alt="${r.nombre}"
-                    style="
-                      width: 100%;
-                      height: 100%;
-                      object-fit: cover;
-                    "
-                    onerror="this.src='${this.getPlaceholderImage()}'"
-                  />
                   ${hasRealImage ? `
-                    <div style="
-                      position: absolute;
-                      bottom: 2px;
-                      right: 2px;
-                      background: var(--primary);
-                      color: white;
-                      font-size: 8px;
-                      padding: 2px 4px;
-                      border-radius: 4px;
-                    ">📷</div>
-                  ` : ''}
+                    <img 
+                      src="${imageUrl}" 
+                      alt="${r.nombre}"
+                      loading="lazy"
+                      onerror="this.parentElement.innerHTML='<div class=\\'thumb-placeholder\\'>📦</div>'"
+                    />
+                    <span class="thumb-badge">📷 ${(r.multimedia || []).filter(m => m && (m.type === 'image' || (typeof m === 'string' && !m.endsWith('.pdf')))).length || 1}</span>
+                  ` : `
+                    <div class="thumb-placeholder">📦</div>
+                  `}
                 </div>
                 
                 <!-- Info principal -->
@@ -39039,7 +39506,7 @@ class InventarioCompleto {
                   color: var(--text-secondary);
                   text-align: center;
                 ">
-                   ltimo conteo: ${new Date(r.ultimoConteo).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                  📅 Último conteo: ${new Date(r.ultimoConteo).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                   ${new Date(r.ultimoConteo).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
                 </div>
               ` : `
@@ -39052,7 +39519,7 @@ class InventarioCompleto {
                   color: var(--warning);
                   text-align: center;
                 ">
-                   An no se ha contado este repuesto
+                  ⚠️ Aún no se ha contado este repuesto
                 </div>
               `}
             </div>
@@ -39061,7 +39528,7 @@ class InventarioCompleto {
       </div>
     `;
     
-    // Ocultar paginacin en mvil
+    // Ocultar paginación en móvil
     const pagination = document.getElementById('pagination');
     if (pagination) pagination.style.display = 'none';
   }
@@ -41153,12 +41620,21 @@ class InventarioCompleto {
       });
     });
     
-    // VALIDAR UBICACIONES (OPCIONAL - permite guardar sin jerarquía)
+    // VALIDAR QUE HAY AL MENOS UNA UBICACIN CON REA GENERAL
     const ubicacionesValidas = this.ubicacionesActuales.filter(ub => ub.areaGeneral && ub.areaGeneral.trim() !== '');
     console.log(`\n Ubicaciones vlidas: ${ubicacionesValidas.length} de ${this.ubicacionesActuales.length}`);
     
-    // 📝 NOTA: Ahora la ubicación es OPCIONAL - se puede guardar sin jerarquía
-    // El usuario puede asignar jerarquía después usando el botón rojo en la tarjeta
+    if (ubicacionesValidas.length === 0) {
+      //  RE-HABILITAR BOTN SI HAY ERROR
+      btnGuardar.disabled = false;
+      btnGuardar.style.opacity = '1';
+      btnGuardar.style.cursor = 'pointer';
+      btnText.style.display = 'inline';
+      btnLoading.style.display = 'none';
+      
+      this.showToast(' Debes especificar al menos un rea General', 'error');
+      return;
+    }
     
     // Limpiar ubicaciones (remover campos vacos)
     let ubicacionesLimpias = ubicacionesValidas.map((ub, idx) => {
@@ -41297,7 +41773,7 @@ class InventarioCompleto {
       categoria: document.getElementById('categoria').value,
       nombre: document.getElementById('nombre').value,
       
-      // UBICACIONES MLTIPLES (nuevo sistema) - puede estar vacío
+      // UBICACIONES MLTIPLES (nuevo sistema)
       ubicaciones: ubicacionesLimpias,
       planta: this.plantaBase, // Empresa siempre fija
       
@@ -41305,17 +41781,17 @@ class InventarioCompleto {
       estado_ubicacion: this.calcularEstadoUbicacion(ubicacionesLimpias),
       progreso_flujo: this.calcularProgresoFlujo(ubicacionesLimpias),
       
-      // COMPATIBILIDAD: Guardar primera ubicacin en formato antiguo (si existe)
-      areaGeneral: ubicacionesLimpias[0]?.areaGeneral || '',
-      subArea: ubicacionesLimpias[0]?.subArea || '',
-      sistemaEquipo: ubicacionesLimpias[0]?.sistemaEquipo || '',
-      subSistema: ubicacionesLimpias[0]?.subSistema || '',
-      seccion: ubicacionesLimpias[0]?.seccion || '',
-      detalle: ubicacionesLimpias[0]?.detalle || '',
-      area: ubicacionesLimpias[0]?.areaGeneral || '',
-      equipo: ubicacionesLimpias[0]?.sistemaEquipo || '',
-      sistema: ubicacionesLimpias[0]?.subSistema || '',
-      detalleUbicacion: ubicacionesLimpias[0]?.detalle || '',
+      // COMPATIBILIDAD: Guardar primera ubicacin en formato antiguo
+      areaGeneral: ubicacionesLimpias[0].areaGeneral || '',
+      subArea: ubicacionesLimpias[0].subArea || '',
+      sistemaEquipo: ubicacionesLimpias[0].sistemaEquipo || '',
+      subSistema: ubicacionesLimpias[0].subSistema || '',
+      seccion: ubicacionesLimpias[0].seccion || '',
+      detalle: ubicacionesLimpias[0].detalle || '',
+      area: ubicacionesLimpias[0].areaGeneral || '',
+      equipo: ubicacionesLimpias[0].sistemaEquipo || '',
+      sistema: ubicacionesLimpias[0].subSistema || '',
+      detalleUbicacion: ubicacionesLimpias[0].detalle || '',
       
       cantidad: parseInt(document.getElementById('cantidad').value) || 0,
       cantidadInstalada: parseInt(document.getElementById('cantidadInstalada').value) || 0,
@@ -41423,13 +41899,11 @@ class InventarioCompleto {
       this.showToast(' Error al guardar: ' + error.message, 'error');
       
       //  RE-HABILITAR BOTN EN CASO DE ERROR
-      if (btnGuardar) {
-        btnGuardar.disabled = false;
-        btnGuardar.style.opacity = '1';
-        btnGuardar.style.cursor = 'pointer';
-      }
-      if (btnText) btnText.style.display = 'inline';
-      if (btnLoading) btnLoading.style.display = 'none';
+      btnGuardar.disabled = false;
+      btnGuardar.style.opacity = '1';
+      btnGuardar.style.cursor = 'pointer';
+      btnText.style.display = 'inline';
+      btnLoading.style.display = 'none';
     }
   }
 
@@ -41715,81 +42189,48 @@ class InventarioCompleto {
       }
     }
 
-    // 🔵 Parseado normal (nodos organizacionales con formato nuevo)
-    // Formato: empresa_empresa_principal_area_0_subarea_0_sistema_0_subSistema_0_seccion_0_subSeccion_0
-    console.log('🔵 Parseando nodo con formato nuevo:', nodeId);
+    // 🔵 Parseado normal (nodos organizacionales)
+    const parts = nodeId.split('_');
+    const tipo = parts[0];
+    const indices = parts.slice(1).map(i => parseInt(i));
+
+    console.log('🔵 Parseando nodo normal:', tipo, indices);
 
     try {
       const { areas } = this.jerarquiaAnidada;
       
-      // Extraer los índices de cada nivel del nodeId
-      const areaMatch = nodeId.match(/_area_(\d+)/);
-      const subareaMatch = nodeId.match(/_subarea_(\d+)/);
-      const sistemaMatch = nodeId.match(/_sistema_(\d+)/);
-      const subSistemaMatch = nodeId.match(/_subSistema_(\d+)/);
-      const seccionMatch = nodeId.match(/_seccion_(\d+)/);
-      const subSeccionMatch = nodeId.match(/_subSeccion_(\d+)/);
-      
-      // Si no tiene ningún nivel específico, es solo empresa
-      if (!areaMatch) {
+      if (tipo === 'empresa') {
         throw new Error('Selecciona un nodo más específico (Área, Sistema, etc.)');
       }
-      
-      const areaIndex = parseInt(areaMatch[1]);
+
+      const areaIndex = indices[0];
       const area = areas[areaIndex];
       if (!area) throw new Error('Área no encontrada');
       
       ubicacion.areaGeneral = area.nombre;
-      console.log('✅ Área encontrada:', area.nombre);
-      
-      // Si solo tiene área, retornar
-      if (!subareaMatch) return ubicacion;
-      
-      // Procesar sub-área
-      const subAreaIndex = parseInt(subareaMatch[1]);
-      if (area.subAreas && area.subAreas[subAreaIndex]) {
-        ubicacion.subArea = area.subAreas[subAreaIndex].nombre;
-        console.log('✅ Sub-Área encontrada:', ubicacion.subArea);
-      }
-      
-      if (!sistemaMatch) return ubicacion;
-      
-      // Procesar sistema
-      const sistemaIndex = parseInt(sistemaMatch[1]);
-      const subArea = area.subAreas[subAreaIndex];
-      if (subArea && subArea.sistemas && subArea.sistemas[sistemaIndex]) {
-        ubicacion.sistemaEquipo = subArea.sistemas[sistemaIndex].nombre;
-        console.log('✅ Sistema encontrado:', ubicacion.sistemaEquipo);
-      }
-      
-      if (!subSistemaMatch) return ubicacion;
-      
-      // Procesar sub-sistema
-      const subSistemaIndex = parseInt(subSistemaMatch[1]);
-      const sistema = subArea.sistemas[sistemaIndex];
-      if (sistema && sistema.children && sistema.children[subSistemaIndex]) {
-        ubicacion.subSistema = sistema.children[subSistemaIndex].nombre;
-        console.log('✅ Sub-Sistema encontrado:', ubicacion.subSistema);
-      }
-      
-      if (!seccionMatch) return ubicacion;
-      
-      // Procesar sección
-      const seccionIndex = parseInt(seccionMatch[1]);
-      const subSistema = sistema.children[subSistemaIndex];
-      if (subSistema && subSistema.children && subSistema.children[seccionIndex]) {
-        ubicacion.seccion = subSistema.children[seccionIndex].nombre;
-        console.log('✅ Sección encontrada:', ubicacion.seccion);
-      }
-      
-      if (!subSeccionMatch) return ubicacion;
-      
-      // Procesar sub-sección
-      const subSeccionIndex = parseInt(subSeccionMatch[1]);
-      const seccion = subSistema.children[seccionIndex];
-      if (seccion && seccion.children && seccion.children[subSeccionIndex]) {
-        ubicacion.subSeccion = seccion.children[subSeccionIndex].nombre;
-        console.log('✅ Sub-Sección encontrada:', ubicacion.subSeccion);
+
+      if (tipo === 'area') return ubicacion;
+
+      if (indices.length > 1 && area.subAreas) {
+        const subAreaIndex = indices[1];
+        const subArea = area.subAreas[subAreaIndex];
+        if (subArea) {
+          ubicacion.subArea = subArea.nombre;
+          if (tipo === 'subArea') return ubicacion;
+
+          if (indices.length > 2 && subArea.sistemas) {
+            const sistemaIndex = indices[2];
+            const sistema = subArea.sistemas[sistemaIndex];
+            if (sistema) {
+              ubicacion.sistemaEquipo = sistema.nombre;
+              
+              if (indices.length > 3 && sistema.children) {
+                const child = sistema.children[indices[3]];
+                if (child) ubicacion.subSistema = child.nombre;
+              }
+            }
+          }
+        }
       }
 
       return ubicacion;
@@ -42482,6 +42923,54 @@ class InventarioCompleto {
     await this.render();
     this.renderFilters();
     this.showToast(' Repuesto e imgenes eliminados', 'success');
+  }
+
+  // 🖼️ Abrir visor de imágenes del repuesto
+  async openRepuestoImages(id) {
+    const repuesto = this.repuestos.find(r => r.id === id);
+    if (!repuesto || !repuesto.multimedia || repuesto.multimedia.length === 0) {
+      this.showToast('📷 Este repuesto no tiene imágenes', 'info');
+      return;
+    }
+    
+    // Filtrar solo imágenes
+    const imagenes = repuesto.multimedia.filter(m => {
+      if (typeof m === 'string') {
+        return !m.endsWith('.pdf') && !m.endsWith('.doc') && !m.endsWith('.docx');
+      }
+      return m.type === 'image' || (m.tipo && ['imagen', 'image', 'img', 'foto'].includes(m.tipo.toLowerCase()));
+    });
+    
+    if (imagenes.length === 0) {
+      this.showToast('📷 Este repuesto no tiene imágenes (solo documentos)', 'info');
+      return;
+    }
+    
+    // Mostrar indicador de carga
+    this.showToast('🔄 Cargando imágenes...', 'info', 1500);
+    
+    try {
+      // Cargar todas las URLs de imágenes
+      const imageUrls = [];
+      for (const media of imagenes) {
+        const url = await this.getImageUrl(media);
+        if (url && !url.startsWith('data:image/png;base64,iVBORw0KG')) { // Excluir placeholder
+          imageUrls.push(url);
+        }
+      }
+      
+      if (imageUrls.length === 0) {
+        this.showToast('⚠️ No se pudieron cargar las imágenes', 'warning');
+        return;
+      }
+      
+      // Abrir el visor fullscreen
+      window.openImageViewer(imageUrls, 0, repuesto.nombre);
+      
+    } catch (error) {
+      console.error('Error cargando imágenes:', error);
+      this.showToast('❌ Error al cargar imágenes', 'error');
+    }
   }
 
   updateAutocompleteData() {
@@ -43202,20 +43691,6 @@ class InventarioCompleto {
       </div>
     `;
 
-    // 📦 REPUESTOS: Mostrar ANTES de los hijos para que aparezcan justo debajo del nodo
-    // SIEMPRE crear el wrapper para que exista cuando se navegue programáticamente
-    const repuestosEnArea = this.getRepuestosDeNodoExacto(currentPath);
-    const repuestosListId = `repuestos-list-${areaNodeId}`;
-    
-    if (repuestosEnArea.length > 0) {
-      const repuestosExpanded = this.getRepuestosExpandState(areaNodeId);
-      // Solo mostrar si AMBOS: el área está expandida Y los repuestos están expandidos
-      const repuestosDisplay = (areaExpanded && repuestosExpanded) ? 'block' : 'none';
-      const repuestosHTML = this.renderRepuestosEnNodo(repuestosEnArea, 2, currentPath);
-      
-      html += `<div id="${repuestosListId}" class="node-repuestos-wrapper" style="display: ${repuestosDisplay};">${repuestosHTML}</div>`;
-    }
-
     if (hasChildren) {
       const areaChildrenDisplay = areaExpanded ? 'block' : 'none';
       html += `<div class="tree-children" style="display: ${areaChildrenDisplay};">`;
@@ -43223,6 +43698,19 @@ class InventarioCompleto {
         html += this.buildVisualSubAreaNode(subArea, index, subIndex, areaNodeId, currentPath);
       });
       html += '</div>';
+    }
+    
+    // 📦 REPUESTOS: Solo mostrar repuestos asignados EXACTAMENTE a este nivel (sin hijos)
+    const repuestosEnArea = this.getRepuestosDeNodoExacto(currentPath);
+    const repuestosListId = `repuestos-list-${areaNodeId}`;
+    const hasRepuestosArea = repuestosEnArea.length > 0;
+    
+    if (hasRepuestosArea && areaExpanded) {
+      const repuestosExpanded = this.getRepuestosExpandState(areaNodeId);
+      const repuestosDisplay = repuestosExpanded ? 'block' : 'none';
+      const repuestosHTML = this.renderRepuestosEnNodo(repuestosEnArea, 2, currentPath);
+      
+      html += `<div id="${repuestosListId}" class="node-repuestos-wrapper" style="display: ${repuestosDisplay};">${repuestosHTML}</div>`;
     }
 
     html += '</div>';
@@ -43277,7 +43765,16 @@ class InventarioCompleto {
       </div>
     `;
 
-    // 📦 REPUESTOS: Mostrar ANTES de los hijos para que aparezcan justo debajo del nodo
+    if (hasChildren) {
+      const childrenDisplay = expanded ? 'block' : 'none';
+      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
+      subArea.sistemas.forEach((sistema, sisIndex) => {
+        html += this.buildVisualSistemaNode(sistema, areaIndex, subIndex, sisIndex, nodeId, currentPath);
+      });
+      html += '</div>';
+    }
+    
+    // 📦 REPUESTOS: Solo mostrar repuestos asignados EXACTAMENTE a este nivel
     const repuestosEnSubArea = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListIdSubArea = `repuestos-list-${nodeId}`;
     
@@ -43287,15 +43784,6 @@ class InventarioCompleto {
       const repuestosHTMLSubArea = this.renderRepuestosEnNodo(repuestosEnSubArea, 3, currentPath);
       
       html += `<div id="${repuestosListIdSubArea}" class="node-repuestos-wrapper" style="display: ${repuestosDisplaySubArea};">${repuestosHTMLSubArea}</div>`;
-    }
-
-    if (hasChildren) {
-      const childrenDisplay = expanded ? 'block' : 'none';
-      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
-      subArea.sistemas.forEach((sistema, sisIndex) => {
-        html += this.buildVisualSistemaNode(sistema, areaIndex, subIndex, sisIndex, nodeId, currentPath);
-      });
-      html += '</div>';
     }
 
     html += '</div>';
@@ -43350,7 +43838,15 @@ class InventarioCompleto {
       </div>
     `;
 
-    // 📦 REPUESTOS: Mostrar ANTES de los hijos para que aparezcan justo debajo del nodo
+    if (hasChildren) {
+      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
+      sistema.subSistemas.forEach((subSistema, subSisIndex) => {
+        html += this.buildVisualSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex, nodeId, currentPath);
+      });
+      html += '</div>';
+    }
+    
+    // 📦 REPUESTOS: Solo mostrar repuestos asignados EXACTAMENTE a este sistema (con path completo)
     const repuestosEnSistema = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListIdSistema = `repuestos-list-${nodeId}`;
     
@@ -43360,14 +43856,6 @@ class InventarioCompleto {
       const repuestosHTMLSistema = this.renderRepuestosEnNodo(repuestosEnSistema, 4, currentPath);
       
       html += `<div id="${repuestosListIdSistema}" class="node-repuestos-wrapper" style="display: ${repuestosDisplaySistema};">${repuestosHTMLSistema}</div>`;
-    }
-
-    if (hasChildren) {
-      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
-      sistema.subSistemas.forEach((subSistema, subSisIndex) => {
-        html += this.buildVisualSubSistemaNode(subSistema, areaIndex, subIndex, sisIndex, subSisIndex, nodeId, currentPath);
-      });
-      html += '</div>';
     }
 
     html += '</div>';
@@ -43422,7 +43910,15 @@ class InventarioCompleto {
       </div>
     `;
 
-    // 📦 REPUESTOS: Mostrar ANTES de los hijos para que aparezcan justo debajo del nodo
+    if (hasChildren) {
+      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
+      subSistema.secciones.forEach((seccion, secIndex) => {
+        html += this.buildVisualSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, nodeId);
+      });
+      html += '</div>';
+    }
+    
+    // 📦 REPUESTOS: Mostrar repuestos asignados EXACTAMENTE a este subSistema
     const repuestosEnSubSistema = this.getRepuestosDeNodoExacto(currentPath);
     const repuestosListIdSubSistema = `repuestos-list-${nodeId}`;
     
@@ -43432,14 +43928,6 @@ class InventarioCompleto {
       const repuestosHTMLSubSistema = this.renderRepuestosEnNodo(repuestosEnSubSistema, 5, currentPath);
       
       html += `<div id="${repuestosListIdSubSistema}" class="node-repuestos-wrapper" style="display: ${repuestosDisplaySubSistema};">${repuestosHTMLSubSistema}</div>`;
-    }
-
-    if (hasChildren) {
-      html += `<div class="tree-children" style="display: ${childrenDisplay};">`;
-      subSistema.secciones.forEach((seccion, secIndex) => {
-        html += this.buildVisualSeccionNode(seccion, areaIndex, subIndex, sisIndex, subSisIndex, secIndex, nodeId);
-      });
-      html += '</div>';
     }
 
     html += '</div>';
@@ -43693,10 +44181,6 @@ class InventarioCompleto {
     const isCurrentlyHidden = children.style.display === 'none';
     
     const legacyNodeId = this.getLegacyIdFromNodeContent(nodeContent);
-    
-    // 📦 Buscar wrapper de repuestos para este nodo
-    const repuestosWrapper = treeNode.querySelector(`:scope > .node-repuestos-wrapper`);
-    const repuestosToggle = nodeContent.querySelector('.node-repuestos-toggle');
 
     if (isCurrentlyHidden) {
       // Mostrar
@@ -43704,19 +44188,6 @@ class InventarioCompleto {
       toggleElement.textContent = '›';
       toggleElement.classList.remove('collapsed');
       toggleElement.classList.add('expanded');
-      
-      // 📦 También mostrar repuestos si existen
-      // Si estamos navegando a un repuesto específico (skipTreeStateRestore), SIEMPRE mostrar
-      if (repuestosWrapper) {
-        // Durante navegación programática (skipTreeStateRestore=true): SIEMPRE mostrar repuestos
-        // Durante uso normal: respetar el estado guardado
-        const shouldShowRepuestos = this.skipTreeStateRestore ? true : this.getRepuestosExpandState(nodeId);
-        repuestosWrapper.style.display = shouldShowRepuestos ? 'block' : 'none';
-        if (repuestosToggle) {
-          repuestosToggle.classList.toggle('expanded', shouldShowRepuestos);
-          repuestosToggle.classList.toggle('collapsed', !shouldShowRepuestos);
-        }
-      }
       
       // Guardar estado expandido
       this.saveNodeExpandState(nodeId, true, legacyNodeId);
@@ -43726,11 +44197,6 @@ class InventarioCompleto {
       toggleElement.textContent = '›';
       toggleElement.classList.remove('expanded');
       toggleElement.classList.add('collapsed');
-      
-      // 📦 También ocultar repuestos
-      if (repuestosWrapper) {
-        repuestosWrapper.style.display = 'none';
-      }
       
       // Guardar estado contraído
       this.saveNodeExpandState(nodeId, false, legacyNodeId);
@@ -50290,13 +50756,6 @@ class InventarioCompleto {
           // 1. Buscar en áreas organizacionales (dentro de empresa)
           const empresaNode = container.querySelector('.tree-section-organizational .tree-container > .tree-node[data-node-type="empresa"]');
           if (empresaNode) {
-            // 🔓 PRIMERO: Expandir la empresa si está colapsada
-            const empresaToggle = empresaNode.querySelector(':scope > .node-content .node-toggle');
-            if (empresaToggle && empresaToggle.classList.contains('collapsed')) {
-              console.log('   🏢 Expandiendo empresa primero...');
-              empresaToggle.click();
-            }
-            
             const empresaChildren = empresaNode.querySelector(':scope > .tree-children');
             if (empresaChildren) {
               const orgAreas = empresaChildren.querySelectorAll(':scope > .tree-node');
@@ -50539,7 +50998,7 @@ class InventarioCompleto {
           console.log('✅ PROCESO COMPLETADO: verRepuestoEnJerarquia');
           console.log('========================================\n');
         }, 100); // Fin setTimeout resaltado
-      }, 1000); // Aumentado a 1000ms: expansión recursiva (50ms x niveles) + mostrar repuestos
+      }, 800); // Aumentado a 800ms: expansión recursiva (50ms x niveles) + expansión repuestos
     }, 500); // Fin setTimeout DOM - aumentado para dar tiempo al re-render
   }
 
@@ -51148,8 +51607,109 @@ class InventarioCompleto {
   }
 
   /**
-   * 🎯 SISTEMA UNIFICADO: Genera la sección de ubicación y botones dinámicos
-   * Muestra información según el estado del repuesto y botones inteligentes
+   * 🔍 Analiza el estado completo de un repuesto y determina qué le falta
+   * @param {Object} repuesto - Objeto repuesto
+   * @returns {Object} Estado detallado con campos: 
+   *   - tieneJerarquia: boolean
+   *   - tieneMapa: boolean
+   *   - tieneArea: boolean
+   *   - tieneMarcador: boolean
+   *   - progreso: number (0-100)
+   *   - faltantes: string[] - Lista de elementos faltantes
+   *   - acciones: string[] - Acciones sugeridas
+   */
+  analizarEstadoRepuesto(repuesto) {
+    const estado = {
+      tieneJerarquia: false,
+      tieneMapa: false,
+      tieneArea: false,
+      tieneMarcador: false,
+      progreso: 0,
+      faltantes: [],
+      acciones: []
+    };
+
+    // 1. Verificar Jerarquía (ubicaciones[])
+    if (repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
+      const ubicacion = repuesto.ubicaciones[0];
+      if (ubicacion.areaGeneral || ubicacion.subArea || ubicacion.sistemaEquipo) {
+        estado.tieneJerarquia = true;
+        estado.progreso += 40; // 40% por jerarquía
+      }
+    }
+
+    // Compatibilidad con formato antiguo
+    if (!estado.tieneJerarquia && (repuesto.areaGeneral || repuesto.area)) {
+      estado.tieneJerarquia = true;
+      estado.progreso += 40;
+    }
+
+    // 2. Verificar Mapa (ubicacionesMapa[])
+    if (repuesto.ubicacionesMapa && repuesto.ubicacionesMapa.length > 0) {
+      const ubicMapa = repuesto.ubicacionesMapa[0];
+      
+      // 2a. Tiene mapa asignado
+      if (ubicMapa.mapId) {
+        estado.tieneMapa = true;
+        estado.progreso += 20; // 20% por mapa
+      }
+      
+      // 2b. Tiene área dentro del mapa
+      if (ubicMapa.areaId) {
+        estado.tieneArea = true;
+        estado.progreso += 20; // 20% por área
+      }
+      
+      // 2c. Tiene marcador (coordenadas X, Y)
+      if (ubicMapa.markerX !== undefined && ubicMapa.markerY !== undefined) {
+        estado.tieneMarcador = true;
+        estado.progreso += 20; // 20% por marcador
+      }
+    }
+
+    // Compatibilidad con formato antiguo (mapId directo)
+    if (!estado.tieneMapa && repuesto.mapId) {
+      estado.tieneMapa = true;
+      estado.progreso += 20;
+      
+      if (repuesto.areaId) {
+        estado.tieneArea = true;
+        estado.progreso += 20;
+      }
+      
+      if (repuesto.markerX !== undefined && repuesto.markerY !== undefined) {
+        estado.tieneMarcador = true;
+        estado.progreso += 20;
+      }
+    }
+
+    // 3. Determinar faltantes y acciones
+    if (!estado.tieneJerarquia) {
+      estado.faltantes.push('Ubicación en Jerarquía');
+      estado.acciones.push('asignar_jerarquia');
+    }
+    
+    if (!estado.tieneMapa) {
+      estado.faltantes.push('Plano/Mapa');
+      estado.acciones.push('asignar_mapa');
+    } else if (!estado.tieneArea) {
+      estado.faltantes.push('Área en Mapa');
+      estado.acciones.push('seleccionar_area');
+    } else if (!estado.tieneMarcador) {
+      estado.faltantes.push('Marcador en Plano');
+      estado.acciones.push('colocar_marcador');
+    }
+
+    return estado;
+  }
+
+  /**
+   * 🎯 SECCIÓN UNIFICADA: Genera HTML inteligente de ubicación + acciones
+   * - Si está completo (100%): solo muestra ubicación + botones básicos
+   * - Si no tiene jerarquía: solo botón Asignar Jerarquía
+   * - Si tiene jerarquía pero falta mapa: muestra progreso + botón Mapa
+   * @param {Object} repuesto - Objeto repuesto
+   * @returns {string} HTML de la sección unificada
    */
   generarSeccionUbicacionUnificada(repuesto) {
     const estado = this.analizarEstadoRepuesto(repuesto);
@@ -51344,103 +51904,6 @@ class InventarioCompleto {
     
     html += '</div>';
     return html;
-  }
-
-  /**
-   * 🔍 Analiza el estado completo de un repuesto y determina qué le falta
-   * @param {Object} repuesto - Objeto repuesto
-   * @returns {Object} Estado detallado con campos: 
-   *   - tieneJerarquia: boolean
-   *   - tieneMapa: boolean
-   *   - tieneArea: boolean
-   *   - tieneMarcador: boolean
-   *   - progreso: number (0-100)
-   *   - faltantes: string[] - Lista de elementos faltantes
-   *   - acciones: string[] - Acciones sugeridas
-   */
-  analizarEstadoRepuesto(repuesto) {
-    const estado = {
-      tieneJerarquia: false,
-      tieneMapa: false,
-      tieneArea: false,
-      tieneMarcador: false,
-      progreso: 0,
-      faltantes: [],
-      acciones: []
-    };
-
-    // 1. Verificar Jerarquía (ubicaciones[])
-    if (repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
-      const ubicacion = repuesto.ubicaciones[0];
-      if (ubicacion.areaGeneral || ubicacion.subArea || ubicacion.sistemaEquipo) {
-        estado.tieneJerarquia = true;
-        estado.progreso += 40; // 40% por jerarquía
-      }
-    }
-
-    // Compatibilidad con formato antiguo
-    if (!estado.tieneJerarquia && (repuesto.areaGeneral || repuesto.area)) {
-      estado.tieneJerarquia = true;
-      estado.progreso += 40;
-    }
-
-    // 2. Verificar Mapa (ubicacionesMapa[])
-    if (repuesto.ubicacionesMapa && repuesto.ubicacionesMapa.length > 0) {
-      const ubicMapa = repuesto.ubicacionesMapa[0];
-      
-      // 2a. Tiene mapa asignado
-      if (ubicMapa.mapId) {
-        estado.tieneMapa = true;
-        estado.progreso += 20; // 20% por mapa
-      }
-      
-      // 2b. Tiene área dentro del mapa
-      if (ubicMapa.areaId) {
-        estado.tieneArea = true;
-        estado.progreso += 20; // 20% por área
-      }
-      
-      // 2c. Tiene marcador (coordenadas X, Y)
-      if (ubicMapa.markerX !== undefined && ubicMapa.markerY !== undefined) {
-        estado.tieneMarcador = true;
-        estado.progreso += 20; // 20% por marcador
-      }
-    }
-
-    // Compatibilidad con formato antiguo (mapId directo)
-    if (!estado.tieneMapa && repuesto.mapId) {
-      estado.tieneMapa = true;
-      estado.progreso += 20;
-      
-      if (repuesto.areaId) {
-        estado.tieneArea = true;
-        estado.progreso += 20;
-      }
-      
-      if (repuesto.markerX !== undefined && repuesto.markerY !== undefined) {
-        estado.tieneMarcador = true;
-        estado.progreso += 20;
-      }
-    }
-
-    // 3. Determinar faltantes y acciones
-    if (!estado.tieneJerarquia) {
-      estado.faltantes.push('Ubicación en Jerarquía');
-      estado.acciones.push('asignar_jerarquia');
-    }
-    
-    if (!estado.tieneMapa) {
-      estado.faltantes.push('Plano/Mapa');
-      estado.acciones.push('asignar_mapa');
-    } else if (!estado.tieneArea) {
-      estado.faltantes.push('Área en Mapa');
-      estado.acciones.push('seleccionar_area');
-    } else if (!estado.tieneMarcador) {
-      estado.faltantes.push('Marcador en Plano');
-      estado.acciones.push('colocar_marcador');
-    }
-
-    return estado;
   }
 
   /**
@@ -63273,7 +63736,6 @@ console.log(' Notificaciones cargadas:', window.notifications.length);
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
 <!-- Firebase Configuration -->
 <script src="config/firebase-config.js"></script>
@@ -63754,6 +64216,377 @@ console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactiv
 </script>
 
 <!-- ================================================================== -->
+<!-- 🔄 PWA: SISTEMA DE ACTUALIZACIÓN                                   -->
+<!-- ================================================================== -->
+<script>
+// Inicializar botón de actualización PWA
+function initPWARefreshButton() {
+    const btn = document.getElementById('pwaRefreshBtn');
+    if (!btn) return;
+    
+    // Verificar si hay Service Worker registrado
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(registration => {
+            // Detectar actualizaciones del Service Worker
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        // Nueva versión disponible
+                        btn.classList.remove('state-default', 'state-updated');
+                        btn.classList.add('state-updating');
+                        btn.title = 'Nueva versión disponible - Click para actualizar';
+                    }
+                });
+            });
+            
+            // Verificar actualizaciones periódicamente
+            setInterval(() => {
+                registration.update();
+            }, 60000); // Cada minuto
+        });
+        
+        // Escuchar cuando la app se recargue y esté actualizada
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            const btn = document.getElementById('pwaRefreshBtn');
+            if (btn) {
+                btn.classList.remove('state-default', 'state-updating');
+                btn.classList.add('state-updated');
+                btn.title = 'Aplicación actualizada';
+            }
+        });
+    }
+    
+    // Al cargar, mostrar estado actualizado brevemente
+    btn.classList.remove('state-default');
+    btn.classList.add('state-updated');
+    btn.title = 'Aplicación al día';
+    
+    // Volver a estado normal después de 3 segundos
+    setTimeout(() => {
+        btn.classList.remove('state-updated');
+        btn.classList.add('state-default');
+        btn.title = 'Actualizar aplicación';
+    }, 3000);
+}
+
+// Función para forzar actualización
+function triggerPWARefresh() {
+    const btn = document.getElementById('pwaRefreshBtn');
+    if (btn) {
+        btn.classList.remove('state-default', 'state-updated');
+        btn.classList.add('state-updating');
+        btn.title = 'Actualizando...';
+    }
+    
+    // Si hay Service Worker, intentar actualizar primero
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(registration => {
+            registration.update().then(() => {
+                // Limpiar caches
+                if ('caches' in window) {
+                    caches.keys().then(names => {
+                        names.forEach(name => caches.delete(name));
+                    });
+                }
+                // Recargar la página
+                setTimeout(() => location.reload(true), 500);
+            }).catch(() => {
+                location.reload(true);
+            });
+        });
+    } else {
+        // Sin Service Worker, solo recargar
+        location.reload(true);
+    }
+}
+
+// Exponer funciones globalmente
+window.initPWARefreshButton = initPWARefreshButton;
+window.triggerPWARefresh = triggerPWARefresh;
+
+// Inicializar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPWARefreshButton);
+} else {
+    initPWARefreshButton();
+}
+
+console.log('🔄 Sistema de actualización PWA disponible');
+</script>
+
+<!-- ================================================================== -->
+<!-- 🖼️ VISOR DE IMÁGENES FULLSCREEN                                    -->
+<!-- ================================================================== -->
+<script>
+// Sistema de visor de imágenes fullscreen con swipe y zoom
+window.ImageFullscreenViewer = {
+  currentImages: [],
+  currentIndex: 0,
+  viewerElement: null,
+  scale: 1,
+  startX: 0,
+  startY: 0,
+  translateX: 0,
+  translateY: 0,
+  isDragging: false,
+  
+  // Abrir el visor con array de imágenes
+  open(images, startIndex = 0, title = '') {
+    if (!images || images.length === 0) {
+      console.warn('🖼️ No hay imágenes para mostrar');
+      return;
+    }
+    
+    this.currentImages = Array.isArray(images) ? images : [images];
+    this.currentIndex = startIndex;
+    this.scale = 1;
+    this.translateX = 0;
+    this.translateY = 0;
+    
+    this.render(title);
+    this.attachEvents();
+    
+    // Bloquear scroll del body
+    document.body.style.overflow = 'hidden';
+  },
+  
+  // Cerrar el visor
+  close() {
+    if (this.viewerElement) {
+      this.viewerElement.remove();
+      this.viewerElement = null;
+    }
+    document.body.style.overflow = '';
+  },
+  
+  // Navegar a imagen anterior
+  prev() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.updateImage();
+    }
+  },
+  
+  // Navegar a imagen siguiente
+  next() {
+    if (this.currentIndex < this.currentImages.length - 1) {
+      this.currentIndex++;
+      this.updateImage();
+    }
+  },
+  
+  // Ir a imagen específica
+  goTo(index) {
+    if (index >= 0 && index < this.currentImages.length) {
+      this.currentIndex = index;
+      this.updateImage();
+    }
+  },
+  
+  // Toggle zoom
+  toggleZoom() {
+    const img = this.viewerElement?.querySelector('.viewer-image');
+    if (!img) return;
+    
+    if (this.scale === 1) {
+      this.scale = 2.5;
+      img.classList.add('zoomed');
+    } else {
+      this.scale = 1;
+      this.translateX = 0;
+      this.translateY = 0;
+      img.classList.remove('zoomed');
+    }
+    this.applyTransform();
+  },
+  
+  // Aplicar transformación al zoom
+  applyTransform() {
+    const img = this.viewerElement?.querySelector('.viewer-image');
+    if (img) {
+      img.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
+    }
+  },
+  
+  // Actualizar imagen mostrada
+  updateImage() {
+    this.scale = 1;
+    this.translateX = 0;
+    this.translateY = 0;
+    
+    const img = this.viewerElement?.querySelector('.viewer-image');
+    const counter = this.viewerElement?.querySelector('.viewer-counter');
+    const dots = this.viewerElement?.querySelectorAll('.viewer-dot');
+    const prevBtn = this.viewerElement?.querySelector('.viewer-nav.prev');
+    const nextBtn = this.viewerElement?.querySelector('.viewer-nav.next');
+    
+    if (img) {
+      img.style.transform = 'scale(1)';
+      img.classList.remove('zoomed');
+      img.src = this.currentImages[this.currentIndex];
+    }
+    
+    if (counter) {
+      counter.textContent = `${this.currentIndex + 1} / ${this.currentImages.length}`;
+    }
+    
+    dots?.forEach((dot, i) => {
+      dot.classList.toggle('active', i === this.currentIndex);
+    });
+    
+    if (prevBtn) prevBtn.disabled = this.currentIndex === 0;
+    if (nextBtn) nextBtn.disabled = this.currentIndex === this.currentImages.length - 1;
+  },
+  
+  // Renderizar el visor
+  render(title) {
+    // Eliminar visor existente si hay
+    this.close();
+    
+    const hasMultiple = this.currentImages.length > 1;
+    
+    const html = `
+      <div class="image-fullscreen-viewer" id="imageFullscreenViewer">
+        <div class="viewer-header">
+          <span class="viewer-title">${title || 'Imagen'}</span>
+          ${hasMultiple ? `<span class="viewer-counter">${this.currentIndex + 1} / ${this.currentImages.length}</span>` : ''}
+        </div>
+        
+        <button class="viewer-close" onclick="ImageFullscreenViewer.close()" aria-label="Cerrar">×</button>
+        
+        <div class="viewer-image-container">
+          ${hasMultiple ? `<button class="viewer-nav prev" onclick="ImageFullscreenViewer.prev()" ${this.currentIndex === 0 ? 'disabled' : ''}>❮</button>` : ''}
+          
+          <img 
+            class="viewer-image" 
+            src="${this.currentImages[this.currentIndex]}" 
+            alt="Imagen ${this.currentIndex + 1}"
+            onclick="ImageFullscreenViewer.toggleZoom()"
+            draggable="false"
+          />
+          
+          ${hasMultiple ? `<button class="viewer-nav next" onclick="ImageFullscreenViewer.next()" ${this.currentIndex === this.currentImages.length - 1 ? 'disabled' : ''}>❯</button>` : ''}
+        </div>
+        
+        ${hasMultiple ? `
+          <div class="viewer-dots">
+            ${this.currentImages.map((_, i) => `
+              <button class="viewer-dot ${i === this.currentIndex ? 'active' : ''}" onclick="ImageFullscreenViewer.goTo(${i})"></button>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', html);
+    this.viewerElement = document.getElementById('imageFullscreenViewer');
+  },
+  
+  // Eventos táctiles y de teclado
+  attachEvents() {
+    if (!this.viewerElement) return;
+    
+    const container = this.viewerElement.querySelector('.viewer-image-container');
+    const img = this.viewerElement.querySelector('.viewer-image');
+    
+    // Click fuera de la imagen cierra
+    this.viewerElement.addEventListener('click', (e) => {
+      if (e.target === this.viewerElement || e.target.classList.contains('viewer-image-container')) {
+        this.close();
+      }
+    });
+    
+    // Teclas de navegación
+    const keyHandler = (e) => {
+      if (!this.viewerElement) {
+        document.removeEventListener('keydown', keyHandler);
+        return;
+      }
+      
+      switch(e.key) {
+        case 'Escape': this.close(); break;
+        case 'ArrowLeft': this.prev(); break;
+        case 'ArrowRight': this.next(); break;
+      }
+    };
+    document.addEventListener('keydown', keyHandler);
+    
+    // Swipe para móvil
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    
+    container?.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+    
+    container?.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      
+      const diffX = touchStartX - touchEndX;
+      const diffY = touchStartY - touchEndY;
+      
+      // Solo procesar swipes horizontales significativos
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+          this.next(); // Swipe izquierda = siguiente
+        } else {
+          this.prev(); // Swipe derecha = anterior
+        }
+      }
+    }, { passive: true });
+    
+    // Pinch-to-zoom para móvil
+    let initialDistance = 0;
+    let initialScale = 1;
+    
+    container?.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        initialDistance = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+        initialScale = this.scale;
+      }
+    }, { passive: true });
+    
+    container?.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && initialDistance) {
+        const currentDistance = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+        
+        this.scale = Math.min(Math.max(initialScale * (currentDistance / initialDistance), 1), 4);
+        this.applyTransform();
+        
+        if (this.scale > 1) {
+          img?.classList.add('zoomed');
+        } else {
+          img?.classList.remove('zoomed');
+        }
+      }
+    }, { passive: true });
+    
+    container?.addEventListener('touchend', () => {
+      initialDistance = 0;
+    }, { passive: true });
+  }
+};
+
+// Función helper para abrir visor desde cualquier lugar
+window.openImageViewer = function(images, startIndex = 0, title = '') {
+  ImageFullscreenViewer.open(images, startIndex, title);
+};
+
+console.log('🖼️ Visor de imágenes fullscreen disponible');
+</script>
+
+<!-- ================================================================== -->
 <!-- 📱 PWA: NAVEGACIÓN INFERIOR MÓVIL                                  -->
 <!-- ================================================================== -->
 <nav id="mobileBottomNav" class="mobile-bottom-nav">
@@ -63800,7 +64633,7 @@ console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactiv
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
 }
 
-.nav-item {
+.mobile-bottom-nav .nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -63815,32 +64648,32 @@ console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactiv
   min-width: 60px;
 }
 
-.nav-item:active {
+.mobile-bottom-nav .nav-item:active {
   transform: scale(0.95);
 }
 
-.nav-item.active {
+.mobile-bottom-nav .nav-item.active {
   color: var(--primary);
 }
 
-.nav-item.active .nav-icon {
+.mobile-bottom-nav .nav-item.active .nav-icon {
   transform: scale(1.1);
 }
 
-.nav-icon {
+.mobile-bottom-nav .nav-icon {
   font-size: 1.4rem;
   margin-bottom: 2px;
   transition: transform 0.2s ease;
 }
 
-.nav-label {
+.mobile-bottom-nav .nav-label {
   font-size: 0.65rem;
   font-weight: 500;
   letter-spacing: 0.3px;
 }
 
 /* Floating Action Button (FAB) central */
-.nav-item-fab {
+.mobile-bottom-nav .nav-item-fab {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white !important;
   width: 56px;
@@ -63852,12 +64685,12 @@ console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactiv
   min-width: 56px;
 }
 
-.nav-item-fab:active {
+.mobile-bottom-nav .nav-item-fab:active {
   transform: scale(0.9);
   box-shadow: 0 2px 8px rgba(91, 139, 180, 0.3);
 }
 
-.nav-item-fab .nav-icon {
+.mobile-bottom-nav .nav-item-fab .nav-icon {
   font-size: 1.6rem;
   margin: 0;
 }
@@ -63889,264 +64722,9 @@ console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactiv
     bottom: calc(80px + env(safe-area-inset-bottom)) !important;
   }
 }
-
-/* PWA: Banner de instalación */
-.pwa-install-banner {
-  display: none;
-  position: fixed;
-  bottom: calc(70px + env(safe-area-inset-bottom));
-  left: 16px;
-  right: 16px;
-  background: linear-gradient(135deg, var(--primary), var(--info));
-  color: white;
-  padding: 16px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(91, 139, 180, 0.3);
-  z-index: 10000;
-  animation: slideUp 0.3s ease;
-}
-
-.pwa-install-banner.show {
-  display: block;
-}
-
-.pwa-install-content {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.pwa-install-icon {
-  font-size: 2rem;
-}
-
-.pwa-install-text h4 {
-  margin: 0 0 4px 0;
-  font-size: 1rem;
-}
-
-.pwa-install-text p {
-  margin: 0;
-  font-size: 0.85rem;
-  opacity: 0.9;
-}
-
-.pwa-install-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.pwa-install-btn {
-  flex: 1;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.pwa-install-btn.primary {
-  background: white;
-  color: var(--primary);
-}
-
-.pwa-install-btn.secondary {
-  background: rgba(255,255,255,0.2);
-  color: white;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
 </style>
 
 <script>
-// ================================================================== 
-// 📱 PWA: SERVICE WORKER & INSTALACIÓN
-// ==================================================================
-
-// Registrar Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    try {
-      const registration = await navigator.serviceWorker.register('./service-worker.js');
-      console.log('✅ [PWA] Service Worker registrado:', registration.scope);
-      
-      // Verificar actualizaciones
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-        console.log('🔄 [PWA] Nueva versión encontrada...');
-        
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            // Hay una actualización disponible
-            showUpdateBanner();
-          }
-        });
-      });
-    } catch (error) {
-      console.warn('⚠️ [PWA] Service Worker no registrado:', error);
-    }
-  });
-}
-
-// Manejar instalación PWA
-let deferredPrompt;
-const pwaInstallBanner = document.createElement('div');
-pwaInstallBanner.className = 'pwa-install-banner';
-pwaInstallBanner.innerHTML = `
-  <div class="pwa-install-content">
-    <span class="pwa-install-icon">📱</span>
-    <div class="pwa-install-text">
-      <h4>Instalar App</h4>
-      <p>Agrega Inventario a tu pantalla de inicio</p>
-    </div>
-  </div>
-  <div class="pwa-install-actions">
-    <button class="pwa-install-btn primary" onclick="installPWA()">Instalar</button>
-    <button class="pwa-install-btn secondary" onclick="dismissInstallBanner()">Ahora no</button>
-  </div>
-`;
-document.body.appendChild(pwaInstallBanner);
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  
-  // Solo mostrar si no está instalada y es móvil
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-  
-  if (isMobile && !isStandalone && !localStorage.getItem('pwa-install-dismissed')) {
-    setTimeout(() => {
-      pwaInstallBanner.classList.add('show');
-    }, 3000);
-  }
-});
-
-async function installPWA() {
-  if (!deferredPrompt) return;
-  
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  
-  console.log(`📱 [PWA] Usuario ${outcome === 'accepted' ? 'aceptó' : 'rechazó'} instalación`);
-  deferredPrompt = null;
-  pwaInstallBanner.classList.remove('show');
-}
-
-function dismissInstallBanner() {
-  pwaInstallBanner.classList.remove('show');
-  localStorage.setItem('pwa-install-dismissed', Date.now());
-}
-
-function showUpdateBanner() {
-  if (confirm('🔄 Nueva versión disponible. ¿Actualizar ahora?')) {
-    window.location.reload();
-  }
-}
-
-// ================================================================== 
-// 🔄 BOTÓN REFRESH PWA (MÓVIL)
-// ==================================================================
-
-window.refreshPWA = function() {
-  const btn = document.getElementById('pwaRefreshBtn');
-  
-  console.log('🔄 Refrescando PWA...');
-  
-  // Cambiar a estado "actualizando"
-  if (btn) {
-    btn.classList.remove('state-default', 'state-updated');
-    btn.classList.add('state-updating');
-  }
-  
-  // Si hay Service Worker, forzar actualización
-  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-    navigator.serviceWorker.getRegistration().then(registration => {
-      if (registration) {
-        console.log('🔄 Solicitando actualización del Service Worker...');
-        registration.update().then(() => {
-          console.log('🔄 Service Worker actualizado, recargando...');
-          // Recargar después de un pequeño delay para que se vea la animación
-          setTimeout(() => {
-            window.location.reload(true);
-          }, 500);
-        }).catch(err => {
-          console.warn('⚠️ Error actualizando SW:', err);
-          // Recargar de todos modos
-          window.location.reload(true);
-        });
-      } else {
-        // No hay registro de SW, recargar directamente
-        window.location.reload(true);
-      }
-    });
-  } else {
-    // Sin Service Worker, recargar directamente
-    window.location.reload(true);
-  }
-};
-
-// Detectar cuando hay una actualización disponible del Service Worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    console.log('🔄 Service Worker actualizado');
-    const btn = document.getElementById('pwaRefreshBtn');
-    if (btn) {
-      btn.classList.remove('state-default', 'state-updating');
-      btn.classList.add('state-updated');
-    }
-  });
-  
-  // Verificar si hay actualizaciones pendientes al cargar
-  navigator.serviceWorker.ready.then(registration => {
-    registration.addEventListener('updatefound', () => {
-      console.log('🔔 Nueva versión del Service Worker encontrada');
-      const btn = document.getElementById('pwaRefreshBtn');
-      if (btn) {
-        btn.classList.remove('state-default');
-        btn.classList.add('state-updated');
-        btn.title = '✨ Nueva versión disponible - Click para actualizar';
-      }
-    });
-  });
-}
-
-// Marcar como "actualizado" cuando la página carga exitosamente
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    const btn = document.getElementById('pwaRefreshBtn');
-    if (btn && !btn.classList.contains('state-updating')) {
-      // Si no está actualizando, verificar estado
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistration().then(reg => {
-          if (reg && reg.waiting) {
-            // Hay una actualización esperando
-            btn.classList.remove('state-default');
-            btn.classList.add('state-updated');
-            btn.title = '✨ Nueva versión disponible - Click para actualizar';
-          } else {
-            // Todo actualizado
-            btn.classList.remove('state-updating');
-            btn.classList.add('state-default');
-            btn.title = 'Actualizar App';
-          }
-        });
-      }
-    }
-  }, 2000);
-});
-
 // ================================================================== 
 // 📱 NAVEGACIÓN INFERIOR MÓVIL
 // ==================================================================
@@ -64204,92 +64782,54 @@ document.addEventListener('click', (e) => {
   const tab = e.target.closest('.nav-tab');
   if (tab) {
     const tabName = tab.dataset.tab || tab.textContent.toLowerCase().trim();
-    document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(item => {
-      item.classList.remove('active');
-      if (item.dataset.tab && tabName.includes(item.dataset.tab)) {
-        item.classList.add('active');
-      }
-    });
+    const mobileTabMap = {
+      'inventario': 'inventario',
+      'jerarquia': 'jerarquia',
+      'mapa': 'mapas',
+      'configuracion': 'config',
+      'config': 'config'
+    };
+    const mobileTab = mobileTabMap[tabName];
+    if (mobileTab) {
+      document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      document.querySelector(`.mobile-bottom-nav [data-tab="${mobileTab}"]`)?.classList.add('active');
+    }
   }
 });
 
-// ================================================================== 
-// 📱 GESTOS TÁCTILES
-// ==================================================================
+console.log('📱 Navegación móvil PWA inicializada');
+</script>
 
-let touchStartX = 0;
-let touchStartY = 0;
-let touchEndX = 0;
-let touchEndY = 0;
-
-document.addEventListener('touchstart', (e) => {
-  touchStartX = e.changedTouches[0].screenX;
-  touchStartY = e.changedTouches[0].screenY;
-}, { passive: true });
-
-document.addEventListener('touchend', (e) => {
-  touchEndX = e.changedTouches[0].screenX;
-  touchEndY = e.changedTouches[0].screenY;
-  handleSwipe();
-}, { passive: true });
-
-function handleSwipe() {
-  const diffX = touchEndX - touchStartX;
-  const diffY = touchEndY - touchStartY;
-  const threshold = 100;
-  
-  // Solo procesar si el swipe horizontal es mayor que el vertical
-  if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
-    const tabs = ['inventario', 'jerarquia', 'mapas', 'config'];
-    const currentTab = document.querySelector('.mobile-bottom-nav .nav-item.active')?.dataset.tab;
-    const currentIndex = tabs.indexOf(currentTab);
-    
-    if (diffX > 0 && currentIndex > 0) {
-      // Swipe derecha -> tab anterior
-      switchMobileTab(tabs[currentIndex - 1]);
-    } else if (diffX < 0 && currentIndex < tabs.length - 1) {
-      // Swipe izquierda -> tab siguiente
-      switchMobileTab(tabs[currentIndex + 1]);
-    }
+<!-- PWA Service Worker Registration -->
+<script>
+  // Registrar Service Worker para PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register('service-worker.js');
+        console.log('✅ PWA: Service Worker registrado correctamente');
+        
+        // Verificar actualizaciones
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          console.log('🔄 PWA: Nueva versión detectada, instalando...');
+          
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // Mostrar notificación de actualización disponible
+              if (confirm('🆕 Nueva versión disponible. ¿Actualizar ahora?')) {
+                window.location.reload();
+              }
+            }
+          });
+        });
+      } catch (error) {
+        console.warn('⚠️ PWA: Error al registrar Service Worker:', error);
+      }
+    });
   }
-}
-
-// Pull to refresh
-let pullStartY = 0;
-let isPulling = false;
-
-document.addEventListener('touchstart', (e) => {
-  if (window.scrollY === 0) {
-    pullStartY = e.touches[0].clientY;
-    isPulling = true;
-  }
-}, { passive: true });
-
-document.addEventListener('touchmove', (e) => {
-  if (!isPulling) return;
-  
-  const pullDistance = e.touches[0].clientY - pullStartY;
-  
-  if (pullDistance > 80 && window.scrollY === 0) {
-    // Mostrar indicador de refresh
-    document.body.style.transform = `translateY(${Math.min(pullDistance * 0.3, 60)}px)`;
-  }
-}, { passive: true });
-
-document.addEventListener('touchend', () => {
-  if (isPulling && document.body.style.transform) {
-    document.body.style.transform = '';
-    
-    // Si se tiró suficiente, recargar datos
-    if (window.app && window.app.cargarDatosIniciales) {
-      window.app.cargarDatosIniciales();
-      window.app.mostrarToast?.('🔄 Datos actualizados', 'success');
-    }
-  }
-  isPulling = false;
-}, { passive: true });
-
-console.log('📱 [PWA] Módulo móvil inicializado');
 </script>
 
 </body>
