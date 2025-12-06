@@ -18,8 +18,8 @@
   <meta name="msapplication-TileColor" content="#1a1a2e">
   <meta name="msapplication-tap-highlight" content="no">
   
-  <!-- PWA Manifest - Ubicado en raíz del repo para GitHub Pages -->
-  <link rel="manifest" href="../manifest.json">
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="./manifest.json">
   
   <!-- PWA Icons -->
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
@@ -341,9 +341,16 @@
           return;
         }
         
-        // Verificar FileSystem conectado
-        if (!window.fsManager || !window.fsManager.rootFolder) {
-          alert('❌ FileSystem no está conectado.\n\nDebes conectar la carpeta INVENTARIO_STORAGE primero (en PC local).');
+        // Verificar FileSystem conectado (verificar tanto rootFolder como isFileSystemMode)
+        const fsConnected = window.fsManager && (window.fsManager.rootFolder || window.fsManager.isFileSystemMode);
+        if (!fsConnected) {
+          alert('❌ FileSystem no está conectado.\n\nDebes conectar la carpeta INVENTARIO_STORAGE primero (en PC local).\n\nVe a Configuración → Conectar Carpeta');
+          return;
+        }
+        
+        // Verificar que la carpeta de imágenes exista
+        if (!window.fsManager.imagesFolder) {
+          alert('❌ La carpeta de imágenes no está disponible.\n\nAsegúrate de que INVENTARIO_STORAGE/imagenes existe.');
           return;
         }
         
