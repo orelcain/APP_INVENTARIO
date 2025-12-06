@@ -335,14 +335,17 @@
       
       // 🖼️ MIGRAR IMÁGENES DE FILESYSTEM A FIREBASE STORAGE
       window.migrarImagenesAFirebase = async function() {
+        // Obtener fsManager desde app (es donde está asignado correctamente)
+        const fsManager = window.app?.fsManager;
+        
         console.log('🔍 Verificando requisitos para migración...');
         console.log('  - firebaseImageStorage:', !!window.firebaseImageStorage);
         console.log('  - isReady:', window.firebaseImageStorage?.isReady?.());
         console.log('  - isAuthenticated:', window.firebaseImageStorage?.isAuthenticated?.());
-        console.log('  - fsManager:', !!window.fsManager);
-        console.log('  - fsManager.rootFolder:', !!window.fsManager?.rootFolder);
-        console.log('  - fsManager.isFileSystemMode:', window.fsManager?.isFileSystemMode);
-        console.log('  - fsManager.imagesFolder:', !!window.fsManager?.imagesFolder);
+        console.log('  - fsManager (from app):', !!fsManager);
+        console.log('  - fsManager.rootFolder:', !!fsManager?.rootFolder);
+        console.log('  - fsManager.isFileSystemMode:', fsManager?.isFileSystemMode);
+        console.log('  - fsManager.imagesFolder:', !!fsManager?.imagesFolder);
         
         // Verificar Firebase Storage disponible
         if (!window.firebaseImageStorage) {
@@ -360,15 +363,15 @@
           return;
         }
         
-        // Verificar FileSystem conectado - ser más flexible
-        const fsConnected = window.fsManager && (
-          window.fsManager.rootFolder || 
-          window.fsManager.isFileSystemMode || 
-          window.fsManager.imagesFolder
+        // Verificar FileSystem conectado - usar fsManager de app
+        const fsConnected = fsManager && (
+          fsManager.rootFolder || 
+          fsManager.isFileSystemMode || 
+          fsManager.imagesFolder
         );
         
         if (!fsConnected) {
-          alert('❌ FileSystem no está conectado.\n\nDebes conectar la carpeta INVENTARIO_STORAGE primero (en PC local).\n\nVe a Configuración → Conectar Carpeta\n\n🔍 Debug:\n- fsManager: ' + !!window.fsManager + '\n- rootFolder: ' + !!window.fsManager?.rootFolder + '\n- isFileSystemMode: ' + window.fsManager?.isFileSystemMode + '\n- imagesFolder: ' + !!window.fsManager?.imagesFolder);
+          alert('❌ FileSystem no está conectado.\n\nDebes conectar la carpeta INVENTARIO_STORAGE primero (en PC local).\n\nVe a Configuración → Conectar Carpeta\n\n🔍 Debug:\n- fsManager: ' + !!fsManager + '\n- rootFolder: ' + !!fsManager?.rootFolder + '\n- isFileSystemMode: ' + fsManager?.isFileSystemMode + '\n- imagesFolder: ' + !!fsManager?.imagesFolder);
           return;
         }
         
@@ -419,8 +422,8 @@
           console.log(`🔄 [${i+1}/${imagenesAMigrar.length}] Migrando: ${item.repuestoNombre}`);
           
           try {
-            // Cargar imagen desde FileSystem
-            const imageData = await window.fsManager.loadImage(item.media.url || item.media.name);
+            // Cargar imagen desde FileSystem (usar fsManager de app)
+            const imageData = await fsManager.loadImage(item.media.url || item.media.name);
             
             if (!imageData) {
               throw new Error('No se pudo cargar la imagen desde FileSystem');
