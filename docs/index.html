@@ -33080,8 +33080,18 @@ class InventarioCompleto {
       // Detectar si estamos en servidor HTTP
       const isHTTPMode = window.location.protocol === 'http:' || window.location.protocol === 'https:';
       
+      // 🔥 DETECTAR GITHUB PAGES - Las imágenes FileSystem locales NO están disponibles
+      const isGitHubPages = window.location.hostname.includes('github.io');
+      
+      if (isGitHubPages) {
+        // En GitHub Pages, las imágenes FileSystem (locales) no existen
+        // Retornar null para que use el placeholder
+        console.log('🌐 [GitHub Pages] Imagen FileSystem no disponible en la nube:', path.split('/').pop());
+        return null;
+      }
+      
       if (isHTTPMode) {
-        // En modo HTTP, convertir a ruta del servidor
+        // En modo HTTP LOCAL (ej: localhost, Vite), convertir a ruta del servidor
         let serverPath = path;
         if (path.startsWith('./imagenes/')) {
           serverPath = 'INVENTARIO_STORAGE/' + path.substring(2);
@@ -33092,7 +33102,7 @@ class InventarioCompleto {
         }
         // Codificar espacios
         serverPath = serverPath.replace(/ /g, '%20');
-        console.log(' [HTTP Mode] Usando ruta servidor:', serverPath);
+        console.log(' [HTTP Mode Local] Usando ruta servidor:', serverPath);
         return serverPath;
       } else {
         // Modo archivo local
