@@ -37803,7 +37803,17 @@ class InventarioCompleto {
   }
 
   loadDefaultData() {
-    //  DATOS DE PRUEBA: 2 repuestos por cada nivel de jerarqua
+    // 🔥 SI FIREBASE SYNC ESTÁ ACTIVADA, NO CARGAR DATOS DE PRUEBA
+    // Los datos vendrán de Firebase en tiempo real
+    const firebaseSyncEnabled = localStorage.getItem('firebaseSyncEnabled') === 'true';
+    if (firebaseSyncEnabled) {
+      console.log('☁️ Firebase Sync activa - Omitiendo datos de prueba, esperando datos de Firebase...');
+      this.repuestos = [];
+      return;
+    }
+    
+    //  DATOS DE PRUEBA: 2 repuestos por cada nivel de jerarqua (solo si NO hay Firebase sync)
+    console.log('📦 Cargando datos de prueba (Firebase sync no activa)...');
     this.repuestos = [
       // 
       // NIVEL 1: Solo Planta (mnimo)
