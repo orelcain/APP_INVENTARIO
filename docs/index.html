@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>APP Inventario v6.0</title>
   
+  <!-- Base URL para GitHub Pages -->
+  <base href="./">
+  
   <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#1a1a2e">
   <meta name="description" content="Sistema de inventario con mapas interactivos, multimedia y sincronización en la nube">
@@ -64383,8 +64386,9 @@ function activarSincronizacionTiempoReal() {
                 window.app.repuestos = data;
                 
                 // Re-renderizar grid si estamos en la pestaña de inventario
-                if (window.app.renderizarGrid) {
-                    window.app.renderizarGrid();
+                if (window.app.renderInventario) {
+                    window.app.renderInventario();
+                    console.log('🔄 Grid re-renderizado con datos de Firebase');
                 }
                 
                 // Actualizar estado UI
