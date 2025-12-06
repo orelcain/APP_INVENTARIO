@@ -1,6 +1,7 @@
 # Datos sensibles - No publicar en GitHub Pages
 INVENTARIO_STORAGE/
 *.json
+!manifest.json
 *.bak
 *.log
 

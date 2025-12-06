@@ -1,0 +1,43 @@
+{
+  "name": "Inventario de Repuestos",
+  "short_name": "Inventario",
+  "description": "Sistema de gestión de inventario de repuestos industriales",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#5b8bb4",
+  "orientation": "any",
+  "scope": "./",
+  "lang": "es",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "./icons/icon-512x512.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nuevo Repuesto",
+      "short_name": "Nuevo",
+      "description": "Agregar un nuevo repuesto al inventario",
+      "url": "./index.html?action=new"
+    },
+    {
+      "name": "Buscar",
+      "short_name": "Buscar", 
+      "description": "Buscar repuestos en el inventario",
+      "url": "./index.html?action=search"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
