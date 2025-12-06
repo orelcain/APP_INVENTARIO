@@ -33484,7 +33484,18 @@ class InventarioCompleto {
     try {
       localStorage.setItem('inventarioJerarquiaAnidada', JSON.stringify(this.jerarquiaAnidada));
       localStorage.setItem('jerarquiaAnidada', JSON.stringify(this.jerarquiaAnidada));
-      console.log(' Jerarqua anidada guardada');
+      console.log(' Jerarqua anidada guardada en localStorage');
+
+      // 🔥 SYNC CON FIREBASE: Guardar también en Firestore si está disponible
+      if (window.firebaseStorageAdapter && window.firebaseService && window.firebaseService.isAuthenticated()) {
+        window.firebaseStorageAdapter.guardarJerarquia(this.jerarquiaAnidada)
+          .then(success => {
+            if (success) {
+              console.log('☁️ Jerarquía sincronizada con Firebase');
+            }
+          })
+          .catch(err => console.warn('⚠️ No se pudo sincronizar jerarquía con Firebase:', err));
+      }
 
       const detail = {
         scope: 'jerarquiaAnidada',
@@ -64599,6 +64610,29 @@ if (document.readyState === 'loading') {
 console.log('✅ Sistema de sincronización en tiempo real disponible');
 console.log('💡 Usa: window.activarSincronizacionTiempoReal() para activar');
 console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactivar');
+
+// 🔧 FUNCIÓN DE UTILIDAD: Migrar solo jerarquía a Firebase
+window.migrarJerarquiaAFirebase = async function() {
+    if (!window.firebaseStorageAdapter || !window.firebaseService?.isAuthenticated()) {
+        console.error('❌ Firebase no disponible o no autenticado');
+        return false;
+    }
+    
+    const jerarquia = window.app?.jerarquiaAnidada || [];
+    if (jerarquia.length === 0) {
+        console.warn('⚠️ No hay jerarquía local para migrar');
+        return false;
+    }
+    
+    console.log(`🔄 Migrando jerarquía a Firebase (${jerarquia.length} áreas)...`);
+    const result = await window.firebaseStorageAdapter.guardarJerarquia(jerarquia);
+    
+    if (result) {
+        console.log('✅ Jerarquía migrada exitosamente');
+    }
+    return result;
+};
+console.log('💡 Usa: window.migrarJerarquiaAFirebase() para subir la jerarquía a Firebase');
 </script>
 
 <!-- ================================================================== -->
