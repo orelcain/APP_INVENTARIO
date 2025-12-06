@@ -252,6 +252,66 @@
         }, 3000);
       });
       
+      // 🗑️ LIMPIAR REPUESTOS LOCALES (localStorage)
+      window.limpiarRepuestosLocales = function() {
+        const repuestosLocales = JSON.parse(localStorage.getItem('inventarioData') || '[]');
+        const cantidadLocal = repuestosLocales.length;
+        
+        if (cantidadLocal === 0) {
+          alert('✅ No hay repuestos en localStorage para limpiar');
+          return;
+        }
+        
+        const repuestosFirebase = window.app?.repuestos?.length || 0;
+        
+        const confirmar = confirm(
+          `⚠️ LIMPIAR REPUESTOS LOCALES\n\n` +
+          `📦 Repuestos en localStorage: ${cantidadLocal}\n` +
+          `☁️ Repuestos en Firebase: ${repuestosFirebase}\n\n` +
+          `¿Estás seguro de eliminar los ${cantidadLocal} repuestos locales?\n\n` +
+          `(Los datos de Firebase NO se verán afectados)`
+        );
+        
+        if (confirmar) {
+          localStorage.removeItem('inventarioData');
+          console.log(`🗑️ Eliminados ${cantidadLocal} repuestos de localStorage`);
+          alert(`✅ Eliminados ${cantidadLocal} repuestos de localStorage\n\n🔄 Recarga la página para ver los cambios`);
+        }
+      };
+      
+      // 📊 VER ESTADO DE DATOS
+      window.verEstadoDatos = function() {
+        const repuestosLocal = JSON.parse(localStorage.getItem('inventarioData') || '[]');
+        const repuestosMemoria = window.app?.repuestos || [];
+        const jerarquiaLocal = JSON.parse(localStorage.getItem('jerarquiaAnidada') || '[]');
+        const syncEnabled = localStorage.getItem('firebaseSyncEnabled') === 'true';
+        const fsConnected = window.fsManager?.rootFolder ? true : false;
+        
+        const info = `
+📊 ESTADO DE DATOS
+═══════════════════════════════
+
+📦 REPUESTOS:
+   • localStorage: ${repuestosLocal.length}
+   • En memoria (app): ${repuestosMemoria.length}
+   • Firebase sync: ${syncEnabled ? '✅ Activa' : '❌ Inactiva'}
+
+🗂️ JERARQUÍA:
+   • Áreas locales: ${jerarquiaLocal.length}
+   • En app: ${window.app?.jerarquiaAnidada?.length || 0}
+
+💾 ALMACENAMIENTO:
+   • FileSystem conectado: ${fsConnected ? '✅ Sí' : '❌ No'}
+   • Firebase Storage: ${window.firebaseImageStorage ? '✅ Activo' : '❌ No'}
+
+🔄 SINCRONIZACIÓN:
+   • Tiempo real: ${syncEnabled ? '✅ Activa' : '❌ Inactiva'}
+`;
+        
+        console.log(info);
+        alert(info);
+      };
+      
       console.log('🔧 Sistema de Debug Universal inicializado');
     })();
   </script>
@@ -17742,6 +17802,16 @@
             </button>
             <button onclick="window.shareDebugLogs()" class="btn btn-secondary" style="padding: 10px 20px; background: #6366f1;">
               📥 Descargar .txt
+            </button>
+          </div>
+          
+          <!-- Herramientas de Datos -->
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <button onclick="window.limpiarRepuestosLocales()" class="btn btn-danger" style="padding: 10px 20px;">
+              🗑️ Limpiar Repuestos Locales
+            </button>
+            <button onclick="window.verEstadoDatos()" class="btn btn-info" style="padding: 10px 20px;">
+              📊 Ver Estado Datos
             </button>
           </div>
           
