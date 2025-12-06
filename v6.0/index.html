@@ -15883,6 +15883,446 @@
   }
 }
 
+/* ================================================================== */
+/* 🖼️ VISOR DE IMÁGENES FULLSCREEN (LIGHTBOX TÁCTIL)                  */
+/* ================================================================== */
+.image-fullscreen-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: fadeInViewer 0.3s ease;
+  touch-action: none;
+}
+
+@keyframes fadeInViewer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.image-fullscreen-viewer .viewer-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+  z-index: 10;
+}
+
+.image-fullscreen-viewer .viewer-title {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image-fullscreen-viewer .viewer-counter {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.85rem;
+  background: rgba(255,255,255,0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.image-fullscreen-viewer .viewer-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 20;
+}
+
+.image-fullscreen-viewer .viewer-close:hover,
+.image-fullscreen-viewer .viewer-close:active {
+  background: rgba(255,255,255,0.3);
+  transform: scale(1.1);
+}
+
+.image-fullscreen-viewer .viewer-image-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.image-fullscreen-viewer .viewer-image {
+  max-width: 95%;
+  max-height: 80vh;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  cursor: zoom-in;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.image-fullscreen-viewer .viewer-image.zoomed {
+  cursor: zoom-out;
+}
+
+.image-fullscreen-viewer .viewer-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 80px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 5;
+}
+
+.image-fullscreen-viewer .viewer-nav:hover,
+.image-fullscreen-viewer .viewer-nav:active {
+  background: rgba(255,255,255,0.25);
+}
+
+.image-fullscreen-viewer .viewer-nav.prev {
+  left: 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.image-fullscreen-viewer .viewer-nav.next {
+  right: 0;
+  border-radius: 8px 0 0 8px;
+}
+
+.image-fullscreen-viewer .viewer-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.image-fullscreen-viewer .viewer-dots {
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+  justify-content: center;
+}
+
+.image-fullscreen-viewer .viewer-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.image-fullscreen-viewer .viewer-dot.active {
+  background: white;
+  transform: scale(1.3);
+}
+
+/* Mobile optimizations for viewer */
+@media (max-width: 768px) {
+  .image-fullscreen-viewer .viewer-nav {
+    width: 40px;
+    height: 60px;
+    font-size: 22px;
+    opacity: 0.6;
+  }
+  
+  .image-fullscreen-viewer .viewer-image {
+    max-width: 100%;
+    max-height: 75vh;
+  }
+  
+  .image-fullscreen-viewer .viewer-header {
+    padding: 12px 60px 12px 16px;
+  }
+  
+  .image-fullscreen-viewer .viewer-title {
+    font-size: 0.85rem;
+  }
+}
+
+/* ================================================================== */
+/* 📱 MODAL PRINCIPAL - CORRECCIONES MÓVIL CRÍTICAS                   */
+/* ================================================================== */
+@media (max-width: 768px) {
+  /* Modal ocupa toda la pantalla sin desbordarse */
+  .modal {
+    padding: 0 !important;
+  }
+  
+  .modal-content {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Botón cerrar en posición segura (no detrás de campana) */
+  #modal .modal-close {
+    position: fixed !important;
+    top: 10px !important;
+    left: 10px !important;
+    right: auto !important;
+    z-index: 10010 !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(200, 80, 80, 0.95) !important;
+    border-radius: 8px !important;
+    font-size: 22px !important;
+  }
+  
+  /* Contenido scroll con padding para botón cerrar */
+  #modal .modal-scroll {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 60px 12px 120px 12px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Wizard timeline compacta y scrollable */
+  #modal .wizard-timeline {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 4px !important;
+    padding: 8px !important;
+    background: var(--bg-secondary) !important;
+    border-radius: 8px !important;
+    margin-bottom: 12px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+  }
+  
+  #modal .wizard-step-indicator {
+    flex: 0 0 auto !important;
+    min-width: 70px !important;
+    padding: 8px !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+  
+  #modal .wizard-step-number {
+    width: 26px !important;
+    height: 26px !important;
+    font-size: 0.8rem !important;
+  }
+  
+  #modal .wizard-step-meta {
+    display: block !important;
+  }
+  
+  #modal .wizard-step-label {
+    display: block !important;
+    font-size: 0.65rem !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+  
+  #modal .wizard-step-helper {
+    display: none !important;
+  }
+  
+  /* Botón guardar fijo en la parte inferior */
+  #modal .step-actions-bottom {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 12px !important;
+    background: var(--bg-secondary) !important;
+    border-top: 1px solid var(--border-color) !important;
+    z-index: 10005 !important;
+    display: flex !important;
+    gap: 10px !important;
+  }
+  
+  #modal .step-actions-bottom .btn {
+    flex: 1 !important;
+    min-height: 48px !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* ================================================================== */
+/* 📱 CONTEO MODAL - SIN SCROLL LATERAL                               */
+/* ================================================================== */
+@media (max-width: 768px) {
+  #modalConteoIndividual {
+    padding: 0 !important;
+  }
+  
+  #modalConteoIndividual .modal-dialog-custom {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  
+  #modalConteoIndividual .modal-content-custom {
+    height: 100vh !important;
+    border-radius: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+  
+  #modalConteoIndividual .modal-body-custom {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  #modalConteoIndividual .modal-footer-custom {
+    position: sticky !important;
+    bottom: 0 !important;
+    padding: 12px !important;
+    background: var(--bg-secondary) !important;
+    border-top: 1px solid var(--border-color) !important;
+  }
+  
+  /* Botón actualizar conteo siempre visible */
+  #modalConteoIndividual .modal-footer-custom .btn {
+    width: 100% !important;
+    min-height: 50px !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* ================================================================== */
+/* 📱 OCULTAR ELEMENTOS REDUNDANTES EN MÓVIL                          */
+/* ================================================================== */
+@media (max-width: 768px) {
+  /* Ocultar botón agregar del header (ya existe en footer) */
+  .header-actions .glass-btn-primary[onclick*="openModal('add')"],
+  .header-actions [onclick*="openModal('new')"] {
+    display: none !important;
+  }
+  
+  /* Ocultar indicador conectado/desconectado (no se usa con Firebase) */
+  #estadoSincronizacion,
+  .sync-status-indicator,
+  [data-sync-indicator] {
+    display: none !important;
+  }
+  
+  /* Campana de notificaciones - mover para no tapar modal */
+  .notification-bell {
+    top: auto !important;
+    bottom: 80px !important;
+    right: 16px !important;
+    z-index: 9000 !important;
+  }
+  
+  .notification-panel {
+    top: auto !important;
+    bottom: 140px !important;
+    right: 16px !important;
+    max-height: 50vh !important;
+  }
+  
+  /* Botón PWA refresh - junto a campana */
+  .pwa-refresh-btn {
+    top: auto !important;
+    bottom: 130px !important;
+    right: 16px !important;
+  }
+}
+
+/* ================================================================== */
+/* 📱 MINIATURA DE IMAGEN CON FONDO DE RESPALDO                       */
+/* ================================================================== */
+.mobile-thumbnail {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+}
+
+.mobile-thumbnail.has-image {
+  border-color: var(--primary);
+}
+
+.mobile-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mobile-thumbnail .thumb-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: var(--primary);
+  color: white;
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mobile-thumbnail .thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+}
+
 /* ===== RESTO DEL CSS OMITIDO POR BREVEDAD - SE APLICAR COMPLETO ===== */
     
   </style>
@@ -38905,43 +39345,23 @@ class InventarioCompleto {
               
               <!-- 📸 IMAGEN + HEADER -->
               <div style="display: flex; gap: 12px; margin-bottom: 10px;">
-                <!-- Miniatura de imagen -->
+                <!-- Miniatura de imagen (click abre visor si hay imagen, sino abre editar) -->
                 <div 
-                  onclick="app.openModal('edit', '${r.id}')"
-                  style="
-                    width: 70px;
-                    height: 70px;
-                    min-width: 70px;
-                    border-radius: 10px;
-                    overflow: hidden;
-                    background: var(--bg-primary);
-                    border: 2px solid ${hasRealImage ? 'var(--primary)' : 'var(--border-color)'};
-                    cursor: pointer;
-                    position: relative;
-                  "
+                  class="mobile-thumbnail ${hasRealImage ? 'has-image' : ''}"
+                  onclick="${hasRealImage ? `event.stopPropagation(); app.openRepuestoImages('${r.id}')` : `app.openModal('edit', '${r.id}')`}"
+                  data-repuesto-id="${r.id}"
                 >
-                  <img 
-                    src="${imageUrl}" 
-                    alt="${r.nombre}"
-                    style="
-                      width: 100%;
-                      height: 100%;
-                      object-fit: cover;
-                    "
-                    onerror="this.src='${this.getPlaceholderImage()}'"
-                  />
                   ${hasRealImage ? `
-                    <div style="
-                      position: absolute;
-                      bottom: 2px;
-                      right: 2px;
-                      background: var(--primary);
-                      color: white;
-                      font-size: 8px;
-                      padding: 2px 4px;
-                      border-radius: 4px;
-                    ">📷</div>
-                  ` : ''}
+                    <img 
+                      src="${imageUrl}" 
+                      alt="${r.nombre}"
+                      loading="lazy"
+                      onerror="this.parentElement.innerHTML='<div class=\\'thumb-placeholder\\'>📦</div>'"
+                    />
+                    <span class="thumb-badge">📷 ${(r.multimedia || []).filter(m => m && (m.type === 'image' || (typeof m === 'string' && !m.endsWith('.pdf')))).length || 1}</span>
+                  ` : `
+                    <div class="thumb-placeholder">📦</div>
+                  `}
                 </div>
                 
                 <!-- Info principal -->
@@ -42503,6 +42923,54 @@ class InventarioCompleto {
     await this.render();
     this.renderFilters();
     this.showToast(' Repuesto e imgenes eliminados', 'success');
+  }
+
+  // 🖼️ Abrir visor de imágenes del repuesto
+  async openRepuestoImages(id) {
+    const repuesto = this.repuestos.find(r => r.id === id);
+    if (!repuesto || !repuesto.multimedia || repuesto.multimedia.length === 0) {
+      this.showToast('📷 Este repuesto no tiene imágenes', 'info');
+      return;
+    }
+    
+    // Filtrar solo imágenes
+    const imagenes = repuesto.multimedia.filter(m => {
+      if (typeof m === 'string') {
+        return !m.endsWith('.pdf') && !m.endsWith('.doc') && !m.endsWith('.docx');
+      }
+      return m.type === 'image' || (m.tipo && ['imagen', 'image', 'img', 'foto'].includes(m.tipo.toLowerCase()));
+    });
+    
+    if (imagenes.length === 0) {
+      this.showToast('📷 Este repuesto no tiene imágenes (solo documentos)', 'info');
+      return;
+    }
+    
+    // Mostrar indicador de carga
+    this.showToast('🔄 Cargando imágenes...', 'info', 1500);
+    
+    try {
+      // Cargar todas las URLs de imágenes
+      const imageUrls = [];
+      for (const media of imagenes) {
+        const url = await this.getImageUrl(media);
+        if (url && !url.startsWith('data:image/png;base64,iVBORw0KG')) { // Excluir placeholder
+          imageUrls.push(url);
+        }
+      }
+      
+      if (imageUrls.length === 0) {
+        this.showToast('⚠️ No se pudieron cargar las imágenes', 'warning');
+        return;
+      }
+      
+      // Abrir el visor fullscreen
+      window.openImageViewer(imageUrls, 0, repuesto.nombre);
+      
+    } catch (error) {
+      console.error('Error cargando imágenes:', error);
+      this.showToast('❌ Error al cargar imágenes', 'error');
+    }
   }
 
   updateAutocompleteData() {
@@ -63845,6 +64313,277 @@ if (document.readyState === 'loading') {
 }
 
 console.log('🔄 Sistema de actualización PWA disponible');
+</script>
+
+<!-- ================================================================== -->
+<!-- 🖼️ VISOR DE IMÁGENES FULLSCREEN                                    -->
+<!-- ================================================================== -->
+<script>
+// Sistema de visor de imágenes fullscreen con swipe y zoom
+window.ImageFullscreenViewer = {
+  currentImages: [],
+  currentIndex: 0,
+  viewerElement: null,
+  scale: 1,
+  startX: 0,
+  startY: 0,
+  translateX: 0,
+  translateY: 0,
+  isDragging: false,
+  
+  // Abrir el visor con array de imágenes
+  open(images, startIndex = 0, title = '') {
+    if (!images || images.length === 0) {
+      console.warn('🖼️ No hay imágenes para mostrar');
+      return;
+    }
+    
+    this.currentImages = Array.isArray(images) ? images : [images];
+    this.currentIndex = startIndex;
+    this.scale = 1;
+    this.translateX = 0;
+    this.translateY = 0;
+    
+    this.render(title);
+    this.attachEvents();
+    
+    // Bloquear scroll del body
+    document.body.style.overflow = 'hidden';
+  },
+  
+  // Cerrar el visor
+  close() {
+    if (this.viewerElement) {
+      this.viewerElement.remove();
+      this.viewerElement = null;
+    }
+    document.body.style.overflow = '';
+  },
+  
+  // Navegar a imagen anterior
+  prev() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.updateImage();
+    }
+  },
+  
+  // Navegar a imagen siguiente
+  next() {
+    if (this.currentIndex < this.currentImages.length - 1) {
+      this.currentIndex++;
+      this.updateImage();
+    }
+  },
+  
+  // Ir a imagen específica
+  goTo(index) {
+    if (index >= 0 && index < this.currentImages.length) {
+      this.currentIndex = index;
+      this.updateImage();
+    }
+  },
+  
+  // Toggle zoom
+  toggleZoom() {
+    const img = this.viewerElement?.querySelector('.viewer-image');
+    if (!img) return;
+    
+    if (this.scale === 1) {
+      this.scale = 2.5;
+      img.classList.add('zoomed');
+    } else {
+      this.scale = 1;
+      this.translateX = 0;
+      this.translateY = 0;
+      img.classList.remove('zoomed');
+    }
+    this.applyTransform();
+  },
+  
+  // Aplicar transformación al zoom
+  applyTransform() {
+    const img = this.viewerElement?.querySelector('.viewer-image');
+    if (img) {
+      img.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
+    }
+  },
+  
+  // Actualizar imagen mostrada
+  updateImage() {
+    this.scale = 1;
+    this.translateX = 0;
+    this.translateY = 0;
+    
+    const img = this.viewerElement?.querySelector('.viewer-image');
+    const counter = this.viewerElement?.querySelector('.viewer-counter');
+    const dots = this.viewerElement?.querySelectorAll('.viewer-dot');
+    const prevBtn = this.viewerElement?.querySelector('.viewer-nav.prev');
+    const nextBtn = this.viewerElement?.querySelector('.viewer-nav.next');
+    
+    if (img) {
+      img.style.transform = 'scale(1)';
+      img.classList.remove('zoomed');
+      img.src = this.currentImages[this.currentIndex];
+    }
+    
+    if (counter) {
+      counter.textContent = `${this.currentIndex + 1} / ${this.currentImages.length}`;
+    }
+    
+    dots?.forEach((dot, i) => {
+      dot.classList.toggle('active', i === this.currentIndex);
+    });
+    
+    if (prevBtn) prevBtn.disabled = this.currentIndex === 0;
+    if (nextBtn) nextBtn.disabled = this.currentIndex === this.currentImages.length - 1;
+  },
+  
+  // Renderizar el visor
+  render(title) {
+    // Eliminar visor existente si hay
+    this.close();
+    
+    const hasMultiple = this.currentImages.length > 1;
+    
+    const html = `
+      <div class="image-fullscreen-viewer" id="imageFullscreenViewer">
+        <div class="viewer-header">
+          <span class="viewer-title">${title || 'Imagen'}</span>
+          ${hasMultiple ? `<span class="viewer-counter">${this.currentIndex + 1} / ${this.currentImages.length}</span>` : ''}
+        </div>
+        
+        <button class="viewer-close" onclick="ImageFullscreenViewer.close()" aria-label="Cerrar">×</button>
+        
+        <div class="viewer-image-container">
+          ${hasMultiple ? `<button class="viewer-nav prev" onclick="ImageFullscreenViewer.prev()" ${this.currentIndex === 0 ? 'disabled' : ''}>❮</button>` : ''}
+          
+          <img 
+            class="viewer-image" 
+            src="${this.currentImages[this.currentIndex]}" 
+            alt="Imagen ${this.currentIndex + 1}"
+            onclick="ImageFullscreenViewer.toggleZoom()"
+            draggable="false"
+          />
+          
+          ${hasMultiple ? `<button class="viewer-nav next" onclick="ImageFullscreenViewer.next()" ${this.currentIndex === this.currentImages.length - 1 ? 'disabled' : ''}>❯</button>` : ''}
+        </div>
+        
+        ${hasMultiple ? `
+          <div class="viewer-dots">
+            ${this.currentImages.map((_, i) => `
+              <button class="viewer-dot ${i === this.currentIndex ? 'active' : ''}" onclick="ImageFullscreenViewer.goTo(${i})"></button>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', html);
+    this.viewerElement = document.getElementById('imageFullscreenViewer');
+  },
+  
+  // Eventos táctiles y de teclado
+  attachEvents() {
+    if (!this.viewerElement) return;
+    
+    const container = this.viewerElement.querySelector('.viewer-image-container');
+    const img = this.viewerElement.querySelector('.viewer-image');
+    
+    // Click fuera de la imagen cierra
+    this.viewerElement.addEventListener('click', (e) => {
+      if (e.target === this.viewerElement || e.target.classList.contains('viewer-image-container')) {
+        this.close();
+      }
+    });
+    
+    // Teclas de navegación
+    const keyHandler = (e) => {
+      if (!this.viewerElement) {
+        document.removeEventListener('keydown', keyHandler);
+        return;
+      }
+      
+      switch(e.key) {
+        case 'Escape': this.close(); break;
+        case 'ArrowLeft': this.prev(); break;
+        case 'ArrowRight': this.next(); break;
+      }
+    };
+    document.addEventListener('keydown', keyHandler);
+    
+    // Swipe para móvil
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    
+    container?.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+    
+    container?.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      
+      const diffX = touchStartX - touchEndX;
+      const diffY = touchStartY - touchEndY;
+      
+      // Solo procesar swipes horizontales significativos
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+          this.next(); // Swipe izquierda = siguiente
+        } else {
+          this.prev(); // Swipe derecha = anterior
+        }
+      }
+    }, { passive: true });
+    
+    // Pinch-to-zoom para móvil
+    let initialDistance = 0;
+    let initialScale = 1;
+    
+    container?.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        initialDistance = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+        initialScale = this.scale;
+      }
+    }, { passive: true });
+    
+    container?.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && initialDistance) {
+        const currentDistance = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+        
+        this.scale = Math.min(Math.max(initialScale * (currentDistance / initialDistance), 1), 4);
+        this.applyTransform();
+        
+        if (this.scale > 1) {
+          img?.classList.add('zoomed');
+        } else {
+          img?.classList.remove('zoomed');
+        }
+      }
+    }, { passive: true });
+    
+    container?.addEventListener('touchend', () => {
+      initialDistance = 0;
+    }, { passive: true });
+  }
+};
+
+// Función helper para abrir visor desde cualquier lugar
+window.openImageViewer = function(images, startIndex = 0, title = '') {
+  ImageFullscreenViewer.open(images, startIndex, title);
+};
+
+console.log('🖼️ Visor de imágenes fullscreen disponible');
 </script>
 
 <!-- ================================================================== -->
