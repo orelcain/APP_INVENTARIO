@@ -33077,11 +33077,51 @@ class InventarioCompleto {
       return this.getPlaceholderImage();
     }
     
+    console.log('📸 getFirstImage - multimedia recibida:', multimedia.length, 'items');
+    
+    // Buscar primero imágenes con URLs de Firebase Storage
     for (const media of multimedia) {
-      const url = await this.getImageUrl(media);
-      if (url) return url;
+      if (!media) continue;
+      
+      // Debug del contenido
+      if (typeof media === 'object') {
+        console.log('📸 Analizando media:', { 
+          type: media.type, 
+          url: media.url?.substring(0, 50) + '...',
+          isFirebaseStorage: media.isFirebaseStorage 
+        });
+      }
+      
+      // Si tiene URL directa de Firebase, usarla sin más procesamiento
+      if (media.url && (
+        media.url.includes('firebasestorage.googleapis.com') || 
+        media.url.includes('.firebasestorage.app') ||
+        media.url.startsWith('https://')
+      )) {
+        console.log('📸 ✅ URL Firebase encontrada directamente:', media.url.substring(0, 60));
+        return media.url;
+      }
+      
+      // Si es tipo imagen, intentar obtener URL
+      if (media.type === 'image' || !media.type) {
+        const url = await this.getImageUrl(media);
+        if (url && !url.startsWith('data:')) {
+          console.log('📸 ✅ URL válida obtenida:', url.substring(0, 60));
+          return url;
+        }
+      }
     }
     
+    // Último intento: cualquier media que devuelva URL
+    for (const media of multimedia) {
+      const url = await this.getImageUrl(media);
+      if (url && !url.startsWith('data:')) {
+        console.log('📸 ✅ URL encontrada en segundo pase:', url.substring(0, 60));
+        return url;
+      }
+    }
+    
+    console.log('📸 ❌ No se encontró imagen válida, usando placeholder');
     return this.getPlaceholderImage();
   }
 
@@ -39503,13 +39543,23 @@ class InventarioCompleto {
     const repuestosWithImages = await Promise.all(repuestos.map(async (r) => {
       const multimedia = r.multimedia || [];
       let imageUrl = null;
+      
+      // Debug: mostrar multimedia raw
+      if (multimedia.length > 0) {
+        console.log(`📱 [MÓVIL] ${r.nombre?.substring(0, 15)} tiene ${multimedia.length} multimedia:`, 
+          multimedia.map(m => ({ type: m?.type, url: m?.url?.substring(0, 40), isFS: m?.isFirebaseStorage }))
+        );
+      }
+      
       try {
         imageUrl = await this.getFirstImage(multimedia);
         if (imageUrl && !imageUrl.startsWith('data:')) {
-          console.log('📱 [MÓVIL] Imagen cargada para:', r.nombre?.substring(0, 20));
+          console.log('📱 [MÓVIL] ✅ Imagen cargada para:', r.nombre?.substring(0, 20), imageUrl.substring(0, 50));
+        } else if (multimedia.length > 0) {
+          console.log('📱 [MÓVIL] ⚠️ Placeholder usado para:', r.nombre?.substring(0, 20), 'con', multimedia.length, 'multimedia');
         }
       } catch (err) {
-        console.warn('📱 [MÓVIL] Error cargando imagen:', r.nombre, err.message);
+        console.warn('📱 [MÓVIL] ❌ Error cargando imagen:', r.nombre, err.message);
       }
       return { ...r, imageUrl };
     }));
