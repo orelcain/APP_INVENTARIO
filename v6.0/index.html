@@ -38028,287 +38028,11 @@ class InventarioCompleto {
   }
 
   loadDefaultData() {
-    // 🔥 SI FIREBASE SYNC ESTÁ ACTIVADA, NO CARGAR DATOS DE PRUEBA
-    // Los datos vendrán de Firebase en tiempo real
-    const firebaseSyncEnabled = localStorage.getItem('firebaseSyncEnabled') === 'true';
-    if (firebaseSyncEnabled) {
-      console.log('☁️ Firebase Sync activa - Omitiendo datos de prueba, esperando datos de Firebase...');
-      this.repuestos = [];
-      return;
-    }
-    
-    //  DATOS DE PRUEBA: 2 repuestos por cada nivel de jerarqua (solo si NO hay Firebase sync)
-    console.log('📦 Cargando datos de prueba (Firebase sync no activa)...');
-    this.repuestos = [
-      // 
-      // NIVEL 1: Solo Planta (mnimo)
-      // 
-      {
-        id: 1,
-        nombre: 'Extintor Polvo Qumico ABC 10kg',
-        codSAP: 'EXT-001',
-        codProv: 'PROV-EXT-001',
-        cantidad: 15,
-        minimo: 10,
-        optimo: 20,
-        precio: 45000,
-        planta: 'Aquachile Antarfood Chonchi',
-        descripcion: 'Extintor tipo ABC para fuegos clase A, B y C',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 2,
-        nombre: 'Botiqun Primeros Auxilios Completo',
-        codSAP: 'BOT-001',
-        codProv: 'PROV-BOT-001',
-        cantidad: 8,
-        minimo: 5,
-        optimo: 12,
-        precio: 35000,
-        planta: 'Aquachile Antarfood Chonchi',
-        descripcion: 'Botiqun con elementos bsicos de primeros auxilios',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 2: Planta + rea General
-      // 
-      {
-        id: 3,
-        nombre: 'Vlvula Mariposa 6 Pulgadas',
-        codSAP: 'VAL-MA-006',
-        codProv: 'PROV-VAL-006',
-        cantidad: 12,
-        minimo: 8,
-        optimo: 15,
-        precio: 125000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        descripcion: 'Vlvula mariposa para control de flujo en tuberas principales',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 4,
-        nombre: 'Sensor de Temperatura PT100',
-        codSAP: 'SEN-TMP-100',
-        codProv: 'PROV-SEN-100',
-        cantidad: 20,
-        minimo: 15,
-        optimo: 25,
-        precio: 28000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        descripcion: 'Sensor de temperatura tipo PT100 rango -50C a +200C',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 3: Planta + rea General + Sub-rea
-      // 
-      {
-        id: 5,
-        nombre: 'Filtro de Cartucho 5 Micras',
-        codSAP: 'FIL-CAR-005',
-        codProv: 'PROV-FIL-005',
-        cantidad: 30,
-        minimo: 20,
-        optimo: 40,
-        precio: 15000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        descripcion: 'Cartucho de filtro de 5 micras para agua de proceso',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 6,
-        nombre: 'Bomba Centrfuga 5HP',
-        codSAP: 'BOM-CEN-5HP',
-        codProv: 'PROV-BOM-5HP',
-        cantidad: 4,
-        minimo: 2,
-        optimo: 6,
-        precio: 450000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        descripcion: 'Bomba centrfuga 5HP para recirculacin de agua',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 4: Planta + rea General + Sub-rea + Sistema/Equipo
-      // 
-      {
-        id: 7,
-        nombre: 'Rodamiento SKF 6205-2RS',
-        codSAP: 'ROD-SKF-6205',
-        codProv: 'SKF-6205-2RS',
-        cantidad: 25,
-        minimo: 15,
-        optimo: 30,
-        precio: 18500,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        descripcion: 'Rodamiento rgido de bolas con sellos de goma',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 8,
-        nombre: 'Sello Mecnico 25mm',
-        codSAP: 'SEL-MEC-025',
-        codProv: 'PROV-SEL-025',
-        cantidad: 8,
-        minimo: 5,
-        optimo: 12,
-        precio: 65000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        descripcion: 'Sello mecnico para eje de 25mm en bombas',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 5: Planta + rea General + Sub-rea + Sistema/Equipo + Sub-Sistema
-      // 
-      {
-        id: 9,
-        nombre: 'Impulsor de Bomba Acero Inox',
-        codSAP: 'IMP-BOM-INOX',
-        codProv: 'PROV-IMP-INOX',
-        cantidad: 6,
-        minimo: 3,
-        optimo: 8,
-        precio: 185000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        descripcion: 'Impulsor de acero inoxidable 316L para bomba centrfuga',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 10,
-        nombre: 'Carcasa de Bomba Con Bridas',
-        codSAP: 'CAR-BOM-BRID',
-        codProv: 'PROV-CAR-BRID',
-        cantidad: 3,
-        minimo: 2,
-        optimo: 5,
-        precio: 320000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        descripcion: 'Carcasa de bomba centrfuga con bridas de conexin',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 6: Planta + rea General + Sub-rea + Sistema/Equipo + Sub-Sistema + Seccin
-      // 
-      {
-        id: 11,
-        nombre: 'O-Ring Viton 25x3mm',
-        codSAP: 'ORI-VIT-25X3',
-        codProv: 'PROV-ORI-25X3',
-        cantidad: 50,
-        minimo: 30,
-        optimo: 60,
-        precio: 3500,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        seccion: 'Seccin de Sellado',
-        descripcion: 'O-Ring de Viton para sellado de alta temperatura',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 12,
-        nombre: 'Junta Tapa Bomba Tefln',
-        codSAP: 'JUN-TAP-TEF',
-        codProv: 'PROV-JUN-TEF',
-        cantidad: 15,
-        minimo: 10,
-        optimo: 20,
-        precio: 8500,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        seccion: 'Seccin de Sellado',
-        descripcion: 'Junta de tefln para tapa de bomba centrfuga',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 7: Todos los campos (Jerarqua Completa)
-      // 
-      {
-        id: 13,
-        nombre: 'Tornillo Allen M8x40 Inox A4',
-        codSAP: 'TOR-ALL-M8X40',
-        codProv: 'DIN912-M8X40-A4',
-        cantidad: 100,
-        minimo: 50,
-        optimo: 150,
-        precio: 450,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        seccion: 'Seccin de Sellado',
-        detalle: 'Conjunto de Fijacin',
-        descripcion: 'Tornillo allen cabeza cilndrica M8x40mm acero inox A4-70',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 14,
-        nombre: 'Arandela Presin M8 Inox',
-        codSAP: 'ARA-PRE-M8',
-        codProv: 'DIN127-M8-INOX',
-        cantidad: 150,
-        minimo: 80,
-        optimo: 200,
-        precio: 150,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        seccion: 'Seccin de Sellado',
-        detalle: 'Conjunto de Fijacin',
-        descripcion: 'Arandela de presin (grower) M8 acero inoxidable',
-        multimedia: [],
-        ubicaciones: []
-      }
-    ];
-
-    console.log(' Datos de prueba cargados: 14 repuestos con jerarqua completa');
-    console.log(' Cobertura: 2 repuestos por cada nivel (1-7)');
+    // 🔥 FIREBASE-ONLY: Siempre iniciar vacío
+    // Los datos vendrán de Firebase automáticamente al autenticarse
+    console.log('☁️ Modo Firebase-Only - Iniciando sin datos locales, esperando sincronización...');
+    this.repuestos = [];
+    return;
   }
 
   //  Cargar datos de prueba para visualizar jerarqua en PDF
@@ -64749,58 +64473,52 @@ document.head.appendChild(syncStyles);
 window.activarSincronizacionTiempoReal = activarSincronizacionTiempoReal;
 window.desactivarSincronizacionTiempoReal = desactivarSincronizacionTiempoReal;
 
-// 🔄 RESTAURAR ESTADO DE SINCRONIZACIÓN AL CARGAR
-// 🔥 MODO FIREBASE-ONLY: Siempre intentar activar sincronización
+// 🔥 FIREBASE-ONLY: Sincronización automática obligatoria
+// Se activa apenas Firebase está listo, sin depender de localStorage
 function restaurarEstadoSync() {
-    const syncEnabled = localStorage.getItem('firebaseSyncEnabled');
-    console.log('🔄 Verificando estado de sincronización guardado:', syncEnabled);
+    console.log('🔥 FIREBASE-ONLY: Iniciando sincronización automática...');
     
-    // 🔥 FIREBASE-ONLY: Siempre intentar activar (no solo si syncEnabled === 'true')
-    // Esto asegura que nuevos usuarios o después de limpiar caché siempre sincronicen
     let attempts = 0;
-    const maxAttempts = 30; // Máximo 30 intentos (15 segundos)
+    const maxAttempts = 60; // Máximo 60 intentos (30 segundos)
     
-    // Esperar a que Firebase esté completamente listo antes de activar sync
+    // Esperar a que Firebase esté completamente listo
     const checkFirebase = setInterval(() => {
         attempts++;
         
         const firebaseReady = window.firebaseStorageAdapter && 
                               window.firebaseService && 
                               window.firebaseService.isAuthenticated() &&
-                              window.firebaseService.db; // Verificar que Firestore esté disponible
+                              window.firebaseService.db;
         
         if (firebaseReady && !syncActive) {
             clearInterval(checkFirebase);
-            console.log(`🔥 Firebase listo - Activando sincronización automáticamente (intento ${attempts})...`);
+            console.log(`🔥 Firebase listo (intento ${attempts}) - Activando sincronización...`);
             
-            // Pequeño delay adicional para asegurar que todo esté listo
-            setTimeout(() => {
-                activarSincronizacionTiempoReal();
-            }, 500);
+            // Activar inmediatamente
+            activarSincronizacionTiempoReal();
         } else if (syncActive) {
             clearInterval(checkFirebase);
             console.log('✅ Sincronización ya activa');
         } else if (attempts >= maxAttempts) {
             clearInterval(checkFirebase);
-            console.warn('⚠️ No se pudo restaurar sincronización: Firebase no está listo después de 15 segundos');
-            console.log('💡 Puedes activar manualmente con: window.activarSincronizacionTiempoReal()');
-        } else if (attempts % 6 === 0) {
-            // Log cada 3 segundos para debug
-            console.log(`⏳ Esperando Firebase... (${attempts * 500 / 1000}s) - Auth: ${window.firebaseService?.isAuthenticated()}, DB: ${!!window.firebaseService?.db}`);
+            console.warn('⚠️ Timeout: Firebase no está listo después de 30 segundos');
+            console.log('💡 Inicia sesión para sincronizar con Firebase');
+        } else if (attempts % 10 === 0) {
+            // Log cada 5 segundos para debug
+            console.log(`⏳ Esperando Firebase... (${attempts * 500 / 1000}s) - Auth: ${window.firebaseService?.isAuthenticated()}`);
         }
     }, 500);
 }
 
-// Ejecutar restauración cuando el DOM esté listo
+// Ejecutar restauración apenas cargue la página
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(restaurarEstadoSync, 2000));
+    document.addEventListener('DOMContentLoaded', () => setTimeout(restaurarEstadoSync, 500));
 } else {
-    setTimeout(restaurarEstadoSync, 2000);
+    setTimeout(restaurarEstadoSync, 500);
 }
 
 console.log('✅ Sistema de sincronización en tiempo real disponible');
-console.log('💡 Usa: window.activarSincronizacionTiempoReal() para activar');
-console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactivar');
+console.log('🔥 FIREBASE-ONLY: Sincronización automática activada');
 
 // 🔧 FUNCIÓN DE UTILIDAD: Migrar solo jerarquía a Firebase
 window.migrarJerarquiaAFirebase = async function() {
