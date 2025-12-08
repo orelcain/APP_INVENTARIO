@@ -89,5 +89,12 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
+    
+    // Historial de actividad (Activity Log) - Solo admin puede leer, todos pueden crear
+    match /activityLog/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
   }
 }
