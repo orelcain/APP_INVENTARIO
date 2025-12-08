@@ -33671,21 +33671,47 @@ class InventarioCompleto {
   }
 
   detectEdge() {
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isEdgeChromium = userAgent.includes('edg/'); // Edge Chromium (PC y mvil)
-    const isEdgeLegacy = userAgent.includes('edge/'); // Edge Legacy (ya no se usa)
-    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+    const ua = navigator.userAgent; // NO toLowerCase - Edge iOS tiene "EdgiOS"
+    const uaLower = ua.toLowerCase();
     
-    //  ACEPTAR Edge iOS tambin (aunque use WebKit)
-    // El usuario ya est usando Edge, no tiene sentido pedirle que lo descargue
-    if (isEdgeChromium && isIOS) {
-      console.log(' Edge en iOS detectado - Modo mvil con IndexedDB');
-      this.isEdgeIOS = true; // Flag especial para Edge iOS
-      return true; //  S es Edge (aunque limitado)
+    // Edge Chromium en Windows/Mac: contiene "Edg/"
+    const isEdgeDesktop = ua.includes('Edg/');
+    
+    // Edge en iOS: contiene "EdgiOS"
+    const isEdgeIOS = ua.includes('EdgiOS');
+    
+    // Edge en Android: contiene "EdgA"
+    const isEdgeAndroid = ua.includes('EdgA');
+    
+    // Edge Legacy (ya obsoleto pero por compatibilidad)
+    const isEdgeLegacy = uaLower.includes('edge/');
+    
+    // Detectar si es iOS (para el flag especial)
+    const isIOSDevice = /iPhone|iPad|iPod/i.test(ua);
+    
+    // Si es Edge iOS
+    if (isEdgeIOS || (isEdgeDesktop && isIOSDevice)) {
+      console.log('✅ Edge en iOS detectado - Modo móvil con IndexedDB');
+      this.isEdgeIOS = true;
+      return true;
+    }
+    
+    // Si es Edge Android
+    if (isEdgeAndroid) {
+      console.log('✅ Edge en Android detectado');
+      this.isEdgeIOS = false;
+      return true;
+    }
+    
+    // Si es Edge Desktop
+    if (isEdgeDesktop || isEdgeLegacy) {
+      console.log('✅ Microsoft Edge Desktop detectado');
+      this.isEdgeIOS = false;
+      return true;
     }
     
     this.isEdgeIOS = false;
-    return isEdgeChromium || isEdgeLegacy;
+    return false;
   }
 
   // Mostrar advertencia si no es Edge
@@ -33879,14 +33905,36 @@ class InventarioCompleto {
     console.log(' Banner de Modo Mvil Simplificado mostrado');
   }
 
-  // Obtener nombre del navegador actual
+  // Obtener nombre del navegador actual - MEJORADO
   getBrowserName() {
-    const userAgent = navigator.userAgent.toLowerCase();
+    const ua = navigator.userAgent;
     
-    if (userAgent.includes('firefox')) return 'Mozilla Firefox';
-    if (userAgent.includes('chrome') && !userAgent.includes('edg')) return 'Google Chrome';
-    if (userAgent.includes('safari') && !userAgent.includes('chrome')) return 'Safari';
-    if (userAgent.includes('opera') || userAgent.includes('opr')) return 'Opera';
+    // Edge debe detectarse PRIMERO porque contiene "Chrome" y "Safari" en su UA
+    // Edge en Windows/Mac: "Edg/" | Edge en iOS: "EdgiOS" | Edge en Android: "EdgA"
+    if (ua.includes('Edg/') || ua.includes('EdgiOS') || ua.includes('EdgA')) {
+      // Detectar variante de Edge
+      if (ua.includes('EdgiOS')) return 'Microsoft Edge (iOS)';
+      if (ua.includes('EdgA')) return 'Microsoft Edge (Android)';
+      return 'Microsoft Edge';
+    }
+    
+    // Opera también contiene "Chrome" en su UA
+    if (ua.includes('OPR/') || ua.includes('Opera')) return 'Opera';
+    
+    // Chrome (después de descartar Edge y Opera)
+    if (ua.includes('Chrome') && !ua.includes('Chromium')) return 'Google Chrome';
+    
+    // Chromium
+    if (ua.includes('Chromium')) return 'Chromium';
+    
+    // Firefox
+    if (ua.includes('Firefox')) return 'Mozilla Firefox';
+    
+    // Safari (solo si NO tiene Chrome - Safari real solo tiene "Safari")
+    if (ua.includes('Safari') && !ua.includes('Chrome')) return 'Safari';
+    
+    // Internet Explorer (legacy)
+    if (ua.includes('MSIE') || ua.includes('Trident/')) return 'Internet Explorer';
     
     return 'Navegador Desconocido';
   }
