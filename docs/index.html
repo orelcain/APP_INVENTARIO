@@ -39694,6 +39694,11 @@ class InventarioCompleto {
   render() {
     this.renderInventario();
     this.renderFilters();
+    
+    // 🏠 ACTUALIZAR HOME MÓVIL: Sincronizar contadores
+    if (this.isMobile && window.updateMobileHome) {
+      window.updateMobileHome();
+    }
   }
 
   renderFilters() {
@@ -43158,6 +43163,18 @@ class InventarioCompleto {
 
     //  ESPERAR a que se guarde en disco antes de continuar
     await this.saveData();
+    
+    // 🔥 SINCRONIZACIÓN CON FIREBASE: Guardar repuesto en Firestore
+    if (window.firebaseStorageAdapter && window.firebaseStorageAdapter.guardarRepuestos) {
+      try {
+        console.log('🔥 [FIREBASE] Sincronizando repuesto con Firestore...');
+        await window.firebaseStorageAdapter.guardarRepuestos([data]);
+        console.log('✅ [FIREBASE] Repuesto sincronizado correctamente');
+      } catch (firebaseError) {
+        console.error('❌ [FIREBASE] Error sincronizando con Firestore:', firebaseError);
+        // No bloquear el flujo si falla Firebase
+      }
+    }
     
     // 📋 ACTIVITY LOG: Registrar la acción
     if (window.firebaseService && window.firebaseService.logActivity) {
