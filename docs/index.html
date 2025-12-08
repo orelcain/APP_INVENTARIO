@@ -20550,11 +20550,25 @@ class MapStorageService {
   }
 
   async getMapImage(map) {
-    if (!map || !map.imagePath) {
+    if (!map || (!map.imagePath && !map.imageUrl)) {
       return null;
     }
 
     try {
+      // 🔥 FIREBASE-ONLY: Si hay imageUrl de Firebase, descargar desde ahí
+      if (this.firebaseMode && map.imageUrl) {
+        console.log('🔥 Descargando imagen de mapa desde Firebase:', map.imageUrl);
+        const response = await fetch(map.imageUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const blob = await response.blob();
+        // Crear un objeto File desde el blob para compatibilidad
+        const fileName = map.imagePath ? map.imagePath.split('/').pop() : `map_${map.id}.webp`;
+        return new File([blob], fileName, { type: blob.type });
+      }
+      
+      // Modo FileSystem local
       const handle = await this.getFileHandleFromPath(map.imagePath);
       if (!handle) {
         return null;
@@ -30577,28 +30591,57 @@ dibujarUbicacionesResaltadas(ctx) {
     }
 
     try {
-      await mapStorage.ensureStructure();
       const timestamp = Date.now();
       const extension = (file.name.split('.').pop() || 'png').toLowerCase();
       const safeExtension = extension.length <= 5 ? extension : 'png';
       const fileName = `map_${timestamp}.${safeExtension}`;
-      let mapDir = mapStorage.mapImagesDir;
-      if (!mapDir) {
-        mapDir = await mapStorage.rootHandle.getDirectoryHandle('imagenes', { create: true });
-        mapDir = await mapDir.getDirectoryHandle('mapas', { create: true });
-        mapStorage.mapImagesDir = mapDir;
-      }
-
-      const fileHandle = await mapDir.getFileHandle(fileName, { create: true });
-      const writable = await fileHandle.createWritable();
-      await writable.write(file);
-      await writable.close();
       const dimensions = await this.getImageDimensions(file);
+      
+      let imagePath = '';
+      let imageUrl = '';
+      
+      // 🔥 FIREBASE-ONLY MODE: Usar Firebase Storage para imágenes
+      if (mapStorage.firebaseMode && window.firebaseImageStorage) {
+        console.log('🔥 Subiendo imagen de mapa a Firebase Storage...');
+        this.showToast('Subiendo imagen...', 'info');
+        
+        // Subir imagen a Firebase Storage en carpeta mapas
+        const uploadResult = await window.firebaseImageStorage.uploadRepuestoImage(
+          file,
+          `mapas/${timestamp}`,
+          fileName
+        );
+        
+        if (!uploadResult.success) {
+          throw new Error(uploadResult.error || 'Error subiendo imagen a Firebase');
+        }
+        
+        imageUrl = uploadResult.url;
+        imagePath = uploadResult.path;
+        console.log('✅ Imagen de mapa subida a Firebase:', imageUrl);
+        
+      } else {
+        // Modo FileSystem local
+        await mapStorage.ensureStructure();
+        let mapDir = mapStorage.mapImagesDir;
+        if (!mapDir) {
+          mapDir = await mapStorage.rootHandle.getDirectoryHandle('imagenes', { create: true });
+          mapDir = await mapDir.getDirectoryHandle('mapas', { create: true });
+          mapStorage.mapImagesDir = mapDir;
+        }
+
+        const fileHandle = await mapDir.getFileHandle(fileName, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(file);
+        await writable.close();
+        imagePath = `${mapStorage.mapImagesPath.join('/')}/${fileName}`;
+      }
 
       const mapRecord = {
         id: timestamp,
         name,
-        imagePath: `${mapStorage.mapImagesPath.join('/')}/${fileName}`,
+        imagePath: imagePath,
+        imageUrl: imageUrl || null, // URL de Firebase Storage si aplica
         width: dimensions.width,
         height: dimensions.height,
         createdAt: new Date().toISOString(),
@@ -30610,8 +30653,16 @@ dibujarUbicacionesResaltadas(ctx) {
           : null)
       };
 
-      const updatedMaps = [...(mapStorage.maps || []), mapRecord];
-      await mapStorage.saveMaps(updatedMaps, { action: 'create', mapId: mapRecord.id, detail: mapRecord.name });
+      // 🔥 FIREBASE-ONLY: Guardar en Firebase
+      if (mapStorage.firebaseMode && window.firebaseStorageAdapter) {
+        const updatedMaps = [...(mapStorage.maps || []), mapRecord];
+        await window.firebaseStorageAdapter.guardarMapas(updatedMaps);
+        mapStorage.maps = updatedMaps;
+      } else {
+        // Modo FileSystem
+        const updatedMaps = [...(mapStorage.maps || []), mapRecord];
+        await mapStorage.saveMaps(updatedMaps, { action: 'create', mapId: mapRecord.id, detail: mapRecord.name });
+      }
 
       this.closeModal();
       await this.loadData();
@@ -65289,6 +65340,10 @@ function activarSincronizacionTiempoReal() {
             // Actualizar mapStorage
             if (window.mapStorage && Array.isArray(data)) {
                 window.mapStorage.maps = data;
+                
+                // 🔥 FIREBASE-ONLY: Marcar como inicializado en modo Firebase
+                window.mapStorage.initialized = true;
+                window.mapStorage.firebaseMode = true;
                 
                 // Actualizar selector de mapas si existe
                 if (window.mapController && window.mapController.refreshMapSelector) {
