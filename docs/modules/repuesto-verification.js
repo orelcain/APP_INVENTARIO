@@ -64,7 +64,7 @@ class RepuestoVerification {
                             <span class="step-label">Ubicar</span>
                         </div>
                     </div>
-                    <button class="verification-close" onclick="window.repuestoVerification.close()">✕</button>
+                    <button type="button" class="verification-close" onclick="window.repuestoVerification.close()">✕</button>
                 </div>
                 
                 <!-- Contenido dinámico -->
@@ -99,8 +99,8 @@ class RepuestoVerification {
                         </details>
                         
                         <div class="step-actions">
-                            <button class="btn-secondary" onclick="window.repuestoVerification.close()">Cancelar</button>
-                            <button class="btn-primary" onclick="window.repuestoVerification.goToStep('complete')">
+                            <button type="button" class="btn-secondary" onclick="window.repuestoVerification.close()">Cancelar</button>
+                            <button type="button" class="btn-primary" onclick="window.repuestoVerification.goToStep('complete')">
                                 Continuar →
                             </button>
                         </div>
@@ -201,13 +201,13 @@ class RepuestoVerification {
                         </form>
                         
                         <div class="step-actions">
-                            <button class="btn-secondary" onclick="window.repuestoVerification.goToStep('verify')">
+                            <button type="button" class="btn-secondary" onclick="window.repuestoVerification.goToStep('verify')">
                                 ← Volver
                             </button>
-                            <button class="btn-primary" onclick="window.repuestoVerification.saveAndContinue()">
+                            <button type="button" class="btn-primary" onclick="window.repuestoVerification.saveAndContinue()">
                                 Guardar y Ubicar →
                             </button>
-                            <button class="btn-outline" onclick="window.repuestoVerification.saveOnly()">
+                            <button type="button" class="btn-outline" onclick="window.repuestoVerification.saveOnly()">
                                 Solo Guardar
                             </button>
                         </div>
@@ -233,22 +233,22 @@ class RepuestoVerification {
                                 <div class="indicator" id="indJerarquia">
                                     <span class="ind-icon">⬜</span>
                                     <span class="ind-label">Asignado a Jerarquía</span>
-                                    <button class="ind-action" onclick="window.repuestoVerification.assignJerarquia()">Asignar</button>
+                                    <button type="button" class="ind-action" onclick="window.repuestoVerification.assignJerarquia()">Asignar</button>
                                 </div>
                                 <div class="indicator" id="indMapa">
                                     <span class="ind-icon">⬜</span>
                                     <span class="ind-label">Asignado a Mapa</span>
-                                    <button class="ind-action" onclick="window.repuestoVerification.assignMapa()">Asignar</button>
+                                    <button type="button" class="ind-action" onclick="window.repuestoVerification.assignMapa()">Asignar</button>
                                 </div>
                                 <div class="indicator" id="indArea">
                                     <span class="ind-icon">⬜</span>
                                     <span class="ind-label">Área especificada</span>
-                                    <button class="ind-action" onclick="window.repuestoVerification.assignArea()">Asignar</button>
+                                    <button type="button" class="ind-action" onclick="window.repuestoVerification.assignArea()">Asignar</button>
                                 </div>
                                 <div class="indicator" id="indMarcador">
                                     <span class="ind-icon">⬜</span>
                                     <span class="ind-label">Marcador en mapa</span>
-                                    <button class="ind-action" onclick="window.repuestoVerification.assignMarcador()">Colocar</button>
+                                    <button type="button" class="ind-action" onclick="window.repuestoVerification.assignMarcador()">Colocar</button>
                                 </div>
                             </div>
                         </div>
@@ -291,10 +291,10 @@ class RepuestoVerification {
                         </div>
                         
                         <div class="step-actions">
-                            <button class="btn-secondary" onclick="window.repuestoVerification.close()">
+                            <button type="button" class="btn-secondary" onclick="window.repuestoVerification.close()">
                                 Finalizar después
                             </button>
-                            <button class="btn-primary" onclick="window.repuestoVerification.finishAssignment()">
+                            <button type="button" class="btn-primary" onclick="window.repuestoVerification.finishAssignment()">
                                 ✅ Completar
                             </button>
                         </div>

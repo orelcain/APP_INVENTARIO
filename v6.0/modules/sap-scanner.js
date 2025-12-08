@@ -143,17 +143,17 @@ class SAPScanner {
             <div class="sap-mode-content">
                 <div class="sap-scanner-header">
                     <h3>📸 ¿Qué deseas hacer?</h3>
-                    <button class="sap-scanner-close" onclick="window.sapScanner.closeModeModal()">✕</button>
+                    <button type="button" class="sap-scanner-close" onclick="window.sapScanner.closeModeModal()">✕</button>
                 </div>
                 
                 <div class="sap-mode-options">
-                    <button class="sap-mode-btn add-mode" onclick="window.sapScanner.startScanWithMode('add')">
+                    <button type="button" class="sap-mode-btn add-mode" onclick="window.sapScanner.startScanWithMode('add')">
                         <div class="sap-mode-icon">📦</div>
                         <div class="sap-mode-label">AGREGAR</div>
                         <div class="sap-mode-desc">Nuevo repuesto al inventario</div>
                     </button>
                     
-                    <button class="sap-mode-btn count-mode" onclick="window.sapScanner.startScanWithMode('count')">
+                    <button type="button" class="sap-mode-btn count-mode" onclick="window.sapScanner.startScanWithMode('count')">
                         <div class="sap-mode-icon">🔢</div>
                         <div class="sap-mode-label">CONTAR</div>
                         <div class="sap-mode-desc">Actualizar cantidad existente</div>
@@ -1003,7 +1003,7 @@ class SAPScanner {
             <div class="sap-scanner-content sap-count-content">
                 <div class="sap-scanner-header">
                     <h3>🔢 Contar Repuesto</h3>
-                    <button class="sap-scanner-close" onclick="window.sapScanner.closeCountModal()">✕</button>
+                    <button type="button" class="sap-scanner-close" onclick="window.sapScanner.closeCountModal()">✕</button>
                 </div>
                 
                 <div class="sap-count-item">
@@ -1020,22 +1020,22 @@ class SAPScanner {
                 </div>
                 
                 <div class="sap-count-buttons">
-                    <button class="sap-count-btn minus" onclick="window.sapScanner.adjustCount(-1)">−</button>
-                    <button class="sap-count-btn plus" onclick="window.sapScanner.adjustCount(+1)">+</button>
+                    <button type="button" class="sap-count-btn minus" onclick="window.sapScanner.adjustCount(-1)">−</button>
+                    <button type="button" class="sap-count-btn plus" onclick="window.sapScanner.adjustCount(+1)">+</button>
                 </div>
                 
                 <div class="sap-count-manual">
                     <input type="number" id="sapCountInput" min="0" value="0" />
-                    <button class="sap-scanner-btn secondary" onclick="window.sapScanner.setManualCount()">
+                    <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.setManualCount()">
                         Establecer
                     </button>
                 </div>
                 
                 <div class="sap-confirm-actions">
-                    <button class="sap-scanner-btn secondary" onclick="window.sapScanner.closeCountModal()">
+                    <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.closeCountModal()">
                         Cancelar
                     </button>
-                    <button class="sap-scanner-btn primary" onclick="window.sapScanner.saveCount()">
+                    <button type="button" class="sap-scanner-btn primary" onclick="window.sapScanner.saveCount()">
                         ✅ Guardar Conteo
                     </button>
                 </div>
@@ -1142,7 +1142,7 @@ class SAPScanner {
                 <div class="sap-scanner-content" style="max-width: 380px; padding: 24px;">
                     <div class="sap-scanner-header">
                         <h3>⚠️ Repuesto No Encontrado</h3>
-                        <button class="sap-scanner-close" onclick="window.sapScanner.closeDiscrepancyModal()">✕</button>
+                        <button type="button" class="sap-scanner-close" onclick="window.sapScanner.closeDiscrepancyModal()">✕</button>
                     </div>
                     
                     <div class="sap-discrepancy-alert">
@@ -1157,10 +1157,10 @@ class SAPScanner {
                     </div>
                     
                     <div class="sap-discrepancy-actions">
-                        <button class="sap-scanner-btn secondary" onclick="window.sapScanner.closeDiscrepancyModal()">
+                        <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.closeDiscrepancyModal()">
                             Cancelar
                         </button>
-                        <button class="sap-scanner-btn primary" onclick="window.sapScanner.switchToAddMode()">
+                        <button type="button" class="sap-scanner-btn primary" onclick="window.sapScanner.switchToAddMode()">
                             📦 Agregar Repuesto
                         </button>
                     </div>
@@ -1172,7 +1172,7 @@ class SAPScanner {
                 <div class="sap-scanner-content" style="max-width: 380px; padding: 24px;">
                     <div class="sap-scanner-header">
                         <h3>⚠️ Repuesto Ya Existe</h3>
-                        <button class="sap-scanner-close" onclick="window.sapScanner.closeDiscrepancyModal()">✕</button>
+                        <button type="button" class="sap-scanner-close" onclick="window.sapScanner.closeDiscrepancyModal()">✕</button>
                     </div>
                     
                     <div class="sap-count-item">
@@ -1194,10 +1194,10 @@ class SAPScanner {
                     </div>
                     
                     <div class="sap-discrepancy-actions">
-                        <button class="sap-scanner-btn secondary" onclick="window.sapScanner.viewRepuesto('${repuesto?.id}')">
+                        <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.viewRepuesto('${repuesto?.id}')">
                             👁️ Ver Ficha
                         </button>
-                        <button class="sap-scanner-btn primary" onclick="window.sapScanner.switchToCountMode('${repuesto?.id}')">
+                        <button type="button" class="sap-scanner-btn primary" onclick="window.sapScanner.switchToCountMode('${repuesto?.id}')">
                             🔢 Contar
                         </button>
                     </div>
