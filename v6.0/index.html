@@ -17772,7 +17772,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
               </div>
 
               <!-- 2. BOTÓN CREAR MAPA -->
-              <button class='create-map-btn' onclick='app.createNewMap()' style='width: 100%; padding: 8px 12px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15)); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 6px; color: #60a5fa; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; margin-bottom: 8px;'>
+              <button class='create-map-btn' onclick='mapController.openNewMapModal()' style='width: 100%; padding: 8px 12px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15)); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 6px; color: #60a5fa; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; margin-bottom: 8px;'>
                 <span style='font-size: 1rem;'>+</span>
                 <span>Crear Nuevo Mapa</span>
               </button>
@@ -17826,7 +17826,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
               <button class='workflow-dismiss-btn' onclick='dismissWorkflowGuide()' title='Ocultar guía'>✕</button>
             </div>
             <div class='workflow-steps'>
-              <div class='workflow-step' onclick='app.createNewMap()'>
+              <div class='workflow-step' onclick='mapController.openNewMapModal()'>
                 <div class='step-number'>1</div>
                 <div class='step-content'>
                   <div class='step-title'>Crear Mapa</div>
@@ -17854,7 +17854,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
               </div>
             </div>
             <div class='workflow-quick-actions'>
-              <button class='workflow-action-btn primary' onclick='app.createNewMap()'>
+              <button class='workflow-action-btn primary' onclick='mapController.openNewMapModal()'>
                 <span>+</span> Crear Mi Primer Mapa
               </button>
               <button class='workflow-action-btn secondary' onclick='showMapTutorial()'>
@@ -17943,7 +17943,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
                 <div class='no-maps-icon'>🗺️</div>
                 <div class='no-maps-title'>No hay mapas creados</div>
                 <div class='no-maps-desc'>Crea tu primer mapa para comenzar a ubicar repuestos visualmente</div>
-                <button class='no-maps-btn' onclick='app.createNewMap()'>
+                <button class='no-maps-btn' onclick='mapController.openNewMapModal()'>
                   <span>+</span> Crear Primer Mapa
                 </button>
               </div>
@@ -43851,12 +43851,11 @@ class InventarioCompleto {
    * Crea el primer mapa desde el flujo de asignación
    */
   crearPrimerMapa() {
-    this.showToast('💡 Redirigiendo a creación de mapa...', 'info');
-    // TODO: Implementar creación rápida de mapa o abrir modal de creación
-    if (window.MapasUI && window.MapasUI.showCreateMapModal) {
-      window.MapasUI.showCreateMapModal();
+    this.showToast('💡 Abriendo creación de mapa...', 'info');
+    if (window.mapController && window.mapController.openNewMapModal) {
+      window.mapController.openNewMapModal();
     } else {
-      this.showToast('⚠️ Funcionalidad de creación de mapas en desarrollo', 'warning');
+      this.showToast('⚠️ El módulo de mapas no está disponible', 'warning');
     }
   }
 
@@ -64328,7 +64327,7 @@ function showMapTutorial() {
             cursor: pointer;
             font-size: 0.85rem;
           ">Cerrar</button>
-          <button onclick="document.getElementById('mapTutorialModal').remove(); app.createNewMap();" style="
+          <button onclick="document.getElementById('mapTutorialModal').remove(); mapController.openNewMapModal();" style="
             background: linear-gradient(135deg, #3b82f6, #2563eb);
             border: none;
             color: white;
