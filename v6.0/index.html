@@ -17447,6 +17447,86 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
 <!-- CONTENEDOR PRINCIPAL -->
 <div class="container">
+  <!-- 🏠 TAB MOBILE HOME (Solo visible en móvil) -->
+  <div id="mobileHome" class="tab-content">
+    <div class="mobile-home-header">
+      <h1>📦 Inventario</h1>
+      <p class="subtitle">Panel de control rápido</p>
+    </div>
+
+    <!-- Stats Resumen -->
+    <div class="home-stats-grid">
+      <div class="home-stat-card primary" onclick="switchMobileTab('inventario')">
+        <span class="stat-icon">📦</span>
+        <div class="stat-value" id="homeStatTotal">0</div>
+        <div class="stat-label">Repuestos</div>
+      </div>
+      <div class="home-stat-card warning" onclick="window.mobileHomeActions?.showStockBajo()">
+        <span class="stat-icon">⚠️</span>
+        <div class="stat-value" id="homeStatStockBajo">0</div>
+        <div class="stat-label">Stock Bajo</div>
+      </div>
+      <div class="home-stat-card success" onclick="switchMobileTab('mapas')">
+        <span class="stat-icon">🗺️</span>
+        <div class="stat-value" id="homeStatMapas">0</div>
+        <div class="stat-label">Mapas</div>
+      </div>
+      <div class="home-stat-card purple" onclick="switchMobileTab('jerarquia')">
+        <span class="stat-icon">🏢</span>
+        <div class="stat-value" id="homeStatZonas">0</div>
+        <div class="stat-label">Zonas</div>
+      </div>
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <div class="home-section-title">⚡ Acciones Rápidas</div>
+    <div class="home-quick-actions">
+      <button class="home-action-btn scan-btn" onclick="window.sapScanner?.openCaptureModal()">
+        <span class="action-icon">📸</span>
+        <span class="action-label">Escanear SAP</span>
+      </button>
+      <button class="home-action-btn" onclick="app.openModal('add')">
+        <span class="action-icon">➕</span>
+        <span class="action-label">Nuevo Repuesto</span>
+      </button>
+      <button class="home-action-btn" onclick="document.getElementById('searchInput')?.focus(); switchMobileTab('inventario')">
+        <span class="action-icon">🔍</span>
+        <span class="action-label">Buscar</span>
+      </button>
+      <button class="home-action-btn" onclick="switchMobileTab('jerarquia')">
+        <span class="action-icon">🏢</span>
+        <span class="action-label">Jerarquía</span>
+      </button>
+    </div>
+
+    <!-- Preview de Jerarquía -->
+    <div class="home-section-title">📍 Ubicaciones</div>
+    <div class="home-jerarquia-preview">
+      <div class="home-jerarquia-header">
+        <h3>🏢 Áreas principales</h3>
+        <button class="view-all-btn" onclick="switchMobileTab('jerarquia')">Ver todo →</button>
+      </div>
+      <div class="home-tree-mini" id="homeTreeMini">
+        <!-- Se llena dinámicamente -->
+        <div class="home-tree-item" style="opacity: 0.5;">
+          <span class="tree-icon">⏳</span>
+          <span class="tree-name">Cargando...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alertas -->
+    <div class="home-section-title">🔔 Alertas</div>
+    <div class="home-alerts" id="homeAlerts">
+      <div class="home-alert-item" style="opacity: 0.5;">
+        <span class="alert-icon">⏳</span>
+        <div class="alert-content">
+          <div class="alert-title">Cargando alertas...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TAB INVENTARIO -->
   <div id="inventario" class="tab-content active">
     <div class="toolbar">
@@ -17668,6 +17748,11 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
            Guardar Cambios
         </button>
       </div>
+      
+      <!-- FAB Escanear (solo móvil) -->
+      <button class="jerarquia-fab-scan" onclick="window.scanFromJerarquia()" title="Escanear SAP">
+        📸
+      </button>
     </div>
   </div>
 
@@ -66189,6 +66274,524 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 /* ================================================================== */
+/* 🏠 MOBILE HOME DASHBOARD                                           */
+/* ================================================================== */
+
+/* Solo visible en móvil */
+#mobileHome {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  #mobileHome.tab-content.active {
+    display: block;
+    padding: 16px;
+    padding-bottom: 100px; /* Espacio para footer */
+    animation: fadeIn 0.3s ease;
+  }
+}
+
+.mobile-home-header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.mobile-home-header h1 {
+  font-size: 1.5rem;
+  margin: 0 0 4px 0;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mobile-home-header .subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Stats Grid */
+.home-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.home-stat-card {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent-color, var(--primary));
+}
+
+.home-stat-card:active {
+  transform: scale(0.98);
+}
+
+.home-stat-card .stat-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.home-stat-card .stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.home-stat-card .stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.home-stat-card.primary { --accent-color: #3b82f6; }
+.home-stat-card.warning { --accent-color: #f59e0b; }
+.home-stat-card.success { --accent-color: #10b981; }
+.home-stat-card.purple { --accent-color: #8b5cf6; }
+
+/* Quick Actions */
+.home-section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 20px 0 12px 0;
+  padding-left: 4px;
+}
+
+.home-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.home-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+  min-height: 100px;
+}
+
+.home-action-btn:active {
+  transform: scale(0.95);
+  background: var(--bg-tertiary);
+}
+
+.home-action-btn .action-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.home-action-btn .action-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.home-action-btn.scan-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-color: transparent;
+  color: white;
+}
+
+.home-action-btn.scan-btn:active {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+/* Alerts Section */
+.home-alerts {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.home-alert-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.home-alert-item:last-child {
+  border-bottom: none;
+}
+
+.home-alert-item:active {
+  background: var(--bg-tertiary);
+}
+
+.home-alert-item .alert-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.home-alert-item .alert-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.home-alert-item .alert-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-alert-item .alert-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.home-alert-item .alert-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.home-alert-item .alert-badge.warning {
+  background: #f59e0b;
+}
+
+.home-alert-item .alert-badge.info {
+  background: #3b82f6;
+}
+
+/* Jerarquía Preview en Home */
+.home-jerarquia-preview {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.home-jerarquia-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.home-jerarquia-header h3 {
+  font-size: 0.95rem;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.home-jerarquia-header .view-all-btn {
+  font-size: 0.8rem;
+  color: var(--primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.home-tree-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.home-tree-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.home-tree-item:active {
+  transform: scale(0.98);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.home-tree-item .tree-icon {
+  font-size: 1.2rem;
+}
+
+.home-tree-item .tree-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-tree-item .tree-count {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.1);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* ================================================================== */
+/* 🏢 MOBILE JERARQUÍA OPTIMIZED                                      */
+/* ================================================================== */
+
+@media (max-width: 768px) {
+  /* Contenedor principal de jerarquía en móvil */
+  #jerarquia.tab-content.active {
+    padding: 12px !important;
+    padding-bottom: 100px !important;
+  }
+  
+  /* Barra de controles compacta */
+  .jerarquia-controls-bar {
+    flex-direction: column;
+    padding: 12px !important;
+    gap: 10px;
+  }
+  
+  .jerarquia-search-wrapper {
+    min-width: 100%;
+    max-width: 100%;
+  }
+  
+  .jerarquia-controls-bar .toolbar-separator {
+    display: none;
+  }
+  
+  .jerarquia-controls-bar button,
+  .jerarquia-expand-btn {
+    padding: 10px 14px !important;
+    font-size: 0.85rem !important;
+  }
+  
+  /* Ocultar botones de debug/reset en móvil */
+  .jerarquia-expand-btn.debug-btn,
+  .jerarquia-expand-btn.reset-btn {
+    display: none !important;
+  }
+  
+  /* Contenedor del árbol */
+  #jerarquiaTreeContainer {
+    padding: 8px !important;
+    border-radius: 12px;
+  }
+  
+  /* Nodos del árbol más tocables */
+  .jerarquia-node-content,
+  .tree-item,
+  .palette-item {
+    padding: 14px 12px !important;
+    min-height: 48px;
+    margin-bottom: 6px;
+    border-radius: 10px !important;
+    touch-action: manipulation;
+  }
+  
+  /* Iconos y texto más grandes */
+  .jerarquia-node-icon,
+  .tree-item .node-icon {
+    font-size: 1.3rem !important;
+    min-width: 28px;
+  }
+  
+  .jerarquia-node-name,
+  .tree-item .node-name {
+    font-size: 0.95rem !important;
+    font-weight: 500;
+  }
+  
+  /* Toggle expandir más grande */
+  .jerarquia-node-toggle,
+  .tree-toggle {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 1.2rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Contador de items */
+  .jerarquia-node-count,
+  .node-count {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--primary);
+  }
+  
+  /* Acciones de nodo más accesibles */
+  .jerarquia-node-actions {
+    display: flex !important;
+    opacity: 1 !important;
+    gap: 6px;
+  }
+  
+  .jerarquia-node-actions button {
+    padding: 8px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Panel de asignación optimizado */
+  #panelAsignacionRepuesto {
+    padding: 12px !important;
+    margin: 0 !important;
+    border-radius: 12px !important;
+  }
+  
+  .panel-asignacion-header h3 {
+    font-size: 1rem !important;
+  }
+  
+  .instrucciones-asignacion p {
+    font-size: 0.85rem !important;
+  }
+  
+  /* Botón guardar más accesible */
+  .jerarquia-save-container {
+    position: fixed;
+    bottom: 80px;
+    left: 12px;
+    right: 12px;
+    z-index: 100;
+    padding: 0;
+  }
+  
+  .jerarquia-save-btn {
+    width: 100% !important;
+    padding: 16px !important;
+    font-size: 1rem !important;
+    border-radius: 12px !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Highlight para nodos seleccionados */
+  .highlight-node {
+    animation: highlightPulse 0.5s ease 3;
+    box-shadow: 0 0 0 3px var(--primary) !important;
+  }
+  
+  @keyframes highlightPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+  
+  /* Visual V2 optimizado para móvil */
+  .visual-v2-wrapper {
+    padding: 8px !important;
+  }
+  
+  .visual-v2-wrapper .jerarquia-search-suggestions {
+    max-height: 200px;
+  }
+  
+  /* Breadcrumb de ubicación actual */
+  .mobile-location-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .mobile-location-breadcrumb span {
+    white-space: nowrap;
+    color: var(--text-secondary);
+  }
+  
+  .mobile-location-breadcrumb .current {
+    color: var(--primary);
+    font-weight: 600;
+  }
+}
+
+/* Botón flotante para escanear en jerarquía */
+.jerarquia-fab-scan {
+  position: fixed;
+  bottom: 150px;
+  right: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+  z-index: 100;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .jerarquia-fab-scan {
+    display: flex;
+  }
+  
+  .jerarquia-fab-scan:active {
+    transform: scale(0.9);
+  }
+}
+
+/* ================================================================== */
 /* 📸 SAP SCANNER STYLES                                              */
 /* ================================================================== */
 
@@ -66432,6 +67035,24 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   padding: 16px;
 }
 
+/* Contexto de jerarquía en scanner */
+.sap-form-context {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+  color: var(--primary);
+}
+
+.sap-form-context .context-icon {
+  font-size: 1.1rem;
+}
+
 .sap-form-group {
   margin-bottom: 16px;
 }
@@ -66613,25 +67234,33 @@ window.mobileFooterState = {
 
 // Configuración de contextos del footer
 const footerContexts = {
+  // Home: Dashboard principal móvil
+  home: [
+    { icon: '🏠', label: 'Home', tab: 'home', action: () => switchMobileTab('home'), isHome: true, active: true },
+    { icon: '📸', label: 'Escanear', scan: true, action: () => { if(window.sapScanner) window.sapScanner.openCaptureModal(); else alert('Scanner no disponible'); } },
+    { icon: '➕', label: '', fab: true, action: () => app.openModal('add') },
+    { icon: '🗺️', label: 'Mapas', tab: 'mapas', action: () => switchMobileTab('mapas') },
+    { icon: '⚙️', label: 'Config', tab: 'config', action: () => switchMobileTab('config') }
+  ],
   // Inventario: navegación principal + agregar repuesto + escanear SAP
   inventario: [
-    { icon: '🏠', label: 'Home', action: () => switchMobileTab('inventario'), isHome: true },
+    { icon: '🏠', label: 'Home', tab: 'home', action: () => switchMobileTab('home'), isHome: true },
     { icon: '📸', label: 'Escanear', scan: true, action: () => { if(window.sapScanner) window.sapScanner.openCaptureModal(); else alert('Scanner no disponible'); } },
-    { icon: '➕', label: '', fab: true, action: () => app.openModal('new') },
+    { icon: '➕', label: '', fab: true, action: () => app.openModal('add') },
     { icon: '🗺️', label: 'Mapas', tab: 'mapas', action: () => switchMobileTab('mapas') },
     { icon: '⚙️', label: 'Config', tab: 'config', action: () => switchMobileTab('config') }
   ],
   // Jerarquía: navegación + expandir/colapsar
   jerarquia: [
-    { icon: '🏠', label: 'Home', action: () => switchMobileTab('inventario'), isHome: true },
+    { icon: '🏠', label: 'Home', tab: 'home', action: () => switchMobileTab('home'), isHome: true },
     { icon: '📦', label: 'Inventario', tab: 'inventario', action: () => switchMobileTab('inventario') },
-    { icon: '🔍', label: '', fab: true, action: () => document.getElementById('jerarquiaSearch')?.focus() },
+    { icon: '📸', label: '', fab: true, scan: true, action: () => { if(window.sapScanner) window.sapScanner.openCaptureModal(); else alert('Scanner no disponible'); } },
     { icon: '🗺️', label: 'Mapas', tab: 'mapas', action: () => switchMobileTab('mapas') },
     { icon: '⚙️', label: 'Config', tab: 'config', action: () => switchMobileTab('config') }
   ],
   // Mapas: navegación + crear mapa
   mapas: [
-    { icon: '🏠', label: 'Home', action: () => switchMobileTab('inventario'), isHome: true },
+    { icon: '🏠', label: 'Home', tab: 'home', action: () => switchMobileTab('home'), isHome: true },
     { icon: '📦', label: 'Inventario', tab: 'inventario', action: () => switchMobileTab('inventario') },
     { icon: '➕', label: '', fab: true, action: () => { if(window.MapasUI && MapasUI.crearMapa) MapasUI.crearMapa(); else alert('Crear mapa'); } },
     { icon: '🏢', label: 'Jerarquía', tab: 'jerarquia', action: () => switchMobileTab('jerarquia') },
@@ -66639,7 +67268,7 @@ const footerContexts = {
   ],
   // Configuración: navegación + sync
   config: [
-    { icon: '🏠', label: 'Home', action: () => switchMobileTab('inventario'), isHome: true },
+    { icon: '🏠', label: 'Home', tab: 'home', action: () => switchMobileTab('home'), isHome: true },
     { icon: '📦', label: 'Inventario', tab: 'inventario', action: () => switchMobileTab('inventario') },
     { icon: '🔄', label: '', fab: true, action: () => { if(window.app && app.syncWithFirebase) app.syncWithFirebase(); else alert('Sincronizar'); } },
     { icon: '🏢', label: 'Jerarquía', tab: 'jerarquia', action: () => switchMobileTab('jerarquia') },
@@ -66688,6 +67317,26 @@ window.switchMobileTab = function(tabName) {
   console.log('📱 switchMobileTab llamado:', tabName);
   
   try {
+    // Caso especial: Mobile Home (solo existe en móvil)
+    if (tabName === 'home') {
+      // Ocultar todas las tabs
+      document.querySelectorAll('.tab-content').forEach(t => {
+        t.classList.remove('active');
+        t.style.display = 'none';
+      });
+      // Mostrar Mobile Home
+      const mobileHome = document.getElementById('mobileHome');
+      if (mobileHome) {
+        mobileHome.classList.add('active');
+        mobileHome.style.display = 'block';
+        // Actualizar datos del home
+        if (window.updateMobileHome) window.updateMobileHome();
+      }
+      // Actualizar footer
+      renderMobileFooter('home');
+      return;
+    }
+    
     // Mapear nombres de tabs móviles a nombres reales del sistema
     const tabMap = {
       'inventario': 'inventario',
@@ -66698,6 +67347,13 @@ window.switchMobileTab = function(tabName) {
     
     const realTabName = tabMap[tabName] || tabName;
     console.log('📱 Tab real:', realTabName);
+    
+    // Ocultar Mobile Home si estaba visible
+    const mobileHome = document.getElementById('mobileHome');
+    if (mobileHome) {
+      mobileHome.classList.remove('active');
+      mobileHome.style.display = 'none';
+    }
     
     // Llamar directamente a app.switchTab si existe
     if (window.app && typeof window.app.switchTab === 'function') {
@@ -66741,12 +67397,298 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Inicializar footer al cargar
+// Inicializar footer al cargar - empezar en Home en móvil
 document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => renderMobileFooter('inventario'), 100);
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    // En móvil, empezar en Home
+    setTimeout(() => {
+      switchMobileTab('home');
+    }, 500);
+  } else {
+    setTimeout(() => renderMobileFooter('inventario'), 100);
+  }
 });
 
-console.log('📱 Footer contextual inteligente inicializado');
+// ================================================================== 
+// 🏠 MOBILE HOME - FUNCIONES DE ACTUALIZACIÓN
+// ==================================================================
+
+window.mobileHomeActions = {
+  // Mostrar repuestos con stock bajo
+  showStockBajo: function() {
+    switchMobileTab('inventario');
+    setTimeout(() => {
+      const filterStock = document.getElementById('filterStock');
+      if (filterStock) {
+        filterStock.value = 'critico';
+        if (window.app && app.applyFilters) app.applyFilters();
+      }
+    }, 300);
+  }
+};
+
+// Actualizar datos del Mobile Home
+window.updateMobileHome = function() {
+  console.log('🏠 Actualizando Mobile Home...');
+  
+  try {
+    // Obtener datos del inventario
+    const repuestos = window.app?.repuestos || [];
+    const jerarquia = window.app?.jerarquia?.areas || [];
+    
+    // 1. Stats
+    const totalRepuestos = repuestos.length;
+    const stockBajo = repuestos.filter(r => {
+      const stock = parseInt(r.stock) || 0;
+      const minimo = parseInt(r.minimo) || 0;
+      return stock <= minimo && minimo > 0;
+    }).length;
+    
+    // Contar mapas
+    let totalMapas = 0;
+    if (window.app?.mapas) {
+      totalMapas = Object.keys(window.app.mapas).length;
+    }
+    
+    // Contar zonas (áreas de primer nivel)
+    const totalZonas = jerarquia.length;
+    
+    // Actualizar UI
+    const statTotal = document.getElementById('homeStatTotal');
+    const statStockBajo = document.getElementById('homeStatStockBajo');
+    const statMapas = document.getElementById('homeStatMapas');
+    const statZonas = document.getElementById('homeStatZonas');
+    
+    if (statTotal) statTotal.textContent = totalRepuestos;
+    if (statStockBajo) statStockBajo.textContent = stockBajo;
+    if (statMapas) statMapas.textContent = totalMapas;
+    if (statZonas) statZonas.textContent = totalZonas;
+    
+    // 2. Preview de Jerarquía (primeras 4 áreas)
+    const treeContainer = document.getElementById('homeTreeMini');
+    if (treeContainer && jerarquia.length > 0) {
+      const areasPreview = jerarquia.slice(0, 4);
+      treeContainer.innerHTML = areasPreview.map(area => {
+        const childCount = (area.sistemas || area.children || []).length;
+        const icon = getAreaIcon(area.nombre);
+        return `
+          <div class="home-tree-item" onclick="window.navigateToJerarquia('${area.id || area.nombre}')">
+            <span class="tree-icon">${icon}</span>
+            <span class="tree-name">${area.nombre}</span>
+            <span class="tree-count">${childCount} sub</span>
+          </div>
+        `;
+      }).join('');
+      
+      // Agregar "Ver más" si hay más áreas
+      if (jerarquia.length > 4) {
+        treeContainer.innerHTML += `
+          <div class="home-tree-item" onclick="switchMobileTab('jerarquia')" style="background: rgba(59, 130, 246, 0.1);">
+            <span class="tree-icon">➡️</span>
+            <span class="tree-name">Ver ${jerarquia.length - 4} áreas más...</span>
+          </div>
+        `;
+      }
+    } else if (treeContainer) {
+      treeContainer.innerHTML = `
+        <div class="home-tree-item" style="opacity: 0.6;">
+          <span class="tree-icon">📂</span>
+          <span class="tree-name">No hay áreas configuradas</span>
+        </div>
+      `;
+    }
+    
+    // 3. Alertas
+    const alertsContainer = document.getElementById('homeAlerts');
+    if (alertsContainer) {
+      let alertsHTML = '';
+      
+      // Alerta de stock bajo
+      if (stockBajo > 0) {
+        alertsHTML += `
+          <div class="home-alert-item" onclick="window.mobileHomeActions.showStockBajo()">
+            <span class="alert-icon">⚠️</span>
+            <div class="alert-content">
+              <div class="alert-title">Stock Bajo</div>
+              <div class="alert-desc">Repuestos por debajo del mínimo</div>
+            </div>
+            <span class="alert-badge warning">${stockBajo}</span>
+          </div>
+        `;
+      }
+      
+      // Repuestos agotados
+      const agotados = repuestos.filter(r => parseInt(r.stock) === 0).length;
+      if (agotados > 0) {
+        alertsHTML += `
+          <div class="home-alert-item" onclick="switchMobileTab('inventario'); setTimeout(() => { document.getElementById('filterStock').value='agotado'; app.applyFilters(); }, 300);">
+            <span class="alert-icon">🚨</span>
+            <div class="alert-content">
+              <div class="alert-title">Repuestos Agotados</div>
+              <div class="alert-desc">Sin stock disponible</div>
+            </div>
+            <span class="alert-badge">${agotados}</span>
+          </div>
+        `;
+      }
+      
+      // Info general
+      alertsHTML += `
+        <div class="home-alert-item" onclick="switchMobileTab('inventario')">
+          <span class="alert-icon">📦</span>
+          <div class="alert-content">
+            <div class="alert-title">Inventario Total</div>
+            <div class="alert-desc">Todos los repuestos registrados</div>
+          </div>
+          <span class="alert-badge info">${totalRepuestos}</span>
+        </div>
+      `;
+      
+      alertsContainer.innerHTML = alertsHTML || `
+        <div class="home-alert-item">
+          <span class="alert-icon">✅</span>
+          <div class="alert-content">
+            <div class="alert-title">Todo en orden</div>
+            <div class="alert-desc">No hay alertas pendientes</div>
+          </div>
+        </div>
+      `;
+    }
+    
+    console.log('🏠 Mobile Home actualizado:', { totalRepuestos, stockBajo, totalMapas, totalZonas });
+    
+  } catch (error) {
+    console.error('❌ Error actualizando Mobile Home:', error);
+  }
+};
+
+// Navegar a un área específica en jerarquía
+window.navigateToJerarquia = function(areaId) {
+  switchMobileTab('jerarquia');
+  setTimeout(() => {
+    // Buscar y expandir el área
+    const areaNode = document.querySelector(`[data-area-id="${areaId}"], [data-node-id="${areaId}"]`);
+    if (areaNode) {
+      areaNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      areaNode.classList.add('highlight-node');
+      setTimeout(() => areaNode.classList.remove('highlight-node'), 2000);
+    }
+  }, 400);
+};
+
+// Helper para iconos de áreas
+function getAreaIcon(nombre) {
+  const n = (nombre || '').toLowerCase();
+  if (n.includes('bodega') || n.includes('almacen')) return '🏪';
+  if (n.includes('taller')) return '🔧';
+  if (n.includes('oficina')) return '🏢';
+  if (n.includes('planta') || n.includes('produccion')) return '🏭';
+  if (n.includes('exterior') || n.includes('patio')) return '🌳';
+  if (n.includes('electr')) return '⚡';
+  if (n.includes('mecan')) return '⚙️';
+  if (n.includes('hidra')) return '💧';
+  return '📍';
+}
+
+// ================================================================== 
+// 📸 ESCANEO DESDE JERARQUÍA CON CONTEXTO
+// ==================================================================
+
+// Estado del contexto de escaneo
+window.scanContext = {
+  fromJerarquia: false,
+  selectedNode: null,
+  nodePath: null
+};
+
+// Escanear desde la vista de jerarquía
+window.scanFromJerarquia = function() {
+  console.log('📸 Escaneo desde Jerarquía iniciado');
+  
+  // Intentar obtener el nodo actualmente seleccionado/expandido
+  const selectedNode = document.querySelector('.jerarquia-node-content.is-selected, .palette-item.selected, .tree-item.selected');
+  
+  if (selectedNode) {
+    // Capturar contexto del nodo
+    const nodeName = selectedNode.querySelector('.jerarquia-node-name, .node-name')?.textContent?.trim();
+    const nodeId = selectedNode.closest('[data-node-id], [data-area-id]')?.dataset?.nodeId || 
+                   selectedNode.closest('[data-node-id], [data-area-id]')?.dataset?.areaId;
+    
+    // Construir el path del nodo
+    const path = buildNodePath(selectedNode);
+    
+    window.scanContext = {
+      fromJerarquia: true,
+      selectedNode: {
+        id: nodeId,
+        name: nodeName
+      },
+      nodePath: path
+    };
+    
+    console.log('📍 Contexto de escaneo:', window.scanContext);
+  } else {
+    // Sin nodo seleccionado, escaneo sin contexto
+    window.scanContext = {
+      fromJerarquia: true,
+      selectedNode: null,
+      nodePath: null
+    };
+    console.log('📸 Escaneo sin nodo seleccionado');
+  }
+  
+  // Abrir el scanner
+  if (window.sapScanner) {
+    window.sapScanner.openCaptureModal();
+  } else {
+    alert('Scanner no disponible');
+  }
+};
+
+// Construir path jerárquico de un nodo
+function buildNodePath(nodeElement) {
+  const path = [];
+  let current = nodeElement;
+  
+  while (current) {
+    const nameEl = current.querySelector('.jerarquia-node-name, .node-name');
+    if (nameEl) {
+      const name = nameEl.textContent?.trim();
+      if (name && !path.includes(name)) {
+        path.unshift(name);
+      }
+    }
+    // Subir al padre
+    current = current.parentElement?.closest('.jerarquia-tree-node, .tree-node, .palette-group');
+  }
+  
+  return path.length > 0 ? path.join(' > ') : null;
+}
+
+// Obtener el contexto actual para pre-llenar el formulario de repuesto
+window.getJerarquiaContext = function() {
+  if (window.scanContext.fromJerarquia && window.scanContext.selectedNode) {
+    return {
+      area: window.scanContext.selectedNode.name || '',
+      ubicacion: window.scanContext.nodePath || ''
+    };
+  }
+  return null;
+};
+
+// Limpiar contexto después de crear repuesto
+window.clearScanContext = function() {
+  window.scanContext = {
+    fromJerarquia: false,
+    selectedNode: null,
+    nodePath: null
+  };
+  console.log('📸 Contexto de escaneo limpiado');
+};
+
+console.log('📸 Escaneo contextual desde jerarquía inicializado');
+console.log('🏠 Mobile Home Dashboard inicializado');
 </script>
 
 <!-- PWA Service Worker Registration -->

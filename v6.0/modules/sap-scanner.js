@@ -258,6 +258,12 @@ class SAPScanner {
                 
                 <!-- Formulario editable -->
                 <form id="sapConfirmForm" class="sap-confirm-form">
+                    <!-- 🏢 Contexto de jerarquía -->
+                    <div class="sap-form-context" id="sapConfirmContext" style="display: none;">
+                        <span class="context-icon">📍</span>
+                        <span class="context-path">-</span>
+                    </div>
+                    
                     <div class="sap-form-group">
                         <label for="sapConfirmCodigo">Código SAP</label>
                         <input type="text" id="sapConfirmCodigo" placeholder="Ej: 3100028363" />
@@ -593,6 +599,18 @@ class SAPScanner {
             confEl.className = `sap-confirm-confidence ${confClass}`;
         }
         
+        // 🏢 Mostrar contexto de jerarquía si existe
+        const jerarquiaContext = window.getJerarquiaContext ? window.getJerarquiaContext() : null;
+        const contextEl = document.getElementById('sapConfirmContext');
+        if (contextEl) {
+            if (jerarquiaContext && jerarquiaContext.ubicacion) {
+                contextEl.innerHTML = `<span class="context-icon">📍</span> ${jerarquiaContext.ubicacion}`;
+                contextEl.style.display = 'flex';
+            } else {
+                contextEl.style.display = 'none';
+            }
+        }
+        
         // Verificar si código ya existe
         this.checkExistingCode(this.lastScan.codigoSAP);
         
@@ -691,6 +709,10 @@ class SAPScanner {
         }
         
         try {
+            // 🏢 Obtener contexto de jerarquía si existe
+            const jerarquiaContext = window.getJerarquiaContext ? window.getJerarquiaContext() : null;
+            console.log('📸 Contexto de jerarquía:', jerarquiaContext);
+            
             // Crear objeto repuesto
             const nuevoRepuesto = {
                 id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
@@ -707,17 +729,19 @@ class SAPScanner {
                 datosTecnicos: '',
                 ubicaciones: [],
                 planta: window.app?.plantaBase || 'Planta Principal',
-                areaGeneral: '',
+                // 🏢 Usar contexto de jerarquía si está disponible
+                areaGeneral: jerarquiaContext?.area || '',
                 subArea: '',
                 sistemaEquipo: '',
                 subSistema: '',
                 seccion: '',
-                detalle: '',
+                detalle: jerarquiaContext?.ubicacion || '',
                 multimedia: [],
                 marcadorMapaId: null,
                 ultimaModificacion: new Date().toISOString(),
                 ultimoConteo: null,
-                creadoPorScanner: true // Marca especial
+                creadoPorScanner: true, // Marca especial
+                creadoDesdeJerarquia: jerarquiaContext ? true : false
             };
             
             // Si hay imagen escaneada, agregarla como multimedia
@@ -781,6 +805,11 @@ class SAPScanner {
                 confidence: 0
             };
             this.imageReady = false;
+            
+            // 🏢 Limpiar contexto de jerarquía
+            if (window.clearScanContext) {
+                window.clearScanContext();
+            }
             
         } catch (error) {
             console.error('📸 SAPScanner: Error creando repuesto:', error);
