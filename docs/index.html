@@ -33371,6 +33371,9 @@ class InventarioCompleto {
     this.currentDocuments = [];
     this.currentEditingId = null;
     
+    // 🛡️ Protección contra múltiples guardados
+    this.isSavingRepuesto = false;
+    
     // Sistema de permisos de usuario
     this.userRole = null;
     this.canEdit = true; // Por defecto true hasta que se determine el rol
@@ -42780,12 +42783,21 @@ class InventarioCompleto {
       e.preventDefault();
     }
     
+    // 🛡️ PROTECCIÓN CONTRA MÚLTIPLES CLICKS
+    if (this.isSavingRepuesto) {
+      console.log('💾 Ya hay un guardado en proceso, ignorando click');
+      return;
+    }
+    this.isSavingRepuesto = true;
+    
     // 🔐 VERIFICAR PERMISOS
     const isEdit = this.currentEditingId !== null;
     if (isEdit && !this.checkEditPermission('editar este repuesto')) {
+      this.isSavingRepuesto = false;
       return;
     }
     if (!isEdit && !this.checkCreatePermission()) {
+      this.isSavingRepuesto = false;
       return;
     }
     
@@ -42808,6 +42820,7 @@ class InventarioCompleto {
             this.showToast('Completa los campos obligatorios antes de continuar.', 'warning');
           }
         }
+        this.isSavingRepuesto = false;
         return;
       }
 
@@ -42822,6 +42835,7 @@ class InventarioCompleto {
           } else {
             this.showToast(`Revisa los pendientes en "${pasoPendiente}".`, 'warning');
           }
+          this.isSavingRepuesto = false;
           return;
         }
       }
@@ -42829,10 +42843,16 @@ class InventarioCompleto {
 
     // 🟢 INICIO DEL CÓDIGO DE GUARDADO (se ejecuta si forceValidation=true O si pasó validación wizard)
     
+    // 🛡️ MOSTRAR OVERLAY DE GUARDANDO
+    this.showSavingOverlay(true);
+    
     //  BLOQUEAR BOTN Y MOSTRAR LOADING
     const btnGuardar = document.getElementById('btnGuardarRepuesto');
     const btnText = btnGuardar?.querySelector('.btn-text');
     const btnLoading = btnGuardar?.querySelector('.btn-loading');
+    
+    // Bloquear TODOS los botones de guardado
+    this.toggleSaveButtons(true);
     
     if (btnGuardar) {
       btnGuardar.disabled = true;
@@ -43181,9 +43201,19 @@ class InventarioCompleto {
     this.closeModal();
     console.log(' Guardado completo\n');
     
+    // 🛡️ Resetear estado de guardado
+    this.isSavingRepuesto = false;
+    this.showSavingOverlay(false);
+    this.toggleSaveButtons(false);
+    
     } catch (error) {
       console.error(' Error guardando repuesto:', error);
       this.showToast(' Error al guardar: ' + error.message, 'error');
+      
+      // 🛡️ Resetear estado de guardado
+      this.isSavingRepuesto = false;
+      this.showSavingOverlay(false);
+      this.toggleSaveButtons(false);
       
       //  RE-HABILITAR BOTN EN CASO DE ERROR
       btnGuardar.disabled = false;
@@ -43192,6 +43222,103 @@ class InventarioCompleto {
       btnText.style.display = 'inline';
       btnLoading.style.display = 'none';
     }
+  }
+
+  /**
+   * 🛡️ Muestra/oculta el overlay de "Guardando..."
+   */
+  showSavingOverlay(show) {
+    let overlay = document.getElementById('savingOverlay');
+    
+    if (show) {
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'savingOverlay';
+        overlay.innerHTML = `
+          <div class="saving-overlay-content">
+            <div class="saving-spinner"></div>
+            <div class="saving-text">Guardando...</div>
+            <div class="saving-hint">Por favor espera</div>
+          </div>
+        `;
+        overlay.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 100000;
+          animation: fadeIn 0.2s ease;
+        `;
+        
+        // Agregar estilos del spinner
+        const style = document.createElement('style');
+        style.id = 'savingOverlayStyles';
+        style.textContent = `
+          .saving-overlay-content {
+            text-align: center;
+            color: white;
+          }
+          .saving-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            animation: spin 0.8s linear infinite;
+          }
+          .saving-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+          }
+          .saving-hint {
+            font-size: 0.9rem;
+            opacity: 0.7;
+          }
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        `;
+        if (!document.getElementById('savingOverlayStyles')) {
+          document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(overlay);
+      }
+      overlay.style.display = 'flex';
+    } else {
+      if (overlay) {
+        overlay.style.display = 'none';
+      }
+    }
+  }
+
+  /**
+   * 🛡️ Bloquea/desbloquea todos los botones de guardado del modal
+   */
+  toggleSaveButtons(disabled) {
+    const saveButtons = [
+      document.getElementById('saveRepuestoStep1'),
+      document.getElementById('saveRepuestoStep2'),
+      document.getElementById('saveRepuestoStep3'),
+      document.getElementById('saveRepuestoStep4'),
+      document.getElementById('saveAndContinueJerarquia'),
+      document.getElementById('btnGuardarRepuesto')
+    ];
+    
+    saveButtons.forEach(btn => {
+      if (btn) {
+        btn.disabled = disabled;
+        btn.style.opacity = disabled ? '0.6' : '1';
+        btn.style.cursor = disabled ? 'not-allowed' : 'pointer';
+      }
+    });
   }
 
   /**

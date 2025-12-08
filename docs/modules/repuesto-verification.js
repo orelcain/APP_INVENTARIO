@@ -17,6 +17,7 @@ class RepuestoVerification {
         this.modal = null;
         this.step = 'verify'; // verify, complete, assign
         this.currentZoom = 1; // Para zoom de imagen
+        this.isSaving = false; // 🛡️ Protección contra múltiples guardados
         
         console.log('📋 RepuestoVerification: Módulo inicializado');
     }
@@ -218,11 +219,17 @@ class RepuestoVerification {
                             <button type="button" class="btn-secondary" onclick="window.repuestoVerification.goToStep('verify')">
                                 ← Volver
                             </button>
-                            <button type="button" class="btn-primary" onclick="window.repuestoVerification.saveAndContinue()">
-                                Guardar y Ubicar →
+                            <button type="button" class="btn-primary" id="btnSaveAndContinue" onclick="window.repuestoVerification.saveAndContinue()">
+                                <span class="btn-text">Guardar y Ubicar →</span>
+                                <span class="btn-loading" style="display:none;">
+                                    <span class="spinner"></span> Guardando...
+                                </span>
                             </button>
-                            <button type="button" class="btn-outline" onclick="window.repuestoVerification.saveOnly()">
-                                Solo Guardar
+                            <button type="button" class="btn-outline" id="btnSaveOnly" onclick="window.repuestoVerification.saveOnly()">
+                                <span class="btn-text">Solo Guardar</span>
+                                <span class="btn-loading" style="display:none;">
+                                    <span class="spinner"></span> Guardando...
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -962,6 +969,58 @@ class RepuestoVerification {
                 cursor: pointer;
             }
             
+            /* 🛡️ Estado de guardado - botones */
+            .btn-primary:disabled,
+            .btn-outline:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+            
+            .btn-loading {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .spinner {
+                width: 16px;
+                height: 16px;
+                border: 2px solid rgba(255,255,255,0.3);
+                border-top-color: #fff;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+            
+            .btn-outline .spinner {
+                border: 2px solid rgba(91,139,180,0.3);
+                border-top-color: var(--home-accent, #5b8bb4);
+            }
+            
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+            
+            .btn-primary.saving,
+            .btn-outline.saving {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .btn-primary.saving::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                animation: shimmer 1.5s infinite;
+            }
+            
+            @keyframes shimmer {
+                to { left: 100%; }
+            }
+            
             @media (max-width: 480px) {
                 .step-actions {
                     flex-direction: column;
@@ -1119,9 +1178,21 @@ class RepuestoVerification {
      * Guarda el repuesto y continúa al paso de asignación
      */
     async saveAndContinue() {
-        const saved = await this.saveRepuesto();
-        if (saved) {
-            this.goToStep('assign');
+        // 🛡️ Protección contra múltiples clicks
+        if (this.isSaving) {
+            console.log('📋 Ya hay un guardado en proceso, ignorando click');
+            return;
+        }
+        
+        this.setSavingState(true, 'btnSaveAndContinue');
+        
+        try {
+            const saved = await this.saveRepuesto();
+            if (saved) {
+                this.goToStep('assign');
+            }
+        } finally {
+            this.setSavingState(false, 'btnSaveAndContinue');
         }
     }
     
@@ -1129,10 +1200,53 @@ class RepuestoVerification {
      * Solo guarda el repuesto y cierra
      */
     async saveOnly() {
-        const saved = await this.saveRepuesto();
-        if (saved) {
-            this.close();
-            this.showSuccessToast();
+        // 🛡️ Protección contra múltiples clicks
+        if (this.isSaving) {
+            console.log('📋 Ya hay un guardado en proceso, ignorando click');
+            return;
+        }
+        
+        this.setSavingState(true, 'btnSaveOnly');
+        
+        try {
+            const saved = await this.saveRepuesto();
+            if (saved) {
+                this.close();
+                this.showSuccessToast();
+            }
+        } finally {
+            this.setSavingState(false, 'btnSaveOnly');
+        }
+    }
+    
+    /**
+     * 🛡️ Establece el estado de guardado (bloquea/desbloquea botones)
+     */
+    setSavingState(saving, buttonId) {
+        this.isSaving = saving;
+        
+        // Botones a bloquear
+        const btnSaveAndContinue = document.getElementById('btnSaveAndContinue');
+        const btnSaveOnly = document.getElementById('btnSaveOnly');
+        
+        [btnSaveAndContinue, btnSaveOnly].forEach(btn => {
+            if (!btn) return;
+            
+            btn.disabled = saving;
+            
+            const textSpan = btn.querySelector('.btn-text');
+            const loadingSpan = btn.querySelector('.btn-loading');
+            
+            if (textSpan) textSpan.style.display = saving ? 'none' : 'inline';
+            if (loadingSpan) loadingSpan.style.display = saving ? 'inline-flex' : 'none';
+        });
+        
+        // Highlight del botón activo
+        const activeBtn = document.getElementById(buttonId);
+        if (activeBtn && saving) {
+            activeBtn.classList.add('saving');
+        } else if (activeBtn) {
+            activeBtn.classList.remove('saving');
         }
     }
     
