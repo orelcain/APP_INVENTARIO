@@ -62332,6 +62332,9 @@ function setupGlobalSearch() {
 (async () => {
   console.log('\n Iniciando aplicacin...\n');
   
+  // Array para tareas post-conexión (vacío en modo Firebase-only)
+  const postConnectTasks = [];
+  
   // Esperar a que el DOM esté listo
   if (document.readyState === 'loading') {
     await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
