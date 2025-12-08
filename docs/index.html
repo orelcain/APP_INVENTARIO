@@ -57749,6 +57749,29 @@ window.addEventListener('customAuthLogout', () => {
 // ========================================
 // 📋 FUNCIONES DE HISTORIAL DE ACTIVIDAD
 // ========================================
+
+// Función para forzar la visibilidad del historial (debug)
+window.mostrarHistorialAdmin = function() {
+  const section = document.getElementById('activity-log-section-admin');
+  if (section) {
+    section.style.display = 'block';
+    console.log('✅ Historial forzado a visible');
+    window.loadActivityLog();
+  } else {
+    console.error('❌ No se encontró activity-log-section-admin');
+  }
+};
+
+// Función para verificar estado del historial
+window.verificarHistorial = function() {
+  const section = document.getElementById('activity-log-section-admin');
+  const debug = document.getElementById('debug-section-admin');
+  console.log('📋 Estado de secciones admin:');
+  console.log('  - activity-log-section-admin:', section ? `display=${section.style.display}` : 'NO EXISTE');
+  console.log('  - debug-section-admin:', debug ? `display=${debug.style.display}` : 'NO EXISTE');
+  console.log('  - Usuario actual:', window.customAuth?.currentUserRole || 'no definido');
+};
+
 window.loadActivityLog = async function(limit = 100) {
   const container = document.getElementById('activityLogContainer');
   if (!container) return;
