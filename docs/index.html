@@ -57776,13 +57776,17 @@ const backupManager = {
 // OBJETO CONFIGURACION - Gestin centralizada
 // ========================================
 const configuracion = {
-  // Renderizar UI de almacenamiento - FIREBASE ONLY MODE
+  // Renderizar UI de almacenamiento - FIREBASE ONLY MODE (Profesional)
   renderStorageUI() {
     const container = document.getElementById('storage-config-content');
     
-    // 🔥 FIREBASE-ONLY: Mostrar siempre estado de Firebase
+    // 🔥 FIREBASE-ONLY: Estado siempre activo
     const isFirebaseAuth = window.firebaseService && window.firebaseService.isAuthenticated();
-    const syncActive = localStorage.getItem('firebaseSyncActive') === 'true';
+    const syncActive = true; // Siempre activa en modo Firebase-only
+    
+    // Obtener estadísticas
+    const repuestosCount = window.app ? window.app.repuestos.length : '--';
+    const mapasCount = window.mapStorage && window.mapStorage.state ? window.mapStorage.state.mapas.length : '--';
     
     container.innerHTML = `
       <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">
@@ -57790,37 +57794,43 @@ const configuracion = {
       </h3>
       
       <div style="display: grid; gap: 12px;">
-        <!-- Estado de Firebase -->
-        <div style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <strong style="color: var(--text-primary); font-size: 0.95rem;">Firebase:</strong>
-            <span style="padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background: ${isFirebaseAuth ? 'var(--success)' : 'var(--danger)'}; color: white;">
-              ${isFirebaseAuth ? '✅ Conectado' : '❌ No autenticado'}
+        <!-- Estado de Firebase - Diseño Profesional -->
+        <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%); padding: 16px; border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="color: var(--text-primary); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.2rem;">🔥</span> Firebase
+            </span>
+            <span style="padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: ${isFirebaseAuth ? '#22c55e' : '#ef4444'}; color: white;">
+              ${isFirebaseAuth ? '✓ Conectado' : '✗ Desconectado'}
             </span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <strong style="color: var(--text-primary); font-size: 0.95rem;">Sincronización:</strong>
-            <span style="padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background: ${syncActive ? 'var(--success)' : 'var(--warning)'}; color: white;">
-              ${syncActive ? '🔄 Activa' : '⏸️ Pausada'}
+            <span style="color: var(--text-primary); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.2rem;">🔄</span> Sincronización
+            </span>
+            <span style="padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: #22c55e; color: white;">
+              ✓ Automática
             </span>
           </div>
         </div>
         
-        <!-- Controles de Sincronización -->
+        <!-- Estadísticas -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <button onclick="window.activarSincronizacionTiempoReal()" class="btn btn-success" style="padding: 12px; font-size: 0.9rem;" ${syncActive ? 'disabled' : ''}>
-            ▶️ Activar Sync
-          </button>
-          <button onclick="window.desactivarSincronizacionTiempoReal()" class="btn" style="padding: 12px; font-size: 0.9rem; background: var(--warning); color: white;" ${!syncActive ? 'disabled' : ''}>
-            ⏸️ Pausar Sync
-          </button>
+          <div style="background: rgba(59, 130, 246, 0.1); padding: 14px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 1.8rem; font-weight: bold; color: #3b82f6;">${repuestosCount}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Repuestos</div>
+          </div>
+          <div style="background: rgba(147, 51, 234, 0.1); padding: 14px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 1.8rem; font-weight: bold; color: #9333ea;">${mapasCount}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Mapas</div>
+          </div>
         </div>
         
         <!-- Info -->
-        <div style="background: rgba(59, 130, 246, 0.1); padding: 14px; border-radius: 8px; border-left: 4px solid var(--info);">
-          <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0; line-height: 1.5;">
-            <strong style="color: var(--info);">☁️ Modo Firebase</strong><br>
-            Todos los datos se guardan automáticamente en la nube.<br>
+        <div style="background: rgba(59, 130, 246, 0.08); padding: 14px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+          <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0; line-height: 1.6;">
+            <strong style="color: #60a5fa;">💡 Sincronización automática</strong><br>
+            Los cambios se guardan instantáneamente en la nube.<br>
             Accede desde cualquier dispositivo con tu cuenta.
           </p>
         </div>
