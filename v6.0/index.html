@@ -66500,6 +66500,67 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   background: var(--bg-secondary);
 }
 
+/* Overlay de éxito después de crear repuesto */
+.sap-success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  animation: fadeIn 0.2s ease;
+}
+
+.sap-success-content {
+  background: var(--bg-primary);
+  padding: 32px;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 90%;
+  width: 320px;
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.sap-success-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.sap-success-content h3 {
+  margin: 0 0 12px 0;
+  color: #22c55e;
+  font-size: 1.5rem;
+}
+
+.sap-success-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 8px 0;
+  word-break: break-word;
+}
+
+.sap-success-code {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 4px 0;
+}
+
+.sap-success-qty {
+  font-size: 0.9rem;
+  color: var(--primary);
+  margin: 8px 0 16px 0;
+}
+
 /* Botón de escaneo en footer - estilo especial */
 .mobile-bottom-nav .nav-item-scan {
   background: linear-gradient(135deg, #22c55e, #16a34a);

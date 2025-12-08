@@ -1,9 +1,14 @@
 /**
- * 📸 SAP Label Scanner Module
+ * 📸 SAP Label Scanner Module v1.1
  * Escanea etiquetas SAP usando OCR (Tesseract.js) para crear repuestos rápidamente
  * 
- * @version 1.0.0
+ * @version 1.1.0
  * @requires Tesseract.js (CDN)
+ * 
+ * CAMBIOS v1.1:
+ * - Paso de confirmación antes de analizar imagen
+ * - Mejor feedback al crear repuesto
+ * - Fix: Footer se re-renderiza correctamente
  */
 
 class SAPScanner {
@@ -14,7 +19,7 @@ class SAPScanner {
         
         // Patrones de extracción SAP
         this.patterns = {
-            // Código SAP: 10 dígitos, típicamente empieza con 3
+            // Código SAP: 10 dígitos, típicamente empieza con 3 o 2
             codigoSAP: /\b[23][0-9]{9}\b/g,
             // Código alternativo: 8-12 dígitos
             codigoAlt: /\b[0-9]{8,12}\b/g,
@@ -31,7 +36,10 @@ class SAPScanner {
             confidence: 0
         };
         
-        console.log('📸 SAPScanner: Módulo inicializado');
+        // Estado de la UI
+        this.imageReady = false; // Nueva flag para saber si hay imagen lista para analizar
+        
+        console.log('📸 SAPScanner v1.1: Módulo inicializado');
     }
     
     /**
@@ -101,6 +109,16 @@ class SAPScanner {
      * Abre el modal de captura con cámara
      */
     openCaptureModal() {
+        // Resetear estado
+        this.imageReady = false;
+        this.lastScan = {
+            rawText: '',
+            codigoSAP: '',
+            descripcion: '',
+            imageData: null,
+            confidence: 0
+        };
+        
         // Crear modal si no existe
         let modal = document.getElementById('sapScannerModal');
         if (!modal) {
@@ -108,8 +126,34 @@ class SAPScanner {
             document.body.appendChild(modal);
         }
         
+        // Resetear UI del modal
+        this.resetModalUI();
+        
         modal.classList.add('active');
         this.startCamera();
+    }
+    
+    /**
+     * Resetea la UI del modal a estado inicial
+     */
+    resetModalUI() {
+        const video = document.getElementById('sapScannerVideo');
+        const preview = document.getElementById('sapScannerPreview');
+        const captureBtn = document.getElementById('sapScannerCaptureBtn');
+        const analyzeBtn = document.getElementById('sapScannerAnalyzeBtn');
+        const retryBtn = document.getElementById('sapScannerRetryBtn');
+        const galleryBtn = document.getElementById('sapScannerGalleryBtn');
+        const progressContainer = document.querySelector('.sap-scanner-progress-container');
+        const guide = document.querySelector('.sap-scanner-guide');
+        
+        if (video) video.style.display = 'block';
+        if (preview) preview.style.display = 'none';
+        if (captureBtn) captureBtn.style.display = 'inline-flex';
+        if (analyzeBtn) analyzeBtn.style.display = 'none';
+        if (retryBtn) retryBtn.style.display = 'none';
+        if (galleryBtn) galleryBtn.style.display = 'inline-flex';
+        if (progressContainer) progressContainer.style.display = 'none';
+        if (guide) guide.style.display = 'flex';
     }
     
     /**
@@ -150,21 +194,27 @@ class SAPScanner {
                     <span id="sapScannerProgressText">Preparando...</span>
                 </div>
                 
-                <!-- Controles -->
+                <!-- Controles - NUEVO: Separado en dos pasos -->
                 <div class="sap-scanner-controls">
-                    <button id="sapScannerCaptureBtn" class="sap-scanner-btn primary" onclick="window.sapScanner.captureAndProcess()">
+                    <!-- Paso 1: Capturar/Seleccionar -->
+                    <button id="sapScannerCaptureBtn" class="sap-scanner-btn primary" onclick="window.sapScanner.captureImage()">
                         📷 Capturar
-                    </button>
-                    <button id="sapScannerRetryBtn" class="sap-scanner-btn secondary" style="display:none;" onclick="window.sapScanner.retryCapture()">
-                        🔄 Reintentar
                     </button>
                     <button id="sapScannerGalleryBtn" class="sap-scanner-btn secondary" onclick="window.sapScanner.selectFromGallery()">
                         🖼️ Galería
                     </button>
+                    
+                    <!-- Paso 2: Analizar o Reintentar (después de captura) -->
+                    <button id="sapScannerAnalyzeBtn" class="sap-scanner-btn primary" style="display:none;" onclick="window.sapScanner.analyzeImage()">
+                        🔍 Analizar Imagen
+                    </button>
+                    <button id="sapScannerRetryBtn" class="sap-scanner-btn secondary" style="display:none;" onclick="window.sapScanner.retryCapture()">
+                        🔄 Otra Foto
+                    </button>
                 </div>
                 
                 <!-- Input oculto para galería -->
-                <input type="file" id="sapScannerFileInput" accept="image/*" style="display:none;" onchange="window.sapScanner.processSelectedFile(event)" />
+                <input type="file" id="sapScannerFileInput" accept="image/*" style="display:none;" onchange="window.sapScanner.handleFileSelected(event)" />
                 
                 <!-- Instrucciones -->
                 <div class="sap-scanner-instructions">
@@ -289,9 +339,9 @@ class SAPScanner {
     }
     
     /**
-     * Captura imagen y procesa con OCR
+     * PASO 1a: Captura imagen de la cámara (sin procesar aún)
      */
-    async captureAndProcess() {
+    captureImage() {
         const video = document.getElementById('sapScannerVideo');
         const canvas = document.getElementById('sapScannerCanvas');
         const preview = document.getElementById('sapScannerPreview');
@@ -304,21 +354,20 @@ class SAPScanner {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0);
         
-        // Convertir a blob
+        // Convertir a dataURL
         const imageData = canvas.toDataURL('image/jpeg', 0.9);
-        
-        // Mostrar preview
-        if (preview) {
-            preview.src = imageData;
-            preview.style.display = 'block';
-            video.style.display = 'none';
-        }
         
         // Guardar imagen
         this.lastScan.imageData = imageData;
+        this.imageReady = true;
         
-        // Procesar con OCR
-        await this.processImage(imageData);
+        // Mostrar preview
+        this.showImagePreview(imageData);
+        
+        // Detener cámara para ahorrar batería
+        this.stopCamera();
+        
+        console.log('📸 SAPScanner: Imagen capturada, esperando confirmación');
     }
     
     /**
@@ -326,33 +375,72 @@ class SAPScanner {
      */
     selectFromGallery() {
         const input = document.getElementById('sapScannerFileInput');
-        if (input) input.click();
+        if (input) {
+            input.value = ''; // Reset para permitir seleccionar mismo archivo
+            input.click();
+        }
     }
     
     /**
-     * Procesa archivo seleccionado de galería
+     * PASO 1b: Maneja archivo seleccionado de galería (sin procesar aún)
      */
-    async processSelectedFile(event) {
+    handleFileSelected(event) {
         const file = event.target.files[0];
         if (!file) return;
         
         const reader = new FileReader();
-        reader.onload = async (e) => {
+        reader.onload = (e) => {
             const imageData = e.target.result;
             
-            // Mostrar preview
-            const preview = document.getElementById('sapScannerPreview');
-            const video = document.getElementById('sapScannerVideo');
-            if (preview) {
-                preview.src = imageData;
-                preview.style.display = 'block';
-            }
-            if (video) video.style.display = 'none';
-            
+            // Guardar imagen
             this.lastScan.imageData = imageData;
-            await this.processImage(imageData);
+            this.imageReady = true;
+            
+            // Mostrar preview
+            this.showImagePreview(imageData);
+            
+            console.log('📸 SAPScanner: Imagen de galería cargada, esperando confirmación');
         };
         reader.readAsDataURL(file);
+    }
+    
+    /**
+     * Muestra preview de imagen y botones de paso 2
+     */
+    showImagePreview(imageData) {
+        const video = document.getElementById('sapScannerVideo');
+        const preview = document.getElementById('sapScannerPreview');
+        const captureBtn = document.getElementById('sapScannerCaptureBtn');
+        const galleryBtn = document.getElementById('sapScannerGalleryBtn');
+        const analyzeBtn = document.getElementById('sapScannerAnalyzeBtn');
+        const retryBtn = document.getElementById('sapScannerRetryBtn');
+        const guide = document.querySelector('.sap-scanner-guide');
+        
+        // Mostrar preview
+        if (preview) {
+            preview.src = imageData;
+            preview.style.display = 'block';
+        }
+        if (video) video.style.display = 'none';
+        if (guide) guide.style.display = 'none';
+        
+        // Cambiar botones a paso 2
+        if (captureBtn) captureBtn.style.display = 'none';
+        if (galleryBtn) galleryBtn.style.display = 'none';
+        if (analyzeBtn) analyzeBtn.style.display = 'inline-flex';
+        if (retryBtn) retryBtn.style.display = 'inline-flex';
+    }
+    
+    /**
+     * PASO 2: Analizar imagen con OCR (después de confirmar)
+     */
+    async analyzeImage() {
+        if (!this.imageReady || !this.lastScan.imageData) {
+            this.showToast('No hay imagen para analizar', 'warning');
+            return;
+        }
+        
+        await this.processImage(this.lastScan.imageData);
     }
     
     /**
@@ -364,18 +452,19 @@ class SAPScanner {
         
         // Mostrar progreso
         const progressContainer = document.querySelector('.sap-scanner-progress-container');
-        const captureBtn = document.getElementById('sapScannerCaptureBtn');
+        const analyzeBtn = document.getElementById('sapScannerAnalyzeBtn');
         const retryBtn = document.getElementById('sapScannerRetryBtn');
         
         if (progressContainer) progressContainer.style.display = 'block';
-        if (captureBtn) captureBtn.style.display = 'none';
+        if (analyzeBtn) analyzeBtn.style.display = 'none';
         if (retryBtn) retryBtn.style.display = 'none';
         
         try {
             // Inicializar Tesseract si no está listo
             if (!this.isReady) {
                 this.updateProgress(0);
-                document.getElementById('sapScannerProgressText').textContent = 'Cargando motor OCR...';
+                const progressText = document.getElementById('sapScannerProgressText');
+                if (progressText) progressText.textContent = 'Cargando motor OCR (primera vez)...';
                 await this.init();
             }
             
@@ -399,12 +488,13 @@ class SAPScanner {
             console.error('📸 SAPScanner: Error en OCR:', error);
             this.showToast('Error procesando imagen. Intenta de nuevo.', 'error');
             
+            // Mostrar botón de reintentar
+            if (analyzeBtn) analyzeBtn.style.display = 'inline-flex';
             if (retryBtn) retryBtn.style.display = 'inline-flex';
             
         } finally {
             this.isProcessing = false;
             if (progressContainer) progressContainer.style.display = 'none';
-            if (retryBtn) retryBtn.style.display = 'inline-flex';
         }
     }
     
@@ -488,7 +578,7 @@ class SAPScanner {
         document.getElementById('sapConfirmCodigo').value = this.lastScan.codigoSAP || '';
         document.getElementById('sapConfirmNombre').value = this.lastScan.descripcion || '';
         document.getElementById('sapConfirmCantidad').value = '1';
-        document.getElementById('sapConfirmRawText').textContent = this.lastScan.rawText || '';
+        document.getElementById('sapConfirmRawText').textContent = this.lastScan.rawText || '(No se detectó texto)';
         document.getElementById('sapConfirmThumb').src = this.lastScan.imageData || '';
         
         // Mostrar confianza
@@ -533,15 +623,13 @@ class SAPScanner {
     }
     
     /**
-     * Reintentar captura
+     * Reintentar captura - vuelve al paso 1
      */
     retryCapture() {
-        const retryBtn = document.getElementById('sapScannerRetryBtn');
-        const captureBtn = document.getElementById('sapScannerCaptureBtn');
+        this.imageReady = false;
+        this.lastScan.imageData = null;
         
-        if (retryBtn) retryBtn.style.display = 'none';
-        if (captureBtn) captureBtn.style.display = 'inline-flex';
-        
+        this.resetModalUI();
         this.startCamera();
     }
     
@@ -553,6 +641,9 @@ class SAPScanner {
         if (modal) modal.classList.remove('active');
         
         if (stopCam) this.stopCamera();
+        
+        // 🔥 FIX: Re-renderizar footer móvil al cerrar
+        this.refreshMobileFooter();
     }
     
     /**
@@ -561,6 +652,21 @@ class SAPScanner {
     closeConfirmModal() {
         const modal = document.getElementById('sapConfirmModal');
         if (modal) modal.classList.remove('active');
+        
+        // 🔥 FIX: Re-renderizar footer móvil al cerrar
+        this.refreshMobileFooter();
+    }
+    
+    /**
+     * 🔥 FIX: Re-renderiza el footer móvil
+     */
+    refreshMobileFooter() {
+        setTimeout(() => {
+            if (window.renderMobileFooter && window.mobileFooterState) {
+                window.renderMobileFooter(window.mobileFooterState.currentContext || 'inventario');
+                console.log('📸 SAPScanner: Footer móvil re-renderizado');
+            }
+        }, 100);
     }
     
     /**
@@ -574,6 +680,14 @@ class SAPScanner {
         if (!nombre) {
             this.showToast('Debes ingresar un nombre para el repuesto', 'warning');
             return;
+        }
+        
+        // Mostrar loading
+        const createBtn = document.querySelector('.sap-confirm-actions .sap-scanner-btn.primary');
+        const originalText = createBtn?.textContent || '';
+        if (createBtn) {
+            createBtn.textContent = '⏳ Creando...';
+            createBtn.disabled = true;
         }
         
         try {
@@ -613,7 +727,7 @@ class SAPScanner {
                 const blob = await response.blob();
                 
                 // Subir a Firebase si está disponible
-                if (window.firebaseImageStorage) {
+                if (window.firebaseImageStorage && window.firebaseImageStorage.isReady()) {
                     console.log('📸 SAPScanner: Subiendo imagen a Firebase...');
                     const uploadResult = await window.firebaseImageStorage.uploadRepuestoImage(
                         blob,
@@ -627,6 +741,7 @@ class SAPScanner {
                             url: uploadResult.url,
                             isFirebaseStorage: true
                         }];
+                        console.log('📸 SAPScanner: Imagen subida a Firebase');
                     }
                 }
             }
@@ -647,15 +762,15 @@ class SAPScanner {
                 if (window.app.renderFilters) {
                     window.app.renderFilters();
                 }
+                
+                console.log('📸 SAPScanner: Repuesto agregado al inventario:', nuevoRepuesto);
             }
             
             // Cerrar modal
             this.closeConfirmModal();
             
-            // Mostrar éxito
-            this.showToast(`✅ Repuesto creado: ${nombre}`, 'success');
-            
-            console.log('📸 SAPScanner: Repuesto creado:', nuevoRepuesto);
+            // 🔥 MEJORADO: Mostrar éxito más visible
+            this.showSuccessMessage(nombre, codigoSAP, cantidad);
             
             // Limpiar estado
             this.lastScan = {
@@ -665,11 +780,47 @@ class SAPScanner {
                 imageData: null,
                 confidence: 0
             };
+            this.imageReady = false;
             
         } catch (error) {
             console.error('📸 SAPScanner: Error creando repuesto:', error);
             this.showToast('Error al crear repuesto. Revisa la consola.', 'error');
+        } finally {
+            // Restaurar botón
+            if (createBtn) {
+                createBtn.textContent = originalText;
+                createBtn.disabled = false;
+            }
         }
+    }
+    
+    /**
+     * 🔥 NUEVO: Muestra mensaje de éxito más visible
+     */
+    showSuccessMessage(nombre, codigo, cantidad) {
+        // Crear overlay de éxito
+        const overlay = document.createElement('div');
+        overlay.className = 'sap-success-overlay';
+        overlay.innerHTML = `
+            <div class="sap-success-content">
+                <div class="sap-success-icon">✅</div>
+                <h3>¡Repuesto Creado!</h3>
+                <p class="sap-success-name">${nombre}</p>
+                ${codigo ? `<p class="sap-success-code">SAP: ${codigo}</p>` : ''}
+                <p class="sap-success-qty">Cantidad: ${cantidad}</p>
+                <button class="sap-scanner-btn primary" onclick="this.parentElement.parentElement.remove()">
+                    Aceptar
+                </button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        
+        // Auto-cerrar después de 3 segundos
+        setTimeout(() => {
+            if (overlay.parentElement) {
+                overlay.remove();
+            }
+        }, 3000);
     }
     
     /**
@@ -699,4 +850,4 @@ class SAPScanner {
 // Crear instancia global
 window.sapScanner = new SAPScanner();
 
-console.log('📸 SAP Scanner Module cargado - window.sapScanner disponible');
+console.log('📸 SAP Scanner Module v1.1 cargado - window.sapScanner disponible');
