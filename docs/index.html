@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-orelcain.github.io-1765060518994.log<html lang="es">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -57690,17 +57690,30 @@ window.addEventListener('customAuthSuccess', (event) => {
   if (debugSection) {
     debugSection.style.display = (role === 'admin') ? 'block' : 'none';
     console.log(`🔧 Sección Debug: ${role === 'admin' ? 'visible' : 'oculta'} para rol ${role}`);
+  } else {
+    console.warn('⚠️ No se encontró debug-section-admin');
   }
   
   // 📋 Mostrar sección de Historial de Actividad solo para admin
   const activityLogSection = document.getElementById('activity-log-section-admin');
+  console.log('🔍 Buscando activity-log-section-admin:', activityLogSection ? 'ENCONTRADO' : 'NO ENCONTRADO');
   if (activityLogSection) {
-    activityLogSection.style.display = (role === 'admin') ? 'block' : 'none';
-    if (role === 'admin') {
+    const shouldShow = (role === 'admin');
+    activityLogSection.style.display = shouldShow ? 'block' : 'none';
+    console.log(`📋 Sección Historial: display=${shouldShow ? 'block' : 'none'} para rol ${role}`);
+    if (shouldShow) {
       // Cargar historial automáticamente al mostrar
-      setTimeout(() => window.loadActivityLog(), 500);
+      console.log('📋 Cargando historial de actividad...');
+      setTimeout(() => {
+        if (window.loadActivityLog) {
+          window.loadActivityLog();
+        } else {
+          console.error('❌ window.loadActivityLog no está definido');
+        }
+      }, 500);
     }
-    console.log(`📋 Sección Historial: ${role === 'admin' ? 'visible' : 'oculta'} para rol ${role}`);
+  } else {
+    console.error('❌ No se encontró el elemento activity-log-section-admin');
   }
   
   // Mensaje de bienvenida según rol
