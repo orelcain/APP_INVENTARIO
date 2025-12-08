@@ -17311,6 +17311,20 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 </head>
 <body>
 
+<!-- 📱 SCRIPT CRÍTICO: Ocultar inventario en móvil ANTES de que se renderice -->
+<script>
+(function() {
+  if (window.innerWidth <= 768) {
+    // Inyectar CSS crítico para móvil
+    var style = document.createElement('style');
+    style.id = 'mobile-init-critical';
+    style.textContent = '#inventario.tab-content.active { display: none !important; } #mobileHome { display: block !important; }';
+    document.head.appendChild(style);
+    console.log('📱 CSS crítico móvil inyectado');
+  }
+})();
+</script>
+
 <!--  INDICADOR DE CARGA INICIAL -->
 <div id="loadingIndicator">
   <div class="loading-icon" style="font-size: 2rem;">⏳</div>
@@ -66277,17 +66291,29 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 /* 🏠 MOBILE HOME DASHBOARD                                           */
 /* ================================================================== */
 
-/* Solo visible en móvil */
+/* Oculto por defecto en escritorio */
 #mobileHome {
-  display: none;
+  display: none !important;
 }
 
+/* En móvil: Home visible, resto oculto */
 @media (max-width: 768px) {
+  /* Cuando Home está activo, mostrar */
   #mobileHome.tab-content.active {
-    display: block;
+    display: block !important;
     padding: 16px;
     padding-bottom: 100px; /* Espacio para footer */
     animation: fadeIn 0.3s ease;
+  }
+  
+  /* Todas las tabs ocultas por defecto en móvil hasta JS las active */
+  .tab-content:not(#mobileHome) {
+    /* Se controla por JS */
+  }
+  
+  /* Cuando inventario NO tiene active explícito, ocultarlo */
+  #inventario:not(.mobile-active) {
+    /* Controlado por JS */
   }
 }
 
@@ -67401,10 +67427,52 @@ document.addEventListener('click', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
   const isMobile = window.innerWidth <= 768;
   if (isMobile) {
-    // En móvil, empezar en Home
+    // En móvil, empezar en Home inmediatamente
+    console.log('📱 Iniciando en Mobile Home...');
+    
+    // Ocultar inventario que tiene .active por defecto
+    const inventario = document.getElementById('inventario');
+    if (inventario) {
+      inventario.classList.remove('active');
+      inventario.style.display = 'none';
+    }
+    
+    // Ocultar todas las demás tabs también
+    document.querySelectorAll('.tab-content').forEach(t => {
+      if (t.id !== 'mobileHome') {
+        t.classList.remove('active');
+        t.style.display = 'none';
+      }
+    });
+    
+    // Mostrar Mobile Home
+    const mobileHome = document.getElementById('mobileHome');
+    if (mobileHome) {
+      mobileHome.classList.add('active');
+      mobileHome.style.display = 'block';
+    }
+    
+    // Renderizar footer con contexto home
     setTimeout(() => {
-      switchMobileTab('home');
+      renderMobileFooter('home');
+      // Actualizar datos cuando app esté listo
+      if (window.updateMobileHome) {
+        window.updateMobileHome();
+      }
+    }, 100);
+    
+    // Escuchar cuando app termine de cargar datos para actualizar Home
+    const checkAppReady = setInterval(() => {
+      if (window.app && window.app.repuestos && window.app.repuestos.length > 0) {
+        clearInterval(checkAppReady);
+        console.log('📱 App cargada, actualizando Home...');
+        if (window.updateMobileHome) window.updateMobileHome();
+      }
     }, 500);
+    
+    // Timeout de seguridad
+    setTimeout(() => clearInterval(checkAppReady), 10000);
+    
   } else {
     setTimeout(() => renderMobileFooter('inventario'), 100);
   }
