@@ -16,6 +16,7 @@ class RepuestoVerification {
         this.scanData = null;
         this.modal = null;
         this.step = 'verify'; // verify, complete, assign
+        this.currentZoom = 1; // Para zoom de imagen
         
         console.log('📋 RepuestoVerification: Módulo inicializado');
     }
@@ -72,11 +73,17 @@ class RepuestoVerification {
                     <!-- PASO 1: Verificar datos -->
                     <div class="verification-step" id="stepVerify">
                         <h2>📸 Verificar Datos Escaneados</h2>
+                        <p class="verify-hint">Compara la imagen con los datos detectados. Usa 🔍 para hacer zoom.</p>
                         
                         <!-- Comparación imagen vs datos -->
                         <div class="verify-comparison">
                             <div class="verify-image-section">
-                                <img id="verifyImage" src="" alt="Imagen escaneada" />
+                                <div class="verify-image-container" id="verifyImageContainer">
+                                    <img id="verifyImage" src="" alt="Imagen escaneada" onclick="window.repuestoVerification.openImageZoom()" />
+                                    <button type="button" class="image-zoom-btn" onclick="window.repuestoVerification.openImageZoom()" title="Ver imagen completa">
+                                        🔍
+                                    </button>
+                                </div>
                                 <span class="verify-confidence" id="verifyConfidence">--% confianza</span>
                             </div>
                             <div class="verify-data-section">
@@ -455,14 +462,161 @@ class RepuestoVerification {
                 }
             }
             
+            .verify-hint {
+                font-size: 13px;
+                color: var(--home-text-muted, #8b98a5);
+                margin-bottom: 16px;
+            }
+            
             .verify-image-section {
                 position: relative;
+            }
+            
+            .verify-image-container {
+                position: relative;
+                cursor: zoom-in;
             }
             
             .verify-image-section img {
                 width: 100%;
                 border-radius: 12px;
                 border: 1px solid var(--home-border, #2d3640);
+                transition: transform 0.2s ease;
+            }
+            
+            .verify-image-container:hover img {
+                opacity: 0.9;
+            }
+            
+            .image-zoom-btn {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                width: 36px;
+                height: 36px;
+                background: rgba(0,0,0,0.7);
+                border: none;
+                border-radius: 50%;
+                font-size: 18px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(4px);
+                transition: all 0.2s ease;
+            }
+            
+            .image-zoom-btn:hover {
+                background: rgba(0,0,0,0.85);
+                transform: scale(1.1);
+            }
+            
+            /* Modal de Zoom de Imagen */
+            .image-zoom-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.95);
+                z-index: 10001;
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .image-zoom-modal.active {
+                display: flex;
+            }
+            
+            .image-zoom-header {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 16px;
+                background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+                z-index: 10;
+            }
+            
+            .image-zoom-title {
+                color: white;
+                font-size: 14px;
+                font-weight: 500;
+            }
+            
+            .image-zoom-close {
+                background: rgba(255,255,255,0.2);
+                border: none;
+                color: white;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                font-size: 20px;
+                cursor: pointer;
+            }
+            
+            .image-zoom-container {
+                flex: 1;
+                width: 100%;
+                overflow: auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 60px 16px 80px;
+            }
+            
+            .image-zoom-container img {
+                max-width: none;
+                transform-origin: center;
+                transition: transform 0.1s ease;
+                cursor: grab;
+            }
+            
+            .image-zoom-container img:active {
+                cursor: grabbing;
+            }
+            
+            .image-zoom-controls {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+                padding: 16px;
+                background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            }
+            
+            .zoom-control-btn {
+                background: rgba(255,255,255,0.2);
+                border: none;
+                color: white;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                font-size: 24px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            
+            .zoom-control-btn:hover {
+                background: rgba(255,255,255,0.3);
+            }
+            
+            .zoom-level-display {
+                background: rgba(0,0,0,0.5);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
             }
             
             .verify-confidence {
@@ -1236,6 +1390,179 @@ class RepuestoVerification {
         this.showToast(`✅ ${this.currentRepuesto?.nombre || 'Repuesto'} agregado al inventario`, 'success');
     }
     
+    /**
+     * 🔍 ZOOM: Abre modal de zoom de imagen
+     */
+    openImageZoom() {
+        // Crear modal de zoom si no existe
+        let zoomModal = document.getElementById('imageZoomModal');
+        if (!zoomModal) {
+            zoomModal = this.createImageZoomModal();
+            document.body.appendChild(zoomModal);
+        }
+        
+        // Cargar imagen
+        const originalImg = document.getElementById('verifyImage');
+        const zoomImg = document.getElementById('zoomImage');
+        
+        if (originalImg && zoomImg) {
+            zoomImg.src = originalImg.src;
+            this.currentZoom = 1;
+            this.updateZoomLevel();
+        }
+        
+        zoomModal.classList.add('active');
+    }
+    
+    /**
+     * 🔍 ZOOM: Crea modal de zoom
+     */
+    createImageZoomModal() {
+        const modal = document.createElement('div');
+        modal.id = 'imageZoomModal';
+        modal.className = 'image-zoom-modal';
+        
+        modal.innerHTML = `
+            <div class="image-zoom-header">
+                <span class="image-zoom-title">📸 Imagen escaneada - Pellizca para zoom</span>
+                <button type="button" class="image-zoom-close" onclick="window.repuestoVerification.closeImageZoom()">✕</button>
+            </div>
+            
+            <div class="image-zoom-container" id="zoomContainer">
+                <img id="zoomImage" src="" alt="Zoom de imagen" />
+            </div>
+            
+            <div class="image-zoom-controls">
+                <button type="button" class="zoom-control-btn" onclick="window.repuestoVerification.zoomOut()">−</button>
+                <div class="zoom-level-display" id="zoomLevelDisplay">100%</div>
+                <button type="button" class="zoom-control-btn" onclick="window.repuestoVerification.zoomIn()">+</button>
+                <button type="button" class="zoom-control-btn" onclick="window.repuestoVerification.zoomReset()">⟲</button>
+            </div>
+        `;
+        
+        // Agregar gestos táctiles
+        this.setupZoomGestures(modal);
+        
+        return modal;
+    }
+    
+    /**
+     * 🔍 ZOOM: Configurar gestos táctiles
+     */
+    setupZoomGestures(modal) {
+        const container = modal.querySelector('#zoomContainer');
+        const img = modal.querySelector('#zoomImage');
+        
+        if (!container || !img) return;
+        
+        let initialDistance = 0;
+        let initialZoom = 1;
+        
+        // Pinch zoom
+        container.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                initialDistance = this.getDistance(e.touches[0], e.touches[1]);
+                initialZoom = this.currentZoom;
+            }
+        }, { passive: true });
+        
+        container.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2) {
+                const distance = this.getDistance(e.touches[0], e.touches[1]);
+                const scale = distance / initialDistance;
+                this.currentZoom = Math.min(5, Math.max(0.5, initialZoom * scale));
+                this.applyZoom();
+            }
+        }, { passive: true });
+        
+        // Double tap para zoom rápido
+        let lastTap = 0;
+        container.addEventListener('touchend', (e) => {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 300 && tapLength > 0) {
+                // Double tap
+                if (this.currentZoom > 1) {
+                    this.zoomReset();
+                } else {
+                    this.currentZoom = 2.5;
+                    this.applyZoom();
+                }
+            }
+            lastTap = currentTime;
+        });
+        
+        // Wheel zoom para desktop
+        container.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                this.zoomIn();
+            } else {
+                this.zoomOut();
+            }
+        });
+    }
+    
+    /**
+     * 🔍 ZOOM: Calcular distancia entre dos dedos
+     */
+    getDistance(touch1, touch2) {
+        return Math.hypot(touch1.pageX - touch2.pageX, touch1.pageY - touch2.pageY);
+    }
+    
+    /**
+     * 🔍 ZOOM: Zoom In
+     */
+    zoomIn() {
+        this.currentZoom = Math.min(5, this.currentZoom + 0.5);
+        this.applyZoom();
+    }
+    
+    /**
+     * 🔍 ZOOM: Zoom Out
+     */
+    zoomOut() {
+        this.currentZoom = Math.max(0.5, this.currentZoom - 0.5);
+        this.applyZoom();
+    }
+    
+    /**
+     * 🔍 ZOOM: Reset Zoom
+     */
+    zoomReset() {
+        this.currentZoom = 1;
+        this.applyZoom();
+    }
+    
+    /**
+     * 🔍 ZOOM: Aplicar nivel de zoom
+     */
+    applyZoom() {
+        const img = document.getElementById('zoomImage');
+        if (img) {
+            img.style.transform = `scale(${this.currentZoom})`;
+        }
+        this.updateZoomLevel();
+    }
+    
+    /**
+     * 🔍 ZOOM: Actualizar display de nivel
+     */
+    updateZoomLevel() {
+        const display = document.getElementById('zoomLevelDisplay');
+        if (display) {
+            display.textContent = `${Math.round(this.currentZoom * 100)}%`;
+        }
+    }
+    
+    /**
+     * 🔍 ZOOM: Cerrar modal
+     */
+    closeImageZoom() {
+        const modal = document.getElementById('imageZoomModal');
+        if (modal) modal.classList.remove('active');
+    }
+
     /**
      * Cierra el modal
      */

@@ -1,21 +1,26 @@
 /**
- * 📸 SAP Label Scanner Module v1.3
+ * 📸 SAP Label Scanner Module v1.4
  * Escanea etiquetas SAP usando OCR (Tesseract.js) para crear o contar repuestos
  * 
- * @version 1.3.0
+ * @version 1.4.0
  * @requires Tesseract.js (CDN)
  * 
+ * CAMBIOS v1.4:
+ * - FIX: Imagen visible durante animación de escaneo
+ * - MEJORADO: Modal de conteo con teclado numérico estilo calculadora
+ * - MEJORADO: Botones de ajuste rápido (+1, -1, +5, -5, +10, -10)
+ * - MEJORADO: Muestra diferencia (delta) entre cantidad original y nueva
+ * - NUEVO: Zoom de imagen al tocar thumbnail en modal de conteo
+ * 
  * CAMBIOS v1.3:
- * - NUEVO: Animación de escaneo estilo Google Lens durante OCR
- * - NUEVO: Puntos animados, línea de escaneo y esquinas de enfoque
- * - NUEVO: Caja de detección cuando se encuentra texto
- * - NUEVO: Indicador de estado durante el proceso
+ * - Animación de escaneo estilo Google Lens durante OCR
+ * - Puntos animados, línea de escaneo y esquinas de enfoque
+ * - Caja de detección cuando se encuentra texto
  * 
  * CAMBIOS v1.2:
  * - Modal inicial con opciones "Agregar" o "Contar"
  * - Detección inteligente si repuesto ya existe
- * - Flujo de conteo rápido (+1, -1, cantidad específica)
- * - Validación redundante: usuario elige + sistema verifica
+ * - Flujo de conteo rápido
  */
 
 class SAPScanner {
@@ -254,28 +259,30 @@ class SAPScanner {
                 border-radius: 8px;
             }
             
-            /* Modal de conteo rápido */
+            /* Modal de conteo rápido MEJORADO */
             .sap-count-content {
-                max-width: 380px;
-                padding: 24px;
+                max-width: 400px;
+                padding: 20px;
             }
             
             .sap-count-item {
                 display: flex;
                 align-items: center;
-                gap: 16px;
-                padding: 16px;
+                gap: 14px;
+                padding: 14px;
                 background: var(--bg-secondary);
                 border-radius: 12px;
-                margin: 16px 0;
+                margin: 14px 0;
             }
             
             .sap-count-thumb {
-                width: 64px;
-                height: 64px;
-                border-radius: 8px;
+                width: 72px;
+                height: 72px;
+                border-radius: 10px;
                 object-fit: cover;
                 background: var(--bg-tertiary);
+                cursor: zoom-in;
+                border: 2px solid var(--border-color);
             }
             
             .sap-count-info {
@@ -288,96 +295,153 @@ class SAPScanner {
                 color: var(--text-primary);
                 font-size: 1rem;
                 margin-bottom: 4px;
+                line-height: 1.2;
             }
             
             .sap-count-code {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
                 color: var(--text-secondary);
+                font-family: monospace;
             }
             
-            .sap-count-current {
-                text-align: center;
-                padding: 16px;
-                background: var(--bg-tertiary);
+            .sap-count-stock-badge {
+                display: inline-block;
+                font-size: 0.7rem;
+                padding: 3px 8px;
                 border-radius: 12px;
-                margin: 16px 0;
+                background: rgba(34,197,94,0.15);
+                color: #22c55e;
+                margin-top: 6px;
             }
             
-            .sap-count-current-label {
-                font-size: 0.8rem;
+            .sap-count-stock-badge.warning {
+                background: rgba(251,191,36,0.15);
+                color: #fbbf24;
+            }
+            
+            .sap-count-stock-badge.critical {
+                background: rgba(239,68,68,0.15);
+                color: #ef4444;
+            }
+            
+            /* Display grande de cantidad */
+            .sap-count-display {
+                text-align: center;
+                padding: 20px;
+                background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+                border-radius: 16px;
+                margin: 14px 0;
+            }
+            
+            .sap-count-display-label {
+                font-size: 0.75rem;
                 color: var(--text-secondary);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
                 margin-bottom: 4px;
             }
             
-            .sap-count-current-value {
-                font-size: 2.5rem;
+            .sap-count-display-value {
+                font-size: 3rem;
                 font-weight: 700;
                 color: var(--accent);
+                line-height: 1;
             }
             
-            .sap-count-buttons {
-                display: flex;
-                gap: 12px;
-                justify-content: center;
-                margin: 20px 0;
+            .sap-count-display-diff {
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+                margin-top: 6px;
             }
             
-            .sap-count-btn {
-                width: 64px;
-                height: 64px;
-                border-radius: 50%;
-                border: 2px solid var(--border-color);
-                background: var(--bg-secondary);
-                font-size: 1.5rem;
-                cursor: pointer;
-                transition: all 0.2s;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            .sap-count-btn:hover {
-                transform: scale(1.1);
-            }
-            
-            .sap-count-btn.minus {
-                color: #ef4444;
-            }
-            .sap-count-btn.minus:hover {
-                background: rgba(239,68,68,0.1);
-                border-color: #ef4444;
-            }
-            
-            .sap-count-btn.plus {
+            .sap-count-display-diff.positive {
                 color: #22c55e;
-            }
-            .sap-count-btn.plus:hover {
-                background: rgba(34,197,94,0.1);
-                border-color: #22c55e;
+                font-weight: 600;
             }
             
-            .sap-count-manual {
+            .sap-count-display-diff.negative {
+                color: #ef4444;
+                font-weight: 600;
+            }
+            
+            /* Botones de ajuste rápido */
+            .sap-count-quick-btns {
                 display: flex;
-                gap: 12px;
-                align-items: center;
+                gap: 6px;
                 justify-content: center;
-                margin-top: 16px;
+                margin: 12px 0;
+                flex-wrap: wrap;
             }
             
-            .sap-count-manual input {
-                width: 80px;
-                text-align: center;
-                font-size: 1.25rem;
-                padding: 8px;
-                border-radius: 8px;
-                border: 2px solid var(--border-color);
-                background: var(--bg-primary);
+            .sap-quick-btn {
+                min-width: 44px;
+                height: 40px;
+                border-radius: 10px;
+                border: 1px solid var(--border-color);
+                background: var(--bg-secondary);
                 color: var(--text-primary);
+                font-size: 0.85rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.15s;
             }
             
-            .sap-count-manual .sap-scanner-btn {
-                padding: 8px 16px;
+            .sap-quick-btn:hover {
+                background: var(--bg-tertiary);
             }
+            
+            .sap-quick-btn.minus-big,
+            .sap-quick-btn.plus-big {
+                width: 50px;
+                font-size: 1.25rem;
+            }
+            
+            .sap-quick-btn.minus-big {
+                color: #ef4444;
+                border-color: rgba(239,68,68,0.3);
+            }
+            
+            .sap-quick-btn.plus-big {
+                color: #22c55e;
+                border-color: rgba(34,197,94,0.3);
+            }
+            
+            /* Teclado numérico */
+            .sap-count-numpad {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                margin: 14px 0;
+            }
+            
+            .sap-count-numpad button {
+                height: 48px;
+                border-radius: 10px;
+                border: 1px solid var(--border-color);
+                background: var(--bg-secondary);
+                color: var(--text-primary);
+                font-size: 1.25rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.1s;
+            }
+            
+            .sap-count-numpad button:active {
+                transform: scale(0.95);
+                background: var(--bg-tertiary);
+            }
+            
+            .sap-count-numpad .numpad-clear {
+                color: #ef4444;
+                font-weight: 700;
+            }
+            
+            .sap-count-numpad .numpad-back {
+                font-size: 1.1rem;
+            }
+            
+            /* ESTILOS ELIMINADOS - Ya no se usan */
+            /* .sap-count-current, .sap-count-buttons, .sap-count-manual ya no existen */
             
             /* Alerta de discrepancia */
             .sap-discrepancy-alert {
@@ -433,6 +497,15 @@ class SAPScanner {
                 bottom: 0;
                 pointer-events: none;
                 overflow: hidden;
+                z-index: 10;
+                background: transparent !important;
+            }
+            
+            /* Asegurar que la imagen preview se vea */
+            .sap-scanner-preview-wrapper img.sap-scanner-preview {
+                position: relative;
+                z-index: 1;
+                display: block !important;
             }
             
             .scan-dots-container {
@@ -1322,7 +1395,7 @@ class SAPScanner {
     }
     
     /**
-     * 🆕 NUEVO: Modal de CONTEO rápido
+     * 🆕 NUEVO: Modal de CONTEO rápido MEJORADO
      */
     showCountModal(repuesto) {
         let modal = document.getElementById('sapCountModal');
@@ -1333,16 +1406,18 @@ class SAPScanner {
         
         // Guardar referencia al repuesto
         this.countingRepuesto = repuesto;
-        this.newCountValue = repuesto.cantidad || 0;
+        this.originalCount = repuesto.cantidad || 0;
+        this.newCountValue = this.originalCount;
         
         // Poblar datos
         const thumb = document.getElementById('sapCountThumb');
         const name = document.getElementById('sapCountName');
         const code = document.getElementById('sapCountCode');
         const value = document.getElementById('sapCountValue');
-        const input = document.getElementById('sapCountInput');
+        const original = document.getElementById('sapCountOriginal');
+        const stockBadge = document.getElementById('sapCountStockBadge');
         
-        // Usar imagen del escaneo o placeholder
+        // Usar imagen del escaneo o del repuesto
         if (thumb) {
             if (this.lastScan.imageData) {
                 thumb.src = this.lastScan.imageData;
@@ -1352,16 +1427,32 @@ class SAPScanner {
                 thumb.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23e5e7eb" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%239ca3af" font-size="40">📦</text></svg>';
             }
         }
+        
         if (name) name.textContent = repuesto.nombre || repuesto.descripcion || 'Sin nombre';
         if (code) code.textContent = `SAP: ${repuesto.codSAP || 'N/A'}`;
         if (value) value.textContent = this.newCountValue;
-        if (input) input.value = this.newCountValue;
+        if (original) original.textContent = this.originalCount;
+        
+        // Color del badge según stock
+        if (stockBadge) {
+            const minimo = repuesto.minimo || 0;
+            if (this.originalCount === 0) {
+                stockBadge.className = 'sap-count-stock-badge critical';
+            } else if (this.originalCount <= minimo && minimo > 0) {
+                stockBadge.className = 'sap-count-stock-badge warning';
+            } else {
+                stockBadge.className = 'sap-count-stock-badge';
+            }
+        }
+        
+        // Actualizar diff
+        this.updateCountDisplay();
         
         modal.classList.add('active');
     }
     
     /**
-     * 🆕 NUEVO: Crear modal de conteo
+     * 🆕 NUEVO: Crear modal de conteo MEJORADO
      */
     createCountModal() {
         const modal = document.createElement('div');
@@ -1371,41 +1462,62 @@ class SAPScanner {
         modal.innerHTML = `
             <div class="sap-scanner-content sap-count-content">
                 <div class="sap-scanner-header">
-                    <h3>🔢 Contar Repuesto</h3>
+                    <h3>🔢 Actualizar Cantidad</h3>
                     <button type="button" class="sap-scanner-close" onclick="window.sapScanner.closeCountModal()">✕</button>
                 </div>
                 
+                <!-- Info del repuesto con imagen escaneada -->
                 <div class="sap-count-item">
-                    <img id="sapCountThumb" class="sap-count-thumb" src="" alt="" />
+                    <img id="sapCountThumb" class="sap-count-thumb" src="" alt="" onclick="window.sapScanner.zoomCountImage()" />
                     <div class="sap-count-info">
                         <div id="sapCountName" class="sap-count-name">-</div>
                         <div id="sapCountCode" class="sap-count-code">-</div>
+                        <div class="sap-count-stock-badge" id="sapCountStockBadge">
+                            Stock actual: <span id="sapCountOriginal">0</span>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="sap-count-current">
-                    <div class="sap-count-current-label">Cantidad Actual</div>
-                    <div id="sapCountValue" class="sap-count-current-value">0</div>
+                <!-- Display grande de cantidad -->
+                <div class="sap-count-display">
+                    <div class="sap-count-display-label">Nueva cantidad</div>
+                    <div class="sap-count-display-value" id="sapCountValue">0</div>
+                    <div class="sap-count-display-diff" id="sapCountDiff"></div>
                 </div>
                 
-                <div class="sap-count-buttons">
-                    <button type="button" class="sap-count-btn minus" onclick="window.sapScanner.adjustCount(-1)">−</button>
-                    <button type="button" class="sap-count-btn plus" onclick="window.sapScanner.adjustCount(+1)">+</button>
+                <!-- Botones de ajuste rápido -->
+                <div class="sap-count-quick-btns">
+                    <button type="button" class="sap-quick-btn" onclick="window.sapScanner.adjustCount(-10)">-10</button>
+                    <button type="button" class="sap-quick-btn" onclick="window.sapScanner.adjustCount(-5)">-5</button>
+                    <button type="button" class="sap-quick-btn minus-big" onclick="window.sapScanner.adjustCount(-1)">−</button>
+                    <button type="button" class="sap-quick-btn plus-big" onclick="window.sapScanner.adjustCount(+1)">+</button>
+                    <button type="button" class="sap-quick-btn" onclick="window.sapScanner.adjustCount(+5)">+5</button>
+                    <button type="button" class="sap-quick-btn" onclick="window.sapScanner.adjustCount(+10)">+10</button>
                 </div>
                 
-                <div class="sap-count-manual">
-                    <input type="number" id="sapCountInput" min="0" value="0" />
-                    <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.setManualCount()">
-                        Establecer
-                    </button>
+                <!-- Teclado numérico -->
+                <div class="sap-count-numpad">
+                    <button type="button" onclick="window.sapScanner.appendDigit(1)">1</button>
+                    <button type="button" onclick="window.sapScanner.appendDigit(2)">2</button>
+                    <button type="button" onclick="window.sapScanner.appendDigit(3)">3</button>
+                    <button type="button" onclick="window.sapScanner.appendDigit(4)">4</button>
+                    <button type="button" onclick="window.sapScanner.appendDigit(5)">5</button>
+                    <button type="button" onclick="window.sapScanner.appendDigit(6)">6</button>
+                    <button type="button" onclick="window.sapScanner.appendDigit(7)">7</button>
+                    <button type="button" onclick="window.sapScanner.appendDigit(8)">8</button>
+                    <button type="button" onclick="window.sapScanner.appendDigit(9)">9</button>
+                    <button type="button" class="numpad-clear" onclick="window.sapScanner.clearCount()">C</button>
+                    <button type="button" onclick="window.sapScanner.appendDigit(0)">0</button>
+                    <button type="button" class="numpad-back" onclick="window.sapScanner.backspaceCount()">⌫</button>
                 </div>
                 
+                <!-- Acciones -->
                 <div class="sap-confirm-actions">
                     <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.closeCountModal()">
                         Cancelar
                     </button>
                     <button type="button" class="sap-scanner-btn primary" onclick="window.sapScanner.saveCount()">
-                        ✅ Guardar Conteo
+                        ✅ Guardar
                     </button>
                 </div>
             </div>
@@ -1415,7 +1527,7 @@ class SAPScanner {
     }
     
     /**
-     * 🆕 NUEVO: Ajustar cantidad (+1 o -1)
+     * 🆕 NUEVO: Ajustar cantidad (+/- delta)
      */
     adjustCount(delta) {
         this.newCountValue = Math.max(0, this.newCountValue + delta);
@@ -1423,24 +1535,88 @@ class SAPScanner {
     }
     
     /**
-     * 🆕 NUEVO: Establecer cantidad manual
+     * 🆕 NUEVO: Agregar dígito al contador (teclado numérico)
      */
-    setManualCount() {
-        const input = document.getElementById('sapCountInput');
-        if (input) {
-            this.newCountValue = Math.max(0, parseInt(input.value) || 0);
-            this.updateCountDisplay();
+    appendDigit(digit) {
+        const current = String(this.newCountValue);
+        if (current === '0') {
+            this.newCountValue = digit;
+        } else if (current.length < 5) { // Máximo 99999
+            this.newCountValue = parseInt(current + digit);
+        }
+        this.updateCountDisplay();
+    }
+    
+    /**
+     * 🆕 NUEVO: Limpiar contador
+     */
+    clearCount() {
+        this.newCountValue = 0;
+        this.updateCountDisplay();
+    }
+    
+    /**
+     * 🆕 NUEVO: Borrar último dígito
+     */
+    backspaceCount() {
+        const current = String(this.newCountValue);
+        if (current.length > 1) {
+            this.newCountValue = parseInt(current.slice(0, -1));
+        } else {
+            this.newCountValue = 0;
+        }
+        this.updateCountDisplay();
+    }
+    
+    /**
+     * 🆕 NUEVO: Actualizar display de cantidad con diferencia
+     */
+    updateCountDisplay() {
+        const value = document.getElementById('sapCountValue');
+        const diff = document.getElementById('sapCountDiff');
+        
+        if (value) value.textContent = this.newCountValue;
+        
+        // Mostrar diferencia
+        if (diff && this.countingRepuesto) {
+            const original = this.countingRepuesto.cantidad || 0;
+            const delta = this.newCountValue - original;
+            
+            if (delta > 0) {
+                diff.textContent = `+${delta}`;
+                diff.className = 'sap-count-display-diff positive';
+            } else if (delta < 0) {
+                diff.textContent = `${delta}`;
+                diff.className = 'sap-count-display-diff negative';
+            } else {
+                diff.textContent = 'Sin cambios';
+                diff.className = 'sap-count-display-diff';
+            }
         }
     }
     
     /**
-     * 🆕 NUEVO: Actualizar display de cantidad
+     * 🆕 NUEVO: Zoom de imagen en conteo (reutiliza el de verification si existe)
      */
-    updateCountDisplay() {
-        const value = document.getElementById('sapCountValue');
-        const input = document.getElementById('sapCountInput');
-        if (value) value.textContent = this.newCountValue;
-        if (input) input.value = this.newCountValue;
+    zoomCountImage() {
+        const thumb = document.getElementById('sapCountThumb');
+        if (!thumb || !thumb.src) return;
+        
+        // Usar el mismo modal de zoom
+        if (window.repuestoVerification?.openImageZoom) {
+            // Temporalmente cambiar la imagen
+            const verifyImg = document.getElementById('verifyImage');
+            if (verifyImg) {
+                const originalSrc = verifyImg.src;
+                verifyImg.src = thumb.src;
+                window.repuestoVerification.openImageZoom();
+                // Restaurar después
+                setTimeout(() => { verifyImg.src = originalSrc; }, 100);
+            }
+        } else {
+            // Fallback: abrir en nueva ventana
+            window.open(thumb.src, '_blank');
+        }
     }
     
     /**
