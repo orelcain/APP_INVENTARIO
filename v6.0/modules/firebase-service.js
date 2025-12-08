@@ -116,6 +116,14 @@ class FirebaseService {
                 console.log('📄 Documento encontrado:', userData);
                 this.userRole = userData.role || this.USER_ROLES.LECTURA;
                 console.log('✅ Rol asignado:', this.userRole);
+                
+                // 📋 Si es admin, mostrar secciones de admin automáticamente
+                if (this.userRole === 'admin' && window.mostrarSeccionesAdmin) {
+                    setTimeout(() => {
+                        window.mostrarSeccionesAdmin();
+                        console.log('📋 Secciones admin actualizadas después de asignar rol');
+                    }, 100);
+                }
             } else {
                 console.warn('⚠️ Usuario no encontrado en Firestore, asignando rol lectura');
                 // Usuario nuevo, asignar rol por defecto

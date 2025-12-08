@@ -57768,7 +57768,8 @@ window.addEventListener('customAuthLogout', () => {
 // Función para mostrar secciones de admin según el rol actual
 window.mostrarSeccionesAdmin = function() {
   // Obtener el rol de varias fuentes posibles
-  const role = window.customAuth?.userRole || 
+  const role = window.firebaseService?.userRole ||
+               window.customAuth?.userRole || 
                window.app?.userPermissions?.role ||
                localStorage.getItem('userRole') ||
                null;
@@ -57827,10 +57828,11 @@ window.mostrarHistorialAdmin = function() {
 window.verificarHistorial = function() {
   const section = document.getElementById('activity-log-section-admin');
   const debug = document.getElementById('debug-section-admin');
-  const role = window.customAuth?.userRole || window.app?.userPermissions?.role || 'no definido';
+  const role = window.firebaseService?.userRole || window.customAuth?.userRole || window.app?.userPermissions?.role || 'no definido';
   console.log('📋 Estado de secciones admin:');
   console.log('  - activity-log-section-admin:', section ? `display=${section.style.display}` : 'NO EXISTE');
   console.log('  - debug-section-admin:', debug ? `display=${debug.style.display}` : 'NO EXISTE');
+  console.log('  - firebaseService.userRole:', window.firebaseService?.userRole || 'no definido');
   console.log('  - customAuth.userRole:', window.customAuth?.userRole || 'no definido');
   console.log('  - app.userPermissions.role:', window.app?.userPermissions?.role || 'no definido');
 };
