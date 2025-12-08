@@ -1,14 +1,15 @@
 /**
- * 📸 SAP Label Scanner Module v1.1
- * Escanea etiquetas SAP usando OCR (Tesseract.js) para crear repuestos rápidamente
+ * 📸 SAP Label Scanner Module v1.2
+ * Escanea etiquetas SAP usando OCR (Tesseract.js) para crear o contar repuestos
  * 
- * @version 1.1.0
+ * @version 1.2.0
  * @requires Tesseract.js (CDN)
  * 
- * CAMBIOS v1.1:
- * - Paso de confirmación antes de analizar imagen
- * - Mejor feedback al crear repuesto
- * - Fix: Footer se re-renderiza correctamente
+ * CAMBIOS v1.2:
+ * - NUEVO: Modal inicial con opciones "Agregar" o "Contar"
+ * - NUEVO: Detección inteligente si repuesto ya existe
+ * - NUEVO: Flujo de conteo rápido (+1, -1, cantidad específica)
+ * - Validación redundante: usuario elige + sistema verifica
  */
 
 class SAPScanner {
@@ -16,6 +17,9 @@ class SAPScanner {
         this.isReady = false;
         this.worker = null;
         this.isProcessing = false;
+        
+        // 🆕 Modo de operación: 'add' o 'count'
+        this.operationMode = null;
         
         // Patrones de extracción SAP
         this.patterns = {
@@ -37,9 +41,9 @@ class SAPScanner {
         };
         
         // Estado de la UI
-        this.imageReady = false; // Nueva flag para saber si hay imagen lista para analizar
+        this.imageReady = false;
         
-        console.log('📸 SAPScanner v1.1: Módulo inicializado');
+        console.log('📸 SAPScanner v1.2: Módulo inicializado');
     }
     
     /**
@@ -106,9 +110,344 @@ class SAPScanner {
     }
     
     /**
-     * Abre el modal de captura con cámara
+     * 🆕 NUEVO: Abre modal de selección de modo (Agregar o Contar)
      */
     openCaptureModal() {
+        // Mostrar modal de selección de modo
+        this.showModeSelectionModal();
+    }
+    
+    /**
+     * 🆕 NUEVO: Modal de selección de modo
+     */
+    showModeSelectionModal() {
+        // Crear modal si no existe
+        let modal = document.getElementById('sapModeModal');
+        if (!modal) {
+            modal = this.createModeSelectionModal();
+            document.body.appendChild(modal);
+        }
+        
+        modal.classList.add('active');
+    }
+    
+    /**
+     * 🆕 NUEVO: Crea el modal de selección de modo
+     */
+    createModeSelectionModal() {
+        const modal = document.createElement('div');
+        modal.id = 'sapModeModal';
+        modal.className = 'sap-scanner-modal sap-mode-modal';
+        
+        modal.innerHTML = `
+            <div class="sap-mode-content">
+                <div class="sap-scanner-header">
+                    <h3>📸 ¿Qué deseas hacer?</h3>
+                    <button class="sap-scanner-close" onclick="window.sapScanner.closeModeModal()">✕</button>
+                </div>
+                
+                <div class="sap-mode-options">
+                    <button class="sap-mode-btn add-mode" onclick="window.sapScanner.startScanWithMode('add')">
+                        <div class="sap-mode-icon">📦</div>
+                        <div class="sap-mode-label">AGREGAR</div>
+                        <div class="sap-mode-desc">Nuevo repuesto al inventario</div>
+                    </button>
+                    
+                    <button class="sap-mode-btn count-mode" onclick="window.sapScanner.startScanWithMode('count')">
+                        <div class="sap-mode-icon">🔢</div>
+                        <div class="sap-mode-label">CONTAR</div>
+                        <div class="sap-mode-desc">Actualizar cantidad existente</div>
+                    </button>
+                </div>
+                
+                <p class="sap-mode-hint">
+                    💡 El sistema verificará automáticamente si el repuesto existe
+                </p>
+            </div>
+        `;
+        
+        // Agregar estilos si no existen
+        this.addModeModalStyles();
+        
+        return modal;
+    }
+    
+    /**
+     * 🆕 NUEVO: Estilos para el modal de modo
+     */
+    addModeModalStyles() {
+        if (document.getElementById('sapModeStyles')) return;
+        
+        const styles = document.createElement('style');
+        styles.id = 'sapModeStyles';
+        styles.textContent = `
+            .sap-mode-modal .sap-mode-content {
+                max-width: 340px;
+                padding: 24px;
+                text-align: center;
+            }
+            
+            .sap-mode-options {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                margin: 24px 0;
+            }
+            
+            .sap-mode-btn {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                padding: 24px 20px;
+                border: 2px solid var(--border-color);
+                border-radius: 16px;
+                background: var(--bg-secondary);
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            
+            .sap-mode-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            }
+            
+            .sap-mode-btn.add-mode:hover {
+                border-color: var(--accent);
+                background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.05));
+            }
+            
+            .sap-mode-btn.count-mode:hover {
+                border-color: #22c55e;
+                background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.05));
+            }
+            
+            .sap-mode-icon {
+                font-size: 48px;
+                line-height: 1;
+            }
+            
+            .sap-mode-label {
+                font-size: 1.25rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                letter-spacing: 0.5px;
+            }
+            
+            .sap-mode-desc {
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+            }
+            
+            .sap-mode-hint {
+                font-size: 0.8rem;
+                color: var(--text-tertiary);
+                margin: 0;
+                padding: 12px;
+                background: var(--bg-tertiary);
+                border-radius: 8px;
+            }
+            
+            /* Modal de conteo rápido */
+            .sap-count-content {
+                max-width: 380px;
+                padding: 24px;
+            }
+            
+            .sap-count-item {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                padding: 16px;
+                background: var(--bg-secondary);
+                border-radius: 12px;
+                margin: 16px 0;
+            }
+            
+            .sap-count-thumb {
+                width: 64px;
+                height: 64px;
+                border-radius: 8px;
+                object-fit: cover;
+                background: var(--bg-tertiary);
+            }
+            
+            .sap-count-info {
+                flex: 1;
+                text-align: left;
+            }
+            
+            .sap-count-name {
+                font-weight: 600;
+                color: var(--text-primary);
+                font-size: 1rem;
+                margin-bottom: 4px;
+            }
+            
+            .sap-count-code {
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+            }
+            
+            .sap-count-current {
+                text-align: center;
+                padding: 16px;
+                background: var(--bg-tertiary);
+                border-radius: 12px;
+                margin: 16px 0;
+            }
+            
+            .sap-count-current-label {
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+                margin-bottom: 4px;
+            }
+            
+            .sap-count-current-value {
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: var(--accent);
+            }
+            
+            .sap-count-buttons {
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+                margin: 20px 0;
+            }
+            
+            .sap-count-btn {
+                width: 64px;
+                height: 64px;
+                border-radius: 50%;
+                border: 2px solid var(--border-color);
+                background: var(--bg-secondary);
+                font-size: 1.5rem;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .sap-count-btn:hover {
+                transform: scale(1.1);
+            }
+            
+            .sap-count-btn.minus {
+                color: #ef4444;
+            }
+            .sap-count-btn.minus:hover {
+                background: rgba(239,68,68,0.1);
+                border-color: #ef4444;
+            }
+            
+            .sap-count-btn.plus {
+                color: #22c55e;
+            }
+            .sap-count-btn.plus:hover {
+                background: rgba(34,197,94,0.1);
+                border-color: #22c55e;
+            }
+            
+            .sap-count-manual {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                justify-content: center;
+                margin-top: 16px;
+            }
+            
+            .sap-count-manual input {
+                width: 80px;
+                text-align: center;
+                font-size: 1.25rem;
+                padding: 8px;
+                border-radius: 8px;
+                border: 2px solid var(--border-color);
+                background: var(--bg-primary);
+                color: var(--text-primary);
+            }
+            
+            .sap-count-manual .sap-scanner-btn {
+                padding: 8px 16px;
+            }
+            
+            /* Alerta de discrepancia */
+            .sap-discrepancy-alert {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 16px;
+                background: rgba(251,191,36,0.1);
+                border: 1px solid #fbbf24;
+                border-radius: 12px;
+                margin: 16px 0;
+                text-align: left;
+            }
+            
+            .sap-discrepancy-icon {
+                font-size: 24px;
+                flex-shrink: 0;
+            }
+            
+            .sap-discrepancy-text {
+                flex: 1;
+            }
+            
+            .sap-discrepancy-title {
+                font-weight: 600;
+                color: #f59e0b;
+                margin-bottom: 4px;
+            }
+            
+            .sap-discrepancy-desc {
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+            }
+            
+            .sap-discrepancy-actions {
+                display: flex;
+                gap: 8px;
+                margin-top: 12px;
+            }
+            
+            .sap-discrepancy-actions .sap-scanner-btn {
+                flex: 1;
+                font-size: 0.85rem;
+                padding: 10px 12px;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    /**
+     * 🆕 NUEVO: Cierra modal de selección de modo
+     */
+    closeModeModal() {
+        const modal = document.getElementById('sapModeModal');
+        if (modal) modal.classList.remove('active');
+        this.refreshMobileFooter();
+    }
+    
+    /**
+     * 🆕 NUEVO: Inicia escaneo con modo seleccionado
+     */
+    startScanWithMode(mode) {
+        this.operationMode = mode;
+        console.log(`📸 SAPScanner: Modo seleccionado: ${mode}`);
+        
+        // Cerrar modal de modo
+        this.closeModeModal();
+        
+        // Abrir modal de captura
+        this.openCaptureModalInternal();
+    }
+    
+    /**
+     * Abre el modal de captura con cámara (interno)
+     */
+    openCaptureModalInternal() {
         // Resetear estado
         this.imageReady = false;
         this.lastScan = {
@@ -567,13 +906,353 @@ class SAPScanner {
     }
     
     /**
-     * Muestra modal de confirmación con datos extraídos
-     * ACTUALIZADO: Usa el nuevo flujo de verificación completo
+     * 🆕 ACTUALIZADO: Muestra modal según modo y estado del repuesto
+     * Lógica inteligente con validación redundante
      */
     showConfirmModal() {
         // Cerrar modal de captura
         this.closeModal(false);
         
+        // Buscar si el repuesto ya existe
+        const codigoSAP = this.lastScan.codigoSAP;
+        const repuestoExistente = this.findRepuestoByCodigo(codigoSAP);
+        
+        console.log(`📸 SAPScanner: Modo=${this.operationMode}, Código=${codigoSAP}, Existe=${!!repuestoExistente}`);
+        
+        // 🎯 LÓGICA INTELIGENTE
+        if (this.operationMode === 'count') {
+            // Usuario quiere CONTAR
+            if (repuestoExistente) {
+                // ✅ Escenario ideal: existe y quiere contar
+                this.showCountModal(repuestoExistente);
+            } else {
+                // ⚠️ Discrepancia: quiere contar pero NO existe
+                this.showDiscrepancyModal('count-not-found', codigoSAP);
+            }
+        } else if (this.operationMode === 'add') {
+            // Usuario quiere AGREGAR
+            if (repuestoExistente) {
+                // ⚠️ Discrepancia: quiere agregar pero YA existe
+                this.showDiscrepancyModal('add-exists', codigoSAP, repuestoExistente);
+            } else {
+                // ✅ Escenario ideal: no existe y quiere agregar
+                this.showAddModal();
+            }
+        } else {
+            // Sin modo definido (fallback)
+            this.showAddModal();
+        }
+    }
+    
+    /**
+     * 🆕 NUEVO: Busca repuesto por código SAP
+     */
+    findRepuestoByCodigo(codigo) {
+        if (!codigo || !window.app || !window.app.repuestos) return null;
+        return window.app.repuestos.find(r => r.codSAP === codigo);
+    }
+    
+    /**
+     * 🆕 NUEVO: Modal de CONTEO rápido
+     */
+    showCountModal(repuesto) {
+        let modal = document.getElementById('sapCountModal');
+        if (!modal) {
+            modal = this.createCountModal();
+            document.body.appendChild(modal);
+        }
+        
+        // Guardar referencia al repuesto
+        this.countingRepuesto = repuesto;
+        this.newCountValue = repuesto.cantidad || 0;
+        
+        // Poblar datos
+        const thumb = document.getElementById('sapCountThumb');
+        const name = document.getElementById('sapCountName');
+        const code = document.getElementById('sapCountCode');
+        const value = document.getElementById('sapCountValue');
+        const input = document.getElementById('sapCountInput');
+        
+        // Usar imagen del escaneo o placeholder
+        if (thumb) {
+            if (this.lastScan.imageData) {
+                thumb.src = this.lastScan.imageData;
+            } else if (repuesto.multimedia && repuesto.multimedia[0]) {
+                thumb.src = repuesto.multimedia[0].url || repuesto.multimedia[0];
+            } else {
+                thumb.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23e5e7eb" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%239ca3af" font-size="40">📦</text></svg>';
+            }
+        }
+        if (name) name.textContent = repuesto.nombre || repuesto.descripcion || 'Sin nombre';
+        if (code) code.textContent = `SAP: ${repuesto.codSAP || 'N/A'}`;
+        if (value) value.textContent = this.newCountValue;
+        if (input) input.value = this.newCountValue;
+        
+        modal.classList.add('active');
+    }
+    
+    /**
+     * 🆕 NUEVO: Crear modal de conteo
+     */
+    createCountModal() {
+        const modal = document.createElement('div');
+        modal.id = 'sapCountModal';
+        modal.className = 'sap-scanner-modal';
+        
+        modal.innerHTML = `
+            <div class="sap-scanner-content sap-count-content">
+                <div class="sap-scanner-header">
+                    <h3>🔢 Contar Repuesto</h3>
+                    <button class="sap-scanner-close" onclick="window.sapScanner.closeCountModal()">✕</button>
+                </div>
+                
+                <div class="sap-count-item">
+                    <img id="sapCountThumb" class="sap-count-thumb" src="" alt="" />
+                    <div class="sap-count-info">
+                        <div id="sapCountName" class="sap-count-name">-</div>
+                        <div id="sapCountCode" class="sap-count-code">-</div>
+                    </div>
+                </div>
+                
+                <div class="sap-count-current">
+                    <div class="sap-count-current-label">Cantidad Actual</div>
+                    <div id="sapCountValue" class="sap-count-current-value">0</div>
+                </div>
+                
+                <div class="sap-count-buttons">
+                    <button class="sap-count-btn minus" onclick="window.sapScanner.adjustCount(-1)">−</button>
+                    <button class="sap-count-btn plus" onclick="window.sapScanner.adjustCount(+1)">+</button>
+                </div>
+                
+                <div class="sap-count-manual">
+                    <input type="number" id="sapCountInput" min="0" value="0" />
+                    <button class="sap-scanner-btn secondary" onclick="window.sapScanner.setManualCount()">
+                        Establecer
+                    </button>
+                </div>
+                
+                <div class="sap-confirm-actions">
+                    <button class="sap-scanner-btn secondary" onclick="window.sapScanner.closeCountModal()">
+                        Cancelar
+                    </button>
+                    <button class="sap-scanner-btn primary" onclick="window.sapScanner.saveCount()">
+                        ✅ Guardar Conteo
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        return modal;
+    }
+    
+    /**
+     * 🆕 NUEVO: Ajustar cantidad (+1 o -1)
+     */
+    adjustCount(delta) {
+        this.newCountValue = Math.max(0, this.newCountValue + delta);
+        this.updateCountDisplay();
+    }
+    
+    /**
+     * 🆕 NUEVO: Establecer cantidad manual
+     */
+    setManualCount() {
+        const input = document.getElementById('sapCountInput');
+        if (input) {
+            this.newCountValue = Math.max(0, parseInt(input.value) || 0);
+            this.updateCountDisplay();
+        }
+    }
+    
+    /**
+     * 🆕 NUEVO: Actualizar display de cantidad
+     */
+    updateCountDisplay() {
+        const value = document.getElementById('sapCountValue');
+        const input = document.getElementById('sapCountInput');
+        if (value) value.textContent = this.newCountValue;
+        if (input) input.value = this.newCountValue;
+    }
+    
+    /**
+     * 🆕 NUEVO: Guardar el conteo
+     */
+    async saveCount() {
+        if (!this.countingRepuesto) return;
+        
+        const oldValue = this.countingRepuesto.cantidad || 0;
+        const newValue = this.newCountValue;
+        
+        // Actualizar repuesto
+        this.countingRepuesto.cantidad = newValue;
+        this.countingRepuesto.ultimoConteo = new Date().toISOString();
+        this.countingRepuesto.ultimaModificacion = new Date().toISOString();
+        
+        // Guardar
+        if (window.app && window.app.saveData) {
+            await window.app.saveData();
+        }
+        
+        // Actualizar UI
+        if (window.app && window.app.render) {
+            await window.app.render();
+        }
+        
+        // Cerrar modal
+        this.closeCountModal();
+        
+        // Mostrar feedback
+        const diff = newValue - oldValue;
+        const diffText = diff > 0 ? `+${diff}` : diff.toString();
+        this.showToast(`✅ Conteo actualizado: ${oldValue} → ${newValue} (${diffText})`, 'success');
+        
+        console.log(`📸 SAPScanner: Conteo guardado - ${this.countingRepuesto.codSAP}: ${oldValue} → ${newValue}`);
+        
+        // Limpiar
+        this.countingRepuesto = null;
+        this.newCountValue = 0;
+    }
+    
+    /**
+     * 🆕 NUEVO: Cerrar modal de conteo
+     */
+    closeCountModal() {
+        const modal = document.getElementById('sapCountModal');
+        if (modal) modal.classList.remove('active');
+        this.refreshMobileFooter();
+    }
+    
+    /**
+     * 🆕 NUEVO: Modal de DISCREPANCIA
+     */
+    showDiscrepancyModal(type, codigo, repuesto = null) {
+        let modal = document.getElementById('sapDiscrepancyModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'sapDiscrepancyModal';
+            modal.className = 'sap-scanner-modal';
+            document.body.appendChild(modal);
+        }
+        
+        let content = '';
+        
+        if (type === 'count-not-found') {
+            // Quería contar pero no existe
+            content = `
+                <div class="sap-scanner-content" style="max-width: 380px; padding: 24px;">
+                    <div class="sap-scanner-header">
+                        <h3>⚠️ Repuesto No Encontrado</h3>
+                        <button class="sap-scanner-close" onclick="window.sapScanner.closeDiscrepancyModal()">✕</button>
+                    </div>
+                    
+                    <div class="sap-discrepancy-alert">
+                        <div class="sap-discrepancy-icon">🔍</div>
+                        <div class="sap-discrepancy-text">
+                            <div class="sap-discrepancy-title">No existe en el inventario</div>
+                            <div class="sap-discrepancy-desc">
+                                El código <strong>${codigo || 'detectado'}</strong> no está registrado. 
+                                ¿Deseas agregarlo primero?
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sap-discrepancy-actions">
+                        <button class="sap-scanner-btn secondary" onclick="window.sapScanner.closeDiscrepancyModal()">
+                            Cancelar
+                        </button>
+                        <button class="sap-scanner-btn primary" onclick="window.sapScanner.switchToAddMode()">
+                            📦 Agregar Repuesto
+                        </button>
+                    </div>
+                </div>
+            `;
+        } else if (type === 'add-exists') {
+            // Quería agregar pero ya existe
+            content = `
+                <div class="sap-scanner-content" style="max-width: 380px; padding: 24px;">
+                    <div class="sap-scanner-header">
+                        <h3>⚠️ Repuesto Ya Existe</h3>
+                        <button class="sap-scanner-close" onclick="window.sapScanner.closeDiscrepancyModal()">✕</button>
+                    </div>
+                    
+                    <div class="sap-count-item">
+                        <img class="sap-count-thumb" src="${repuesto?.multimedia?.[0]?.url || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23e5e7eb" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%239ca3af" font-size="40">📦</text></svg>'}" alt="" />
+                        <div class="sap-count-info">
+                            <div class="sap-count-name">${repuesto?.nombre || 'Sin nombre'}</div>
+                            <div class="sap-count-code">SAP: ${repuesto?.codSAP || 'N/A'} • Cant: ${repuesto?.cantidad || 0}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="sap-discrepancy-alert">
+                        <div class="sap-discrepancy-icon">📋</div>
+                        <div class="sap-discrepancy-text">
+                            <div class="sap-discrepancy-title">Este repuesto ya está registrado</div>
+                            <div class="sap-discrepancy-desc">
+                                ¿Deseas actualizar su cantidad (contar) o ver su ficha completa?
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sap-discrepancy-actions">
+                        <button class="sap-scanner-btn secondary" onclick="window.sapScanner.viewRepuesto('${repuesto?.id}')">
+                            👁️ Ver Ficha
+                        </button>
+                        <button class="sap-scanner-btn primary" onclick="window.sapScanner.switchToCountMode('${repuesto?.id}')">
+                            🔢 Contar
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        modal.innerHTML = content;
+        modal.classList.add('active');
+    }
+    
+    /**
+     * 🆕 NUEVO: Cerrar modal de discrepancia
+     */
+    closeDiscrepancyModal() {
+        const modal = document.getElementById('sapDiscrepancyModal');
+        if (modal) modal.classList.remove('active');
+        this.refreshMobileFooter();
+    }
+    
+    /**
+     * 🆕 NUEVO: Cambiar a modo agregar
+     */
+    switchToAddMode() {
+        this.closeDiscrepancyModal();
+        this.operationMode = 'add';
+        this.showAddModal();
+    }
+    
+    /**
+     * 🆕 NUEVO: Cambiar a modo contar
+     */
+    switchToCountMode(repuestoId) {
+        this.closeDiscrepancyModal();
+        this.operationMode = 'count';
+        const repuesto = window.app?.repuestos?.find(r => r.id === repuestoId);
+        if (repuesto) {
+            this.showCountModal(repuesto);
+        }
+    }
+    
+    /**
+     * 🆕 NUEVO: Ver ficha del repuesto
+     */
+    viewRepuesto(repuestoId) {
+        this.closeDiscrepancyModal();
+        if (window.app && window.app.openModal) {
+            window.app.openModal('view', repuestoId);
+        }
+    }
+    
+    /**
+     * 🆕 NUEVO: Mostrar modal de agregar (flujo normal)
+     */
+    showAddModal() {
         // Usar el nuevo módulo de verificación si está disponible
         if (window.repuestoVerification) {
             window.repuestoVerification.startVerification({
@@ -586,9 +1265,14 @@ class SAPScanner {
             return;
         }
         
-        // Fallback al modal simple si el módulo no está cargado
-        console.warn('📸 SAPScanner: Módulo de verificación no disponible, usando modal simple');
-        
+        // Fallback al modal simple
+        this.showSimpleConfirmModal();
+    }
+    
+    /**
+     * Modal simple de confirmación (fallback)
+     */
+    showSimpleConfirmModal() {
         // Crear modal de confirmación si no existe
         let modal = document.getElementById('sapConfirmModal');
         if (!modal) {

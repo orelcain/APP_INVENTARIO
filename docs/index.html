@@ -39313,6 +39313,16 @@ class InventarioCompleto {
   switchTab(tab) {
     console.log('Cambiando a pestaa:', tab);
     
+    // 📱 Proteger Mobile Home - si estamos en Mobile Home, no interferir
+    const mobileHome = document.getElementById('mobileHome');
+    const isMobileHomeActive = mobileHome && (mobileHome.style.display === 'block' || mobileHome.classList.contains('active'));
+    const isMobileDevice = window.isMobileDevice ? window.isMobileDevice() : (window.innerWidth <= 768);
+    
+    if (isMobileDevice && isMobileHomeActive) {
+      console.log('📱 switchTab ignorado - Mobile Home está activo');
+      return; // No cambiar tabs si Mobile Home está activo en móvil
+    }
+    
     document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
     document.getElementById(tab).style.display = 'block';
     
@@ -67525,6 +67535,17 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 // 📱 NAVEGACIÓN INFERIOR MÓVIL - CONTEXTUAL INTELIGENTE
 // ==================================================================
 
+// 📱 FUNCIÓN GLOBAL DE DETECCIÓN MÓVIL - usar en todo el código
+window.isMobileDevice = function() {
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const isSmallScreen = window.innerWidth <= 768;
+  const isMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isPortrait = window.innerHeight > window.innerWidth;
+  
+  // Considerar móvil si: es touch Y (pantalla pequeña O user agent móvil O modo portrait en pantalla mediana)
+  return isTouchDevice && (isSmallScreen || isMobileUserAgent || (isPortrait && window.innerWidth <= 1024));
+};
+
 // Estado del footer contextual
 window.mobileFooterState = {
   currentContext: 'inventario',
@@ -67605,8 +67626,8 @@ window.renderMobileFooter = function(context) {
 
 // 🎯 Función para agregar/remover header de sección con "← Volver"
 window.renderSectionHeader = function(sectionId, title, actionBtn) {
-  // Solo en móvil
-  if (window.innerWidth > 768) return;
+  // Solo en móvil - usar función global de detección
+  if (!window.isMobileDevice || !window.isMobileDevice()) return;
   
   const section = document.getElementById(sectionId);
   if (!section) return;
@@ -67774,7 +67795,16 @@ document.addEventListener('click', (e) => {
 
 // Inicializar footer al cargar - empezar en Home en móvil
 document.addEventListener('DOMContentLoaded', () => {
-  const isMobile = window.innerWidth <= 768;
+  // 📱 USAR FUNCIÓN GLOBAL DE DETECCIÓN MÓVIL
+  const isMobile = window.isMobileDevice ? window.isMobileDevice() : (window.innerWidth <= 768);
+  
+  console.log('📱 Detección móvil al cargar:', { 
+    isMobile,
+    innerWidth: window.innerWidth,
+    innerHeight: window.innerHeight,
+    userAgent: navigator.userAgent.substring(0, 50) + '...'
+  });
+  
   if (isMobile) {
     // En móvil, empezar en Home inmediatamente
     console.log('📱 Iniciando en Mobile Home...');
@@ -67827,6 +67857,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => clearInterval(checkAppReady), 10000);
     
   } else {
+    console.log('🖥️ Modo escritorio detectado');
     setTimeout(() => renderMobileFooter('inventario'), 100);
   }
 });
