@@ -1,10 +1,12 @@
 /**
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
+ * 
+ * v2.4.0 - Mejora en sistema de notificación de actualizaciones
  */
 
-const CACHE_NAME = 'inventario-v2.3.0-activity-log';
-const DYNAMIC_CACHE = 'inventario-dynamic-v2.3';
+const CACHE_NAME = 'inventario-v2.4.0-update-banner';
+const DYNAMIC_CACHE = 'inventario-dynamic-v2.4';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
@@ -33,7 +35,7 @@ const NO_CACHE_URLS = [
 
 // Instalación del Service Worker
 self.addEventListener('install', (event) => {
-  console.log('🔧 [SW] Instalando Service Worker...');
+  console.log('🔧 [SW] Instalando Service Worker v2.4.0...');
   
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -42,13 +44,24 @@ self.addEventListener('install', (event) => {
         return cache.addAll(STATIC_ASSETS);
       })
       .then(() => {
-        console.log('✅ [SW] Instalación completada');
-        return self.skipWaiting(); // Activar inmediatamente
+        console.log('✅ [SW] Instalación completada - esperando activación del usuario');
+        // NO usar skipWaiting() automáticamente
+        // El usuario decidirá cuándo actualizar mediante el banner
       })
       .catch((error) => {
         console.error('❌ [SW] Error en instalación:', error);
       })
   );
+});
+
+// Escuchar mensaje para activar el SW cuando el usuario lo solicite
+self.addEventListener('message', (event) => {
+  console.log('📨 [SW] Mensaje recibido:', event.data);
+  
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('⚡ [SW] Usuario solicitó activación - ejecutando skipWaiting()');
+    self.skipWaiting();
+  }
 });
 
 // Activación - limpiar caches antiguos
