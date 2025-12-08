@@ -67452,14 +67452,31 @@ document.addEventListener('DOMContentLoaded', () => {
       mobileHome.style.display = 'block';
     }
     
-    // Renderizar footer con contexto home
-    setTimeout(() => {
-      renderMobileFooter('home');
-      // Actualizar datos cuando app esté listo
-      if (window.updateMobileHome) {
-        window.updateMobileHome();
+    // Renderizar footer con contexto home - con múltiples intentos
+    const renderFooterWithRetry = () => {
+      if (typeof renderMobileFooter === 'function') {
+        renderMobileFooter('home');
+        console.log('📱 Footer renderizado en Home');
+      } else {
+        console.warn('📱 renderMobileFooter no disponible, reintentando...');
+        setTimeout(renderFooterWithRetry, 200);
       }
-    }, 100);
+    };
+    
+    setTimeout(renderFooterWithRetry, 100);
+    
+    // También renderizar al final por si acaso
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (typeof renderMobileFooter === 'function') {
+          renderMobileFooter('home');
+        }
+        // Actualizar datos
+        if (window.updateMobileHome) {
+          window.updateMobileHome();
+        }
+      }, 500);
+    });
     
     // Escuchar cuando app termine de cargar datos para actualizar Home
     const checkAppReady = setInterval(() => {
