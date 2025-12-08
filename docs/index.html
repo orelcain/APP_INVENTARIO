@@ -57702,6 +57702,14 @@ window.addEventListener('customAuthSuccess', (event) => {
     activityLogSection.style.display = shouldShow ? 'block' : 'none';
     console.log(`📋 Sección Historial: display=${shouldShow ? 'block' : 'none'} para rol ${role}`);
     if (shouldShow) {
+      // Expandir automáticamente el contenido
+      const activityContent = document.getElementById('activity-log-config-content');
+      if (activityContent) {
+        activityContent.classList.remove('config-section-content-hidden');
+        activityContent.classList.add('config-section-content');
+        activityContent.style.display = 'block';
+        console.log('📋 Contenido del historial expandido automáticamente');
+      }
       // Cargar historial automáticamente al mostrar
       console.log('📋 Cargando historial de actividad...');
       setTimeout(() => {
