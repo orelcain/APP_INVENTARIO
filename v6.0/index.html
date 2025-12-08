@@ -39064,10 +39064,15 @@ class InventarioCompleto {
   //  Toggle secciones colapsables del panel de mapas
   toggleMapSection(headerElement) {
     const section = headerElement.closest('.map-section');
+    if (!section) return;
+    
     section.classList.toggle('map-section--collapsed');
     
     // Guardar estado en localStorage
-    const sectionTitle = headerElement.querySelector('h3').textContent.trim();
+    const h3Element = headerElement.querySelector('h3');
+    if (!h3Element) return;
+    
+    const sectionTitle = h3Element.textContent.trim();
     const collapsed = section.classList.contains('map-section--collapsed');
     const collapsedSections = JSON.parse(localStorage.getItem('mapCollapsedSections') || '[]');
     
@@ -39091,9 +39096,13 @@ class InventarioCompleto {
     const sections = document.querySelectorAll('.map-section');
     
     sections.forEach(section => {
-      const title = section.querySelector('.map-section-header h3').textContent.trim();
-      if (collapsedSections.includes(title)) {
-        section.classList.add('map-section--collapsed');
+      const headerH3 = section.querySelector('.map-section-header h3');
+      // Verificar que el elemento exista antes de acceder a textContent
+      if (headerH3 && headerH3.textContent) {
+        const title = headerH3.textContent.trim();
+        if (collapsedSections.includes(title)) {
+          section.classList.add('map-section--collapsed');
+        }
       }
     });
   }
