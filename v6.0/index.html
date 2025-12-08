@@ -66,6 +66,19 @@
       console.warn = function() { originalWarn.apply(console, arguments); addLogEntry('warn', arguments); };
       console.error = function() { originalError.apply(console, arguments); addLogEntry('error', arguments); };
       
+      // 🛡️ PROTECTOR DE TECLADO PARA INPUTS
+      // Evita que otros manejadores globales interfieran con la escritura
+      document.addEventListener('keydown', function(e) {
+        const isInput = e.target.tagName === 'INPUT' || 
+                        e.target.tagName === 'TEXTAREA' || 
+                        e.target.isContentEditable;
+        
+        // Si estamos en un campo de texto, evitar que otros listeners interfieran
+        if (isInput) {
+          e.stopPropagation();
+        }
+      }, true); // true = fase de captura (se ejecuta primero)
+      
       // 🖥️ FUNCIONES PARA PANEL DE CONFIGURACIÓN
       window.toggleDebugConsole = function() {
         const panel = document.getElementById('debugConsoleConfig');
@@ -17490,8 +17503,11 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
                class="quick-search-input" 
                placeholder="Buscar repuesto..." 
                autocomplete="off"
+               inputmode="text"
                oninput="window.mobileHomeActions?.quickSearch(this.value)"
-               onkeydown="console.log('🔑 KeyDown en búsqueda:', event.key, event.keyCode, 'preventDefault?', event.defaultPrevented)">
+               onkeydown="event.stopPropagation();"
+               onkeyup="event.stopPropagation();"
+               onkeypress="event.stopPropagation();">
         <button class="quick-search-clear" onclick="window.mobileHomeActions?.clearQuickSearch()" style="display:none;">✕</button>
       </div>
       <!-- Resultados de búsqueda -->
