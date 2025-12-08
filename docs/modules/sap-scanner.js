@@ -1,14 +1,20 @@
 /**
- * 📸 SAP Label Scanner Module v1.2
+ * 📸 SAP Label Scanner Module v1.3
  * Escanea etiquetas SAP usando OCR (Tesseract.js) para crear o contar repuestos
  * 
- * @version 1.2.0
+ * @version 1.3.0
  * @requires Tesseract.js (CDN)
  * 
+ * CAMBIOS v1.3:
+ * - NUEVO: Animación de escaneo estilo Google Lens durante OCR
+ * - NUEVO: Puntos animados, línea de escaneo y esquinas de enfoque
+ * - NUEVO: Caja de detección cuando se encuentra texto
+ * - NUEVO: Indicador de estado durante el proceso
+ * 
  * CAMBIOS v1.2:
- * - NUEVO: Modal inicial con opciones "Agregar" o "Contar"
- * - NUEVO: Detección inteligente si repuesto ya existe
- * - NUEVO: Flujo de conteo rápido (+1, -1, cantidad específica)
+ * - Modal inicial con opciones "Agregar" o "Contar"
+ * - Detección inteligente si repuesto ya existe
+ * - Flujo de conteo rápido (+1, -1, cantidad específica)
  * - Validación redundante: usuario elige + sistema verifica
  */
 
@@ -417,6 +423,169 @@ class SAPScanner {
                 font-size: 0.85rem;
                 padding: 10px 12px;
             }
+            
+            /* 🔍 ANIMACIÓN ESTILO GOOGLE LENS */
+            .scan-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                pointer-events: none;
+                overflow: hidden;
+            }
+            
+            .scan-dots-container {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 85%;
+                height: 60%;
+            }
+            
+            /* Puntos de escaneo */
+            .scan-dot {
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                background: #4285f4;
+                border-radius: 50%;
+                opacity: 0;
+                box-shadow: 0 0 10px #4285f4, 0 0 20px #4285f4;
+                animation: scanDotPulse 1.5s ease-in-out infinite;
+            }
+            
+            .scan-dot.active {
+                opacity: 1;
+            }
+            
+            @keyframes scanDotPulse {
+                0%, 100% { 
+                    transform: scale(0.8);
+                    opacity: 0.6;
+                }
+                50% { 
+                    transform: scale(1.2);
+                    opacity: 1;
+                }
+            }
+            
+            /* Línea de escaneo horizontal */
+            .scan-line {
+                position: absolute;
+                left: 5%;
+                right: 5%;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, #4285f4, #34a853, #fbbc04, #ea4335, transparent);
+                box-shadow: 0 0 15px rgba(66, 133, 244, 0.8);
+                animation: scanLineMove 2s ease-in-out infinite;
+            }
+            
+            @keyframes scanLineMove {
+                0% { top: 20%; opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { top: 80%; opacity: 0; }
+            }
+            
+            /* Cuadro de detección */
+            .detection-box {
+                position: absolute;
+                border: 2px solid #4285f4;
+                border-radius: 8px;
+                background: rgba(66, 133, 244, 0.1);
+                opacity: 0;
+                transition: all 0.3s ease;
+            }
+            
+            .detection-box.found {
+                opacity: 1;
+                animation: detectionPulse 0.5s ease-out;
+            }
+            
+            .detection-box .detection-label {
+                position: absolute;
+                top: -24px;
+                left: 0;
+                background: #4285f4;
+                color: white;
+                font-size: 10px;
+                font-weight: 600;
+                padding: 2px 8px;
+                border-radius: 4px;
+                white-space: nowrap;
+            }
+            
+            @keyframes detectionPulse {
+                0% { transform: scale(1.1); border-color: #34a853; }
+                100% { transform: scale(1); border-color: #4285f4; }
+            }
+            
+            /* Texto de estado del escaneo */
+            .scan-status {
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.7);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                backdrop-filter: blur(10px);
+            }
+            
+            .scan-status .status-dot {
+                width: 8px;
+                height: 8px;
+                background: #4285f4;
+                border-radius: 50%;
+                animation: statusBlink 0.8s ease-in-out infinite;
+            }
+            
+            @keyframes statusBlink {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.3; }
+            }
+            
+            /* Esquinas de enfoque */
+            .scan-corners {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 80%;
+                height: 55%;
+                pointer-events: none;
+            }
+            
+            .scan-corner {
+                position: absolute;
+                width: 20px;
+                height: 20px;
+                border-color: #4285f4;
+                border-style: solid;
+                border-width: 0;
+            }
+            
+            .scan-corner.tl { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; border-radius: 8px 0 0 0; }
+            .scan-corner.tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; border-radius: 0 8px 0 0; }
+            .scan-corner.bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; border-radius: 0 0 0 8px; }
+            .scan-corner.br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-radius: 0 0 8px 0; }
+            
+            .scanning .scan-corner {
+                animation: cornerPulse 1s ease-in-out infinite;
+            }
+            
+            @keyframes cornerPulse {
+                0%, 100% { border-color: #4285f4; }
+                50% { border-color: #34a853; }
+            }
         `;
         document.head.appendChild(styles);
     }
@@ -474,10 +643,10 @@ class SAPScanner {
     
     /**
      * Resetea la UI del modal a estado inicial
-     */
+    */
     resetModalUI() {
         const video = document.getElementById('sapScannerVideo');
-        const preview = document.getElementById('sapScannerPreview');
+        const previewWrapper = document.getElementById('sapScannerPreviewWrapper');
         const captureBtn = document.getElementById('sapScannerCaptureBtn');
         const analyzeBtn = document.getElementById('sapScannerAnalyzeBtn');
         const retryBtn = document.getElementById('sapScannerRetryBtn');
@@ -486,13 +655,16 @@ class SAPScanner {
         const guide = document.querySelector('.sap-scanner-guide');
         
         if (video) video.style.display = 'block';
-        if (preview) preview.style.display = 'none';
+        if (previewWrapper) previewWrapper.style.display = 'none';
         if (captureBtn) captureBtn.style.display = 'inline-flex';
         if (analyzeBtn) analyzeBtn.style.display = 'none';
         if (retryBtn) retryBtn.style.display = 'none';
         if (galleryBtn) galleryBtn.style.display = 'inline-flex';
         if (progressContainer) progressContainer.style.display = 'none';
         if (guide) guide.style.display = 'flex';
+        
+        // Asegurar que la animación de escaneo esté detenida
+        this.stopScanAnimation();
     }
     
     /**
@@ -521,8 +693,33 @@ class SAPScanner {
                         </div>
                     </div>
                     
-                    <!-- Preview de imagen capturada -->
-                    <img id="sapScannerPreview" class="sap-scanner-preview" style="display:none;" />
+                    <!-- Preview de imagen capturada con overlay de escaneo -->
+                    <div id="sapScannerPreviewWrapper" class="sap-scanner-preview-wrapper" style="display:none; position:relative;">
+                        <img id="sapScannerPreview" class="sap-scanner-preview" />
+                        
+                        <!-- Overlay de animación Google Lens -->
+                        <div id="sapScannerOverlay" class="scan-overlay" style="display:none;">
+                            <!-- Esquinas de enfoque -->
+                            <div class="scan-corners scanning">
+                                <div class="scan-corner tl"></div>
+                                <div class="scan-corner tr"></div>
+                                <div class="scan-corner bl"></div>
+                                <div class="scan-corner br"></div>
+                            </div>
+                            
+                            <!-- Línea de escaneo -->
+                            <div class="scan-line"></div>
+                            
+                            <!-- Contenedor de puntos -->
+                            <div id="sapScanDotsContainer" class="scan-dots-container"></div>
+                            
+                            <!-- Texto de estado -->
+                            <div class="scan-status">
+                                <div class="status-dot"></div>
+                                <span id="sapScanStatusText">Analizando imagen...</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Barra de progreso -->
@@ -689,7 +886,6 @@ class SAPScanner {
     captureImage() {
         const video = document.getElementById('sapScannerVideo');
         const canvas = document.getElementById('sapScannerCanvas');
-        const preview = document.getElementById('sapScannerPreview');
         
         if (!video || !canvas) return;
         
@@ -754,6 +950,7 @@ class SAPScanner {
      */
     showImagePreview(imageData) {
         const video = document.getElementById('sapScannerVideo');
+        const previewWrapper = document.getElementById('sapScannerPreviewWrapper');
         const preview = document.getElementById('sapScannerPreview');
         const captureBtn = document.getElementById('sapScannerCaptureBtn');
         const galleryBtn = document.getElementById('sapScannerGalleryBtn');
@@ -761,10 +958,12 @@ class SAPScanner {
         const retryBtn = document.getElementById('sapScannerRetryBtn');
         const guide = document.querySelector('.sap-scanner-guide');
         
-        // Mostrar preview
+        // Mostrar preview con wrapper
         if (preview) {
             preview.src = imageData;
-            preview.style.display = 'block';
+        }
+        if (previewWrapper) {
+            previewWrapper.style.display = 'block';
         }
         if (video) video.style.display = 'none';
         if (guide) guide.style.display = 'none';
@@ -804,20 +1003,31 @@ class SAPScanner {
         if (analyzeBtn) analyzeBtn.style.display = 'none';
         if (retryBtn) retryBtn.style.display = 'none';
         
+        // 🔍 Iniciar animación de escaneo estilo Google Lens
+        this.startScanAnimation();
+        
         try {
             // Inicializar Tesseract si no está listo
             if (!this.isReady) {
                 this.updateProgress(0);
                 const progressText = document.getElementById('sapScannerProgressText');
                 if (progressText) progressText.textContent = 'Cargando motor OCR (primera vez)...';
+                this.updateScanStatus('Cargando motor OCR...');
                 await this.init();
             }
+            
+            // Actualizar estado de escaneo
+            this.updateScanStatus('Detectando texto...');
             
             // Ejecutar OCR
             console.log('📸 SAPScanner: Procesando imagen...');
             const result = await this.worker.recognize(imageData);
             
             console.log('📸 SAPScanner: OCR completado:', result);
+            
+            // Mostrar detección encontrada
+            this.updateScanStatus('¡Código encontrado!');
+            await this.showDetectionBox(result.data);
             
             // Extraer datos
             this.lastScan.rawText = result.data.text;
@@ -826,11 +1036,18 @@ class SAPScanner {
             // Parsear datos SAP
             this.parseExtractedText(result.data.text);
             
+            // Pequeña pausa para que se vea la animación de éxito
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Detener animación
+            this.stopScanAnimation();
+            
             // Mostrar modal de confirmación
             this.showConfirmModal();
             
         } catch (error) {
             console.error('📸 SAPScanner: Error en OCR:', error);
+            this.stopScanAnimation();
             this.showToast('Error procesando imagen. Intenta de nuevo.', 'error');
             
             // Mostrar botón de reintentar
@@ -840,6 +1057,158 @@ class SAPScanner {
         } finally {
             this.isProcessing = false;
             if (progressContainer) progressContainer.style.display = 'none';
+        }
+    }
+    
+    /**
+     * 🔍 Inicia la animación de escaneo estilo Google Lens
+     */
+    startScanAnimation() {
+        const overlay = document.getElementById('sapScannerOverlay');
+        const dotsContainer = document.getElementById('sapScanDotsContainer');
+        
+        if (overlay) {
+            overlay.style.display = 'block';
+        }
+        
+        // Generar puntos aleatorios animados
+        if (dotsContainer) {
+            dotsContainer.innerHTML = '';
+            this.scanDotsInterval = setInterval(() => {
+                this.generateScanDots(dotsContainer);
+            }, 300);
+            
+            // Generar primera tanda
+            this.generateScanDots(dotsContainer);
+        }
+    }
+    
+    /**
+     * 🔍 Genera puntos de escaneo aleatorios
+     */
+    generateScanDots(container) {
+        // Limpiar puntos anteriores con fade out
+        const oldDots = container.querySelectorAll('.scan-dot');
+        oldDots.forEach(dot => {
+            dot.style.opacity = '0';
+            setTimeout(() => dot.remove(), 200);
+        });
+        
+        // Generar 8-12 puntos nuevos
+        const numDots = 8 + Math.floor(Math.random() * 5);
+        
+        for (let i = 0; i < numDots; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'scan-dot';
+            
+            // Posición aleatoria
+            const x = Math.random() * 90 + 5; // 5-95%
+            const y = Math.random() * 80 + 10; // 10-90%
+            dot.style.left = `${x}%`;
+            dot.style.top = `${y}%`;
+            
+            // Delay aleatorio para la animación
+            dot.style.animationDelay = `${Math.random() * 0.5}s`;
+            
+            // Color alternativo para algunos puntos
+            if (Math.random() > 0.7) {
+                const colors = ['#34a853', '#fbbc04', '#ea4335'];
+                dot.style.background = colors[Math.floor(Math.random() * colors.length)];
+                dot.style.boxShadow = `0 0 10px ${dot.style.background}`;
+            }
+            
+            container.appendChild(dot);
+            
+            // Activar con pequeño delay
+            setTimeout(() => {
+                dot.classList.add('active');
+            }, 50 + i * 30);
+        }
+    }
+    
+    /**
+     * 🔍 Actualiza el texto de estado del escaneo
+     */
+    updateScanStatus(text) {
+        const statusText = document.getElementById('sapScanStatusText');
+        if (statusText) {
+            statusText.textContent = text;
+        }
+    }
+    
+    /**
+     * 🔍 Muestra una caja de detección cuando se encuentra texto
+     */
+    async showDetectionBox(ocrData) {
+        const overlay = document.getElementById('sapScannerOverlay');
+        if (!overlay) return;
+        
+        // Detener generación de puntos
+        if (this.scanDotsInterval) {
+            clearInterval(this.scanDotsInterval);
+            this.scanDotsInterval = null;
+        }
+        
+        // Limpiar puntos
+        const dotsContainer = document.getElementById('sapScanDotsContainer');
+        if (dotsContainer) {
+            dotsContainer.innerHTML = '';
+        }
+        
+        // Crear caja de detección simulada (centrada ya que no tenemos coordenadas exactas)
+        const box = document.createElement('div');
+        box.className = 'detection-box';
+        box.style.left = '15%';
+        box.style.top = '25%';
+        box.style.width = '70%';
+        box.style.height = '50%';
+        
+        // Etiqueta
+        const label = document.createElement('div');
+        label.className = 'detection-label';
+        label.textContent = `Texto detectado (${Math.round(ocrData.confidence)}%)`;
+        box.appendChild(label);
+        
+        overlay.appendChild(box);
+        
+        // Animar entrada
+        await new Promise(resolve => setTimeout(resolve, 50));
+        box.classList.add('found');
+        
+        // Cambiar esquinas a verde
+        const corners = overlay.querySelectorAll('.scan-corner');
+        corners.forEach(corner => {
+            corner.style.borderColor = '#34a853';
+        });
+    }
+    
+    /**
+     * 🔍 Detiene la animación de escaneo
+     */
+    stopScanAnimation() {
+        const overlay = document.getElementById('sapScannerOverlay');
+        
+        if (this.scanDotsInterval) {
+            clearInterval(this.scanDotsInterval);
+            this.scanDotsInterval = null;
+        }
+        
+        if (overlay) {
+            overlay.style.display = 'none';
+            
+            // Limpiar elementos de detección
+            const detectionBox = overlay.querySelector('.detection-box');
+            if (detectionBox) detectionBox.remove();
+            
+            // Resetear esquinas
+            const corners = overlay.querySelectorAll('.scan-corner');
+            corners.forEach(corner => {
+                corner.style.borderColor = '';
+            });
+            
+            // Limpiar puntos
+            const dotsContainer = document.getElementById('sapScanDotsContainer');
+            if (dotsContainer) dotsContainer.innerHTML = '';
         }
     }
     
