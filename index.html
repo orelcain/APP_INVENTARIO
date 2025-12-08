@@ -18805,6 +18805,17 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
                       <h3 class="form-section-title">Datos tcnicos</h3>
                       <p class="form-section-description">Agrega especificaciones relevantes para mantenimiento, compras o montaje.</p>
                     </div>
+                    
+                    <!-- 🔧 Número de Equipo - NUEVO -->
+                    <div class="form-group">
+                      <label class="form-label-row">
+                        <span>Número de Equipo:</span>
+                        <small class="form-label-optional">(Opcional - Identificador de máquina/equipo)</small>
+                      </label>
+                      <input type="text" class="form-control" id="numEquipo" placeholder="Ej: EQ-001, BOMBA-2340, MOTOR-A15">
+                      <small class="form-textarea-hint">Identificador único del equipo donde se usa este repuesto</small>
+                    </div>
+                    
                     <div class="form-group">
                       <label class="form-label-row">
                         <span>Datos Tcnicos Especficos:</span>
@@ -41153,6 +41164,11 @@ class InventarioCompleto {
         document.getElementById('minimo').value = repuesto.minimo || repuesto.stockMinimo || 5;
         document.getElementById('optimo').value = repuesto.optimo || 10;
         document.getElementById('precio').value = repuesto.precio || 0;
+        
+        // 🔧 Número de equipo
+        const numEquipoInput = document.getElementById('numEquipo');
+        if (numEquipoInput) numEquipoInput.value = repuesto.numEquipo || '';
+        
         document.getElementById('datosTecnicos').value = repuesto.datosTecnicos || '';
         
         const multimediaOriginal = repuesto.multimedia || [];
@@ -42945,6 +42961,7 @@ class InventarioCompleto {
       minimo: parseInt(document.getElementById('minimo').value) || 5,
       optimo: parseInt(document.getElementById('optimo').value) || 10,
       precio: parseFloat(document.getElementById('precio').value) || 0,
+      numEquipo: document.getElementById('numEquipo')?.value?.trim() || '',
       datosTecnicos: document.getElementById('datosTecnicos').value.trim() || '',
       multimedia: multimediaTotal,
       ultimaModificacion: new Date().toISOString(),
@@ -65198,6 +65215,9 @@ console.log(' Notificaciones cargadas:', window.notifications.length);
 
 <!-- 📸 SAP Scanner Module - OCR para etiquetas -->
 <script src="modules/sap-scanner.js"></script>
+
+<!-- 📋 Repuesto Verification Module - Flujo post-escaneo -->
+<script src="modules/repuesto-verification.js"></script>
 
 <script>
 // Función para migrar datos locales a Firebase

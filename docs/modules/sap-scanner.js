@@ -568,10 +568,26 @@ class SAPScanner {
     
     /**
      * Muestra modal de confirmación con datos extraídos
+     * ACTUALIZADO: Usa el nuevo flujo de verificación completo
      */
     showConfirmModal() {
         // Cerrar modal de captura
         this.closeModal(false);
+        
+        // Usar el nuevo módulo de verificación si está disponible
+        if (window.repuestoVerification) {
+            window.repuestoVerification.startVerification({
+                imageData: this.lastScan.imageData,
+                codigoSAP: this.lastScan.codigoSAP,
+                descripcion: this.lastScan.descripcion,
+                rawText: this.lastScan.rawText,
+                confidence: this.lastScan.confidence
+            });
+            return;
+        }
+        
+        // Fallback al modal simple si el módulo no está cargado
+        console.warn('📸 SAPScanner: Módulo de verificación no disponible, usando modal simple');
         
         // Crear modal de confirmación si no existe
         let modal = document.getElementById('sapConfirmModal');
