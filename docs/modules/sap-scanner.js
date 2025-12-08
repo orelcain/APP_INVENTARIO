@@ -27,19 +27,33 @@ class SAPScanner {
     constructor() {
         this.isReady = false;
         this.worker = null;
+        this.workerOptimized = null; // Worker optimizado para códigos
         this.isProcessing = false;
         
         // 🆕 Modo de operación: 'add' o 'count'
         this.operationMode = null;
         
-        // Patrones de extracción SAP
+        // Patrones de extracción SAP MEJORADOS
         this.patterns = {
             // Código SAP: 10 dígitos, típicamente empieza con 3 o 2
             codigoSAP: /\b[23][0-9]{9}\b/g,
             // Código alternativo: 8-12 dígitos
             codigoAlt: /\b[0-9]{8,12}\b/g,
+            // Código con posibles errores OCR (O->0, I->1, S->5, B->8)
+            codigoFuzzy: /\b[23OoZz][0-9OoIilZzSsBb]{8,11}\b/g,
             // Limpiar caracteres extraños del OCR
             cleanText: /[^\w\sáéíóúñÁÉÍÓÚÑ.,\-\/()#°"']/g
+        };
+        
+        // Correcciones OCR comunes
+        this.ocrCorrections = {
+            'O': '0', 'o': '0',
+            'I': '1', 'i': '1', 'l': '1', '|': '1',
+            'Z': '2', 'z': '2',
+            'S': '5', 's': '5',
+            'B': '8', 'b': '8',
+            'G': '6', 'g': '9',
+            'q': '9', 'Q': '0'
         };
         
         // Estado del escaneo
@@ -48,13 +62,14 @@ class SAPScanner {
             codigoSAP: '',
             descripcion: '',
             imageData: null,
-            confidence: 0
+            confidence: 0,
+            processedImageData: null // Imagen pre-procesada
         };
         
         // Estado de la UI
         this.imageReady = false;
         
-        console.log('📸 SAPScanner v1.2: Módulo inicializado');
+        console.log('📸 SAPScanner v1.5: Módulo inicializado con OCR mejorado');
     }
     
     /**
@@ -1061,10 +1076,10 @@ class SAPScanner {
     }
     
     /**
-     * Procesa imagen con Tesseract OCR
+     * Procesa imagen con Tesseract OCR - VERSIÓN MEJORADA
      */
     async processImage(imageData) {
-        console.log('📸 [DEBUG] processImage() INICIANDO');
+        console.log('📸 [DEBUG] processImage() INICIANDO - v1.5 mejorado');
         
         if (this.isProcessing) {
             console.log('📸 [DEBUG] Ya está procesando, saliendo');
@@ -1099,30 +1114,33 @@ class SAPScanner {
                 console.log('📸 [DEBUG] Tesseract inicializado');
             }
             
-            // Actualizar estado de escaneo
-            this.updateScanStatus('Detectando texto...');
+            // 🖼️ PASO 1: Pre-procesar imagen para mejorar OCR
+            this.updateScanStatus('Optimizando imagen...');
+            const processedImage = await this.preprocessImage(imageData);
+            this.lastScan.processedImageData = processedImage;
             
-            // Ejecutar OCR
-            console.log('📸 [DEBUG] Ejecutando OCR...');
-            const result = await this.worker.recognize(imageData);
+            // 🔍 PASO 2: OCR con múltiples intentos
+            this.updateScanStatus('Detectando código SAP...');
+            const ocrResult = await this.performMultiPassOCR(processedImage, imageData);
             
-            console.log('📸 [DEBUG] OCR completado. Resultado:', {
-                text: result.data.text?.substring(0, 100),
-                confidence: result.data.confidence
+            console.log('📸 [DEBUG] OCR completado. Mejor resultado:', {
+                text: ocrResult.text?.substring(0, 100),
+                confidence: ocrResult.confidence,
+                method: ocrResult.method
             });
             
             // Mostrar detección encontrada
             this.updateScanStatus('¡Código encontrado!');
             console.log('📸 [DEBUG] Mostrando caja de detección');
-            await this.showDetectionBox(result.data);
+            await this.showDetectionBox(ocrResult);
             
             // Extraer datos
-            this.lastScan.rawText = result.data.text;
-            this.lastScan.confidence = Math.round(result.data.confidence);
+            this.lastScan.rawText = ocrResult.text;
+            this.lastScan.confidence = Math.round(ocrResult.confidence);
             
-            // Parsear datos SAP
-            console.log('📸 [DEBUG] Parseando texto extraído');
-            this.parseExtractedText(result.data.text);
+            // 🧠 PASO 3: Parsear con inteligencia mejorada
+            console.log('📸 [DEBUG] Parseando texto extraído con mejoras');
+            this.parseExtractedTextEnhanced(ocrResult.text);
             console.log('📸 [DEBUG] Datos parseados:', {
                 codigoSAP: this.lastScan.codigoSAP,
                 descripcion: this.lastScan.descripcion
@@ -1156,6 +1174,130 @@ class SAPScanner {
             if (progressContainer) progressContainer.style.display = 'none';
             console.log('📸 [DEBUG] processImage() TERMINADO');
         }
+    }
+    
+    /**
+     * 🖼️ Pre-procesa la imagen para mejorar OCR
+     * - Convierte a escala de grises
+     * - Aumenta contraste
+     * - Aplica binarización adaptativa
+     */
+    async preprocessImage(imageData) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Escalar si es muy grande (mejora velocidad)
+                let width = img.width;
+                let height = img.height;
+                const maxSize = 1500;
+                
+                if (width > maxSize || height > maxSize) {
+                    const scale = maxSize / Math.max(width, height);
+                    width = Math.round(width * scale);
+                    height = Math.round(height * scale);
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Obtener datos de imagen
+                const imageDataObj = ctx.getImageData(0, 0, width, height);
+                const data = imageDataObj.data;
+                
+                // 1. Convertir a escala de grises y aumentar contraste
+                for (let i = 0; i < data.length; i += 4) {
+                    // Escala de grises ponderada (mejor para texto)
+                    let gray = data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
+                    
+                    // Aumentar contraste (factor 1.5)
+                    gray = ((gray - 128) * 1.5) + 128;
+                    gray = Math.max(0, Math.min(255, gray));
+                    
+                    // Binarización con umbral adaptativo
+                    // Usar umbral más agresivo para etiquetas industriales
+                    const threshold = 140;
+                    gray = gray > threshold ? 255 : 0;
+                    
+                    data[i] = data[i+1] = data[i+2] = gray;
+                }
+                
+                ctx.putImageData(imageDataObj, 0, 0);
+                
+                // Devolver como base64
+                resolve(canvas.toDataURL('image/png'));
+            };
+            img.src = imageData;
+        });
+    }
+    
+    /**
+     * 🔄 Ejecuta OCR múltiples veces con diferentes configuraciones
+     * y devuelve el mejor resultado
+     */
+    async performMultiPassOCR(processedImage, originalImage) {
+        const results = [];
+        
+        // INTENTO 1: Imagen pre-procesada (binarizada)
+        console.log('📸 OCR Intento 1: Imagen binarizada');
+        try {
+            const result1 = await this.worker.recognize(processedImage);
+            results.push({
+                text: result1.data.text,
+                confidence: result1.data.confidence,
+                method: 'binarizada',
+                words: result1.data.words || []
+            });
+            console.log(`📸 Resultado 1: ${result1.data.confidence}% confianza`);
+        } catch (e) {
+            console.warn('📸 Error en intento 1:', e.message);
+        }
+        
+        // INTENTO 2: Imagen original (a veces funciona mejor)
+        console.log('📸 OCR Intento 2: Imagen original');
+        try {
+            const result2 = await this.worker.recognize(originalImage);
+            results.push({
+                text: result2.data.text,
+                confidence: result2.data.confidence,
+                method: 'original',
+                words: result2.data.words || []
+            });
+            console.log(`📸 Resultado 2: ${result2.data.confidence}% confianza`);
+        } catch (e) {
+            console.warn('📸 Error en intento 2:', e.message);
+        }
+        
+        // Elegir el mejor resultado basado en:
+        // 1. ¿Encontró un código SAP válido?
+        // 2. Confianza general
+        let bestResult = results[0] || { text: '', confidence: 0, method: 'none' };
+        
+        for (const result of results) {
+            const hasSAPCode = this.findSAPCodeInText(result.text);
+            const bestHasSAPCode = this.findSAPCodeInText(bestResult.text);
+            
+            // Priorizar el que encontró código SAP
+            if (hasSAPCode && !bestHasSAPCode) {
+                bestResult = result;
+            } else if (hasSAPCode === bestHasSAPCode && result.confidence > bestResult.confidence) {
+                bestResult = result;
+            }
+        }
+        
+        console.log(`📸 Mejor resultado: ${bestResult.method} con ${bestResult.confidence}%`);
+        return bestResult;
+    }
+    
+    /**
+     * 🔍 Busca código SAP en texto (retorna true/false)
+     */
+    findSAPCodeInText(text) {
+        if (!text) return false;
+        return this.patterns.codigoSAP.test(text) || this.patterns.codigoAlt.test(text);
     }
     
     /**
@@ -1311,31 +1453,171 @@ class SAPScanner {
     }
     
     /**
-     * Extrae código SAP y descripción del texto
+     * Extrae código SAP y descripción del texto - VERSIÓN MEJORADA
+     * Con corrección de errores OCR y validación contra existentes
      */
-    parseExtractedText(text) {
-        console.log('📸 SAPScanner: Parseando texto:', text);
+    parseExtractedTextEnhanced(text) {
+        console.log('📸 SAPScanner: Parseando texto (mejorado):', text);
         
         // Limpiar texto
         const cleanText = text.replace(this.patterns.cleanText, ' ').trim();
         const lines = cleanText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
         
-        // Buscar código SAP (10 dígitos, empieza con 3 o 2)
-        let codigoSAP = '';
-        const sapMatches = text.match(this.patterns.codigoSAP);
-        if (sapMatches && sapMatches.length > 0) {
-            codigoSAP = sapMatches[0];
-        } else {
-            // Intentar patrón alternativo
-            const altMatches = text.match(this.patterns.codigoAlt);
-            if (altMatches && altMatches.length > 0) {
-                // Tomar el más largo que parezca código SAP
-                codigoSAP = altMatches.sort((a, b) => b.length - a.length)[0];
+        // 🔍 PASO 1: Buscar código SAP con múltiples estrategias
+        let codigoSAP = this.extractSAPCode(text);
+        
+        // 🧠 PASO 2: Si no encontró, intentar con corrección OCR
+        if (!codigoSAP) {
+            codigoSAP = this.extractSAPCodeWithCorrection(text);
+        }
+        
+        // 🔎 PASO 3: Validar contra códigos existentes (fuzzy match)
+        if (codigoSAP) {
+            const validatedCode = this.validateAgainstExisting(codigoSAP);
+            if (validatedCode) {
+                console.log(`📸 Código validado: ${codigoSAP} → ${validatedCode}`);
+                codigoSAP = validatedCode;
             }
         }
         
-        // Buscar descripción (líneas que no son el código)
+        // 📝 PASO 4: Buscar descripción
+        let descripcion = this.extractDescription(lines, codigoSAP);
+        
+        this.lastScan.codigoSAP = codigoSAP;
+        this.lastScan.descripcion = descripcion;
+        
+        console.log('📸 SAPScanner: Datos extraídos (mejorado):', {
+            codigoSAP,
+            descripcion,
+            confidence: this.lastScan.confidence
+        });
+    }
+    
+    /**
+     * Extrae código SAP del texto
+     */
+    extractSAPCode(text) {
+        // Estrategia 1: Patrón exacto (10 dígitos empezando con 2 o 3)
+        const sapMatches = text.match(this.patterns.codigoSAP);
+        if (sapMatches && sapMatches.length > 0) {
+            return sapMatches[0];
+        }
+        
+        // Estrategia 2: Cualquier secuencia de 8-12 dígitos
+        const altMatches = text.match(this.patterns.codigoAlt);
+        if (altMatches && altMatches.length > 0) {
+            // Priorizar los de 10 dígitos
+            const tenDigit = altMatches.find(m => m.length === 10);
+            if (tenDigit) return tenDigit;
+            
+            // Si no, tomar el más largo
+            return altMatches.sort((a, b) => b.length - a.length)[0];
+        }
+        
+        return '';
+    }
+    
+    /**
+     * 🔧 Intenta extraer código SAP corrigiendo errores OCR comunes
+     */
+    extractSAPCodeWithCorrection(text) {
+        // Buscar secuencias que podrían ser códigos con errores
+        const fuzzyMatches = text.match(this.patterns.codigoFuzzy);
+        
+        if (!fuzzyMatches || fuzzyMatches.length === 0) return '';
+        
+        for (const match of fuzzyMatches) {
+            // Aplicar correcciones
+            let corrected = '';
+            for (const char of match) {
+                corrected += this.ocrCorrections[char] || char;
+            }
+            
+            // Verificar si ahora es un código válido
+            if (/^[23][0-9]{9}$/.test(corrected)) {
+                console.log(`📸 Código corregido: "${match}" → "${corrected}"`);
+                return corrected;
+            }
+            
+            // También aceptar 8-12 dígitos
+            if (/^[0-9]{8,12}$/.test(corrected)) {
+                console.log(`📸 Código corregido (alt): "${match}" → "${corrected}"`);
+                return corrected;
+            }
+        }
+        
+        return '';
+    }
+    
+    /**
+     * 🔎 Valida código contra repuestos existentes (fuzzy match)
+     * Retorna el código correcto si encuentra coincidencia cercana
+     */
+    validateAgainstExisting(codigo) {
+        if (!window.app || !window.app.repuestos || !codigo) return null;
+        
+        // Buscar coincidencia exacta primero
+        const exactMatch = window.app.repuestos.find(r => r.codSAP === codigo);
+        if (exactMatch) return codigo;
+        
+        // Si tiene 10 dígitos, buscar coincidencias parciales
+        if (codigo.length >= 8) {
+            const candidates = [];
+            
+            for (const repuesto of window.app.repuestos) {
+                if (!repuesto.codSAP || repuesto.codSAP.length < 8) continue;
+                
+                // Calcular similitud (distancia de Levenshtein simplificada)
+                const similarity = this.calculateSimilarity(codigo, repuesto.codSAP);
+                
+                if (similarity >= 0.8) { // 80% similar
+                    candidates.push({
+                        codigo: repuesto.codSAP,
+                        similarity,
+                        nombre: repuesto.nombre
+                    });
+                }
+            }
+            
+            // Si hay candidatos, tomar el más similar
+            if (candidates.length > 0) {
+                candidates.sort((a, b) => b.similarity - a.similarity);
+                const best = candidates[0];
+                console.log(`📸 Sugerencia de código existente: ${best.codigo} (${Math.round(best.similarity * 100)}% similar) - "${best.nombre}"`);
+                return best.codigo;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * 📊 Calcula similitud entre dos strings (0-1)
+     */
+    calculateSimilarity(str1, str2) {
+        if (str1 === str2) return 1;
+        if (!str1 || !str2) return 0;
+        
+        const longer = str1.length > str2.length ? str1 : str2;
+        const shorter = str1.length > str2.length ? str2 : str1;
+        
+        if (longer.length === 0) return 1;
+        
+        // Contar caracteres coincidentes en posición
+        let matches = 0;
+        for (let i = 0; i < shorter.length; i++) {
+            if (shorter[i] === longer[i]) matches++;
+        }
+        
+        return matches / longer.length;
+    }
+    
+    /**
+     * 📝 Extrae descripción del texto
+     */
+    extractDescription(lines, codigoSAP) {
         let descripcion = '';
+        
         for (const line of lines) {
             // Saltar líneas que son solo el código
             if (line === codigoSAP) continue;
@@ -1343,6 +1625,8 @@ class SAPScanner {
             if (line.length < 3) continue;
             // Saltar líneas que son solo números
             if (/^\d+$/.test(line)) continue;
+            // Saltar si contiene el código SAP
+            if (codigoSAP && line.includes(codigoSAP)) continue;
             
             // Agregar a descripción
             if (descripcion) {
@@ -1356,20 +1640,19 @@ class SAPScanner {
         }
         
         // Limpiar descripción
-        descripcion = descripcion
+        return descripcion
             .replace(/\s+/g, ' ')
             .replace(/^[^a-zA-Z]+/, '') // Quitar caracteres iniciales no-letra
             .trim()
             .toUpperCase();
-        
-        this.lastScan.codigoSAP = codigoSAP;
-        this.lastScan.descripcion = descripcion;
-        
-        console.log('📸 SAPScanner: Datos extraídos:', {
-            codigoSAP,
-            descripcion,
-            confidence: this.lastScan.confidence
-        });
+    }
+    
+    /**
+     * Extrae código SAP y descripción del texto (LEGACY - mantener por compatibilidad)
+     */
+    parseExtractedText(text) {
+        // Usar la versión mejorada
+        this.parseExtractedTextEnhanced(text);
     }
     
     /**
