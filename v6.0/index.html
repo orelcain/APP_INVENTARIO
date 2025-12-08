@@ -17979,14 +17979,14 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       </div> <!-- Fin herramientas-config-content -->
     </div>
 
-    <!-- 🔧 CONSOLA DE DEBUG (MÓVIL) -->
-    <div class="config-section">
+    <!-- 🔧 CONSOLA DE DEBUG (MÓVIL) - Solo visible para Admin -->
+    <div class="config-section" id="debug-section-admin" style="display: none;">
       <div class="config-section-header-row">
         <div onclick="toggleConfigSection('debug-config')" class="config-section-clickable">
           <div class="config-section-title-row">
             <span id="debug-config-icon">🔧</span>
             <h3 class="config-section-title">
-              🔧 Consola de Debug (Móvil)
+              🔧 Consola de Debug (Solo Admin)
             </h3>
           </div>
         </div>
@@ -18030,15 +18030,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             </button>
           </div>
           
-          <!-- 🔄 Herramientas de Migración a Firebase -->
-          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
-            <button onclick="window.migrarImagenesAFirebase()" class="btn btn-success" style="padding: 10px 20px; background: #f59e0b;">
-              🖼️ Migrar Imágenes a Firebase
-            </button>
-            <button onclick="window.migrarJerarquiaAFirebase()" class="btn btn-success" style="padding: 10px 20px; background: #10b981;">
-              🗂️ Migrar Jerarquía a Firebase
-            </button>
-          </div>
+          <!-- 🔄 Herramientas de Migración a Firebase - OBSOLETAS (ya migrado todo) -->
+          <!-- Botones de migración eliminados - todo ya está en Firebase -->
           
           <div id="debugConsoleConfig" style="display: none; background: rgba(0,0,0,0.9); border-radius: 8px; padding: 15px; max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 12px;">
             <div id="debugLogsConfig" style="color: #0f0;"></div>
@@ -57452,6 +57445,13 @@ window.addEventListener('customAuthSuccess', (event) => {
   // Actualizar permisos en la app
   app.updatePermissions(role);
   
+  // 🔧 Mostrar sección de Debug solo para admin
+  const debugSection = document.getElementById('debug-section-admin');
+  if (debugSection) {
+    debugSection.style.display = (role === 'admin') ? 'block' : 'none';
+    console.log(`🔧 Sección Debug: ${role === 'admin' ? 'visible' : 'oculta'} para rol ${role}`);
+  }
+  
   // Mensaje de bienvenida según rol
   const roleMessages = {
     'admin': 'Acceso completo al sistema',
@@ -57468,6 +57468,12 @@ window.addEventListener('customAuthSuccess', (event) => {
 window.addEventListener('customAuthLogout', () => {
   console.log('👋 Usuario desconectado - Limpiando permisos');
   app.updatePermissions(null);
+  
+  // 🔧 Ocultar sección de Debug al logout
+  const debugSection = document.getElementById('debug-section-admin');
+  if (debugSection) {
+    debugSection.style.display = 'none';
+  }
 });
 
 // ========================================
