@@ -17481,6 +17481,33 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       </button>
     </header>
 
+    <!-- 🔍 BÚSQUEDA RÁPIDA EN TIEMPO REAL -->
+    <section class="home-quick-search">
+      <div class="quick-search-container">
+        <span class="quick-search-icon">🔍</span>
+        <input type="text" 
+               id="mobileQuickSearch" 
+               class="quick-search-input" 
+               placeholder="Buscar repuesto..." 
+               autocomplete="off"
+               oninput="window.mobileHomeActions?.quickSearch(this.value)">
+        <button class="quick-search-clear" onclick="window.mobileHomeActions?.clearQuickSearch()" style="display:none;">✕</button>
+      </div>
+      <!-- Resultados de búsqueda -->
+      <div id="quickSearchResults" class="quick-search-results" style="display:none;"></div>
+    </section>
+
+    <!-- 📂 CATEGORÍAS DE ÁREAS -->
+    <section class="home-area-categories">
+      <div class="area-chips-container" id="homeAreaChips">
+        <button class="area-chip active" data-area="" onclick="window.mobileHomeActions?.filterByArea('')">
+          <span class="chip-icon">📦</span>
+          <span class="chip-label">Todos</span>
+        </button>
+        <!-- Los chips de áreas se generan dinámicamente -->
+      </div>
+    </section>
+
     <!-- Stats Cards -->
     <section class="home-stats">
       <div class="stat-card" onclick="switchMobileTab('inventario')">
@@ -65272,10 +65299,10 @@ console.log(' Notificaciones cargadas:', window.notifications.length);
 <script src="modules/login-ui.js"></script>
 
 <!-- 📸 SAP Scanner Module - OCR para etiquetas -->
-<script src="modules/sap-scanner.js"></script>
+<script src="modules/sap-scanner.js?v=1.3.0"></script>
 
 <!-- 📋 Repuesto Verification Module - Flujo post-escaneo -->
-<script src="modules/repuesto-verification.js"></script>
+<script src="modules/repuesto-verification.js?v=1.1.0"></script>
 
 <script>
 // Función para migrar datos locales a Firebase
@@ -66498,6 +66525,216 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 .home-config-btn:active {
   background: var(--home-card);
   color: var(--home-text);
+}
+
+/* 🔍 BÚSQUEDA RÁPIDA EN TIEMPO REAL */
+.home-quick-search {
+  padding: 0 16px 8px;
+  position: relative;
+}
+
+.quick-search-container {
+  display: flex;
+  align-items: center;
+  background: var(--home-card);
+  border: 1px solid var(--home-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.quick-search-container:focus-within {
+  border-color: var(--accent-color, #007bff);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.quick-search-icon {
+  font-size: 18px;
+  opacity: 0.6;
+}
+
+.quick-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: var(--home-text);
+  outline: none;
+}
+
+.quick-search-input::placeholder {
+  color: var(--home-text-muted);
+}
+
+.quick-search-clear {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--home-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.quick-search-clear:hover {
+  background: var(--home-border);
+  color: var(--home-text);
+}
+
+/* Resultados de búsqueda */
+.quick-search-results {
+  position: absolute;
+  top: 100%;
+  left: 16px;
+  right: 16px;
+  background: var(--home-card);
+  border: 1px solid var(--home-border);
+  border-radius: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  margin-top: 4px;
+}
+
+.quick-result-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
+  gap: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--home-border);
+  transition: background 0.15s ease;
+}
+
+.quick-result-item:last-child {
+  border-bottom: none;
+}
+
+.quick-result-item:hover,
+.quick-result-item:active {
+  background: var(--home-hover);
+}
+
+.quick-result-icon {
+  font-size: 20px;
+}
+
+.quick-result-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.quick-result-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--home-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quick-result-meta {
+  font-size: 12px;
+  color: var(--home-text-muted);
+  margin-top: 2px;
+}
+
+.quick-result-stock {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--home-success-bg, rgba(52, 199, 89, 0.15));
+  color: var(--home-success, #34c759);
+}
+
+.quick-result-stock.low {
+  background: var(--home-warning-bg, rgba(255, 149, 0, 0.15));
+  color: var(--home-warning, #ff9500);
+}
+
+.quick-result-stock.critical {
+  background: var(--home-danger-bg, rgba(255, 59, 48, 0.15));
+  color: var(--home-danger, #ff3b30);
+}
+
+.quick-search-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--home-text-muted);
+}
+
+.quick-search-empty-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+/* 📂 CATEGORÍAS DE ÁREAS */
+.home-area-categories {
+  padding: 8px 16px 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.home-area-categories::-webkit-scrollbar {
+  display: none;
+}
+
+.area-chips-container {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.area-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--home-card);
+  border: 1px solid var(--home-border);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--home-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.area-chip .chip-icon {
+  font-size: 14px;
+}
+
+.area-chip:hover {
+  background: var(--home-hover);
+  border-color: var(--home-text-muted);
+}
+
+.area-chip.active {
+  background: var(--accent-color, #007bff);
+  border-color: var(--accent-color, #007bff);
+  color: white;
+}
+
+.area-chip.active .chip-icon {
+  filter: brightness(0) invert(1);
+}
+
+.area-chip .chip-count {
+  font-size: 11px;
+  background: rgba(0,0,0,0.1);
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 2px;
+}
+
+.area-chip.active .chip-count {
+  background: rgba(255,255,255,0.25);
 }
 
 /* Stats Section */
@@ -67932,6 +68169,219 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==================================================================
 
 window.mobileHomeActions = {
+  // Variable para debounce de búsqueda
+  searchTimeout: null,
+  currentAreaFilter: '',
+  
+  // 🔍 Búsqueda rápida en tiempo real
+  quickSearch: function(query) {
+    const clearBtn = document.querySelector('.quick-search-clear');
+    const resultsContainer = document.getElementById('quickSearchResults');
+    
+    // Mostrar/ocultar botón de limpiar
+    if (clearBtn) {
+      clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+    }
+    
+    // Debounce de 250ms
+    clearTimeout(this.searchTimeout);
+    this.searchTimeout = setTimeout(() => {
+      this.performSearch(query);
+    }, 250);
+  },
+  
+  // Ejecutar búsqueda
+  performSearch: function(query) {
+    const resultsContainer = document.getElementById('quickSearchResults');
+    if (!resultsContainer) return;
+    
+    if (!query || query.trim().length < 2) {
+      resultsContainer.style.display = 'none';
+      return;
+    }
+    
+    const searchTerm = query.toLowerCase().trim();
+    const repuestos = window.app?.repuestos || [];
+    
+    // Filtrar repuestos
+    let results = repuestos.filter(r => {
+      const nombre = (r.nombre || r.descripcion || '').toLowerCase();
+      const codigo = (r.codigo || r.codigoSAP || '').toLowerCase();
+      const area = (r.area || r.ubicacion || '').toLowerCase();
+      
+      return nombre.includes(searchTerm) || 
+             codigo.includes(searchTerm) || 
+             area.includes(searchTerm);
+    });
+    
+    // Aplicar filtro de área si está activo
+    if (this.currentAreaFilter) {
+      results = results.filter(r => {
+        const area = (r.area || r.ubicacion || '').toLowerCase();
+        return area.includes(this.currentAreaFilter.toLowerCase());
+      });
+    }
+    
+    // Limitar a 8 resultados
+    results = results.slice(0, 8);
+    
+    if (results.length === 0) {
+      resultsContainer.innerHTML = `
+        <div class="quick-search-empty">
+          <div class="quick-search-empty-icon">🔍</div>
+          <div>No se encontraron resultados</div>
+        </div>
+      `;
+      resultsContainer.style.display = 'block';
+      return;
+    }
+    
+    // Renderizar resultados
+    resultsContainer.innerHTML = results.map(r => {
+      const cantidad = parseInt(r.cantidad || r.stock) || 0;
+      const minimo = parseInt(r.minimo) || 0;
+      let stockClass = '';
+      if (cantidad === 0) stockClass = 'critical';
+      else if (cantidad <= minimo && minimo > 0) stockClass = 'low';
+      
+      const icon = this.getRepuestoIcon(r.tipo);
+      const area = r.area || r.ubicacion || 'Sin ubicación';
+      
+      return `
+        <div class="quick-result-item" onclick="window.mobileHomeActions.openRepuesto('${r.id}')">
+          <div class="quick-result-icon">${icon}</div>
+          <div class="quick-result-info">
+            <div class="quick-result-name">${r.nombre || r.descripcion || 'Sin nombre'}</div>
+            <div class="quick-result-meta">${r.codigo || r.codigoSAP || '---'} • ${area}</div>
+          </div>
+          <div class="quick-result-stock ${stockClass}">${cantidad}</div>
+        </div>
+      `;
+    }).join('');
+    
+    resultsContainer.style.display = 'block';
+  },
+  
+  // Limpiar búsqueda
+  clearQuickSearch: function() {
+    const input = document.getElementById('mobileQuickSearch');
+    const clearBtn = document.querySelector('.quick-search-clear');
+    const resultsContainer = document.getElementById('quickSearchResults');
+    
+    if (input) input.value = '';
+    if (clearBtn) clearBtn.style.display = 'none';
+    if (resultsContainer) resultsContainer.style.display = 'none';
+  },
+  
+  // Abrir detalle de repuesto
+  openRepuesto: function(id) {
+    this.clearQuickSearch();
+    switchMobileTab('inventario');
+    setTimeout(() => {
+      if (window.app && window.app.editarRepuesto) {
+        window.app.editarRepuesto(id);
+      }
+    }, 300);
+  },
+  
+  // Icono según tipo de repuesto
+  getRepuestoIcon: function(tipo) {
+    const icons = {
+      'electrico': '⚡',
+      'mecanico': '⚙️',
+      'hidraulico': '💧',
+      'neumatico': '💨',
+      'electronico': '🔌',
+      'consumible': '📦',
+      'herramienta': '🔧'
+    };
+    return icons[(tipo || '').toLowerCase()] || '📦';
+  },
+  
+  // 📂 Filtrar por área
+  filterByArea: function(area) {
+    this.currentAreaFilter = area;
+    
+    // Actualizar chips activos
+    const chips = document.querySelectorAll('.area-chip');
+    chips.forEach(chip => {
+      const chipArea = chip.dataset.area || '';
+      chip.classList.toggle('active', chipArea === area);
+    });
+    
+    // Si hay búsqueda activa, re-ejecutar
+    const input = document.getElementById('mobileQuickSearch');
+    if (input && input.value.trim().length >= 2) {
+      this.performSearch(input.value);
+    }
+    
+    console.log('📂 Filtro de área:', area || 'Todos');
+  },
+  
+  // Generar chips de áreas dinámicamente
+  generateAreaChips: function() {
+    const container = document.getElementById('homeAreaChips');
+    if (!container) return;
+    
+    const repuestos = window.app?.repuestos || [];
+    
+    // Obtener áreas únicas
+    const areasMap = new Map();
+    repuestos.forEach(r => {
+      const area = r.area || r.ubicacion;
+      if (area && area.trim()) {
+        const key = area.toLowerCase().trim();
+        if (!areasMap.has(key)) {
+          areasMap.set(key, { name: area.trim(), count: 1 });
+        } else {
+          areasMap.get(key).count++;
+        }
+      }
+    });
+    
+    // Ordenar por cantidad de repuestos
+    const sortedAreas = Array.from(areasMap.values())
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 6); // Máximo 6 áreas + "Todos"
+    
+    // Iconos por área
+    const areaIcons = {
+      'taller': '🔧',
+      'almacen': '📦',
+      'almacén': '📦',
+      'produccion': '🏭',
+      'producción': '🏭',
+      'mantenimiento': '⚙️',
+      'oficina': '🏢',
+      'bodega': '📦',
+      'planta': '🏭',
+      'laboratorio': '🔬',
+      'default': '📍'
+    };
+    
+    // HTML para chips
+    let chipsHTML = `
+      <button class="area-chip active" data-area="" onclick="window.mobileHomeActions.filterByArea('')">
+        <span class="chip-icon">📦</span>
+        <span class="chip-label">Todos</span>
+      </button>
+    `;
+    
+    sortedAreas.forEach(area => {
+      const iconKey = Object.keys(areaIcons).find(k => area.name.toLowerCase().includes(k)) || 'default';
+      const icon = areaIcons[iconKey];
+      chipsHTML += `
+        <button class="area-chip" data-area="${area.name}" onclick="window.mobileHomeActions.filterByArea('${area.name}')">
+          <span class="chip-icon">${icon}</span>
+          <span class="chip-label">${area.name}</span>
+          <span class="chip-count">${area.count}</span>
+        </button>
+      `;
+    });
+    
+    container.innerHTML = chipsHTML;
+  },
+  
   // Mostrar repuestos con stock bajo
   showStockBajo: function() {
     switchMobileTab('inventario');
@@ -68044,6 +68494,11 @@ window.updateMobileHome = function() {
         // Sin alertas - ocultar sección
         if (alertsSection) alertsSection.style.display = 'none';
       }
+    }
+    
+    // 4. Generar chips de áreas dinámicamente
+    if (window.mobileHomeActions?.generateAreaChips) {
+      window.mobileHomeActions.generateAreaChips();
     }
     
     // Agregar clase al body para ocultar footer en Home
