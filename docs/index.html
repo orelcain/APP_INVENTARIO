@@ -17463,82 +17463,124 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 <div class="container">
   <!-- 🏠 TAB MOBILE HOME (Solo visible en móvil) -->
   <div id="mobileHome" class="tab-content">
-    <div class="mobile-home-header">
-      <h1>📦 Inventario</h1>
-      <p class="subtitle">Panel de control rápido</p>
-    </div>
+    
+    <!-- Header Home -->
+    <header class="mobile-home-header">
+      <div class="home-brand">
+        <span class="brand-icon">📦</span>
+        <div class="brand-text">
+          <h1>Inventario</h1>
+          <span class="brand-subtitle">Sistema de Gestión</span>
+        </div>
+      </div>
+      <button class="home-config-btn" onclick="switchMobileTab('config')" title="Configuración">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </header>
 
-    <!-- Stats Resumen -->
-    <div class="home-stats-grid">
-      <div class="home-stat-card primary" onclick="switchMobileTab('inventario')">
-        <span class="stat-icon">📦</span>
-        <div class="stat-value" id="homeStatTotal">0</div>
+    <!-- Stats Cards -->
+    <section class="home-stats">
+      <div class="stat-card" onclick="switchMobileTab('inventario')">
+        <div class="stat-number" id="homeStatTotal">0</div>
         <div class="stat-label">Repuestos</div>
+        <div class="stat-indicator"></div>
       </div>
-      <div class="home-stat-card warning" onclick="window.mobileHomeActions?.showStockBajo()">
-        <span class="stat-icon">⚠️</span>
-        <div class="stat-value" id="homeStatStockBajo">0</div>
+      <div class="stat-card stat-warning" onclick="window.mobileHomeActions?.showStockBajo()">
+        <div class="stat-number" id="homeStatStockBajo">0</div>
         <div class="stat-label">Stock Bajo</div>
+        <div class="stat-indicator"></div>
       </div>
-      <div class="home-stat-card success" onclick="switchMobileTab('mapas')">
-        <span class="stat-icon">🗺️</span>
-        <div class="stat-value" id="homeStatMapas">0</div>
+      <div class="stat-card" onclick="switchMobileTab('mapas')">
+        <div class="stat-number" id="homeStatMapas">0</div>
         <div class="stat-label">Mapas</div>
+        <div class="stat-indicator"></div>
       </div>
-      <div class="home-stat-card purple" onclick="switchMobileTab('jerarquia')">
-        <span class="stat-icon">🏢</span>
-        <div class="stat-value" id="homeStatZonas">0</div>
-        <div class="stat-label">Zonas</div>
-      </div>
-    </div>
+    </section>
 
-    <!-- Acciones Rápidas -->
-    <div class="home-section-title">⚡ Acciones Rápidas</div>
-    <div class="home-quick-actions">
-      <button class="home-action-btn scan-btn" onclick="window.sapScanner?.openCaptureModal()">
-        <span class="action-icon">📸</span>
-        <span class="action-label">Escanear SAP</span>
+    <!-- Acción Principal - Escanear -->
+    <section class="home-main-action">
+      <button class="scan-main-btn" onclick="window.sapScanner?.openCaptureModal()">
+        <div class="scan-btn-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+        </div>
+        <div class="scan-btn-text">
+          <span class="scan-title">Escanear Repuesto</span>
+          <span class="scan-subtitle">Captura etiqueta SAP</span>
+        </div>
+        <div class="scan-btn-arrow">→</div>
       </button>
-      <button class="home-action-btn" onclick="app.openModal('add')">
-        <span class="action-icon">➕</span>
-        <span class="action-label">Nuevo Repuesto</span>
+    </section>
+
+    <!-- Acciones Secundarias -->
+    <section class="home-actions">
+      <button class="action-card" onclick="app.openModal('add')">
+        <div class="action-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </div>
+        <span class="action-label">Agregar</span>
       </button>
-      <button class="home-action-btn" onclick="document.getElementById('searchInput')?.focus(); switchMobileTab('inventario')">
-        <span class="action-icon">🔍</span>
+      <button class="action-card" onclick="switchMobileTab('inventario'); setTimeout(() => document.getElementById('searchInput')?.focus(), 300)">
+        <div class="action-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
         <span class="action-label">Buscar</span>
       </button>
-      <button class="home-action-btn" onclick="switchMobileTab('jerarquia')">
-        <span class="action-icon">🏢</span>
-        <span class="action-label">Jerarquía</span>
+      <button class="action-card" onclick="switchMobileTab('jerarquia')">
+        <div class="action-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        <span class="action-label">Ubicaciones</span>
       </button>
-    </div>
+      <button class="action-card" onclick="switchMobileTab('mapas')">
+        <div class="action-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+            <line x1="8" y1="2" x2="8" y2="18"></line>
+            <line x1="16" y1="6" x2="16" y2="22"></line>
+          </svg>
+        </div>
+        <span class="action-label">Mapas</span>
+      </button>
+    </section>
 
-    <!-- Preview de Jerarquía -->
-    <div class="home-section-title">📍 Ubicaciones</div>
-    <div class="home-jerarquia-preview">
-      <div class="home-jerarquia-header">
-        <h3>🏢 Áreas principales</h3>
-        <button class="view-all-btn" onclick="switchMobileTab('jerarquia')">Ver todo →</button>
+    <!-- Zonas Rápidas -->
+    <section class="home-zones">
+      <div class="section-header">
+        <h2>Zonas</h2>
+        <button class="see-all-btn" onclick="switchMobileTab('jerarquia')">Ver todas</button>
       </div>
-      <div class="home-tree-mini" id="homeTreeMini">
-        <!-- Se llena dinámicamente -->
-        <div class="home-tree-item" style="opacity: 0.5;">
-          <span class="tree-icon">⏳</span>
-          <span class="tree-name">Cargando...</span>
+      <div class="zones-list" id="homeZonesList">
+        <div class="zone-item zone-loading">
+          <span class="zone-name">Cargando ubicaciones...</span>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- Alertas -->
-    <div class="home-section-title">🔔 Alertas</div>
-    <div class="home-alerts" id="homeAlerts">
-      <div class="home-alert-item" style="opacity: 0.5;">
-        <span class="alert-icon">⏳</span>
-        <div class="alert-content">
-          <div class="alert-title">Cargando alertas...</div>
-        </div>
+    <section class="home-alerts-section" id="homeAlertsSection">
+      <div class="section-header">
+        <h2>Alertas</h2>
       </div>
-    </div>
+      <div class="alerts-list" id="homeAlertsList">
+        <!-- Se llena dinámicamente -->
+      </div>
+    </section>
+
   </div>
 
   <!-- TAB INVENTARIO -->
@@ -66288,320 +66330,639 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 /* ================================================================== */
-/* 🏠 MOBILE HOME DASHBOARD                                           */
+/* 🏠 MOBILE HOME DASHBOARD - PROFESIONAL                             */
 /* ================================================================== */
 
-/* Oculto por defecto en escritorio */
+/* Variables de colores profesionales */
+:root {
+  --home-bg: #0f1419;
+  --home-card: #1a1f26;
+  --home-card-hover: #242b33;
+  --home-border: #2d3640;
+  --home-text: #e7e9ea;
+  --home-text-muted: #8b98a5;
+  --home-accent: #5b8bb4;
+  --home-accent-soft: rgba(91, 139, 180, 0.15);
+  --home-warning: #d97706;
+  --home-warning-soft: rgba(217, 119, 6, 0.15);
+  --home-success: #059669;
+}
+
+/* Oculto por defecto */
 #mobileHome {
   display: none !important;
 }
 
-/* En móvil: Home visible, resto oculto */
 @media (max-width: 768px) {
-  /* Cuando Home está activo, mostrar */
   #mobileHome.tab-content.active {
-    display: block !important;
-    padding: 16px;
-    padding-bottom: 100px; /* Espacio para footer */
-    animation: fadeIn 0.3s ease;
-  }
-  
-  /* Todas las tabs ocultas por defecto en móvil hasta JS las active */
-  .tab-content:not(#mobileHome) {
-    /* Se controla por JS */
-  }
-  
-  /* Cuando inventario NO tiene active explícito, ocultarlo */
-  #inventario:not(.mobile-active) {
-    /* Controlado por JS */
+    display: flex !important;
+    flex-direction: column;
+    padding: 0;
+    padding-bottom: 20px;
+    background: var(--home-bg);
+    min-height: 100vh;
+    animation: fadeIn 0.25s ease;
   }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Header */
 .mobile-home-header {
-  text-align: center;
-  margin-bottom: 20px;
-  padding: 16px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-  border-radius: 16px;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-}
-
-.mobile-home-header h1 {
-  font-size: 1.5rem;
-  margin: 0 0 4px 0;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.mobile-home-header .subtitle {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-/* Stats Grid */
-.home-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.home-stat-card {
-  background: var(--bg-secondary);
-  border-radius: 16px;
-  padding: 16px;
-  text-align: center;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.home-stat-card::before {
-  content: '';
-  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--home-bg);
+  border-bottom: 1px solid var(--home-border);
+  position: sticky;
   top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--accent-color, var(--primary));
+  z-index: 10;
 }
 
-.home-stat-card:active {
-  transform: scale(0.98);
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.home-stat-card .stat-icon {
-  font-size: 2rem;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.home-stat-card .stat-value {
+.brand-icon {
   font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-  line-height: 1.2;
 }
 
-.home-stat-card .stat-label {
+.brand-text h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--home-text);
+  letter-spacing: -0.02em;
+}
+
+.brand-subtitle {
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: var(--home-text-muted);
+  font-weight: 400;
+}
+
+.home-config-btn {
+  background: transparent;
+  border: none;
+  padding: 10px;
+  color: var(--home-text-muted);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.home-config-btn:active {
+  background: var(--home-card);
+  color: var(--home-text);
+}
+
+/* Stats Section */
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 20px;
+}
+
+.stat-card {
+  background: var(--home-card);
+  border: 1px solid var(--home-border);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.stat-card:active {
+  transform: scale(0.97);
+  background: var(--home-card-hover);
+}
+
+.stat-card .stat-number {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--home-text);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.stat-card .stat-label {
+  font-size: 0.7rem;
+  color: var(--home-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-top: 4px;
+  font-weight: 500;
 }
 
-.home-stat-card.primary { --accent-color: #3b82f6; }
-.home-stat-card.warning { --accent-color: #f59e0b; }
-.home-stat-card.success { --accent-color: #10b981; }
-.home-stat-card.purple { --accent-color: #8b5cf6; }
-
-/* Quick Actions */
-.home-section-title {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 20px 0 12px 0;
-  padding-left: 4px;
+.stat-card .stat-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 3px;
+  background: var(--home-accent);
+  border-radius: 3px 3px 0 0;
 }
 
-.home-quick-actions {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+.stat-card.stat-warning .stat-indicator {
+  background: var(--home-warning);
+}
+
+.stat-card.stat-warning .stat-number {
+  color: var(--home-warning);
+}
+
+/* Main Action - Escanear */
+.home-main-action {
+  padding: 0 20px;
   margin-bottom: 20px;
 }
 
-.home-action-btn {
+.scan-main-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, var(--home-accent) 0%, #4a7a9e 100%);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.scan-main-btn:active {
+  transform: scale(0.98);
+  filter: brightness(0.95);
+}
+
+.scan-btn-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.scan-btn-icon svg {
+  stroke: white;
+}
+
+.scan-btn-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.scan-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.scan-subtitle {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.scan-btn-arrow {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 300;
+}
+
+/* Secondary Actions */
+.home-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 0 20px;
+  margin-bottom: 24px;
+}
+
+.action-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  padding: 20px 16px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
+  padding: 16px 8px;
+  background: var(--home-card);
+  border: 1px solid var(--home-border);
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  color: var(--text-primary);
-  min-height: 100px;
+  transition: all 0.2s ease;
 }
 
-.home-action-btn:active {
+.action-card:active {
   transform: scale(0.95);
-  background: var(--bg-tertiary);
+  background: var(--home-card-hover);
 }
 
-.home-action-btn .action-icon {
-  font-size: 2rem;
-  line-height: 1;
-}
-
-.home-action-btn .action-label {
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.home-action-btn.scan-btn {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  border-color: transparent;
-  color: white;
-}
-
-.home-action-btn.scan-btn:active {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
-}
-
-/* Alerts Section */
-.home-alerts {
-  background: var(--bg-secondary);
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  overflow: hidden;
-}
-
-.home-alert-item {
+.action-icon {
+  width: 44px;
+  height: 44px;
+  background: var(--home-accent-soft);
+  border-radius: 10px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: background 0.2s;
+  justify-content: center;
 }
 
-.home-alert-item:last-child {
-  border-bottom: none;
+.action-icon svg {
+  stroke: var(--home-accent);
 }
 
-.home-alert-item:active {
-  background: var(--bg-tertiary);
-}
-
-.home-alert-item .alert-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.home-alert-item .alert-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.home-alert-item .alert-title {
-  font-size: 0.9rem;
+.action-label {
+  font-size: 0.72rem;
+  color: var(--home-text-muted);
   font-weight: 500;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-align: center;
 }
 
-.home-alert-item .alert-desc {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  margin-top: 2px;
-}
-
-.home-alert-item .alert-badge {
-  background: #ef4444;
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 12px;
-  flex-shrink: 0;
-}
-
-.home-alert-item .alert-badge.warning {
-  background: #f59e0b;
-}
-
-.home-alert-item .alert-badge.info {
-  background: #3b82f6;
-}
-
-/* Jerarquía Preview en Home */
-.home-jerarquia-preview {
-  background: var(--bg-secondary);
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  padding: 16px;
+/* Zones Section */
+.home-zones {
+  padding: 0 20px;
   margin-bottom: 20px;
 }
 
-.home-jerarquia-header {
+.section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
 
-.home-jerarquia-header h3 {
-  font-size: 0.95rem;
+.section-header h2 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--home-text);
   margin: 0;
-  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.home-jerarquia-header .view-all-btn {
-  font-size: 0.8rem;
-  color: var(--primary);
+.see-all-btn {
   background: none;
   border: none;
+  color: var(--home-accent);
+  font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
   padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
 }
 
-.home-tree-mini {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.see-all-btn:active {
+  background: var(--home-accent-soft);
 }
 
-.home-tree-item {
+.zones-list {
+  background: var(--home-card);
+  border: 1px solid var(--home-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.zone-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  background: var(--bg-tertiary);
-  border-radius: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--home-border);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.15s;
 }
 
-.home-tree-item:active {
-  transform: scale(0.98);
-  background: rgba(59, 130, 246, 0.1);
+.zone-item:last-child {
+  border-bottom: none;
 }
 
-.home-tree-item .tree-icon {
-  font-size: 1.2rem;
+.zone-item:active {
+  background: var(--home-card-hover);
 }
 
-.home-tree-item .tree-name {
+.zone-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--home-accent-soft);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-size: 1.1rem;
+}
+
+.zone-name {
   flex: 1;
   font-size: 0.9rem;
+  color: var(--home-text);
   font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.home-tree-item .tree-count {
+.zone-count {
   font-size: 0.75rem;
-  color: var(--text-secondary);
-  background: rgba(255,255,255,0.1);
-  padding: 2px 8px;
+  color: var(--home-text-muted);
+  background: var(--home-border);
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-right: 8px;
+}
+
+.zone-arrow {
+  color: var(--home-text-muted);
+  font-size: 1rem;
+}
+
+.zone-loading {
+  justify-content: center;
+  color: var(--home-text-muted);
+  font-size: 0.85rem;
+}
+
+/* Alerts Section */
+.home-alerts-section {
+  padding: 0 20px;
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.alert-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--home-card);
+  border: 1px solid var(--home-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.alert-card:active {
+  background: var(--home-card-hover);
+}
+
+.alert-card.alert-warning {
+  border-left: 3px solid var(--home-warning);
+}
+
+.alert-card.alert-critical {
+  border-left: 3px solid #dc2626;
+}
+
+.alert-icon-wrap {
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.alert-warning .alert-icon-wrap {
+  background: var(--home-warning-soft);
+}
+
+.alert-critical .alert-icon-wrap {
+  background: rgba(220, 38, 38, 0.15);
+}
+
+.alert-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.alert-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--home-text);
+  margin-bottom: 2px;
+}
+
+.alert-desc {
+  font-size: 0.75rem;
+  color: var(--home-text-muted);
+}
+
+.alert-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--home-warning);
+  background: var(--home-warning-soft);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.alert-critical .alert-badge {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.15);
+}
+
+/* ================================================================== */
+/* 📱 MOBILE SECTION HEADER (← Volver)                                */
+/* ================================================================== */
+
+.mobile-section-header {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--home-bg);
+    border-bottom: 1px solid var(--home-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .mobile-back-btn {
+    background: transparent;
+    border: none;
+    color: var(--home-accent);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+  
+  .mobile-back-btn:active {
+    background: var(--home-accent-soft);
+  }
+  
+  .mobile-section-title {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--home-text);
+    margin: 0;
+  }
+  
+  .mobile-section-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .mobile-section-btn {
+    background: transparent;
+    border: none;
+    color: var(--home-text-muted);
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  
+  .mobile-section-btn:active {
+    background: var(--home-card);
+    color: var(--home-text);
+  }
+}
+
+/* ================================================================== */
+/* 📱 MOBILE FOOTER CONTEXTUAL                                        */
+/* ================================================================== */
+
+@media (max-width: 768px) {
+  /* Ocultar footer en Home */
+  body.mobile-home-view .mobile-bottom-nav {
+    display: none !important;
+  }
+  
+  /* Footer minimalista para otras secciones */
+  .mobile-bottom-nav {
+    background: var(--home-bg);
+    border-top: 1px solid var(--home-border);
+    padding: 10px 20px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+  
+  .mobile-bottom-nav .nav-item {
+    background: transparent;
+    color: var(--home-text-muted);
+  }
+  
+  .mobile-bottom-nav .nav-item:active {
+    background: var(--home-card);
+  }
+  
+  .mobile-bottom-nav .nav-item.active {
+    color: var(--home-accent);
+  }
+  
+  /* FAB principal más sutil */
+  .mobile-bottom-nav .nav-item-fab {
+    background: var(--home-accent);
+    box-shadow: 0 4px 12px rgba(91, 139, 180, 0.3);
+  }
+  
+  .mobile-bottom-nav .nav-item-scan {
+    background: var(--home-accent);
+  }
+  
+  /* ========================================= */
+  /* 🎯 SECTION HEADER con ← Volver           */
+  /* ========================================= */
+  
+  .mobile-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--home-bg);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--home-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .section-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    color: var(--home-accent);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 8px 12px;
+    margin-left: -12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .section-back-btn:active {
+    background: var(--home-card);
+  }
+  
+  .section-back-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+  
+  .section-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--home-text);
+    letter-spacing: -0.3px;
+  }
+  
+  .section-action-btn {
+    background: transparent;
+    border: none;
+    color: var(--home-accent);
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .section-action-btn:active {
+    background: var(--home-card);
+  }
+  
+  .section-action-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    fill: none;
+  }
 }
 
 /* ================================================================== */
@@ -66609,17 +66970,31 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 /* ================================================================== */
 
 @media (max-width: 768px) {
-  /* Contenedor principal de jerarquía en móvil */
+  /* Estilo para todas las tabs excepto Home */
+  .tab-content:not(#mobileHome) {
+    padding-top: 0 !important;
+  }
+  
+  /* Header sticky en todas las secciones */
+  .mobile-section-header {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: linear-gradient(135deg, var(--home-bg) 0%, #141a21 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
   #jerarquia.tab-content.active {
-    padding: 12px !important;
+    padding: 0 !important;
     padding-bottom: 100px !important;
   }
   
-  /* Barra de controles compacta */
   .jerarquia-controls-bar {
     flex-direction: column;
     padding: 12px !important;
     gap: 10px;
+    background: var(--home-bg);
+    border-bottom: 1px solid var(--home-border);
   }
   
   .jerarquia-search-wrapper {
@@ -66631,25 +67006,15 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
     display: none;
   }
   
-  .jerarquia-controls-bar button,
-  .jerarquia-expand-btn {
-    padding: 10px 14px !important;
-    font-size: 0.85rem !important;
-  }
-  
-  /* Ocultar botones de debug/reset en móvil */
   .jerarquia-expand-btn.debug-btn,
   .jerarquia-expand-btn.reset-btn {
     display: none !important;
   }
   
-  /* Contenedor del árbol */
   #jerarquiaTreeContainer {
-    padding: 8px !important;
-    border-radius: 12px;
+    padding: 12px !important;
   }
   
-  /* Nodos del árbol más tocables */
   .jerarquia-node-content,
   .tree-item,
   .palette-item {
@@ -66657,154 +67022,42 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
     min-height: 48px;
     margin-bottom: 6px;
     border-radius: 10px !important;
-    touch-action: manipulation;
   }
   
-  /* Iconos y texto más grandes */
-  .jerarquia-node-icon,
-  .tree-item .node-icon {
-    font-size: 1.3rem !important;
-    min-width: 28px;
-  }
-  
-  .jerarquia-node-name,
-  .tree-item .node-name {
-    font-size: 0.95rem !important;
-    font-weight: 500;
-  }
-  
-  /* Toggle expandir más grande */
-  .jerarquia-node-toggle,
-  .tree-toggle {
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 1.2rem !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Contador de items */
-  .jerarquia-node-count,
-  .node-count {
-    font-size: 0.75rem;
-    padding: 3px 8px;
-    border-radius: 10px;
-    background: rgba(59, 130, 246, 0.15);
-    color: var(--primary);
-  }
-  
-  /* Acciones de nodo más accesibles */
-  .jerarquia-node-actions {
-    display: flex !important;
-    opacity: 1 !important;
-    gap: 6px;
-  }
-  
-  .jerarquia-node-actions button {
-    padding: 8px !important;
-    min-width: 36px !important;
-    min-height: 36px !important;
-    border-radius: 8px !important;
-  }
-  
-  /* Panel de asignación optimizado */
-  #panelAsignacionRepuesto {
-    padding: 12px !important;
-    margin: 0 !important;
-    border-radius: 12px !important;
-  }
-  
-  .panel-asignacion-header h3 {
-    font-size: 1rem !important;
-  }
-  
-  .instrucciones-asignacion p {
-    font-size: 0.85rem !important;
-  }
-  
-  /* Botón guardar más accesible */
   .jerarquia-save-container {
     position: fixed;
     bottom: 80px;
     left: 12px;
     right: 12px;
     z-index: 100;
-    padding: 0;
   }
   
   .jerarquia-save-btn {
     width: 100% !important;
-    padding: 16px !important;
-    font-size: 1rem !important;
-    border-radius: 12px !important;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Highlight para nodos seleccionados */
-  .highlight-node {
-    animation: highlightPulse 0.5s ease 3;
-    box-shadow: 0 0 0 3px var(--primary) !important;
-  }
-  
-  @keyframes highlightPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-  }
-  
-  /* Visual V2 optimizado para móvil */
-  .visual-v2-wrapper {
-    padding: 8px !important;
-  }
-  
-  .visual-v2-wrapper .jerarquia-search-suggestions {
-    max-height: 200px;
-  }
-  
-  /* Breadcrumb de ubicación actual */
-  .mobile-location-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 12px;
-    background: rgba(59, 130, 246, 0.1);
-    border-radius: 10px;
-    margin-bottom: 12px;
-    font-size: 0.85rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .mobile-location-breadcrumb span {
-    white-space: nowrap;
-    color: var(--text-secondary);
-  }
-  
-  .mobile-location-breadcrumb .current {
-    color: var(--primary);
-    font-weight: 600;
+    padding: 14px !important;
+    border-radius: 10px !important;
   }
 }
 
-/* Botón flotante para escanear en jerarquía */
+/* Botón flotante escanear en jerarquía */
 .jerarquia-fab-scan {
   position: fixed;
   bottom: 150px;
   right: 16px;
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: var(--home-accent);
   color: white;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   display: none;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 4px 15px rgba(91, 139, 180, 0.35);
   z-index: 100;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 @media (max-width: 768px) {
@@ -67260,45 +67513,37 @@ window.mobileFooterState = {
 
 // Configuración de contextos del footer
 const footerContexts = {
-  // Home: Dashboard principal móvil
-  home: [
-    { icon: '🏠', label: 'Home', tab: 'home', action: () => switchMobileTab('home'), isHome: true, active: true },
-    { icon: '📸', label: 'Escanear', scan: true, action: () => { if(window.sapScanner) window.sapScanner.openCaptureModal(); else alert('Scanner no disponible'); } },
-    { icon: '➕', label: '', fab: true, action: () => app.openModal('add') },
-    { icon: '🗺️', label: 'Mapas', tab: 'mapas', action: () => switchMobileTab('mapas') },
-    { icon: '⚙️', label: 'Config', tab: 'config', action: () => switchMobileTab('config') }
-  ],
-  // Inventario: navegación principal + agregar repuesto + escanear SAP
+  // Inventario: acciones contextuales (sin navegación - el header tiene ← Volver)
   inventario: [
-    { icon: '🏠', label: 'Home', tab: 'home', action: () => switchMobileTab('home'), isHome: true },
+    { icon: '🔍', label: 'Buscar', action: () => document.getElementById('searchInput')?.focus() },
     { icon: '📸', label: 'Escanear', scan: true, action: () => { if(window.sapScanner) window.sapScanner.openCaptureModal(); else alert('Scanner no disponible'); } },
     { icon: '➕', label: '', fab: true, action: () => app.openModal('add') },
-    { icon: '🗺️', label: 'Mapas', tab: 'mapas', action: () => switchMobileTab('mapas') },
-    { icon: '⚙️', label: 'Config', tab: 'config', action: () => switchMobileTab('config') }
+    { icon: '📊', label: 'Filtros', action: () => document.querySelector('.filters-section')?.scrollIntoView({ behavior: 'smooth' }) },
+    { icon: '📋', label: 'Lista', action: () => app.toggleView(document.querySelector('[data-view="list"]'), 'list') }
   ],
-  // Jerarquía: navegación + expandir/colapsar
+  // Jerarquía: acciones contextuales
   jerarquia: [
-    { icon: '🏠', label: 'Home', tab: 'home', action: () => switchMobileTab('home'), isHome: true },
-    { icon: '📦', label: 'Inventario', tab: 'inventario', action: () => switchMobileTab('inventario') },
+    { icon: '🔍', label: 'Buscar', action: () => document.getElementById('jerarquiaSearch')?.focus() },
+    { icon: '📂', label: 'Expandir', action: () => { if(window.JerarquiaUI) JerarquiaUI.expandAll(); } },
     { icon: '📸', label: '', fab: true, scan: true, action: () => { if(window.sapScanner) window.sapScanner.openCaptureModal(); else alert('Scanner no disponible'); } },
-    { icon: '🗺️', label: 'Mapas', tab: 'mapas', action: () => switchMobileTab('mapas') },
-    { icon: '⚙️', label: 'Config', tab: 'config', action: () => switchMobileTab('config') }
+    { icon: '📁', label: 'Colapsar', action: () => { if(window.JerarquiaUI) JerarquiaUI.collapseAll(); } },
+    { icon: '📦', label: 'Inventario', action: () => switchMobileTab('inventario') }
   ],
-  // Mapas: navegación + crear mapa
+  // Mapas: acciones contextuales
   mapas: [
-    { icon: '🏠', label: 'Home', tab: 'home', action: () => switchMobileTab('home'), isHome: true },
-    { icon: '📦', label: 'Inventario', tab: 'inventario', action: () => switchMobileTab('inventario') },
+    { icon: '📦', label: 'Inventario', action: () => switchMobileTab('inventario') },
+    { icon: '🏢', label: 'Jerarquía', action: () => switchMobileTab('jerarquia') },
     { icon: '➕', label: '', fab: true, action: () => { if(window.MapasUI && MapasUI.crearMapa) MapasUI.crearMapa(); else alert('Crear mapa'); } },
-    { icon: '🏢', label: 'Jerarquía', tab: 'jerarquia', action: () => switchMobileTab('jerarquia') },
-    { icon: '⚙️', label: 'Config', tab: 'config', action: () => switchMobileTab('config') }
+    { icon: '🔄', label: 'Actualizar', action: () => { if(window.MapasUI) MapasUI.loadMapas(); } },
+    { icon: '⚙️', label: 'Config', action: () => switchMobileTab('config') }
   ],
-  // Configuración: navegación + sync
+  // Configuración: acciones contextuales
   config: [
-    { icon: '🏠', label: 'Home', tab: 'home', action: () => switchMobileTab('home'), isHome: true },
-    { icon: '📦', label: 'Inventario', tab: 'inventario', action: () => switchMobileTab('inventario') },
+    { icon: '📦', label: 'Inventario', action: () => switchMobileTab('inventario') },
+    { icon: '🏢', label: 'Jerarquía', action: () => switchMobileTab('jerarquia') },
     { icon: '🔄', label: '', fab: true, action: () => { if(window.app && app.syncWithFirebase) app.syncWithFirebase(); else alert('Sincronizar'); } },
-    { icon: '🏢', label: 'Jerarquía', tab: 'jerarquia', action: () => switchMobileTab('jerarquia') },
-    { icon: '🗺️', label: 'Mapas', tab: 'mapas', action: () => switchMobileTab('mapas') }
+    { icon: '🗺️', label: 'Mapas', action: () => switchMobileTab('mapas') },
+    { icon: '💾', label: 'Backup', action: () => { if(window.app && app.exportarDatos) app.exportarDatos(); else alert('Exportar'); } }
   ]
 };
 
@@ -67338,6 +67583,51 @@ window.renderMobileFooter = function(context) {
   console.log('📱 Footer contextual renderizado:', ctx);
 };
 
+// 🎯 Función para agregar/remover header de sección con "← Volver"
+window.renderSectionHeader = function(sectionId, title, actionBtn) {
+  // Solo en móvil
+  if (window.innerWidth > 768) return;
+  
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+  
+  // Remover header existente si hay
+  const existingHeader = section.querySelector('.mobile-section-header');
+  if (existingHeader) existingHeader.remove();
+  
+  // Crear el header
+  const header = document.createElement('div');
+  header.className = 'mobile-section-header';
+  
+  // Botón volver
+  const backBtn = `
+    <button class="section-back-btn" onclick="switchMobileTab('home')">
+      <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
+      <span>Volver</span>
+    </button>
+  `;
+  
+  // Título centrado
+  const titleEl = `<span class="section-title">${title}</span>`;
+  
+  // Botón de acción (opcional)
+  let actionEl = '<span></span>'; // Spacer para mantener el centrado
+  if (actionBtn) {
+    actionEl = `
+      <button class="section-action-btn" onclick="${actionBtn.action}" title="${actionBtn.label}">
+        ${actionBtn.icon}
+      </button>
+    `;
+  }
+  
+  header.innerHTML = backBtn + titleEl + actionEl;
+  
+  // Insertar al inicio de la sección
+  section.insertBefore(header, section.firstChild);
+  
+  console.log('📱 Section header renderizado:', title);
+};
+
 // 🔥 Función GLOBAL para cambiar tabs desde móvil
 window.switchMobileTab = function(tabName) {
   console.log('📱 switchMobileTab llamado:', tabName);
@@ -67358,10 +67648,13 @@ window.switchMobileTab = function(tabName) {
         // Actualizar datos del home
         if (window.updateMobileHome) window.updateMobileHome();
       }
-      // Actualizar footer
-      renderMobileFooter('home');
+      // Home sin footer - agregar clase al body
+      document.body.classList.add('mobile-home-view');
       return;
     }
+    
+    // No estamos en Home - quitar clase y mostrar footer contextual
+    document.body.classList.remove('mobile-home-view');
     
     // Mapear nombres de tabs móviles a nombres reales del sistema
     const tabMap = {
@@ -67389,6 +67682,42 @@ window.switchMobileTab = function(tabName) {
       console.warn('⚠️ app.switchTab no disponible, intentando click...');
       const navTab = document.querySelector(`.nav-tab[data-tab="${realTabName}"]`);
       if (navTab) navTab.click();
+    }
+    
+    // Configuración de headers por sección
+    const sectionHeaders = {
+      'inventario': {
+        id: 'inventario',
+        title: 'Inventario',
+        action: {
+          icon: '<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+          label: 'Agregar',
+          action: "app.openModal('add')"
+        }
+      },
+      'jerarquia': {
+        id: 'jerarquia',
+        title: 'Jerarquía',
+        action: null
+      },
+      'mapas': {
+        id: 'mapa',
+        title: 'Mapas',
+        action: null
+      },
+      'config': {
+        id: 'configuracion',
+        title: 'Configuración',
+        action: null
+      }
+    };
+    
+    // Renderizar header de sección con ← Volver
+    const headerConfig = sectionHeaders[tabName];
+    if (headerConfig && window.renderSectionHeader) {
+      setTimeout(() => {
+        window.renderSectionHeader(headerConfig.id, headerConfig.title, headerConfig.action);
+      }, 50);
     }
     
     // Actualizar footer contextual
@@ -67452,26 +67781,13 @@ document.addEventListener('DOMContentLoaded', () => {
       mobileHome.style.display = 'block';
     }
     
-    // Renderizar footer con contexto home - con múltiples intentos
-    const renderFooterWithRetry = () => {
-      if (typeof renderMobileFooter === 'function') {
-        renderMobileFooter('home');
-        console.log('📱 Footer renderizado en Home');
-      } else {
-        console.warn('📱 renderMobileFooter no disponible, reintentando...');
-        setTimeout(renderFooterWithRetry, 200);
-      }
-    };
+    // Home sin footer - agregar clase al body
+    document.body.classList.add('mobile-home-view');
+    console.log('📱 Mobile Home activo (sin footer)');
     
-    setTimeout(renderFooterWithRetry, 100);
-    
-    // También renderizar al final por si acaso
+    // Actualizar datos del Home cuando app esté lista
     window.addEventListener('load', () => {
       setTimeout(() => {
-        if (typeof renderMobileFooter === 'function') {
-          renderMobileFooter('home');
-        }
-        // Actualizar datos
         if (window.updateMobileHome) {
           window.updateMobileHome();
         }
@@ -67513,7 +67829,7 @@ window.mobileHomeActions = {
   }
 };
 
-// Actualizar datos del Mobile Home
+// Actualizar datos del Mobile Home - NUEVO DISEÑO PROFESIONAL
 window.updateMobileHome = function() {
   console.log('🏠 Actualizando Mobile Home...');
   
@@ -67525,9 +67841,9 @@ window.updateMobileHome = function() {
     // 1. Stats
     const totalRepuestos = repuestos.length;
     const stockBajo = repuestos.filter(r => {
-      const stock = parseInt(r.stock) || 0;
+      const cantidad = parseInt(r.cantidad || r.stock) || 0;
       const minimo = parseInt(r.minimo) || 0;
-      return stock <= minimo && minimo > 0;
+      return cantidad <= minimo && minimo > 0;
     }).length;
     
     // Contar mapas
@@ -67536,79 +67852,52 @@ window.updateMobileHome = function() {
       totalMapas = Object.keys(window.app.mapas).length;
     }
     
-    // Contar zonas (áreas de primer nivel)
-    const totalZonas = jerarquia.length;
-    
-    // Actualizar UI
+    // Actualizar Stats UI
     const statTotal = document.getElementById('homeStatTotal');
     const statStockBajo = document.getElementById('homeStatStockBajo');
     const statMapas = document.getElementById('homeStatMapas');
-    const statZonas = document.getElementById('homeStatZonas');
     
     if (statTotal) statTotal.textContent = totalRepuestos;
     if (statStockBajo) statStockBajo.textContent = stockBajo;
     if (statMapas) statMapas.textContent = totalMapas;
-    if (statZonas) statZonas.textContent = totalZonas;
     
-    // 2. Preview de Jerarquía (primeras 4 áreas)
-    const treeContainer = document.getElementById('homeTreeMini');
-    if (treeContainer && jerarquia.length > 0) {
-      const areasPreview = jerarquia.slice(0, 4);
-      treeContainer.innerHTML = areasPreview.map(area => {
+    // 2. Zonas (primeras 5 áreas)
+    const zonesContainer = document.getElementById('homeZonesList');
+    if (zonesContainer && jerarquia.length > 0) {
+      const areasPreview = jerarquia.slice(0, 5);
+      zonesContainer.innerHTML = areasPreview.map(area => {
         const childCount = (area.sistemas || area.children || []).length;
         const icon = getAreaIcon(area.nombre);
         return `
-          <div class="home-tree-item" onclick="window.navigateToJerarquia('${area.id || area.nombre}')">
-            <span class="tree-icon">${icon}</span>
-            <span class="tree-name">${area.nombre}</span>
-            <span class="tree-count">${childCount} sub</span>
+          <div class="zone-item" onclick="window.navigateToJerarquia('${area.id || area.nombre}')">
+            <div class="zone-icon">${icon}</div>
+            <span class="zone-name">${area.nombre}</span>
+            <span class="zone-count">${childCount}</span>
+            <span class="zone-arrow">›</span>
           </div>
         `;
       }).join('');
-      
-      // Agregar "Ver más" si hay más áreas
-      if (jerarquia.length > 4) {
-        treeContainer.innerHTML += `
-          <div class="home-tree-item" onclick="switchMobileTab('jerarquia')" style="background: rgba(59, 130, 246, 0.1);">
-            <span class="tree-icon">➡️</span>
-            <span class="tree-name">Ver ${jerarquia.length - 4} áreas más...</span>
-          </div>
-        `;
-      }
-    } else if (treeContainer) {
-      treeContainer.innerHTML = `
-        <div class="home-tree-item" style="opacity: 0.6;">
-          <span class="tree-icon">📂</span>
-          <span class="tree-name">No hay áreas configuradas</span>
+    } else if (zonesContainer) {
+      zonesContainer.innerHTML = `
+        <div class="zone-item zone-loading">
+          <span class="zone-name">No hay ubicaciones configuradas</span>
         </div>
       `;
     }
     
     // 3. Alertas
-    const alertsContainer = document.getElementById('homeAlerts');
+    const alertsContainer = document.getElementById('homeAlertsList');
+    const alertsSection = document.getElementById('homeAlertsSection');
+    
     if (alertsContainer) {
       let alertsHTML = '';
+      const agotados = repuestos.filter(r => parseInt(r.cantidad || r.stock) === 0).length;
       
-      // Alerta de stock bajo
-      if (stockBajo > 0) {
-        alertsHTML += `
-          <div class="home-alert-item" onclick="window.mobileHomeActions.showStockBajo()">
-            <span class="alert-icon">⚠️</span>
-            <div class="alert-content">
-              <div class="alert-title">Stock Bajo</div>
-              <div class="alert-desc">Repuestos por debajo del mínimo</div>
-            </div>
-            <span class="alert-badge warning">${stockBajo}</span>
-          </div>
-        `;
-      }
-      
-      // Repuestos agotados
-      const agotados = repuestos.filter(r => parseInt(r.stock) === 0).length;
+      // Alerta de agotados (crítico)
       if (agotados > 0) {
         alertsHTML += `
-          <div class="home-alert-item" onclick="switchMobileTab('inventario'); setTimeout(() => { document.getElementById('filterStock').value='agotado'; app.applyFilters(); }, 300);">
-            <span class="alert-icon">🚨</span>
+          <div class="alert-card alert-critical" onclick="switchMobileTab('inventario'); setTimeout(() => { document.getElementById('filterStock').value='agotado'; app.applyFilters(); }, 300);">
+            <div class="alert-icon-wrap">🚨</div>
             <div class="alert-content">
               <div class="alert-title">Repuestos Agotados</div>
               <div class="alert-desc">Sin stock disponible</div>
@@ -67618,30 +67907,33 @@ window.updateMobileHome = function() {
         `;
       }
       
-      // Info general
-      alertsHTML += `
-        <div class="home-alert-item" onclick="switchMobileTab('inventario')">
-          <span class="alert-icon">📦</span>
-          <div class="alert-content">
-            <div class="alert-title">Inventario Total</div>
-            <div class="alert-desc">Todos los repuestos registrados</div>
+      // Alerta de stock bajo (warning)
+      if (stockBajo > 0) {
+        alertsHTML += `
+          <div class="alert-card alert-warning" onclick="window.mobileHomeActions.showStockBajo()">
+            <div class="alert-icon-wrap">⚠️</div>
+            <div class="alert-content">
+              <div class="alert-title">Stock Bajo</div>
+              <div class="alert-desc">Repuestos por debajo del mínimo</div>
+            </div>
+            <span class="alert-badge">${stockBajo}</span>
           </div>
-          <span class="alert-badge info">${totalRepuestos}</span>
-        </div>
-      `;
+        `;
+      }
       
-      alertsContainer.innerHTML = alertsHTML || `
-        <div class="home-alert-item">
-          <span class="alert-icon">✅</span>
-          <div class="alert-content">
-            <div class="alert-title">Todo en orden</div>
-            <div class="alert-desc">No hay alertas pendientes</div>
-          </div>
-        </div>
-      `;
+      if (alertsHTML) {
+        alertsContainer.innerHTML = alertsHTML;
+        if (alertsSection) alertsSection.style.display = 'block';
+      } else {
+        // Sin alertas - ocultar sección
+        if (alertsSection) alertsSection.style.display = 'none';
+      }
     }
     
-    console.log('🏠 Mobile Home actualizado:', { totalRepuestos, stockBajo, totalMapas, totalZonas });
+    // Agregar clase al body para ocultar footer en Home
+    document.body.classList.add('mobile-home-view');
+    
+    console.log('🏠 Mobile Home actualizado:', { totalRepuestos, stockBajo, totalMapas });
     
   } catch (error) {
     console.error('❌ Error actualizando Mobile Home:', error);
