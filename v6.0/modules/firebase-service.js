@@ -456,6 +456,117 @@ class FirebaseService {
             canDelete: this.canDelete()
         };
     }
+
+    // ========================================
+    // ACTIVITY LOG - Historial de Actividad
+    // ========================================
+
+    /**
+     * Registrar actividad en el historial
+     * @param {string} action - Tipo de acción: 'create', 'update', 'delete'
+     * @param {string} entityType - Tipo de entidad: 'repuesto', 'mapa', 'zona', 'jerarquia'
+     * @param {string} entityId - ID de la entidad
+     * @param {string} entityName - Nombre descriptivo de la entidad
+     * @param {object} details - Detalles adicionales (cambios, valores anteriores, etc.)
+     */
+    async logActivity(action, entityType, entityId, entityName, details = {}) {
+        try {
+            if (!this.isAuthenticated()) return;
+
+            const activityData = {
+                action,
+                entityType,
+                entityId,
+                entityName,
+                details,
+                userId: this.currentUser.uid,
+                userEmail: this.currentUser.email || 'Usuario',
+                userName: this.currentUser.displayName || this.currentUser.email?.split('@')[0] || 'Usuario',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                clientTimestamp: new Date().toISOString()
+            };
+
+            await this.db.collection('activityLog').add(activityData);
+            console.log(`📋 Actividad registrada: ${action} ${entityType} "${entityName}"`);
+        } catch (error) {
+            // No bloquear operación principal si falla el log
+            console.warn('⚠️ No se pudo registrar actividad:', error.message);
+        }
+    }
+
+    /**
+     * Obtener historial de actividad (solo admin)
+     * @param {number} limitCount - Límite de registros a obtener
+     * @param {string} filterUser - Filtrar por email de usuario (opcional)
+     * @param {string} filterAction - Filtrar por tipo de acción (opcional)
+     */
+    async getActivityLog(limitCount = 100, filterUser = null, filterAction = null) {
+        if (!this.isAdmin()) {
+            return { success: false, error: 'Solo administradores pueden ver el historial' };
+        }
+
+        try {
+            let query = this.db.collection('activityLog')
+                .orderBy('timestamp', 'desc');
+
+            if (filterUser) {
+                query = query.where('userEmail', '==', filterUser);
+            }
+
+            if (filterAction) {
+                query = query.where('action', '==', filterAction);
+            }
+
+            query = query.limit(limitCount);
+
+            const snapshot = await query.get();
+            const activities = [];
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                activities.push({
+                    id: doc.id,
+                    ...data,
+                    // Convertir timestamp de Firestore a Date
+                    timestamp: data.timestamp?.toDate() || new Date(data.clientTimestamp)
+                });
+            });
+
+            return { success: true, data: activities };
+        } catch (error) {
+            console.error('❌ Error obteniendo historial:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Limpiar historial antiguo (solo admin, opcional)
+     * @param {number} daysToKeep - Días a mantener
+     */
+    async cleanOldActivity(daysToKeep = 30) {
+        if (!this.isAdmin()) {
+            return { success: false, error: 'Solo administradores pueden limpiar el historial' };
+        }
+
+        try {
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
+
+            const snapshot = await this.db.collection('activityLog')
+                .where('timestamp', '<', cutoffDate)
+                .get();
+
+            const batch = this.db.batch();
+            snapshot.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+
+            console.log(`🗑️ Eliminados ${snapshot.size} registros antiguos del historial`);
+            return { success: true, deleted: snapshot.size };
+        } catch (error) {
+            console.error('❌ Error limpiando historial:', error);
+            return { success: false, error: error.message };
+        }
+    }
 }
 
 // Exportar instancia global

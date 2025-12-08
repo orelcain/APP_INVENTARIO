@@ -17980,6 +17980,64 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       </div> <!-- Fin herramientas-config-content -->
     </div>
 
+    <!-- 📋 HISTORIAL DE ACTIVIDAD - Solo visible para Admin -->
+    <div class="config-section" id="activity-log-section-admin" style="display: none;">
+      <div class="config-section-header-row">
+        <div onclick="toggleConfigSection('activity-log-config')" class="config-section-clickable">
+          <div class="config-section-title-row">
+            <span id="activity-log-config-icon">📋</span>
+            <h3 class="config-section-title">
+              📋 Historial de Actividad (Solo Admin)
+            </h3>
+          </div>
+        </div>
+      </div>
+      
+      <div id="activity-log-config-content" class="config-section-content-hidden">
+        <p class="config-description">
+          Registro de todas las acciones realizadas por los usuarios en el sistema.
+        </p>
+
+        <div class="config-card" style="margin-bottom: 15px;">
+          <!-- Filtros -->
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <select id="activityFilterAction" onchange="window.loadActivityLog()" style="padding: 8px 12px; border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+              <option value="">Todas las acciones</option>
+              <option value="create">➕ Creados</option>
+              <option value="update">✏️ Editados</option>
+              <option value="delete">🗑️ Eliminados</option>
+            </select>
+            <button onclick="window.loadActivityLog()" class="btn btn-primary" style="padding: 8px 16px;">
+              🔄 Actualizar
+            </button>
+            <button onclick="window.exportActivityLog()" class="btn btn-success" style="padding: 8px 16px;">
+              📥 Exportar CSV
+            </button>
+          </div>
+          
+          <!-- Lista de actividad -->
+          <div id="activityLogContainer" style="max-height: 500px; overflow-y: auto;">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+              <div style="font-size: 2rem; margin-bottom: 10px;">📋</div>
+              <p>Cargando historial...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="config-info-box">
+          <div class="config-info-content">
+            <span class="config-info-icon">💡</span>
+            <div>
+              <p class="config-info-title">Información del Historial</p>
+              <p class="config-info-description">
+                Se registran las últimas 100 acciones. El historial se actualiza en tiempo real cuando los usuarios crean, editan o eliminan repuestos, mapas y zonas.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 🔧 CONSOLA DE DEBUG (MÓVIL) - Solo visible para Admin -->
     <div class="config-section" id="debug-section-admin" style="display: none;">
       <div class="config-section-header-row">
@@ -42289,6 +42347,18 @@ class InventarioCompleto {
     //  ESPERAR a que se guarde en disco antes de continuar
     await this.saveData();
     
+    // 📋 ACTIVITY LOG: Registrar la acción
+    if (window.firebaseService && window.firebaseService.logActivity) {
+      const actionType = this.currentEditingId ? 'update' : 'create';
+      const details = {
+        codSAP: data.codSAP,
+        cantidad: data.cantidad,
+        ubicaciones: ubicacionesLimpias.length,
+        multimedia: multimediaTotal.length
+      };
+      await window.firebaseService.logActivity(actionType, 'repuesto', data.id, data.nombre, details);
+    }
+    
     // 🔥 SINCRONIZACIÓN MULTIMEDIA: Actualizar todas las pestañas después de guardar
     console.log('\n [SYNC] Iniciando sincronización multimedia después de guardar...');
     if (data.id && multimediaTotal.length >= 0) {
@@ -43345,6 +43415,15 @@ class InventarioCompleto {
     // Eliminar repuesto del array
     this.repuestos = this.repuestos.filter(r => r.id !== id);
     await this.saveData();
+    
+    // 📋 ACTIVITY LOG: Registrar eliminación
+    if (window.firebaseService && window.firebaseService.logActivity) {
+      await window.firebaseService.logActivity('delete', 'repuesto', id, repuesto.nombre, {
+        codSAP: repuesto.codSAP,
+        cantidad: repuesto.cantidad
+      });
+    }
+    
     await this.render();
     this.renderFilters();
     this.showToast(' Repuesto e imgenes eliminados', 'success');
@@ -57453,6 +57532,17 @@ window.addEventListener('customAuthSuccess', (event) => {
     console.log(`🔧 Sección Debug: ${role === 'admin' ? 'visible' : 'oculta'} para rol ${role}`);
   }
   
+  // 📋 Mostrar sección de Historial de Actividad solo para admin
+  const activityLogSection = document.getElementById('activity-log-section-admin');
+  if (activityLogSection) {
+    activityLogSection.style.display = (role === 'admin') ? 'block' : 'none';
+    if (role === 'admin') {
+      // Cargar historial automáticamente al mostrar
+      setTimeout(() => window.loadActivityLog(), 500);
+    }
+    console.log(`📋 Sección Historial: ${role === 'admin' ? 'visible' : 'oculta'} para rol ${role}`);
+  }
+  
   // Mensaje de bienvenida según rol
   const roleMessages = {
     'admin': 'Acceso completo al sistema',
@@ -57475,7 +57565,142 @@ window.addEventListener('customAuthLogout', () => {
   if (debugSection) {
     debugSection.style.display = 'none';
   }
+  
+  // 📋 Ocultar sección de Historial al logout
+  const activityLogSection = document.getElementById('activity-log-section-admin');
+  if (activityLogSection) {
+    activityLogSection.style.display = 'none';
+  }
 });
+
+// ========================================
+// 📋 FUNCIONES DE HISTORIAL DE ACTIVIDAD
+// ========================================
+window.loadActivityLog = async function(limit = 100) {
+  const container = document.getElementById('activityLogContainer');
+  if (!container) return;
+  
+  // Mostrar loading
+  container.innerHTML = `
+    <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+      <div style="font-size: 2rem; margin-bottom: 10px;">⏳</div>
+      <p>Cargando historial...</p>
+    </div>
+  `;
+  
+  try {
+    const filterAction = document.getElementById('activityFilterAction')?.value || null;
+    const result = await window.firebaseService.getActivityLog(limit, null, filterAction);
+    
+    if (!result.success) {
+      container.innerHTML = `<div style="text-align: center; padding: 40px; color: #ef4444;">❌ ${result.error}</div>`;
+      return;
+    }
+    
+    const activities = result.data;
+    
+    if (activities.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+          <div style="font-size: 2rem; margin-bottom: 10px;">📭</div>
+          <p>No hay actividad registrada</p>
+        </div>
+      `;
+      return;
+    }
+    
+    // Agrupar por fecha
+    const grouped = {};
+    activities.forEach(activity => {
+      const date = activity.timestamp.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
+      if (!grouped[date]) grouped[date] = [];
+      grouped[date].push(activity);
+    });
+    
+    // Renderizar
+    let html = '';
+    for (const [date, items] of Object.entries(grouped)) {
+      html += `<div style="margin-bottom: 20px;">`;
+      html += `<div style="font-weight: 600; color: var(--text-primary); padding: 8px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 10px; text-transform: capitalize;">📅 ${date}</div>`;
+      
+      items.forEach(item => {
+        const time = item.timestamp.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+        const actionIcons = { create: '➕', update: '✏️', delete: '🗑️' };
+        const actionLabels = { create: 'Creó', update: 'Editó', delete: 'Eliminó' };
+        const actionColors = { create: '#22c55e', update: '#f59e0b', delete: '#ef4444' };
+        
+        const icon = actionIcons[item.action] || '📝';
+        const label = actionLabels[item.action] || item.action;
+        const color = actionColors[item.action] || '#6b7280';
+        
+        html += `
+          <div style="display: flex; gap: 12px; padding: 10px; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 8px;">
+            <div style="color: var(--text-muted); font-size: 0.85rem; min-width: 50px;">${time}</div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="color: ${color}; font-weight: 600;">${icon} ${label}</span>
+                <span style="color: var(--text-primary); font-weight: 500;">${item.entityType}</span>
+              </div>
+              <div style="color: var(--text-primary); font-size: 0.95rem; font-weight: 500;">"${item.entityName}"</div>
+              <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">
+                👤 ${item.userEmail || item.userName}
+                ${item.details?.codSAP ? ` • SAP: ${item.details.codSAP}` : ''}
+                ${item.details?.cantidad !== undefined ? ` • Cant: ${item.details.cantidad}` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      html += `</div>`;
+    }
+    
+    container.innerHTML = html;
+    console.log(`📋 Historial cargado: ${activities.length} actividades`);
+    
+  } catch (error) {
+    console.error('Error cargando historial:', error);
+    container.innerHTML = `<div style="text-align: center; padding: 40px; color: #ef4444;">❌ Error: ${error.message}</div>`;
+  }
+};
+
+window.exportActivityLog = async function() {
+  try {
+    const result = await window.firebaseService.getActivityLog(500);
+    if (!result.success || result.data.length === 0) {
+      app.showToast('⚠️ No hay datos para exportar', 'warning');
+      return;
+    }
+    
+    // Crear CSV
+    const headers = ['Fecha', 'Hora', 'Usuario', 'Acción', 'Tipo', 'Nombre', 'Código SAP', 'Cantidad'];
+    const rows = result.data.map(item => [
+      item.timestamp.toLocaleDateString('es-CL'),
+      item.timestamp.toLocaleTimeString('es-CL'),
+      item.userEmail || item.userName,
+      item.action,
+      item.entityType,
+      `"${item.entityName}"`,
+      item.details?.codSAP || '',
+      item.details?.cantidad || ''
+    ]);
+    
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `historial_actividad_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    app.showToast('✅ Historial exportado a CSV', 'success');
+  } catch (error) {
+    console.error('Error exportando:', error);
+    app.showToast('❌ Error al exportar', 'error');
+  }
+};
 
 // ========================================
 // LISTENERS DE SINCRONIZACIÓN MULTIMEDIA

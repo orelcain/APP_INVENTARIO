@@ -3,8 +3,8 @@
  * Maneja cache offline y actualizaciones en segundo plano
  */
 
-const CACHE_NAME = 'inventario-v2.2.0-pro-ui';
-const DYNAMIC_CACHE = 'inventario-dynamic-v2.2';
+const CACHE_NAME = 'inventario-v2.3.0-activity-log';
+const DYNAMIC_CACHE = 'inventario-dynamic-v2.3';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
