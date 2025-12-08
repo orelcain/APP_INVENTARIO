@@ -63,7 +63,8 @@ class SAPScanner {
             descripcion: '',
             imageData: null,
             confidence: 0,
-            processedImageData: null // Imagen pre-procesada
+            processedImageData: null, // Imagen pre-procesada
+            similarCodes: [] // 🆕 Códigos similares encontrados para asistencia humana
         };
         
         // Estado de la UI
@@ -679,6 +680,486 @@ class SAPScanner {
     }
     
     /**
+     * 🆕 NUEVO: Crea el modal de sugerencias de códigos similares
+     */
+    createSuggestionsModal() {
+        const modal = document.createElement('div');
+        modal.id = 'sapSuggestionsModal';
+        modal.className = 'sap-scanner-modal sap-suggestions-modal';
+        
+        modal.innerHTML = `
+            <div class="sap-scanner-content sap-suggestions-content">
+                <div class="sap-scanner-header">
+                    <h3>🔍 ¿Es alguno de estos?</h3>
+                    <button type="button" class="sap-scanner-close" onclick="window.sapScanner.closeSuggestionsModal()">✕</button>
+                </div>
+                
+                <div class="sap-suggestions-body">
+                    <!-- Imagen escaneada con zoom -->
+                    <div class="sap-suggestions-image-container">
+                        <div class="sap-suggestions-image-wrapper" id="sapSuggestionsImageWrapper">
+                            <img id="sapSuggestionsImage" src="" alt="Imagen escaneada" />
+                        </div>
+                        <div class="sap-suggestions-zoom-hint">
+                            <span>👆 Pellizca o doble tap para zoom</span>
+                        </div>
+                        <div class="sap-suggestions-ocr-result">
+                            <span class="ocr-label">OCR detectó:</span>
+                            <span class="ocr-code" id="sapSuggestionsOcrCode">--</span>
+                            <span class="ocr-confidence" id="sapSuggestionsConfidence">0%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de sugerencias -->
+                    <div class="sap-suggestions-list-header">
+                        <span>📋 Códigos similares encontrados:</span>
+                    </div>
+                    <div class="sap-suggestions-list" id="sapSuggestionsList">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    
+                    <!-- Opción de usar código OCR tal cual -->
+                    <div class="sap-suggestions-actions">
+                        <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.useOcrCodeAsIs()">
+                            Usar código detectado
+                        </button>
+                        <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.closeSuggestionsModal(); window.sapScanner.openScan();">
+                            Volver a escanear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Agregar estilos
+        this.addSuggestionsModalStyles();
+        
+        return modal;
+    }
+    
+    /**
+     * 🆕 NUEVO: Estilos para modal de sugerencias
+     */
+    addSuggestionsModalStyles() {
+        if (document.getElementById('sapSuggestionsStyles')) return;
+        
+        const styles = document.createElement('style');
+        styles.id = 'sapSuggestionsStyles';
+        styles.textContent = `
+            .sap-suggestions-modal .sap-suggestions-content {
+                max-width: 400px;
+                max-height: 90vh;
+                padding: 0;
+                overflow: hidden;
+            }
+            
+            .sap-suggestions-body {
+                padding: 16px;
+                overflow-y: auto;
+                max-height: calc(90vh - 60px);
+            }
+            
+            /* Contenedor de imagen con zoom */
+            .sap-suggestions-image-container {
+                background: var(--bg-tertiary);
+                border-radius: 12px;
+                overflow: hidden;
+                margin-bottom: 16px;
+            }
+            
+            .sap-suggestions-image-wrapper {
+                position: relative;
+                width: 100%;
+                height: 200px;
+                overflow: hidden;
+                touch-action: pan-x pan-y pinch-zoom;
+                cursor: zoom-in;
+            }
+            
+            .sap-suggestions-image-wrapper.zoomed {
+                cursor: grab;
+                height: 300px;
+            }
+            
+            .sap-suggestions-image-wrapper.zoomed:active {
+                cursor: grabbing;
+            }
+            
+            .sap-suggestions-image-wrapper img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                transition: transform 0.3s ease;
+                transform-origin: center center;
+            }
+            
+            .sap-suggestions-image-wrapper.zoomed img {
+                transform: scale(2);
+            }
+            
+            .sap-suggestions-zoom-hint {
+                text-align: center;
+                padding: 8px;
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+                background: rgba(0,0,0,0.05);
+            }
+            
+            .sap-suggestions-ocr-result {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 12px;
+                background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.05));
+                border-top: 1px solid var(--border-color);
+            }
+            
+            .sap-suggestions-ocr-result .ocr-label {
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+            }
+            
+            .sap-suggestions-ocr-result .ocr-code {
+                font-family: monospace;
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: var(--accent);
+                letter-spacing: 1px;
+            }
+            
+            .sap-suggestions-ocr-result .ocr-confidence {
+                font-size: 0.7rem;
+                padding: 2px 6px;
+                background: rgba(59,130,246,0.2);
+                color: var(--accent);
+                border-radius: 10px;
+            }
+            
+            /* Lista de sugerencias */
+            .sap-suggestions-list-header {
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+                margin-bottom: 10px;
+                padding-left: 4px;
+            }
+            
+            .sap-suggestions-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+            
+            .sap-suggestion-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 14px;
+                background: var(--bg-secondary);
+                border: 2px solid var(--border-color);
+                border-radius: 12px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            
+            .sap-suggestion-item:hover {
+                border-color: var(--accent);
+                background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(59,130,246,0.02));
+                transform: translateY(-1px);
+            }
+            
+            .sap-suggestion-item:active {
+                transform: scale(0.98);
+            }
+            
+            .sap-suggestion-match {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 44px;
+                height: 44px;
+                background: linear-gradient(135deg, #22c55e, #16a34a);
+                border-radius: 10px;
+                color: white;
+                font-weight: 700;
+                font-size: 0.9rem;
+                flex-shrink: 0;
+            }
+            
+            .sap-suggestion-match.high {
+                background: linear-gradient(135deg, #22c55e, #16a34a);
+            }
+            
+            .sap-suggestion-match.medium {
+                background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            }
+            
+            .sap-suggestion-info {
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .sap-suggestion-code {
+                font-family: monospace;
+                font-size: 1rem;
+                font-weight: 600;
+                color: var(--text-primary);
+                margin-bottom: 4px;
+                letter-spacing: 0.5px;
+            }
+            
+            .sap-suggestion-name {
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .sap-suggestion-qty {
+                font-size: 0.7rem;
+                color: var(--text-tertiary);
+                margin-top: 2px;
+            }
+            
+            .sap-suggestion-arrow {
+                color: var(--text-tertiary);
+                font-size: 1.2rem;
+            }
+            
+            /* Acciones */
+            .sap-suggestions-actions {
+                display: flex;
+                gap: 10px;
+                padding-top: 12px;
+                border-top: 1px solid var(--border-color);
+            }
+            
+            .sap-suggestions-actions .sap-scanner-btn {
+                flex: 1;
+                font-size: 0.85rem;
+                padding: 12px;
+            }
+            
+            .sap-suggestions-actions .sap-scanner-btn.secondary {
+                background: var(--bg-tertiary);
+                color: var(--text-primary);
+            }
+            
+            /* Sin sugerencias */
+            .sap-suggestions-empty {
+                text-align: center;
+                padding: 24px;
+                color: var(--text-secondary);
+            }
+            
+            .sap-suggestions-empty-icon {
+                font-size: 2.5rem;
+                margin-bottom: 12px;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+    
+    /**
+     * 🆕 NUEVO: Muestra el modal de sugerencias
+     */
+    showSuggestionsModal() {
+        let modal = document.getElementById('sapSuggestionsModal');
+        if (!modal) {
+            modal = this.createSuggestionsModal();
+            document.body.appendChild(modal);
+        }
+        
+        // Poblar imagen escaneada
+        const img = document.getElementById('sapSuggestionsImage');
+        if (img && this.lastScan.imageData) {
+            img.src = this.lastScan.imageData;
+        }
+        
+        // Mostrar código OCR detectado
+        const ocrCode = document.getElementById('sapSuggestionsOcrCode');
+        const confidence = document.getElementById('sapSuggestionsConfidence');
+        if (ocrCode) ocrCode.textContent = this.lastScan.codigoSAP || 'No detectado';
+        if (confidence) confidence.textContent = `${this.lastScan.confidence}%`;
+        
+        // Poblar lista de sugerencias
+        const list = document.getElementById('sapSuggestionsList');
+        if (list) {
+            const similarCodes = this.lastScan.similarCodes || [];
+            
+            if (similarCodes.length === 0) {
+                list.innerHTML = `
+                    <div class="sap-suggestions-empty">
+                        <div class="sap-suggestions-empty-icon">🔍</div>
+                        <div>No se encontraron códigos similares</div>
+                        <div style="font-size: 0.8rem; margin-top: 8px;">Puedes usar el código detectado o volver a escanear</div>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = similarCodes.map((item, index) => `
+                    <div class="sap-suggestion-item" onclick="window.sapScanner.selectSuggestedCode('${item.codigo}')">
+                        <div class="sap-suggestion-match ${item.matchingDigits >= 8 ? 'high' : 'medium'}">
+                            ${item.matchingDigits}/10
+                        </div>
+                        <div class="sap-suggestion-info">
+                            <div class="sap-suggestion-code">${this.highlightDifferences(this.lastScan.codigoSAP, item.codigo)}</div>
+                            <div class="sap-suggestion-name">${item.nombre}</div>
+                            <div class="sap-suggestion-qty">Stock: ${item.cantidad} unidades</div>
+                        </div>
+                        <div class="sap-suggestion-arrow">›</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // Configurar zoom de imagen
+        this.setupImageZoom();
+        
+        modal.classList.add('active');
+    }
+    
+    /**
+     * 🆕 NUEVO: Resalta las diferencias entre código OCR y sugerido
+     */
+    highlightDifferences(ocrCode, suggestedCode) {
+        if (!ocrCode || !suggestedCode) return suggestedCode;
+        
+        let result = '';
+        const maxLen = Math.max(ocrCode.length, suggestedCode.length);
+        
+        for (let i = 0; i < maxLen; i++) {
+            const ocrChar = ocrCode[i] || '';
+            const sugChar = suggestedCode[i] || '';
+            
+            if (ocrChar !== sugChar) {
+                // Diferente - resaltar en rojo
+                result += `<span style="color: #ef4444; font-weight: 800; text-decoration: underline;">${sugChar}</span>`;
+            } else {
+                result += sugChar;
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 🆕 NUEVO: Configura zoom táctil en la imagen
+     */
+    setupImageZoom() {
+        const wrapper = document.getElementById('sapSuggestionsImageWrapper');
+        const img = document.getElementById('sapSuggestionsImage');
+        
+        if (!wrapper || !img) return;
+        
+        let isZoomed = false;
+        let startX, startY, scrollLeft, scrollTop;
+        
+        // Toggle zoom con tap/click
+        wrapper.addEventListener('click', (e) => {
+            if (e.target !== img) return;
+            
+            isZoomed = !isZoomed;
+            wrapper.classList.toggle('zoomed', isZoomed);
+            
+            if (!isZoomed) {
+                img.style.transform = '';
+                img.style.transformOrigin = 'center center';
+            }
+        });
+        
+        // Doble tap para zoom
+        let lastTap = 0;
+        wrapper.addEventListener('touchend', (e) => {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            
+            if (tapLength < 300 && tapLength > 0) {
+                isZoomed = !isZoomed;
+                wrapper.classList.toggle('zoomed', isZoomed);
+                e.preventDefault();
+            }
+            lastTap = currentTime;
+        });
+        
+        // Arrastrar imagen cuando está en zoom
+        wrapper.addEventListener('mousedown', (e) => {
+            if (!isZoomed) return;
+            wrapper.style.cursor = 'grabbing';
+            startX = e.pageX;
+            startY = e.pageY;
+        });
+        
+        wrapper.addEventListener('mousemove', (e) => {
+            if (!isZoomed || !startX) return;
+            
+            const deltaX = (e.pageX - startX) * 0.5;
+            const deltaY = (e.pageY - startY) * 0.5;
+            
+            const currentTransform = img.style.transform || 'scale(2)';
+            const translateMatch = currentTransform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+            
+            let currentX = 0, currentY = 0;
+            if (translateMatch) {
+                currentX = parseFloat(translateMatch[1]) || 0;
+                currentY = parseFloat(translateMatch[2]) || 0;
+            }
+            
+            img.style.transform = `scale(2) translate(${currentX + deltaX}px, ${currentY + deltaY}px)`;
+            
+            startX = e.pageX;
+            startY = e.pageY;
+        });
+        
+        wrapper.addEventListener('mouseup', () => {
+            startX = startY = null;
+            wrapper.style.cursor = isZoomed ? 'grab' : 'zoom-in';
+        });
+    }
+    
+    /**
+     * 🆕 NUEVO: Selecciona un código sugerido
+     */
+    selectSuggestedCode(codigo) {
+        console.log(`📸 Usuario seleccionó código sugerido: ${codigo}`);
+        
+        // Actualizar lastScan con el código seleccionado
+        this.lastScan.codigoSAP = codigo;
+        this.lastScan.similarCodes = []; // Limpiar sugerencias
+        
+        // Cerrar modal de sugerencias
+        this.closeSuggestionsModal();
+        
+        // Continuar con el flujo normal
+        this.showConfirmModal();
+    }
+    
+    /**
+     * 🆕 NUEVO: Usa el código OCR tal como fue detectado
+     */
+    useOcrCodeAsIs() {
+        console.log(`📸 Usuario decidió usar código OCR: ${this.lastScan.codigoSAP}`);
+        
+        // Limpiar sugerencias
+        this.lastScan.similarCodes = [];
+        
+        // Cerrar modal
+        this.closeSuggestionsModal();
+        
+        // Continuar con el flujo
+        this.showConfirmModal();
+    }
+    
+    /**
+     * 🆕 NUEVO: Cierra modal de sugerencias
+     */
+    closeSuggestionsModal() {
+        const modal = document.getElementById('sapSuggestionsModal');
+        if (modal) modal.classList.remove('active');
+    }
+    
+    /**
      * 🆕 NUEVO: Cierra modal de selección de modo
      */
     closeModeModal() {
@@ -712,7 +1193,8 @@ class SAPScanner {
             codigoSAP: '',
             descripcion: '',
             imageData: null,
-            confidence: 0
+            confidence: 0,
+            similarCodes: [] // 🆕 Limpiar sugerencias anteriores
         };
         
         // Crear modal si no existe
@@ -1551,44 +2033,76 @@ class SAPScanner {
     
     /**
      * 🔎 Valida código contra repuestos existentes (fuzzy match)
-     * Retorna el código correcto si encuentra coincidencia cercana
+     * MODIFICADO: Ya no auto-selecciona, guarda candidatos para asistencia humana
      */
     validateAgainstExisting(codigo) {
         if (!window.app || !window.app.repuestos || !codigo) return null;
         
         // Buscar coincidencia exacta primero
         const exactMatch = window.app.repuestos.find(r => r.codSAP === codigo);
-        if (exactMatch) return codigo;
+        if (exactMatch) {
+            this.lastScan.similarCodes = []; // Limpiar si hay match exacto
+            return codigo;
+        }
         
-        // Si tiene 10 dígitos, buscar coincidencias parciales
-        if (codigo.length >= 8) {
-            const candidates = [];
+        // 🆕 Buscar códigos similares para asistencia humana
+        const similarCodes = this.findSimilarCodes(codigo);
+        this.lastScan.similarCodes = similarCodes;
+        
+        if (similarCodes.length > 0) {
+            console.log(`📸 ${similarCodes.length} códigos similares encontrados para asistencia humana`);
+            similarCodes.forEach((c, i) => {
+                console.log(`   ${i+1}. ${c.codigo} (${c.matchingDigits} dígitos coinciden) - "${c.nombre}"`);
+            });
+        }
+        
+        // No auto-seleccionar, dejar que el usuario elija
+        return null;
+    }
+    
+    /**
+     * 🆕 NUEVO: Busca códigos similares con al menos 6 dígitos coincidentes
+     * Retorna hasta 3 candidatos ordenados por similitud
+     */
+    findSimilarCodes(codigo) {
+        if (!window.app || !window.app.repuestos || !codigo) return [];
+        
+        const candidates = [];
+        const codigoDigits = codigo.replace(/\D/g, ''); // Solo dígitos
+        
+        for (const repuesto of window.app.repuestos) {
+            if (!repuesto.codSAP) continue;
             
-            for (const repuesto of window.app.repuestos) {
-                if (!repuesto.codSAP || repuesto.codSAP.length < 8) continue;
-                
-                // Calcular similitud (distancia de Levenshtein simplificada)
-                const similarity = this.calculateSimilarity(codigo, repuesto.codSAP);
-                
-                if (similarity >= 0.8) { // 80% similar
-                    candidates.push({
-                        codigo: repuesto.codSAP,
-                        similarity,
-                        nombre: repuesto.nombre
-                    });
+            const repuestoDigits = repuesto.codSAP.replace(/\D/g, '');
+            if (repuestoDigits.length < 6) continue;
+            
+            // Contar dígitos que coinciden en la misma posición
+            let matchingDigits = 0;
+            const minLen = Math.min(codigoDigits.length, repuestoDigits.length);
+            
+            for (let i = 0; i < minLen; i++) {
+                if (codigoDigits[i] === repuestoDigits[i]) {
+                    matchingDigits++;
                 }
             }
             
-            // Si hay candidatos, tomar el más similar
-            if (candidates.length > 0) {
-                candidates.sort((a, b) => b.similarity - a.similarity);
-                const best = candidates[0];
-                console.log(`📸 Sugerencia de código existente: ${best.codigo} (${Math.round(best.similarity * 100)}% similar) - "${best.nombre}"`);
-                return best.codigo;
+            // 🎯 Mínimo 6 dígitos coincidentes (de 10)
+            if (matchingDigits >= 6) {
+                candidates.push({
+                    codigo: repuesto.codSAP,
+                    nombre: repuesto.nombre || repuesto.descripcion || 'Sin nombre',
+                    cantidad: repuesto.cantidad || 0,
+                    matchingDigits,
+                    similarity: matchingDigits / Math.max(codigoDigits.length, repuestoDigits.length),
+                    repuesto: repuesto // Referencia completa
+                });
             }
         }
         
-        return null;
+        // Ordenar por dígitos coincidentes (desc) y tomar máximo 3
+        return candidates
+            .sort((a, b) => b.matchingDigits - a.matchingDigits)
+            .slice(0, 3);
     }
     
     /**
@@ -1658,6 +2172,7 @@ class SAPScanner {
     /**
      * 🆕 ACTUALIZADO: Muestra modal según modo y estado del repuesto
      * Lógica inteligente con validación redundante
+     * NUEVO: Muestra sugerencias si hay códigos similares pero no exactos
      */
     showConfirmModal() {
         console.log('📸 [DEBUG] showConfirmModal() INICIANDO');
@@ -1669,13 +2184,22 @@ class SAPScanner {
         // Buscar si el repuesto ya existe
         const codigoSAP = this.lastScan.codigoSAP;
         const repuestoExistente = this.findRepuestoByCodigo(codigoSAP);
+        const similarCodes = this.lastScan.similarCodes || [];
         
         console.log('📸 [DEBUG] Estado actual:', {
             operationMode: this.operationMode,
             codigoSAP: codigoSAP,
             repuestoExistente: !!repuestoExistente,
+            similarCodes: similarCodes.length,
             lastScan: this.lastScan
         });
+        
+        // 🆕 NUEVO: Si no hay match exacto pero hay códigos similares, mostrar sugerencias
+        if (!repuestoExistente && similarCodes.length > 0) {
+            console.log('📸 [DEBUG] No hay match exacto pero hay sugerencias -> showSuggestionsModal()');
+            this.showSuggestionsModal();
+            return;
+        }
         
         // 🎯 LÓGICA INTELIGENTE
         if (this.operationMode === 'count') {
