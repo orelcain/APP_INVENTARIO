@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+orelcain.github.io-1765060518994.log<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -363,22 +363,13 @@
           return;
         }
         
-        // Verificar FileSystem conectado - usar fsManager de app
-        const fsConnected = fsManager && (
-          fsManager.rootFolder || 
-          fsManager.isFileSystemMode || 
-          fsManager.imagesFolder
-        );
-        
-        if (!fsConnected) {
-          alert('❌ FileSystem no está conectado.\n\nDebes conectar la carpeta INVENTARIO_STORAGE primero (en PC local).\n\nVe a Configuración → Conectar Carpeta\n\n🔍 Debug:\n- fsManager: ' + !!fsManager + '\n- rootFolder: ' + !!fsManager?.rootFolder + '\n- isFileSystemMode: ' + fsManager?.isFileSystemMode + '\n- imagesFolder: ' + !!fsManager?.imagesFolder);
-          return;
-        }
+        // 🔥 FIREBASE-ONLY: Ya no se requiere FileSystem conectado
+        // Las imágenes ya deberían estar en Firebase Storage
         
         const repuestos = window.app?.repuestos || [];
         let imagenesAMigrar = [];
         
-        // Buscar imágenes FileSystem
+        // Buscar imágenes FileSystem (legacy - para migración)
         repuestos.forEach(r => {
           if (r.multimedia && r.multimedia.length > 0) {
             r.multimedia.forEach((m, idx) => {
@@ -1167,8 +1158,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       color: var(--text-primary);
     }
 
-    /*  BOTN DE CONEXIN - Estilo Neomorphism/Soft UI */
+    /*  BOTN DE CONEXIN - DESHABILITADO (Firebase-only mode) */
     #connectionBtn {
+      display: none !important; /* Firebase-only: No se necesita FileSystem */
       position: relative;
       border: none !important;
       cursor: default !important;
@@ -17084,7 +17076,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
           <button class="view-toggle-btn" data-view="list" onclick="app.toggleView(this, 'list')">Lista</button>
         </div>
         
-        <button class="glass-btn connection disconnected" id="connectionBtn" title="Estado de conexión con la carpeta">
+        <!-- DESHABILITADO: Firebase-only mode - No se necesita FileSystem -->
+        <button class="glass-btn connection disconnected" id="connectionBtn" title="Estado de conexión con la carpeta" style="display:none !important;">
           Desconectado
         </button>
       </div>
@@ -17683,8 +17676,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         </div>
       </div>
 
-      <!-- SISTEMA DE BACKUPS Y RESPALDOS -->
-      <div class="config-card">
+      <!-- SISTEMA DE BACKUPS Y RESPALDOS - OCULTO EN MODO FIREBASE-ONLY -->
+      <div class="config-card" style="display: none !important;">
+        <!-- Sección de backups FileSystem deshabilitada - Todo se guarda en Firebase -->
         <h3 onclick="toggleConfigSection('backup-config')" class="config-section-header">
           <span id="backup-config-icon"></span>
           <span> Sistema de Backups y Respaldos</span>
@@ -17848,68 +17842,86 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       </div> <!-- Fin listas-config-content -->
     </div>
 
-    <!-- FIREBASE Y SINCRONIZACIÓN -->
+    <!-- FIREBASE Y SINCRONIZACIÓN - MODO FIREBASE-ONLY -->
     <div class="config-section" id="firebase-section">
       <div class="config-section-header-row">
         <div onclick="toggleConfigSection('firebase-config')" class="config-section-clickable">
           <div class="config-section-title-row">
-            <span id="firebase-config-icon">🔥</span>
+            <span id="firebase-config-icon">☁️</span>
             <h3 class="config-section-title">
-              🔥 Firebase y Sincronización en la Nube
+              ☁️ Almacenamiento en la Nube
             </h3>
           </div>
         </div>
       </div>
       
       <div id="firebase-config-content" class="config-section-content">
-        <div class="config-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 51, 234, 0.05) 100%); border: 1px solid rgba(59, 130, 246, 0.2);">
-          <div style="display: flex; align-items: start; gap: 15px; margin-bottom: 20px;">
+        <!-- Estado de Firebase -->
+        <div class="config-card" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%); border: 1px solid rgba(34, 197, 94, 0.3);">
+          <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
             <div style="font-size: 2.5rem;">☁️</div>
             <div>
-              <h4 style="margin-bottom: 8px; color: rgba(147, 197, 253, 0.9);">Migración a la Nube</h4>
-              <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 15px;">
-                Migra todos tus datos locales (repuestos, mapas, zonas, presupuestos) a Firebase Firestore. 
-                Una vez migrados, los datos estarán disponibles para todos los usuarios autenticados y se sincronizarán en tiempo real.
+              <h4 style="margin-bottom: 4px; color: rgba(134, 239, 172, 0.9);">Modo Firebase Activo</h4>
+              <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin: 0;">
+                Todos tus datos se guardan automáticamente en la nube
               </p>
-              <div style="background: rgba(234, 179, 8, 0.1); border-left: 3px solid #eab308; padding: 10px 15px; border-radius: 4px; margin-bottom: 15px;">
-                <strong style="color: #fbbf24;">⚠️ Importante:</strong>
-                <ul style="margin: 8px 0 0 20px; font-size: 0.85rem; color: rgba(255,255,255,0.7);">
-                  <li>Solo usuarios <strong>Admin</strong> pueden ejecutar la migración</li>
-                  <li>Los datos locales NO se eliminarán automáticamente</li>
-                  <li>Se recomienda hacer un backup antes de migrar</li>
-                  <li>Esta operación sobrescribirá datos existentes en Firebase</li>
-                </ul>
-              </div>
-              <button id="btnMigrarFirebase" onclick="migrarDatosAFirebase()" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
-                🚀 Migrar Datos a Firebase
-              </button>
-              <div id="migracionStatus" style="margin-top: 15px; padding: 10px; border-radius: 6px; display: none;"></div>
+            </div>
+          </div>
+          
+          <div id="firebase-status-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
+            <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; text-align: center;">
+              <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 4px;">CONEXIÓN</div>
+              <div id="firebase-conn-status" style="font-size: 0.9rem; font-weight: 600; color: #22c55e;">✅ Conectado</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; text-align: center;">
+              <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 4px;">SINCRONIZACIÓN</div>
+              <div id="firebase-sync-status" style="font-size: 0.9rem; font-weight: 600; color: #22c55e;">🔄 Activa</div>
+            </div>
+          </div>
+          
+          <div style="background: rgba(59, 130, 246, 0.1); padding: 12px; border-radius: 8px; border-left: 3px solid #3b82f6;">
+            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin: 0; line-height: 1.5;">
+              <strong style="color: #93c5fd;">💡 Información:</strong><br>
+              • Los cambios se sincronizan automáticamente<br>
+              • Accede desde cualquier dispositivo con tu cuenta<br>
+              • Las imágenes se guardan en Firebase Storage
+            </p>
+          </div>
+        </div>
+
+        <!-- Estadísticas de Firebase -->
+        <div class="config-card" style="margin-top: 15px;">
+          <h4 style="margin-bottom: 12px; color: rgba(255,255,255,0.9);">📊 Datos en la Nube</h4>
+          <div id="firebase-stats" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+            <div style="background: rgba(59, 130, 246, 0.1); padding: 12px; border-radius: 8px; text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: bold; color: #3b82f6;" id="stat-repuestos">--</div>
+              <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Repuestos</div>
+            </div>
+            <div style="background: rgba(147, 51, 234, 0.1); padding: 12px; border-radius: 8px; text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: bold; color: #9333ea;" id="stat-mapas">--</div>
+              <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Mapas</div>
+            </div>
+            <div style="background: rgba(234, 179, 8, 0.1); padding: 12px; border-radius: 8px; text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: bold; color: #eab308;" id="stat-zonas">--</div>
+              <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Zonas</div>
+            </div>
+            <div style="background: rgba(34, 197, 94, 0.1); padding: 12px; border-radius: 8px; text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: bold; color: #22c55e;" id="stat-imagenes">--</div>
+              <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);">Imágenes</div>
             </div>
           </div>
         </div>
-
-        <div class="config-card" style="margin-top: 20px;">
-          <h4 style="margin-bottom: 12px; color: rgba(255,255,255,0.9);">🔄 Sincronización en Tiempo Real</h4>
-          <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 15px;">
-            La sincronización en tiempo real permite que los cambios realizados por cualquier usuario se reflejen automáticamente en todos los navegadores conectados.
-          </p>
-          <div id="sync-status" style="margin-bottom: 15px; padding: 12px; border-radius: 6px; background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3);">
-            <span style="color: #fbbf24;">⚪ Sincronización desactivada</span>
-          </div>
-          <div style="display: flex; gap: 10px;">
-            <button id="btnActivarSync" onclick="window.activarSincronizacionTiempoReal()" class="btn btn-success" style="padding: 10px 20px; font-size: 0.9rem;">
-              ▶️ Activar Sync
+        
+        <!-- Acciones de mantenimiento -->
+        <div class="config-card" style="margin-top: 15px;">
+          <h4 style="margin-bottom: 12px; color: rgba(255,255,255,0.9);">🔧 Mantenimiento</h4>
+          <div style="display: grid; gap: 10px;">
+            <button onclick="window.activarSincronizacionTiempoReal()" class="btn btn-success" style="padding: 12px; font-size: 0.9rem;">
+              🔄 Reconectar Sincronización
             </button>
-            <button id="btnDesactivarSync" onclick="window.desactivarSincronizacionTiempoReal()" class="btn btn-danger" style="padding: 10px 20px; font-size: 0.9rem; display: none;">
-              ⏸️ Desactivar Sync
+            <button onclick="actualizarEstadoFirebase()" class="btn btn-primary" style="padding: 12px; font-size: 0.9rem;">
+              📊 Actualizar Estadísticas
             </button>
-          </div>
-        </div>
-
-        <div class="config-card" style="margin-top: 20px;">
-          <h4 style="margin-bottom: 12px; color: rgba(255,255,255,0.9);">📊 Estado de Sincronización</h4>
-          <div id="firebase-status" style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">
-            <p>🔄 Comprobando estado de Firebase...</p>
           </div>
         </div>
       </div>
@@ -17967,14 +17979,14 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       </div> <!-- Fin herramientas-config-content -->
     </div>
 
-    <!-- 🔧 CONSOLA DE DEBUG (MÓVIL) -->
-    <div class="config-section">
+    <!-- 🔧 CONSOLA DE DEBUG (MÓVIL) - Solo visible para Admin -->
+    <div class="config-section" id="debug-section-admin" style="display: none;">
       <div class="config-section-header-row">
         <div onclick="toggleConfigSection('debug-config')" class="config-section-clickable">
           <div class="config-section-title-row">
             <span id="debug-config-icon">🔧</span>
             <h3 class="config-section-title">
-              🔧 Consola de Debug (Móvil)
+              🔧 Consola de Debug (Solo Admin)
             </h3>
           </div>
         </div>
@@ -18018,15 +18030,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             </button>
           </div>
           
-          <!-- 🔄 Herramientas de Migración a Firebase -->
-          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
-            <button onclick="window.migrarImagenesAFirebase()" class="btn btn-success" style="padding: 10px 20px; background: #f59e0b;">
-              🖼️ Migrar Imágenes a Firebase
-            </button>
-            <button onclick="window.migrarJerarquiaAFirebase()" class="btn btn-success" style="padding: 10px 20px; background: #10b981;">
-              🗂️ Migrar Jerarquía a Firebase
-            </button>
-          </div>
+          <!-- 🔄 Herramientas de Migración a Firebase - OBSOLETAS (ya migrado todo) -->
+          <!-- Botones de migración eliminados - todo ya está en Firebase -->
           
           <div id="debugConsoleConfig" style="display: none; background: rgba(0,0,0,0.9); border-radius: 8px; padding: 15px; max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 12px;">
             <div id="debugLogsConfig" style="color: #0f0;"></div>
@@ -37075,20 +37080,20 @@ class InventarioCompleto {
     }, 100);
   }
 
-  // NUEVO: Configurar inputs de fotos segn plataforma (mvil o PC)
+  // NUEVO: Configurar inputs de fotos - FIREBASE ONLY MODE
   setupPhotoInputs() {
     const mobileButtons = document.getElementById('mobile-photo-buttons');
     const galleryInput = document.getElementById('galleryInput');
     const oldInput = document.getElementById('imagenFile');
     const multimediaSection = document.querySelector('.multimedia-section');
     
-    // 🔥 Detectar si Firebase Storage está disponible Y autenticado
+    // 🔥 FIREBASE-ONLY: Siempre usar Firebase Storage
     const hasFirebaseStorage = window.firebaseImageStorage && 
                                typeof window.firebaseImageStorage.isReady === 'function' &&
                                window.firebaseImageStorage.isReady() &&
                                window.firebaseImageStorage.isAuthenticated();
     
-    console.log(`📱 setupPhotoInputs - isMobile: ${this.isMobile}, hasFileSystemAPI: ${this.hasFileSystemAPI}, hasFirebaseStorage: ${hasFirebaseStorage}`);
+    console.log(`📱 setupPhotoInputs [FIREBASE-ONLY] - isMobile: ${this.isMobile}, hasFirebaseStorage: ${hasFirebaseStorage}`);
     
     // 🔥 MÓVIL CON FIREBASE STORAGE: Habilitar fotos vía Firebase
     if (this.isMobile && hasFirebaseStorage) {
@@ -38016,287 +38021,11 @@ class InventarioCompleto {
   }
 
   loadDefaultData() {
-    // 🔥 SI FIREBASE SYNC ESTÁ ACTIVADA, NO CARGAR DATOS DE PRUEBA
-    // Los datos vendrán de Firebase en tiempo real
-    const firebaseSyncEnabled = localStorage.getItem('firebaseSyncEnabled') === 'true';
-    if (firebaseSyncEnabled) {
-      console.log('☁️ Firebase Sync activa - Omitiendo datos de prueba, esperando datos de Firebase...');
-      this.repuestos = [];
-      return;
-    }
-    
-    //  DATOS DE PRUEBA: 2 repuestos por cada nivel de jerarqua (solo si NO hay Firebase sync)
-    console.log('📦 Cargando datos de prueba (Firebase sync no activa)...');
-    this.repuestos = [
-      // 
-      // NIVEL 1: Solo Planta (mnimo)
-      // 
-      {
-        id: 1,
-        nombre: 'Extintor Polvo Qumico ABC 10kg',
-        codSAP: 'EXT-001',
-        codProv: 'PROV-EXT-001',
-        cantidad: 15,
-        minimo: 10,
-        optimo: 20,
-        precio: 45000,
-        planta: 'Aquachile Antarfood Chonchi',
-        descripcion: 'Extintor tipo ABC para fuegos clase A, B y C',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 2,
-        nombre: 'Botiqun Primeros Auxilios Completo',
-        codSAP: 'BOT-001',
-        codProv: 'PROV-BOT-001',
-        cantidad: 8,
-        minimo: 5,
-        optimo: 12,
-        precio: 35000,
-        planta: 'Aquachile Antarfood Chonchi',
-        descripcion: 'Botiqun con elementos bsicos de primeros auxilios',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 2: Planta + rea General
-      // 
-      {
-        id: 3,
-        nombre: 'Vlvula Mariposa 6 Pulgadas',
-        codSAP: 'VAL-MA-006',
-        codProv: 'PROV-VAL-006',
-        cantidad: 12,
-        minimo: 8,
-        optimo: 15,
-        precio: 125000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        descripcion: 'Vlvula mariposa para control de flujo en tuberas principales',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 4,
-        nombre: 'Sensor de Temperatura PT100',
-        codSAP: 'SEN-TMP-100',
-        codProv: 'PROV-SEN-100',
-        cantidad: 20,
-        minimo: 15,
-        optimo: 25,
-        precio: 28000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        descripcion: 'Sensor de temperatura tipo PT100 rango -50C a +200C',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 3: Planta + rea General + Sub-rea
-      // 
-      {
-        id: 5,
-        nombre: 'Filtro de Cartucho 5 Micras',
-        codSAP: 'FIL-CAR-005',
-        codProv: 'PROV-FIL-005',
-        cantidad: 30,
-        minimo: 20,
-        optimo: 40,
-        precio: 15000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        descripcion: 'Cartucho de filtro de 5 micras para agua de proceso',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 6,
-        nombre: 'Bomba Centrfuga 5HP',
-        codSAP: 'BOM-CEN-5HP',
-        codProv: 'PROV-BOM-5HP',
-        cantidad: 4,
-        minimo: 2,
-        optimo: 6,
-        precio: 450000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        descripcion: 'Bomba centrfuga 5HP para recirculacin de agua',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 4: Planta + rea General + Sub-rea + Sistema/Equipo
-      // 
-      {
-        id: 7,
-        nombre: 'Rodamiento SKF 6205-2RS',
-        codSAP: 'ROD-SKF-6205',
-        codProv: 'SKF-6205-2RS',
-        cantidad: 25,
-        minimo: 15,
-        optimo: 30,
-        precio: 18500,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        descripcion: 'Rodamiento rgido de bolas con sellos de goma',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 8,
-        nombre: 'Sello Mecnico 25mm',
-        codSAP: 'SEL-MEC-025',
-        codProv: 'PROV-SEL-025',
-        cantidad: 8,
-        minimo: 5,
-        optimo: 12,
-        precio: 65000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        descripcion: 'Sello mecnico para eje de 25mm en bombas',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 5: Planta + rea General + Sub-rea + Sistema/Equipo + Sub-Sistema
-      // 
-      {
-        id: 9,
-        nombre: 'Impulsor de Bomba Acero Inox',
-        codSAP: 'IMP-BOM-INOX',
-        codProv: 'PROV-IMP-INOX',
-        cantidad: 6,
-        minimo: 3,
-        optimo: 8,
-        precio: 185000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        descripcion: 'Impulsor de acero inoxidable 316L para bomba centrfuga',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 10,
-        nombre: 'Carcasa de Bomba Con Bridas',
-        codSAP: 'CAR-BOM-BRID',
-        codProv: 'PROV-CAR-BRID',
-        cantidad: 3,
-        minimo: 2,
-        optimo: 5,
-        precio: 320000,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        descripcion: 'Carcasa de bomba centrfuga con bridas de conexin',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 6: Planta + rea General + Sub-rea + Sistema/Equipo + Sub-Sistema + Seccin
-      // 
-      {
-        id: 11,
-        nombre: 'O-Ring Viton 25x3mm',
-        codSAP: 'ORI-VIT-25X3',
-        codProv: 'PROV-ORI-25X3',
-        cantidad: 50,
-        minimo: 30,
-        optimo: 60,
-        precio: 3500,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        seccion: 'Seccin de Sellado',
-        descripcion: 'O-Ring de Viton para sellado de alta temperatura',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 12,
-        nombre: 'Junta Tapa Bomba Tefln',
-        codSAP: 'JUN-TAP-TEF',
-        codProv: 'PROV-JUN-TEF',
-        cantidad: 15,
-        minimo: 10,
-        optimo: 20,
-        precio: 8500,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        seccion: 'Seccin de Sellado',
-        descripcion: 'Junta de tefln para tapa de bomba centrfuga',
-        multimedia: [],
-        ubicaciones: []
-      },
-
-      // 
-      // NIVEL 7: Todos los campos (Jerarqua Completa)
-      // 
-      {
-        id: 13,
-        nombre: 'Tornillo Allen M8x40 Inox A4',
-        codSAP: 'TOR-ALL-M8X40',
-        codProv: 'DIN912-M8X40-A4',
-        cantidad: 100,
-        minimo: 50,
-        optimo: 150,
-        precio: 450,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        seccion: 'Seccin de Sellado',
-        detalle: 'Conjunto de Fijacin',
-        descripcion: 'Tornillo allen cabeza cilndrica M8x40mm acero inox A4-70',
-        multimedia: [],
-        ubicaciones: []
-      },
-      {
-        id: 14,
-        nombre: 'Arandela Presin M8 Inox',
-        codSAP: 'ARA-PRE-M8',
-        codProv: 'DIN127-M8-INOX',
-        cantidad: 150,
-        minimo: 80,
-        optimo: 200,
-        precio: 150,
-        planta: 'Aquachile Antarfood Chonchi',
-        areaGeneral: 'rea de Produccin',
-        subArea: 'Sistema de Agua',
-        sistemaEquipo: 'Bomba Principal BP-01',
-        subSistema: 'Sistema Hidrulico',
-        seccion: 'Seccin de Sellado',
-        detalle: 'Conjunto de Fijacin',
-        descripcion: 'Arandela de presin (grower) M8 acero inoxidable',
-        multimedia: [],
-        ubicaciones: []
-      }
-    ];
-
-    console.log(' Datos de prueba cargados: 14 repuestos con jerarqua completa');
-    console.log(' Cobertura: 2 repuestos por cada nivel (1-7)');
+    // 🔥 FIREBASE-ONLY: Siempre iniciar vacío
+    // Los datos vendrán de Firebase automáticamente al autenticarse
+    console.log('☁️ Modo Firebase-Only - Iniciando sin datos locales, esperando sincronización...');
+    this.repuestos = [];
+    return;
   }
 
   //  Cargar datos de prueba para visualizar jerarqua en PDF
@@ -57716,6 +57445,13 @@ window.addEventListener('customAuthSuccess', (event) => {
   // Actualizar permisos en la app
   app.updatePermissions(role);
   
+  // 🔧 Mostrar sección de Debug solo para admin
+  const debugSection = document.getElementById('debug-section-admin');
+  if (debugSection) {
+    debugSection.style.display = (role === 'admin') ? 'block' : 'none';
+    console.log(`🔧 Sección Debug: ${role === 'admin' ? 'visible' : 'oculta'} para rol ${role}`);
+  }
+  
   // Mensaje de bienvenida según rol
   const roleMessages = {
     'admin': 'Acceso completo al sistema',
@@ -57732,6 +57468,12 @@ window.addEventListener('customAuthSuccess', (event) => {
 window.addEventListener('customAuthLogout', () => {
   console.log('👋 Usuario desconectado - Limpiando permisos');
   app.updatePermissions(null);
+  
+  // 🔧 Ocultar sección de Debug al logout
+  const debugSection = document.getElementById('debug-section-admin');
+  if (debugSection) {
+    debugSection.style.display = 'none';
+  }
 });
 
 // ========================================
@@ -58033,134 +57775,73 @@ const backupManager = {
 // OBJETO CONFIGURACION - Gestin centralizada
 // ========================================
 const configuracion = {
-  // Renderizar UI de almacenamiento segn plataforma
+  // Renderizar UI de almacenamiento - FIREBASE ONLY MODE
   renderStorageUI() {
     const container = document.getElementById('storage-config-content');
-    const isMobile = app.isMobile;
-    const hasFileSystem = app.hasFileSystemAPI;
     
-    if (hasFileSystem) {
-      // Verificar si hay carpeta guardada
-      const hasSavedFolder = localStorage.getItem('fsDirectory') === 'enabled';
+    // 🔥 FIREBASE-ONLY: Mostrar siempre estado de Firebase
+    const isFirebaseAuth = window.firebaseService && window.firebaseService.isAuthenticated();
+    const syncActive = localStorage.getItem('firebaseSyncActive') === 'true';
+    
+    container.innerHTML = `
+      <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">
+        ☁️ Almacenamiento en la Nube
+      </h3>
       
-      // UI PARA PC
-      container.innerHTML = `
-        <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">Almacenamiento</h3>
-        
-        <div style="display: grid; gap: 12px;">
-          <div style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <strong style="color: var(--text-primary); font-size: 0.95rem;">Estado:</strong>
-              <span id="config-fs-status" style="padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600;">
-                ${fsManager.isFileSystemMode ? ' Conectado' : ' No conectado'}
-              </span>
-            </div>
-            <div id="config-fs-path" style="color: var(--text-secondary); font-size: 0.85rem; font-family: monospace; padding: 10px; background: rgba(0,0,0,0.15); border-radius: 6px; min-height: 40px;">
-              ${fsManager.folderPath || (hasSavedFolder ? 'Carpeta guardada (click Conectar)' : 'Sistema no configurado')}
-            </div>
+      <div style="display: grid; gap: 12px;">
+        <!-- Estado de Firebase -->
+        <div style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="color: var(--text-primary); font-size: 0.95rem;">Firebase:</strong>
+            <span style="padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background: ${isFirebaseAuth ? 'var(--success)' : 'var(--danger)'}; color: white;">
+              ${isFirebaseAuth ? '✅ Conectado' : '❌ No autenticado'}
+            </span>
           </div>
-          
-          ${hasSavedFolder && !fsManager.isFileSystemMode ? `
-            <!-- Botn Conectar cuando hay carpeta guardada pero no est conectado -->
-            <button onclick="configuracion.conectarRapido()" class="btn btn-success" style="width: 100%; padding: 14px; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-              <span style="font-size: 1.2rem;"></span>
-              <span>Conectar</span>
-            </button>
-          ` : ''}
-          
-          ${fsManager.isFileSystemMode ? `
-            <!-- Botn Desconectar cuando est conectado -->
-            <button onclick="configuracion.desconectar()" class="btn" style="width: 100%; padding: 14px; font-size: 1rem; background: var(--danger); color: white; display: flex; align-items: center; justify-content: center; gap: 8px;">
-              <span style="font-size: 1.2rem;"></span>
-              <span>Desconectar</span>
-            </button>
-          ` : ''}
-          
-          <!-- Botn Cambiar Carpeta (siempre visible) -->
-          <button onclick="configuracion.seleccionarCarpetaTrabajo()" class="btn ${fsManager.isFileSystemMode ? 'btn-secondary' : 'btn-primary'}" style="width: 100%; padding: ${fsManager.isFileSystemMode ? '12px' : '14px'}; font-size: ${fsManager.isFileSystemMode ? '0.9rem' : '1rem'};">
-            ${fsManager.isFileSystemMode ? ' Cambiar Carpeta' : ' Seleccionar Carpeta'}
-          </button>
-          
-          <!-- Opción Auto-reconexión -->
-          <div style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 8px;">
-            <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-              <span style="color: var(--text-primary); font-size: 0.95rem;">
-                <strong>Auto-reconexión al cargar</strong>
-                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
-                  Restaurar automáticamente la conexión FileSystem
-                </div>
-              </span>
-              <input type="checkbox" id="fs-auto-reconnect-toggle" 
-                ${localStorage.getItem('fsAutoReconnect') === 'enabled' ? 'checked' : ''}
-                     onchange="configuracion.toggleAutoReconnect(this.checked)"
-                     style="width: 20px; height: 20px; cursor: pointer;">
-            </label>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: var(--text-primary); font-size: 0.95rem;">Sincronización:</strong>
+            <span style="padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background: ${syncActive ? 'var(--success)' : 'var(--warning)'}; color: white;">
+              ${syncActive ? '🔄 Activa' : '⏸️ Pausada'}
+            </span>
           </div>
-          
-          ${fsManager.isFileSystemMode ? `
-            <button onclick="configuracion.vincularImagenesAutomaticamente()" class="btn btn-success" style="width: 100%; padding: 12px; font-size: 0.95rem;">
-               Vincular Imgenes
-            </button>
-          ` : ''}
         </div>
-      `;
-    } else {
-      // UI PARA MVIL
-      container.innerHTML = `
-        <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">Almacenamiento Mvil</h3>
         
-        <div style="display: grid; gap: 12px;">
-          <div id="mobile-storage-stats" style="background: var(--bg-primary); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <strong style="color: var(--text-primary); font-size: 0.95rem;">Almacenamiento:</strong>
-              <span id="mobile-storage-size" style="padding: 6px 12px; background: var(--primary); color: white; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">
-                0 MB
-              </span>
-            </div>
-            <div style="display: flex; justify-content: space-between; color: var(--text-secondary); font-size: 0.85rem;">
-              <span>Imgenes:</span>
-              <strong id="mobile-storage-count" style="color: var(--primary);">0</strong>
-            </div>
-          </div>
-          
-          <button onclick="configuracion.actualizarEstadisticasMovil()" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 0.95rem;">
-            Actualizar Estadsticas
+        <!-- Controles de Sincronización -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <button onclick="window.activarSincronizacionTiempoReal()" class="btn btn-success" style="padding: 12px; font-size: 0.9rem;" ${syncActive ? 'disabled' : ''}>
+            ▶️ Activar Sync
           </button>
-          
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <button onclick="configuracion.exportarJSONConImagenesMovil()" class="btn btn-success" style="padding: 12px; font-size: 0.85rem;">
-              Exportar
-            </button>
-            <button onclick="configuracion.importarJSONConImagenesMovil()" class="btn btn-primary" style="padding: 12px; font-size: 0.85rem;">
-              Importar
-            </button>
-          </div>
-          
-          <button onclick="configuracion.limpiarCacheMovil()" class="btn" style="width: 100%; padding: 12px; font-size: 0.9rem; background: var(--danger); color: white;">
-            Limpiar Imgenes
+          <button onclick="window.desactivarSincronizacionTiempoReal()" class="btn" style="padding: 12px; font-size: 0.9rem; background: var(--warning); color: white;" ${!syncActive ? 'disabled' : ''}>
+            ⏸️ Pausar Sync
           </button>
         </div>
-      `;
-      
-      // Actualizar estadsticas automticamente
-      setTimeout(() => this.actualizarEstadisticasMovil(), 500);
-    }
+        
+        <!-- Info -->
+        <div style="background: rgba(59, 130, 246, 0.1); padding: 14px; border-radius: 8px; border-left: 4px solid var(--info);">
+          <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0; line-height: 1.5;">
+            <strong style="color: var(--info);">☁️ Modo Firebase</strong><br>
+            Todos los datos se guardan automáticamente en la nube.<br>
+            Accede desde cualquier dispositivo con tu cuenta.
+          </p>
+        </div>
+      </div>
+    `;
   },
   
-  // Actualizar estadsticas de almacenamiento mvil
+  // Actualizar estadsticas de almacenamiento mvil (legacy - mantenido por compatibilidad)
   async actualizarEstadisticasMovil() {
     try {
       const stats = await indexedDBManager.getStorageStats();
-      document.getElementById('mobile-storage-size').textContent = stats.sizeFormatted;
-      document.getElementById('mobile-storage-count').textContent = stats.count;
-      
+      const sizeEl = document.getElementById('mobile-storage-size');
+      const countEl = document.getElementById('mobile-storage-count');
+      if (sizeEl) sizeEl.textContent = stats.sizeFormatted;
+      if (countEl) countEl.textContent = stats.count;
       console.log(' Estadsticas IndexedDB:', stats);
     } catch (error) {
       console.error('Error obteniendo estadsticas:', error);
     }
   },
   
-  // Limpiar cach de imgenes mvil
+  // Limpiar cach de imgenes mvil (legacy)
   async limpiarCacheMovil() {
     const confirmacion = confirm(
       ' ADVERTENCIA\n\n' +
@@ -62668,99 +62349,16 @@ function setupGlobalSearch() {
     console.warn('No se pudo iniciar WarmupProgress:', error);
   }
   
-  //  PASO 1: Auto-reconexin OPCIONAL si existe sesin previa Y el usuario tiene preferencia activada
-  const hasFileSystemSession = localStorage.getItem('fsDirectory') === 'enabled';
-  const autoReconnectEnabled = localStorage.getItem('fsAutoReconnect') === 'enabled'; // Por defecto: desactivado
-  const postConnectTasks = [];
+  //  FIREBASE-ONLY MODE: No se requiere reconexión de FileSystem
+  // La app ahora funciona exclusivamente con Firebase
+  console.log('☁️ FIREBASE-ONLY MODE - No se requiere FileSystem');
   
-  if (hasFileSystemSession && autoReconnectEnabled) {
-    console.log(' Detectada sesin FileSystem previa, intentando auto-reconexin...');
-    try {
-      if (typeof app !== 'undefined' && typeof app.connectWorkspace === 'function') {
-        WarmupProgress.setMessage('Restaurando sesión FileSystem...');
-        const connected = await app.connectWorkspace(true, false);
-        if (connected) {
-          WarmupProgress.setMessage('Carpeta reconectada, preparando interfaz...');
-        }
-      } else {
-        console.warn('app.connectWorkspace no está disponible');
-      }
-    } catch (error) {
-      console.warn('Error en auto-reconexión:', error);
-    }
-  } else {
-    if (!hasFileSystemSession) {
-      console.log(' No hay sesin previa - Usuario deber conectar carpeta manualmente');
-    } else {
-      console.log(' Auto-reconexin desactivada por el usuario');
-    }
-  }
-  
-  //  PASO 2: Inicializar la app (sin cargar datos, ya los carg connectWorkspace si fue exitoso)
-  // Si NO hubo reconexin, init() cargar desde localStorage
+  //  PASO 2: Inicializar la app directamente
   try {
-    if (!fsManager.isConnected) {
-      await app.init();
-    } else {
-      // Solo hacer render sin cargar datos (ya estn cargados por connectWorkspace)
-      app.showBrowserWarning();
-      
-      if (typeof configuracion !== 'undefined') {
-        setTimeout(() => {
-          configuracion.renderStorageUI();
-          configuracion.loadICloudPathConfig();
-        }, 100);
-      }
-      
-      app.setupEvents();
-      app.setupDelegatedEvents();
-      app.setupPhotoInputs();
-      WarmupProgress.setMessage('Aplicando estilos personalizados...');
-      app.applyViewModeStyles();
-      app.updateViewModeInfo();
-    // NO llamar loadData() porque connectWorkspace ya lo hizo
-    // await app.render(); // Ya se hizo en connectWorkspace
-    app.renderFilters();
-    
-    const savedAutocomplete = localStorage.getItem('autocompleteData');
-    if (savedAutocomplete) {
-      try {
-        app.autocompleteData = JSON.parse(savedAutocomplete);
-      } catch (e) {
-        console.warn('Error cargando autocomplete guardado, regenerando...', e);
-        app.updateAutocompleteData();
-      }
-    } else {
-      app.updateAutocompleteData();
-    }
-    
-    app.setupAutocomplete();
-    
-    if (document.getElementById('sapTreeContainer')) {
-      LoadingModal.setStatus('Preparando jerarquía SAP...');
-      LoadingModal.setTip('Estamos precargando el árbol para evitar esperas.');
-      const sapTreeTask = deferHeavyTask(() => {
-        try {
-          app.renderSAPTree();
-        } catch (error) {
-          console.warn('Error precargando árbol SAP:', error);
-        }
-      }, { timeout: 900, label: 'pre-render jerarquía SAP' }).then(() => {
-        LoadingModal.setStatus('Jerarquía lista');
-        LoadingModal.setTip('Puedes abrir la pestaña Jerarquía al cerrar este modal.');
-      });
-      postConnectTasks.push(sapTreeTask);
-    }
-
-    const equipoInput = document.getElementById('equipo');
-    if (equipoInput) {
-      equipoInput.addEventListener('blur', () => {
-        const equipo = equipoInput.value.trim();
-        if (equipo) {
-          app.cargarSistemasPorEquipo(equipo);
-        }
-      });
-    }
+    // Siempre inicializar app (Firebase cargará los datos)
+    await app.init();
+  } catch (error) {
+    console.error('Error inicializando app:', error);
   }
   
   //  PASO 3: Inicializar otros mdulos
@@ -62798,17 +62396,6 @@ function setupGlobalSearch() {
     await initTabMapas();
   } catch (error) {
     console.warn(' Error inicializando jerarquía de mapas:', error);
-  }
-  
-  } catch (error) {
-    console.error('❌ Error durante la inicialización de la app:', error);
-    // Intentar inicializar de forma básica
-    try {
-      await app.init();
-    } catch (e) {
-      console.error('❌ Error crítico en inicialización básica:', e);
-      alert('Error crítico al inicializar la aplicación. Por favor, recarga la página.');
-    }
   }
 
   // Inicializar vista Visual 2.0 embebida
@@ -64562,90 +64149,86 @@ async function migrarDatosAFirebase() {
 async function actualizarEstadoFirebase() {
     const statusDiv = document.getElementById('firebase-status');
     
+    // 🔥 FIREBASE-ONLY: Actualizar estadísticas en la nueva UI
+    const statRepuestos = document.getElementById('stat-repuestos');
+    const statMapas = document.getElementById('stat-mapas');
+    const statZonas = document.getElementById('stat-zonas');
+    const statImagenes = document.getElementById('stat-imagenes');
+    const connStatus = document.getElementById('firebase-conn-status');
+    const syncStatus = document.getElementById('firebase-sync-status');
+    
     if (!window.firebaseService || !window.firebaseService.isAuthenticated()) {
-        statusDiv.innerHTML = '<p>⚠️ No autenticado - Inicia sesión para ver el estado</p>';
+        if (connStatus) connStatus.innerHTML = '❌ No conectado';
+        if (syncStatus) syncStatus.innerHTML = '⏸️ Pausada';
+        if (statusDiv) statusDiv.innerHTML = '<p>⚠️ No autenticado - Inicia sesión para ver el estado</p>';
         return;
     }
     
     try {
-        statusDiv.innerHTML = '<p>🔄 Consultando datos de Firebase...</p>';
+        if (statusDiv) statusDiv.innerHTML = '<p>🔄 Consultando datos de Firebase...</p>';
         
         // Obtener datos locales actuales
         const repuestosLocales = window.app?.repuestos?.length || 0;
-        const mapasLocales = window.mapStorage?.mapas?.length || 0;
-        const zonasLocales = window.mapStorage?.zonas?.length || 0;
-        const presupuestosLocales = window.app?.presupuestos?.length || 0;
-        const jerarquiaLocales = window.app?.jerarquiaAnidada?.length || 0;
+        const mapasLocales = window.mapStorage?.maps?.length || window.mapStorage?.mapas?.length || 0;
+        const zonasLocales = window.mapStorage?.areas?.length || window.mapStorage?.zonas?.length || 0;
         
         const repuestosResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.REPUESTOS);
         const mapasResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.MAPAS);
         const zonasResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.ZONAS);
-        const presupuestosResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.PRESUPUESTOS);
-        const jerarquiaResult = await window.firebaseService.readAll(window.FirebaseApp.COLLECTIONS.JERARQUIA);
         
         const repuestosCount = repuestosResult.success ? repuestosResult.data.length : 0;
         const mapasCount = mapasResult.success ? mapasResult.data.length : 0;
         const zonasCount = zonasResult.success ? zonasResult.data.length : 0;
-        const presupuestosCount = presupuestosResult.success ? presupuestosResult.data.length : 0;
-        const jerarquiaCount = jerarquiaResult.success && jerarquiaResult.data.length > 0 ? jerarquiaResult.data[0].estructura?.length || 0 : 0;
         
-        const totalFirebase = repuestosCount + mapasCount + zonasCount + presupuestosCount;
-        const totalLocal = repuestosLocales + mapasLocales + zonasLocales + presupuestosLocales;
+        // Contar imágenes en repuestos
+        let imagenesCount = 0;
+        if (repuestosResult.success) {
+            repuestosResult.data.forEach(r => {
+                if (r.imageUrl && r.imageUrl.startsWith('https://')) imagenesCount++;
+                if (r.multimedia && Array.isArray(r.multimedia)) {
+                    imagenesCount += r.multimedia.filter(m => m.url && m.url.startsWith('https://')).length;
+                }
+            });
+        }
         
-        if (totalFirebase === 0) {
-            statusDiv.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 10px; padding: 15px; background: rgba(234, 179, 8, 0.1); border-radius: 6px; border: 1px solid rgba(234, 179, 8, 0.3);">
-                    <span style="font-size: 1.5rem;">⚠️</span>
-                    <div>
-                        <strong style="color: #fbbf24;">No hay datos en Firebase</strong><br>
-                        <small style="opacity: 0.8;">
-                            Tienes ${totalLocal} elementos locales (${repuestosLocales} repuestos, ${mapasLocales} mapas, ${zonasLocales} zonas, ${jerarquiaLocales} áreas).<br>
-                            Usa el botón "Migrar Datos a Firebase" para respaldarlos en la nube.
-                        </small>
-                    </div>
-                </div>
-            `;
-        } else {
-            // Verificar sincronización
-            const sincronizado = (
-                repuestosCount === repuestosLocales && 
-                mapasCount === mapasLocales && 
-                zonasCount === zonasLocales &&
-                jerarquiaCount === jerarquiaLocales
-            );
-            const iconoEstado = sincronizado ? '✅' : '⚠️';
-            const colorEstado = sincronizado ? '#4ade80' : '#fbbf24';
-            const textoEstado = sincronizado ? 'Datos sincronizados en Firebase' : 'Desincronizado - Considera migrar de nuevo';
-            
-            let detalleDesincronizacion = '';
-            if (!sincronizado) {
-                const diferencias = [];
-                if (repuestosCount !== repuestosLocales) diferencias.push(`Repuestos: ${repuestosLocales} local vs ${repuestosCount} nube`);
-                if (mapasCount !== mapasLocales) diferencias.push(`Mapas: ${mapasLocales} local vs ${mapasCount} nube`);
-                if (zonasCount !== zonasLocales) diferencias.push(`Zonas: ${zonasLocales} local vs ${zonasCount} nube`);
-                if (jerarquiaCount !== jerarquiaLocales) diferencias.push(`Jerarquía: ${jerarquiaLocales} local vs ${jerarquiaCount} nube`);
-                detalleDesincronizacion = '<br><small style="opacity: 0.7; font-size: 0.75rem;">' + diferencias.join(' • ') + '</small>';
-            }
-            
+        // 🔥 Actualizar estadísticas en la UI
+        if (statRepuestos) statRepuestos.textContent = repuestosCount;
+        if (statMapas) statMapas.textContent = mapasCount;
+        if (statZonas) statZonas.textContent = zonasCount;
+        if (statImagenes) statImagenes.textContent = imagenesCount;
+        if (connStatus) connStatus.innerHTML = '✅ Conectado';
+        
+        // Estado de sincronización
+        const syncEnabled = localStorage.getItem('firebaseSyncEnabled') === 'true';
+        if (syncStatus) {
+            syncStatus.innerHTML = syncEnabled ? '🔄 Activa' : '⏸️ Pausada';
+            syncStatus.style.color = syncEnabled ? '#22c55e' : '#eab308';
+        }
+        
+        // Actualizar el div de estado detallado si existe
+        if (statusDiv) {
             statusDiv.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 10px; padding: 15px; background: rgba(34, 197, 94, 0.1); border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.3);">
-                    <span style="font-size: 1.5rem;">${iconoEstado}</span>
+                    <span style="font-size: 1.5rem;">✅</span>
                     <div>
-                        <strong style="color: ${colorEstado};">${textoEstado}</strong>${detalleDesincronizacion}<br>
+                        <strong style="color: #4ade80;">Conectado a Firebase</strong><br>
                         <div style="margin-top: 8px; font-size: 0.85rem; opacity: 0.9;">
                             📦 ${repuestosCount} repuestos • 
                             🗺️ ${mapasCount} mapas • 
-                            📍 ${zonasCount} zonas • 
-                            💰 ${presupuestosCount} presupuestos •
-                            🌳 ${jerarquiaCount} áreas
+                            📍 ${zonasCount} zonas •
+                            🖼️ ${imagenesCount} imágenes
                         </div>
                     </div>
                 </div>
             `;
         }
+        
+        console.log(`📊 Firebase Stats: ${repuestosCount} repuestos, ${mapasCount} mapas, ${zonasCount} zonas, ${imagenesCount} imágenes`);
+        
     } catch (error) {
         console.error('Error consultando Firebase:', error);
-        statusDiv.innerHTML = `<p style="color: #f87171;">❌ Error consultando Firebase: ${error.message}</p>`;
+        if (statusDiv) statusDiv.innerHTML = `<p style="color: #f87171;">❌ Error consultando Firebase: ${error.message}</p>`;
+        if (connStatus) connStatus.innerHTML = '❌ Error';
     }
 }
 
@@ -64657,6 +64240,14 @@ window.addEventListener('userAuthenticated', () => {
     if (window.customAuth && window.firebaseService.getUserRole() === 'admin') {
         window.customAuth.initializeUsers();
     }
+    
+    // 🔥 MODO FIREBASE-ONLY: Activar sincronización automáticamente al autenticarse
+    console.log('🔥 Usuario autenticado - Activando sincronización Firebase automática...');
+    setTimeout(() => {
+        if (window.activarSincronizacionTiempoReal && !syncActive) {
+            window.activarSincronizacionTiempoReal();
+        }
+    }, 1000);
 });
 
 // Si ya está autenticado al cargar, actualizar inmediatamente
@@ -64668,6 +64259,14 @@ if (window.firebaseService && window.firebaseService.isAuthenticated()) {
         if (window.customAuth && window.firebaseService.getUserRole() === 'admin') {
             window.customAuth.initializeUsers();
         }
+        
+        // 🔥 MODO FIREBASE-ONLY: Activar sincronización automáticamente
+        console.log('🔥 Ya autenticado - Activando sincronización Firebase automática...');
+        setTimeout(() => {
+            if (window.activarSincronizacionTiempoReal && !syncActive) {
+                window.activarSincronizacionTiempoReal();
+            }
+        }, 500);
     }, 1000);
 }
 
@@ -64880,54 +64479,52 @@ document.head.appendChild(syncStyles);
 window.activarSincronizacionTiempoReal = activarSincronizacionTiempoReal;
 window.desactivarSincronizacionTiempoReal = desactivarSincronizacionTiempoReal;
 
-// 🔄 RESTAURAR ESTADO DE SINCRONIZACIÓN AL CARGAR
+// 🔥 FIREBASE-ONLY: Sincronización automática obligatoria
+// Se activa apenas Firebase está listo, sin depender de localStorage
 function restaurarEstadoSync() {
-    const syncEnabled = localStorage.getItem('firebaseSyncEnabled');
-    console.log('🔄 Verificando estado de sincronización guardado:', syncEnabled);
+    console.log('🔥 FIREBASE-ONLY: Iniciando sincronización automática...');
     
-    if (syncEnabled === 'true') {
-        let attempts = 0;
-        const maxAttempts = 30; // Máximo 30 intentos (15 segundos)
+    let attempts = 0;
+    const maxAttempts = 60; // Máximo 60 intentos (30 segundos)
+    
+    // Esperar a que Firebase esté completamente listo
+    const checkFirebase = setInterval(() => {
+        attempts++;
         
-        // Esperar a que Firebase esté completamente listo antes de activar sync
-        const checkFirebase = setInterval(() => {
-            attempts++;
+        const firebaseReady = window.firebaseStorageAdapter && 
+                              window.firebaseService && 
+                              window.firebaseService.isAuthenticated() &&
+                              window.firebaseService.db;
+        
+        if (firebaseReady && !syncActive) {
+            clearInterval(checkFirebase);
+            console.log(`🔥 Firebase listo (intento ${attempts}) - Activando sincronización...`);
             
-            const firebaseReady = window.firebaseStorageAdapter && 
-                                  window.firebaseService && 
-                                  window.firebaseService.isAuthenticated() &&
-                                  window.firebaseService.db; // Verificar que Firestore esté disponible
-            
-            if (firebaseReady) {
-                clearInterval(checkFirebase);
-                console.log(`🔄 Restaurando sincronización automáticamente (intento ${attempts})...`);
-                
-                // Pequeño delay adicional para asegurar que todo esté listo
-                setTimeout(() => {
-                    activarSincronizacionTiempoReal();
-                }, 500);
-            } else if (attempts >= maxAttempts) {
-                clearInterval(checkFirebase);
-                console.warn('⚠️ No se pudo restaurar sincronización: Firebase no está listo después de 15 segundos');
-                console.log('💡 Puedes activar manualmente desde Configuración > Sincronización Firebase');
-            } else if (attempts % 6 === 0) {
-                // Log cada 3 segundos para debug
-                console.log(`⏳ Esperando Firebase... (${attempts * 500 / 1000}s) - Auth: ${window.firebaseService?.isAuthenticated()}, DB: ${!!window.firebaseService?.db}`);
-            }
-        }, 500);
-    }
+            // Activar inmediatamente
+            activarSincronizacionTiempoReal();
+        } else if (syncActive) {
+            clearInterval(checkFirebase);
+            console.log('✅ Sincronización ya activa');
+        } else if (attempts >= maxAttempts) {
+            clearInterval(checkFirebase);
+            console.warn('⚠️ Timeout: Firebase no está listo después de 30 segundos');
+            console.log('💡 Inicia sesión para sincronizar con Firebase');
+        } else if (attempts % 10 === 0) {
+            // Log cada 5 segundos para debug
+            console.log(`⏳ Esperando Firebase... (${attempts * 500 / 1000}s) - Auth: ${window.firebaseService?.isAuthenticated()}`);
+        }
+    }, 500);
 }
 
-// Ejecutar restauración cuando el DOM esté listo
+// Ejecutar restauración apenas cargue la página
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(restaurarEstadoSync, 2000));
+    document.addEventListener('DOMContentLoaded', () => setTimeout(restaurarEstadoSync, 500));
 } else {
-    setTimeout(restaurarEstadoSync, 2000);
+    setTimeout(restaurarEstadoSync, 500);
 }
 
 console.log('✅ Sistema de sincronización en tiempo real disponible');
-console.log('💡 Usa: window.activarSincronizacionTiempoReal() para activar');
-console.log('💡 Usa: window.desactivarSincronizacionTiempoReal() para desactivar');
+console.log('🔥 FIREBASE-ONLY: Sincronización automática activada');
 
 // 🔧 FUNCIÓN DE UTILIDAD: Migrar solo jerarquía a Firebase
 window.migrarJerarquiaAFirebase = async function() {

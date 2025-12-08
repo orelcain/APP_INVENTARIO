@@ -91,14 +91,12 @@ class LoginUI {
                                 Iniciar Sesión
                             </button>
                             
-                            <button type="button" class="btn btn-secondary btn-block" id="btnGuest" style="margin-top: 10px;">
-                                👤 Ingresar como Invitado (Solo Lectura)
-                            </button>
+                            <!-- Botón de invitado eliminado - Solo usuarios registrados -->
                         </form>
 
                         <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
                             <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center;">
-                                ℹ️ Usuarios disponibles: usuario1-5 (pass123, pass456, pass789, pass321, pass654)
+                                🔐 Acceso solo para usuarios autorizados
                             </p>
                         </div>
                     </div>
@@ -111,7 +109,7 @@ class LoginUI {
 
         // Event listeners
         document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
-        document.getElementById('btnGuest').addEventListener('click', () => this.handleGuestLogin());
+        // Botón de invitado eliminado - solo usuarios autorizados
         document.getElementById('btnLogout').addEventListener('click', () => this.logout());
         
         // Prevenir que atajos de teclado interfieran con los inputs del login
@@ -192,15 +190,7 @@ class LoginUI {
         }
     }
 
-    /**
-     * Manejar login como invitado
-     */
-    handleGuestLogin() {
-        const result = this.customAuth.loginAsGuest();
-        if (result.success) {
-            console.log('👤 Acceso como invitado');
-        }
-    }
+    // Función handleGuestLogin eliminada - solo usuarios autorizados
 
     /**
      * Manejar login exitoso

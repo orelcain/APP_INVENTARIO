@@ -194,37 +194,7 @@ class CustomAuth {
         }
     }
 
-    /**
-     * Login como invitado (solo lectura)
-     */
-    loginAsGuest() {
-        this.currentUser = {
-            username: 'invitado',
-            displayName: 'Invitado',
-            role: 'lectura'
-        };
-        this.userRole = 'lectura';
-        this.isGuest = true;
-
-        // Guardar en sessionStorage
-        sessionStorage.setItem('customAuth', JSON.stringify({
-            type: 'guest',
-            role: 'lectura'
-        }));
-
-        console.log('👤 Acceso como invitado');
-
-        // Disparar evento personalizado
-        window.dispatchEvent(new CustomEvent('customAuthSuccess', {
-            detail: {
-                user: this.currentUser,
-                role: this.userRole,
-                type: 'guest'
-            }
-        }));
-
-        return { success: true, user: this.currentUser, role: this.userRole };
-    }
+    // Función loginAsGuest eliminada - solo usuarios autorizados
 
     /**
      * Logout
