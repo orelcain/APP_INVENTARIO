@@ -25,12 +25,19 @@ class RepuestoVerification {
      * Inicia el flujo de verificación con datos del escáner
      */
     startVerification(scanData) {
+        console.log('📋 [DEBUG] startVerification() INICIANDO con:', scanData);
+        
         this.scanData = scanData;
         this.currentRepuesto = null;
         this.step = 'verify';
         
+        console.log('📋 [DEBUG] Creando modal de verificación');
         this.createVerificationModal();
+        
+        console.log('📋 [DEBUG] Mostrando paso verify');
         this.showStep('verify');
+        
+        console.log('📋 [DEBUG] startVerification() COMPLETADO');
     }
     
     /**
@@ -310,11 +317,14 @@ class RepuestoVerification {
             </div>
         `;
         
+        console.log('📋 [DEBUG] Agregando modal al DOM');
         document.body.appendChild(modal);
         this.modal = modal;
+        console.log('📋 [DEBUG] Modal agregado, id:', modal.id);
         
         // Agregar estilos si no existen
         this.injectStyles();
+        console.log('📋 [DEBUG] Estilos inyectados');
     }
     
     /**
@@ -966,10 +976,14 @@ class RepuestoVerification {
      * Muestra un paso específico
      */
     showStep(step) {
+        console.log('📋 [DEBUG] showStep() llamado con:', step);
+        
         this.step = step;
         
         // Ocultar todos los pasos
-        document.querySelectorAll('.verification-step').forEach(el => {
+        const allSteps = document.querySelectorAll('.verification-step');
+        console.log('📋 [DEBUG] Pasos encontrados:', allSteps.length);
+        allSteps.forEach(el => {
             el.style.display = 'none';
         });
         
@@ -980,8 +994,18 @@ class RepuestoVerification {
             'assign': 'stepAssign'
         };
         
-        const stepEl = document.getElementById(stepMap[step]);
-        if (stepEl) stepEl.style.display = 'block';
+        const stepElId = stepMap[step];
+        console.log('📋 [DEBUG] Buscando elemento:', stepElId);
+        
+        const stepEl = document.getElementById(stepElId);
+        console.log('📋 [DEBUG] Elemento encontrado:', !!stepEl);
+        
+        if (stepEl) {
+            stepEl.style.display = 'block';
+            console.log('📋 [DEBUG] Paso mostrado');
+        } else {
+            console.error('📋 [ERROR] No se encontró el elemento del paso:', stepElId);
+        }
         
         // Actualizar indicadores
         const steps = ['verify', 'complete', 'assign'];
@@ -994,9 +1018,12 @@ class RepuestoVerification {
         });
         
         // Inicializar contenido del paso
+        console.log('📋 [DEBUG] Inicializando paso:', step);
         if (step === 'verify') this.initVerifyStep();
         if (step === 'complete') this.initCompleteStep();
         if (step === 'assign') this.initAssignStep();
+        
+        console.log('📋 [DEBUG] showStep() COMPLETADO');
     }
     
     /**

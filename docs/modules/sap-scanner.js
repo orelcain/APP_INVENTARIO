@@ -1064,7 +1064,12 @@ class SAPScanner {
      * Procesa imagen con Tesseract OCR
      */
     async processImage(imageData) {
-        if (this.isProcessing) return;
+        console.log('📸 [DEBUG] processImage() INICIANDO');
+        
+        if (this.isProcessing) {
+            console.log('📸 [DEBUG] Ya está procesando, saliendo');
+            return;
+        }
         this.isProcessing = true;
         
         // Mostrar progreso
@@ -1072,34 +1077,43 @@ class SAPScanner {
         const analyzeBtn = document.getElementById('sapScannerAnalyzeBtn');
         const retryBtn = document.getElementById('sapScannerRetryBtn');
         
+        console.log('📸 [DEBUG] Elementos UI:', { progressContainer: !!progressContainer, analyzeBtn: !!analyzeBtn, retryBtn: !!retryBtn });
+        
         if (progressContainer) progressContainer.style.display = 'block';
         if (analyzeBtn) analyzeBtn.style.display = 'none';
         if (retryBtn) retryBtn.style.display = 'none';
         
         // 🔍 Iniciar animación de escaneo estilo Google Lens
+        console.log('📸 [DEBUG] Iniciando animación de escaneo');
         this.startScanAnimation();
         
         try {
             // Inicializar Tesseract si no está listo
             if (!this.isReady) {
+                console.log('📸 [DEBUG] Tesseract no listo, inicializando...');
                 this.updateProgress(0);
                 const progressText = document.getElementById('sapScannerProgressText');
                 if (progressText) progressText.textContent = 'Cargando motor OCR (primera vez)...';
                 this.updateScanStatus('Cargando motor OCR...');
                 await this.init();
+                console.log('📸 [DEBUG] Tesseract inicializado');
             }
             
             // Actualizar estado de escaneo
             this.updateScanStatus('Detectando texto...');
             
             // Ejecutar OCR
-            console.log('📸 SAPScanner: Procesando imagen...');
+            console.log('📸 [DEBUG] Ejecutando OCR...');
             const result = await this.worker.recognize(imageData);
             
-            console.log('📸 SAPScanner: OCR completado:', result);
+            console.log('📸 [DEBUG] OCR completado. Resultado:', {
+                text: result.data.text?.substring(0, 100),
+                confidence: result.data.confidence
+            });
             
             // Mostrar detección encontrada
             this.updateScanStatus('¡Código encontrado!');
+            console.log('📸 [DEBUG] Mostrando caja de detección');
             await this.showDetectionBox(result.data);
             
             // Extraer datos
@@ -1107,19 +1121,29 @@ class SAPScanner {
             this.lastScan.confidence = Math.round(result.data.confidence);
             
             // Parsear datos SAP
+            console.log('📸 [DEBUG] Parseando texto extraído');
             this.parseExtractedText(result.data.text);
+            console.log('📸 [DEBUG] Datos parseados:', {
+                codigoSAP: this.lastScan.codigoSAP,
+                descripcion: this.lastScan.descripcion
+            });
             
             // Pequeña pausa para que se vea la animación de éxito
+            console.log('📸 [DEBUG] Pausa de 500ms para animación');
             await new Promise(resolve => setTimeout(resolve, 500));
             
             // Detener animación
+            console.log('📸 [DEBUG] Deteniendo animación');
             this.stopScanAnimation();
             
             // Mostrar modal de confirmación
+            console.log('📸 [DEBUG] Llamando a showConfirmModal()');
             this.showConfirmModal();
+            console.log('📸 [DEBUG] showConfirmModal() completado');
             
         } catch (error) {
-            console.error('📸 SAPScanner: Error en OCR:', error);
+            console.error('📸 [DEBUG] ERROR en OCR:', error);
+            console.error('📸 [DEBUG] Stack:', error.stack);
             this.stopScanAnimation();
             this.showToast('Error procesando imagen. Intenta de nuevo.', 'error');
             
@@ -1130,6 +1154,7 @@ class SAPScanner {
         } finally {
             this.isProcessing = false;
             if (progressContainer) progressContainer.style.display = 'none';
+            console.log('📸 [DEBUG] processImage() TERMINADO');
         }
     }
     
@@ -1352,46 +1377,69 @@ class SAPScanner {
      * Lógica inteligente con validación redundante
      */
     showConfirmModal() {
+        console.log('📸 [DEBUG] showConfirmModal() INICIANDO');
+        
         // Cerrar modal de captura
+        console.log('📸 [DEBUG] Cerrando modal de captura');
         this.closeModal(false);
         
         // Buscar si el repuesto ya existe
         const codigoSAP = this.lastScan.codigoSAP;
         const repuestoExistente = this.findRepuestoByCodigo(codigoSAP);
         
-        console.log(`📸 SAPScanner: Modo=${this.operationMode}, Código=${codigoSAP}, Existe=${!!repuestoExistente}`);
+        console.log('📸 [DEBUG] Estado actual:', {
+            operationMode: this.operationMode,
+            codigoSAP: codigoSAP,
+            repuestoExistente: !!repuestoExistente,
+            lastScan: this.lastScan
+        });
         
         // 🎯 LÓGICA INTELIGENTE
         if (this.operationMode === 'count') {
+            console.log('📸 [DEBUG] Modo CONTAR');
             // Usuario quiere CONTAR
             if (repuestoExistente) {
                 // ✅ Escenario ideal: existe y quiere contar
+                console.log('📸 [DEBUG] Repuesto existe -> showCountModal()');
                 this.showCountModal(repuestoExistente);
             } else {
                 // ⚠️ Discrepancia: quiere contar pero NO existe
+                console.log('📸 [DEBUG] Repuesto NO existe -> showDiscrepancyModal()');
                 this.showDiscrepancyModal('count-not-found', codigoSAP);
             }
         } else if (this.operationMode === 'add') {
+            console.log('📸 [DEBUG] Modo AGREGAR');
             // Usuario quiere AGREGAR
             if (repuestoExistente) {
                 // ⚠️ Discrepancia: quiere agregar pero YA existe
+                console.log('📸 [DEBUG] Repuesto YA existe -> showDiscrepancyModal()');
                 this.showDiscrepancyModal('add-exists', codigoSAP, repuestoExistente);
             } else {
                 // ✅ Escenario ideal: no existe y quiere agregar
+                console.log('📸 [DEBUG] Repuesto NO existe -> showAddModal()');
                 this.showAddModal();
             }
         } else {
             // Sin modo definido (fallback)
+            console.log('📸 [DEBUG] Sin modo definido -> showAddModal() (fallback)');
             this.showAddModal();
         }
+        
+        console.log('📸 [DEBUG] showConfirmModal() TERMINADO');
     }
     
     /**
      * 🆕 NUEVO: Busca repuesto por código SAP
      */
     findRepuestoByCodigo(codigo) {
-        if (!codigo || !window.app || !window.app.repuestos) return null;
-        return window.app.repuestos.find(r => r.codSAP === codigo);
+        console.log('📸 [DEBUG] findRepuestoByCodigo:', codigo);
+        if (!codigo || !window.app || !window.app.repuestos) {
+            console.log('📸 [DEBUG] No hay código o no hay repuestos');
+            return null;
+        }
+        const found = window.app.repuestos.find(r => r.codSAP === codigo);
+        console.log('📸 [DEBUG] Encontrado:', found ? found.nombre : 'NO');
+        return found;
     }
     
     /**
@@ -1798,8 +1846,19 @@ class SAPScanner {
      * 🆕 NUEVO: Mostrar modal de agregar (flujo normal)
      */
     showAddModal() {
+        console.log('📸 [DEBUG] showAddModal() INICIANDO');
+        
         // Usar el nuevo módulo de verificación si está disponible
+        console.log('📸 [DEBUG] window.repuestoVerification:', !!window.repuestoVerification);
+        
         if (window.repuestoVerification) {
+            console.log('📸 [DEBUG] Llamando repuestoVerification.startVerification() con:', {
+                imageData: !!this.lastScan.imageData,
+                codigoSAP: this.lastScan.codigoSAP,
+                descripcion: this.lastScan.descripcion,
+                confidence: this.lastScan.confidence
+            });
+            
             window.repuestoVerification.startVerification({
                 imageData: this.lastScan.imageData,
                 codigoSAP: this.lastScan.codigoSAP,
@@ -1807,10 +1866,13 @@ class SAPScanner {
                 rawText: this.lastScan.rawText,
                 confidence: this.lastScan.confidence
             });
+            
+            console.log('📸 [DEBUG] startVerification() LLAMADO');
             return;
         }
         
         // Fallback al modal simple
+        console.log('📸 [DEBUG] No hay repuestoVerification, usando showSimpleConfirmModal()');
         this.showSimpleConfirmModal();
     }
     

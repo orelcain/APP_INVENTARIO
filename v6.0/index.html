@@ -17490,7 +17490,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
                class="quick-search-input" 
                placeholder="Buscar repuesto..." 
                autocomplete="off"
-               oninput="window.mobileHomeActions?.quickSearch(this.value)">
+               oninput="window.mobileHomeActions?.quickSearch(this.value)"
+               onkeydown="console.log('🔑 KeyDown en búsqueda:', event.key, event.keyCode, 'preventDefault?', event.defaultPrevented)">
         <button class="quick-search-clear" onclick="window.mobileHomeActions?.clearQuickSearch()" style="display:none;">✕</button>
       </div>
       <!-- Resultados de búsqueda -->
@@ -68175,6 +68176,7 @@ window.mobileHomeActions = {
   
   // 🔍 Búsqueda rápida en tiempo real
   quickSearch: function(query) {
+    console.log('🔍 quickSearch llamado con:', query);
     const clearBtn = document.querySelector('.quick-search-clear');
     const resultsContainer = document.getElementById('quickSearchResults');
     
@@ -68192,6 +68194,7 @@ window.mobileHomeActions = {
   
   // Ejecutar búsqueda
   performSearch: function(query) {
+    console.log('🔍 performSearch ejecutando con:', query);
     const resultsContainer = document.getElementById('quickSearchResults');
     if (!resultsContainer) return;
     
