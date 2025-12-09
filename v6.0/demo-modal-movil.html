@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Demo Modal Móvil - Inventario</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --bg-dark: #0f172a;
+      --bg-card: #1e293b;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.6);
+      --border: rgba(255,255,255,0.1);
+    }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+    }
+    
+    /* ========================================= */
+    /* MODAL FULLSCREEN MÓVIL                    */
+    /* ========================================= */
+    .modal-mobile {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    /* HEADER FIJO */
+    .modal-header {
+      flex-shrink: 0;
+      padding: 16px;
+      padding-top: calc(16px + env(safe-area-inset-top));
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    /* WIZARD TABS */
+    .wizard-tabs {
+      flex-shrink: 0;
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(0,0,0,0.3);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .wizard-tabs::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .wizard-tab {
+      flex-shrink: 0;
+      padding: 10px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .wizard-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+    
+    .wizard-tab.completed {
+      background: rgba(34, 197, 94, 0.2);
+      border-color: var(--success);
+      color: var(--success);
+    }
+    
+    .tab-number {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    
+    .wizard-tab.active .tab-number {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    .wizard-tab.completed .tab-number {
+      background: var(--success);
+      color: white;
+    }
+    
+    /* CONTENIDO SCROLLEABLE */
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* SECCIONES */
+    .form-section {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+    
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .section-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    
+    /* CAMPOS */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px; /* Evita zoom en iOS */
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: white;
+      outline: none;
+      transition: all 0.2s;
+    }
+    
+    .form-input:focus {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.1);
+    }
+    
+    .form-input::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+    
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+    
+    textarea.form-input {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    /* GRID 2 COLUMNAS */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    
+    /* ZONA UPLOAD */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 32px 16px;
+      text-align: center;
+      background: rgba(255,255,255,0.02);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .upload-zone:active {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.1);
+    }
+    
+    .upload-icon {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+    
+    .upload-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    /* PREVIEW IMÁGENES */
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .image-thumb {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .image-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .image-delete {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--danger);
+      border: none;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    /* FOOTER FIJO */
+    .modal-footer {
+      flex-shrink: 0;
+      padding: 16px;
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, var(--success) 0%, #16a34a 100%);
+      color: white;
+    }
+    
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-secondary);
+    }
+    
+    .btn:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+    
+    /* TREE UBICACIONES */
+    .tree-container {
+      max-height: 200px;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    
+    .tree-item {
+      padding: 10px 12px;
+      margin-bottom: 4px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    
+    .tree-item.selected {
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid var(--primary);
+    }
+    
+    .tree-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .tree-item.selected .tree-checkbox {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    /* SELECTOR DE TABS DEMO */
+    .demo-selector {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      background: rgba(0,0,0,0.8);
+      padding: 8px;
+      border-radius: 20px;
+      z-index: 1000;
+    }
+    
+    .demo-btn {
+      padding: 8px 16px;
+      border-radius: 16px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    
+    .demo-btn.active {
+      background: var(--primary);
+    }
+    
+    /* PASO OCULTO */
+    .step-content {
+      display: none;
+    }
+    
+    .step-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="modal-mobile">
+    <!-- HEADER -->
+    <div class="modal-header">
+      <span class="modal-title">📦 Editar Repuesto</span>
+      <button class="btn-close" onclick="alert('Cerrar modal')">✕</button>
+    </div>
+    
+    <!-- WIZARD TABS -->
+    <div class="wizard-tabs">
+      <button class="wizard-tab active" onclick="showStep(1)">
+        <span class="tab-number">1</span>
+        Identificación
+      </button>
+      <button class="wizard-tab" onclick="showStep(2)">
+        <span class="tab-number">2</span>
+        Stock
+      </button>
+      <button class="wizard-tab" onclick="showStep(3)">
+        <span class="tab-number">3</span>
+        Ubicación
+      </button>
+      <button class="wizard-tab" onclick="showStep(4)">
+        <span class="tab-number">4</span>
+        Multimedia
+      </button>
+    </div>
+    
+    <!-- CONTENIDO -->
+    <div class="modal-body">
+      
+      <!-- PASO 1: IDENTIFICACIÓN -->
+      <div class="step-content active" id="step1">
+        <div class="form-section">
+          <h3 class="section-title">📋 Identificación General</h3>
+          <p class="section-desc">Códigos y descripción del repuesto</p>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Código SAP *</label>
+              <input type="text" class="form-input" placeholder="SAP12345" value="SAP-001234">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Código Proveedor</label>
+              <input type="text" class="form-input" placeholder="PROV-001">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Categoría *</label>
+            <select class="form-input">
+              <option>REPUESTO</option>
+              <option>INSUMO</option>
+              <option>HERRAMIENTA</option>
+              <option>EPP</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Nombre/Descripción *</label>
+            <input type="text" class="form-input" placeholder="Descripción del repuesto" value="Rodamiento 6205-2RS SKF">
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h3 class="section-title">🔧 Datos Técnicos</h3>
+          <p class="section-desc">Especificaciones opcionales</p>
+          
+          <div class="form-group">
+            <label class="form-label">Número de Equipo</label>
+            <input type="text" class="form-input" placeholder="EQ-001, BOMBA-2340">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Datos Técnicos</label>
+            <textarea class="form-input" placeholder="Especificaciones técnicas...">Diámetro interno: 25mm
+Diámetro externo: 52mm
+Sellado: 2RS (contacto)</textarea>
+          </div>
+        </div>
+      </div>
+      
+      <!-- PASO 2: STOCK -->
+      <div class="step-content" id="step2">
+        <div class="form-section">
+          <h3 class="section-title">📊 Stock y Políticas</h3>
+          <p class="section-desc">Control de inventario y alertas</p>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Stock Actual *</label>
+              <input type="number" class="form-input" value="15">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Instalados</label>
+              <input type="number" class="form-input" value="8">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Mínimo *</label>
+              <input type="number" class="form-input" value="5">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Óptimo</label>
+              <input type="number" class="form-input" value="20">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Precio ($)</label>
+            <input type="number" class="form-input" placeholder="0.00" value="45.50">
+          </div>
+        </div>
+      </div>
+      
+      <!-- PASO 3: UBICACIÓN -->
+      <div class="step-content" id="step3">
+        <div class="form-section">
+          <h3 class="section-title">📍 Ubicaciones</h3>
+          <p class="section-desc">Asigna dónde se encuentra este repuesto</p>
+          
+          <div class="tree-container">
+            <div class="tree-item selected">
+              <span class="tree-checkbox">✓</span>
+              <span>🏭 Planta Principal → Línea 1 → Motor A</span>
+            </div>
+            <div class="tree-item">
+              <span class="tree-checkbox"></span>
+              <span>🏭 Planta Principal → Línea 2</span>
+            </div>
+            <div class="tree-item">
+              <span class="tree-checkbox"></span>
+              <span>🔧 Taller → Banco de trabajo</span>
+            </div>
+            <div class="tree-item">
+              <span class="tree-checkbox"></span>
+              <span>📦 Bodega General</span>
+            </div>
+          </div>
+          
+          <button class="btn btn-secondary" style="margin-top: 12px;">
+            ➕ Agregar ubicación
+          </button>
+        </div>
+      </div>
+      
+      <!-- PASO 4: MULTIMEDIA -->
+      <div class="step-content" id="step4">
+        <div class="form-section">
+          <h3 class="section-title">📷 Imágenes</h3>
+          <p class="section-desc">Fotos del repuesto (máx. 10MB cada una)</p>
+          
+          <div class="upload-zone">
+            <div class="upload-icon">📸</div>
+            <div class="upload-text">Toca para seleccionar imágenes<br>JPG, PNG, WebP</div>
+          </div>
+          
+          <div class="image-grid">
+            <div class="image-thumb">
+              <img src="https://via.placeholder.com/150/1e293b/ffffff?text=1" alt="Imagen 1">
+              <button class="image-delete">✕</button>
+            </div>
+            <div class="image-thumb">
+              <img src="https://via.placeholder.com/150/1e293b/ffffff?text=2" alt="Imagen 2">
+              <button class="image-delete">✕</button>
+            </div>
+            <div class="image-thumb">
+              <img src="https://via.placeholder.com/150/1e293b/ffffff?text=3" alt="Imagen 3">
+              <button class="image-delete">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- FOOTER -->
+    <div class="modal-footer">
+      <button class="btn btn-success">
+        💾 Guardar Repuesto
+      </button>
+    </div>
+  </div>
+  
+  <!-- SELECTOR DE PASOS (DEMO) -->
+  <div class="demo-selector">
+    <button class="demo-btn active" onclick="showStep(1)">1</button>
+    <button class="demo-btn" onclick="showStep(2)">2</button>
+    <button class="demo-btn" onclick="showStep(3)">3</button>
+    <button class="demo-btn" onclick="showStep(4)">4</button>
+  </div>
+  
+  <script>
+    function showStep(num) {
+      // Ocultar todos los pasos
+      document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.wizard-tab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.demo-btn').forEach(el => el.classList.remove('active'));
+      
+      // Mostrar paso seleccionado
+      document.getElementById('step' + num).classList.add('active');
+      document.querySelectorAll('.wizard-tab')[num - 1].classList.add('active');
+      document.querySelectorAll('.demo-btn')[num - 1].classList.add('active');
+      
+      // Marcar anteriores como completados
+      for (let i = 0; i < num - 1; i++) {
+        document.querySelectorAll('.wizard-tab')[i].classList.add('completed');
+      }
+    }
+    
+    // Click en items del tree
+    document.querySelectorAll('.tree-item').forEach(item => {
+      item.addEventListener('click', function() {
+        this.classList.toggle('selected');
+        const checkbox = this.querySelector('.tree-checkbox');
+        checkbox.textContent = this.classList.contains('selected') ? '✓' : '';
+      });
+    });
+  </script>
+  
+</body>
+</html>
