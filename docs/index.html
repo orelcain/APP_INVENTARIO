@@ -17482,7 +17482,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.001</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.002</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17689,7 +17689,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.001</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.002</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -58483,6 +58483,82 @@ const okrModule = {
 };
 
 const app = new InventarioCompleto();
+
+// 🔧 FUNCIONES DE DIAGNÓSTICO FIREBASE (ejecutar desde consola del navegador)
+window.debugFirebase = {
+  // Ver cuántos repuestos hay en Firestore
+  async checkFirestore() {
+    if (!window.firebaseStorageAdapter) {
+      console.error('❌ firebaseStorageAdapter no disponible');
+      return;
+    }
+    console.log('🔍 Consultando Firestore...');
+    const repuestos = await window.firebaseStorageAdapter.cargarRepuestos();
+    console.log(`📊 Firestore tiene ${repuestos.length} repuestos`);
+    console.table(repuestos.map(r => ({ id: r.id?.substring(0,15), codSAP: r.codSAP, nombre: r.nombre?.substring(0,30) })));
+    return repuestos;
+  },
+  
+  // Ver cuántos repuestos hay en memoria local
+  checkLocal() {
+    const count = window.app?.repuestos?.length || 0;
+    console.log(`💾 Memoria local tiene ${count} repuestos`);
+    if (window.app?.repuestos) {
+      console.table(window.app.repuestos.map(r => ({ id: r.id?.substring(0,15), codSAP: r.codSAP, nombre: r.nombre?.substring(0,30) })));
+    }
+    return window.app?.repuestos;
+  },
+  
+  // Buscar un repuesto por nombre
+  async findByName(nombre) {
+    const repuestos = await this.checkFirestore();
+    const found = repuestos.filter(r => r.nombre?.toLowerCase().includes(nombre.toLowerCase()));
+    console.log(`🔎 Encontrados ${found.length} repuestos con "${nombre}"`);
+    if (found.length > 0) console.table(found);
+    return found;
+  },
+  
+  // Forzar recarga desde Firebase
+  async forceReload() {
+    console.log('🔄 Forzando recarga desde Firebase...');
+    await window.app.loadData();
+    console.log(`✅ Recargado. Ahora hay ${window.app.repuestos.length} repuestos`);
+    window.app.render();
+  },
+  
+  // Comparar local vs Firebase
+  async compare() {
+    const firestore = await window.firebaseStorageAdapter.cargarRepuestos();
+    const local = window.app?.repuestos || [];
+    
+    console.log('\n📊 COMPARACIÓN:');
+    console.log(`   Firestore: ${firestore.length} repuestos`);
+    console.log(`   Local: ${local.length} repuestos`);
+    
+    // Buscar diferencias
+    const firestoreIds = new Set(firestore.map(r => r.id));
+    const localIds = new Set(local.map(r => r.id));
+    
+    const soloEnFirestore = firestore.filter(r => !localIds.has(r.id));
+    const soloEnLocal = local.filter(r => !firestoreIds.has(r.id));
+    
+    if (soloEnFirestore.length > 0) {
+      console.log(`\n⚠️ Solo en Firestore (${soloEnFirestore.length}):`);
+      console.table(soloEnFirestore.map(r => ({ id: r.id?.substring(0,15), nombre: r.nombre })));
+    }
+    
+    if (soloEnLocal.length > 0) {
+      console.log(`\n⚠️ Solo en Local (${soloEnLocal.length}):`);
+      console.table(soloEnLocal.map(r => ({ id: r.id?.substring(0,15), nombre: r.nombre })));
+    }
+    
+    if (soloEnFirestore.length === 0 && soloEnLocal.length === 0) {
+      console.log('\n✅ Local y Firestore están sincronizados');
+    }
+  }
+};
+
+console.log('🔧 Debug Firebase disponible. Usa: debugFirebase.checkFirestore(), debugFirebase.compare(), etc.');
 
 // Iniciar monitoreo de conexión
 app.startConnectionMonitoring();
