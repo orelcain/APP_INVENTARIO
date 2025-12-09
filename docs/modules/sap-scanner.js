@@ -756,32 +756,33 @@ class SAPScanner {
         styles.id = 'sapSuggestionsStyles';
         styles.textContent = `
             .sap-suggestions-modal .sap-suggestions-content {
-                width: 95vw;
-                max-width: 500px;
-                max-height: 95vh;
+                width: 94vw;
+                max-width: 420px;
+                max-height: 92vh;
                 padding: 0;
                 overflow: hidden;
+                margin: 4vh auto;
             }
             
             .sap-suggestions-body {
-                padding: 12px;
+                padding: 10px;
                 overflow-y: auto;
-                max-height: calc(95vh - 50px);
+                max-height: calc(92vh - 45px);
                 -webkit-overflow-scrolling: touch;
             }
             
-            /* Contenedor de imagen con zoom - más ancho */
+            /* Contenedor de imagen compacto */
             .sap-suggestions-image-container {
                 background: var(--bg-tertiary);
-                border-radius: 12px;
+                border-radius: 10px;
                 overflow: hidden;
-                margin-bottom: 12px;
+                margin-bottom: 10px;
             }
             
             .sap-suggestions-image-wrapper {
                 position: relative;
                 width: 100%;
-                height: 180px;
+                height: 140px;
                 overflow: hidden;
                 touch-action: pan-x pan-y pinch-zoom;
                 cursor: zoom-in;
@@ -789,7 +790,7 @@ class SAPScanner {
             
             .sap-suggestions-image-wrapper.zoomed {
                 cursor: grab;
-                height: 280px;
+                height: 240px;
             }
             
             .sap-suggestions-image-wrapper.zoomed:active {
@@ -2201,8 +2202,8 @@ class SAPScanner {
                 }
             }
             
-            // 🎯 Mínimo 8 dígitos coincidentes (de 10) - solo 2 posibles errores
-            if (matchingDigits >= 8) {
+            // 🎯 Mínimo 7 dígitos coincidentes (de 10) - hasta 3 posibles errores
+            if (matchingDigits >= 7) {
                 candidates.push({
                     codigo: repuesto.codSAP,
                     nombre: repuesto.nombre || repuesto.descripcion || 'Sin nombre',
@@ -2659,7 +2660,7 @@ class SAPScanner {
     }
     
     /**
-     * 🆕 NUEVO: Modal de DISCREPANCIA
+     * 🆕 NUEVO: Modal de DISCREPANCIA - con campo editable
      */
     showDiscrepancyModal(type, codigo, repuesto = null) {
         let modal = document.getElementById('sapDiscrepancyModal');
@@ -2673,31 +2674,59 @@ class SAPScanner {
         let content = '';
         
         if (type === 'count-not-found') {
-            // Quería contar pero no existe
+            // Quería contar pero no existe - CON CAMPO EDITABLE
             content = `
-                <div class="sap-scanner-content" style="max-width: 380px; padding: 24px;">
+                <div class="sap-scanner-content" style="width: 94vw; max-width: 400px; padding: 16px;">
                     <div class="sap-scanner-header">
-                        <h3>⚠️ Repuesto No Encontrado</h3>
+                        <h3>⚠️ No Encontrado</h3>
                         <button type="button" class="sap-scanner-close" onclick="window.sapScanner.closeDiscrepancyModal()">✕</button>
                     </div>
                     
-                    <div class="sap-discrepancy-alert">
+                    <!-- Imagen escaneada pequeña -->
+                    ${this.lastScan.imageData ? `
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <img src="${this.lastScan.imageData}" style="max-height: 100px; max-width: 100%; border-radius: 8px; border: 1px solid var(--border-color);" />
+                    </div>
+                    ` : ''}
+                    
+                    <div class="sap-discrepancy-alert" style="margin-bottom: 12px;">
                         <div class="sap-discrepancy-icon">🔍</div>
                         <div class="sap-discrepancy-text">
-                            <div class="sap-discrepancy-title">No existe en el inventario</div>
+                            <div class="sap-discrepancy-title">Código no registrado</div>
                             <div class="sap-discrepancy-desc">
-                                El código <strong>${codigo || 'detectado'}</strong> no está registrado. 
-                                ¿Deseas agregarlo primero?
+                                Puedes corregir el código y buscar de nuevo.
                             </div>
                         </div>
                     </div>
                     
-                    <div class="sap-discrepancy-actions">
-                        <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.closeDiscrepancyModal()">
+                    <!-- Campo editable para corregir código -->
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px;">
+                            ✏️ Código detectado (editable):
+                        </label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="sapDiscrepancyCodeInput" 
+                                   value="${codigo || ''}"
+                                   style="flex: 1; font-family: monospace; font-size: 1.2rem; font-weight: 700; 
+                                          letter-spacing: 2px; padding: 10px; text-align: center;
+                                          border: 2px solid var(--accent); border-radius: 8px;
+                                          background: var(--bg-primary); color: var(--text-primary);"
+                                   maxlength="12" inputmode="numeric" pattern="[0-9]*" />
+                        </div>
+                        <button type="button" onclick="window.sapScanner.searchFromDiscrepancy()" 
+                                style="width: 100%; margin-top: 8px; padding: 10px; 
+                                       background: var(--accent); color: white; border: none; 
+                                       border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            🔍 Buscar código corregido
+                        </button>
+                    </div>
+                    
+                    <div class="sap-discrepancy-actions" style="display: flex; gap: 8px;">
+                        <button type="button" class="sap-scanner-btn secondary" style="flex: 1;" onclick="window.sapScanner.closeDiscrepancyModal()">
                             Cancelar
                         </button>
-                        <button type="button" class="sap-scanner-btn primary" onclick="window.sapScanner.switchToAddMode()">
-                            📦 Agregar Repuesto
+                        <button type="button" class="sap-scanner-btn primary" style="flex: 1;" onclick="window.sapScanner.switchToAddMode()">
+                            📦 Agregar Nuevo
                         </button>
                     </div>
                 </div>
@@ -2755,9 +2784,62 @@ class SAPScanner {
     }
     
     /**
+     * 🆕 NUEVO: Buscar código editado desde modal de discrepancia
+     */
+    searchFromDiscrepancy() {
+        const input = document.getElementById('sapDiscrepancyCodeInput');
+        if (!input) return;
+        
+        const editedCode = input.value.trim().replace(/\D/g, '');
+        
+        if (editedCode.length < 6) {
+            this.showToast('El código debe tener al menos 6 dígitos', 'warning');
+            return;
+        }
+        
+        console.log(`📸 Buscando código corregido desde discrepancia: ${editedCode}`);
+        
+        // Actualizar código en lastScan
+        this.lastScan.codigoSAP = editedCode;
+        
+        // Buscar coincidencia exacta
+        const exactMatch = window.app.repuestos.find(r => r.codSAP === editedCode);
+        
+        if (exactMatch) {
+            console.log(`📸 ¡Coincidencia exacta encontrada!`);
+            this.closeDiscrepancyModal();
+            
+            // Según el modo, mostrar modal correcto
+            if (this.operationMode === 'count') {
+                this.showCountModal(exactMatch);
+            } else {
+                this.showDiscrepancyModal('add-exists', editedCode, exactMatch);
+            }
+            return;
+        }
+        
+        // Buscar similares
+        const similarCodes = this.findSimilarCodes(editedCode);
+        
+        if (similarCodes.length > 0) {
+            this.lastScan.similarCodes = similarCodes;
+            this.closeDiscrepancyModal();
+            this.showSuggestionsModal();
+        } else {
+            this.showToast(`No se encontró "${editedCode}" ni códigos similares`, 'warning');
+        }
+    }
+    
+    /**
      * 🆕 NUEVO: Cambiar a modo agregar
      */
     switchToAddMode() {
+        // Usar el código del input si existe
+        const input = document.getElementById('sapDiscrepancyCodeInput');
+        if (input) {
+            this.lastScan.codigoSAP = input.value.trim();
+        }
+        
         this.closeDiscrepancyModal();
         this.operationMode = 'add';
         this.showAddModal();

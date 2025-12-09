@@ -17548,7 +17548,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.014</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.015</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17767,7 +17767,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.014</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.015</span>
       </div>
     </div>
 
@@ -69152,17 +69152,39 @@ window.updateMobileHome = function() {
   console.log('🏠 Actualizando Mobile Home...');
   
   try {
-    // Obtener datos del inventario
+    // Obtener datos del inventario - usar la misma fuente que inventario
     const repuestos = window.app?.repuestos || [];
     const jerarquia = window.app?.jerarquia?.areas || [];
     
-    // 1. Stats
+    // 1. Stats - usar misma lógica que inventario
     const totalRepuestos = repuestos.length;
     const stockBajo = repuestos.filter(r => {
       const cantidad = parseInt(r.cantidad || r.stock) || 0;
       const minimo = parseInt(r.minimo) || 0;
       return cantidad <= minimo && minimo > 0;
     }).length;
+    
+    // 🆕 Detectar códigos SAP duplicados
+    const codigosSAP = {};
+    const duplicados = [];
+    repuestos.forEach(r => {
+      if (r.codSAP) {
+        if (codigosSAP[r.codSAP]) {
+          // Ya existe, es duplicado
+          if (!duplicados.find(d => d.codigo === r.codSAP)) {
+            duplicados.push({
+              codigo: r.codSAP,
+              repuestos: [codigosSAP[r.codSAP], r]
+            });
+          } else {
+            const dup = duplicados.find(d => d.codigo === r.codSAP);
+            dup.repuestos.push(r);
+          }
+        } else {
+          codigosSAP[r.codSAP] = r;
+        }
+      }
+    });
     
     // Contar mapas
     let totalMapas = 0;
@@ -69211,6 +69233,22 @@ window.updateMobileHome = function() {
       let alertsHTML = '';
       const agotados = repuestos.filter(r => parseInt(r.cantidad || r.stock) === 0).length;
       
+      // 🆕 Alerta de duplicados (crítico) - PRIMERO
+      if (duplicados.length > 0) {
+        alertsHTML += `
+          <div class="alert-card alert-critical" onclick="window.showDuplicadosModal()">
+            <div class="alert-icon-wrap">⚠️</div>
+            <div class="alert-content">
+              <div class="alert-title">Códigos Duplicados</div>
+              <div class="alert-desc">Revisar y corregir duplicados</div>
+            </div>
+            <span class="alert-badge">${duplicados.length}</span>
+          </div>
+        `;
+        // Guardar duplicados para el modal
+        window.duplicadosDetectados = duplicados;
+      }
+      
       // Alerta de agotados (crítico)
       if (agotados > 0) {
         alertsHTML += `
@@ -69248,6 +69286,10 @@ window.updateMobileHome = function() {
       }
     }
     
+    // Log de duplicados si existen
+    if (duplicados.length > 0) {
+      console.warn('⚠️ Códigos SAP duplicados detectados:', duplicados);
+    }
     // 4. Generar chips de áreas dinámicamente
     if (window.mobileHomeActions?.generateAreaChips) {
       window.mobileHomeActions.generateAreaChips();
@@ -69260,6 +69302,101 @@ window.updateMobileHome = function() {
     
   } catch (error) {
     console.error('❌ Error actualizando Mobile Home:', error);
+  }
+};
+
+// 🆕 Modal para gestionar duplicados
+window.showDuplicadosModal = function() {
+  const duplicados = window.duplicadosDetectados || [];
+  if (duplicados.length === 0) {
+    app.showToast('No hay duplicados detectados', 'info');
+    return;
+  }
+  
+  // Crear modal
+  let modal = document.getElementById('duplicadosModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'duplicadosModal';
+    modal.className = 'sap-scanner-modal';
+    document.body.appendChild(modal);
+  }
+  
+  let content = `
+    <div class="sap-scanner-content" style="width: 94vw; max-width: 450px; max-height: 90vh; padding: 0; overflow: hidden;">
+      <div class="sap-scanner-header" style="padding: 16px; border-bottom: 1px solid var(--border-color);">
+        <h3 style="margin: 0;">⚠️ Códigos Duplicados (${duplicados.length})</h3>
+        <button type="button" class="sap-scanner-close" onclick="document.getElementById('duplicadosModal').classList.remove('active')">✕</button>
+      </div>
+      
+      <div style="padding: 12px; overflow-y: auto; max-height: calc(90vh - 60px);">
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 12px 0;">
+          Los siguientes códigos SAP están duplicados. Selecciona cuál mantener o edita para corregir.
+        </p>
+        
+        ${duplicados.map((dup, i) => `
+          <div style="background: var(--bg-secondary); border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 2px solid var(--border-color);">
+            <div style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 8px;">
+              📋 ${dup.codigo}
+            </div>
+            ${dup.repuestos.map((r, j) => `
+              <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--bg-primary); border-radius: 8px; margin-bottom: 6px;">
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; font-size: 0.9rem;">${r.nombre || 'Sin nombre'}</div>
+                  <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                    Stock: ${r.cantidad || 0} | ID: ${r.id}
+                  </div>
+                </div>
+                <button onclick="window.editDuplicado('${r.id}')" style="padding: 6px 10px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                  ✏️ Editar
+                </button>
+                <button onclick="window.deleteDuplicado('${r.id}', '${dup.codigo}')" style="padding: 6px 10px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                  🗑️
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  
+  modal.innerHTML = content;
+  modal.classList.add('active');
+};
+
+// Editar repuesto duplicado
+window.editDuplicado = function(id) {
+  document.getElementById('duplicadosModal')?.classList.remove('active');
+  if (window.app && window.app.openModal) {
+    window.app.openModal('edit', id);
+  }
+};
+
+// Eliminar repuesto duplicado
+window.deleteDuplicado = async function(id, codigo) {
+  if (!confirm(`¿Eliminar este repuesto con código ${codigo}?\\n\\nEsta acción no se puede deshacer.`)) {
+    return;
+  }
+  
+  try {
+    await window.app.deleteRepuesto(id);
+    app.showToast('Repuesto eliminado', 'success');
+    
+    // Actualizar home y modal
+    if (window.updateMobileHome) window.updateMobileHome();
+    
+    // Re-mostrar modal si aún hay duplicados
+    setTimeout(() => {
+      if (window.duplicadosDetectados && window.duplicadosDetectados.length > 0) {
+        window.showDuplicadosModal();
+      } else {
+        document.getElementById('duplicadosModal')?.classList.remove('active');
+      }
+    }, 300);
+  } catch (error) {
+    console.error('Error eliminando:', error);
+    app.showToast('Error al eliminar', 'error');
   }
 };
 
