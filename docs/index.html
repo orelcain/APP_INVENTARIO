@@ -17548,7 +17548,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.012</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.013</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17767,7 +17767,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.012</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.013</span>
       </div>
     </div>
 
@@ -41500,37 +41500,64 @@ class InventarioCompleto {
     
     document.getElementById('modal').classList.add('active');
     
-    // 📱 MÓVIL: Forzar modal fullscreen con dimensiones reales de pantalla
+    // 📱 MÓVIL: Forzar modal fullscreen con viewport units
     const modalContent = document.querySelector('#modal .modal-content');
+    const modalOverlay = document.getElementById('modal');
     if (this.isMobile && modalContent) {
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-      console.log(`📱 Modal móvil: Adaptando a pantalla ${screenWidth}x${screenHeight}`);
+      console.log(`📱 Modal móvil FULLSCREEN: ${window.innerWidth}x${window.innerHeight}`);
       
-      // Aplicar dimensiones exactas de pantalla
-      modalContent.style.cssText = `
+      // Forzar el overlay a cubrir toda la pantalla
+      modalOverlay.style.cssText = `
         position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        z-index: 9999 !important;
+        display: flex !important;
+        align-items: stretch !important;
+        justify-content: stretch !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: rgba(0,0,0,0.8) !important;
+      `;
+      
+      // Aplicar fullscreen real al contenido
+      modalContent.style.cssText = `
+        position: absolute !important;
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
         bottom: 0 !important;
-        width: ${screenWidth}px !important;
-        height: ${screenHeight}px !important;
-        max-width: ${screenWidth}px !important;
-        max-height: ${screenHeight}px !important;
-        min-width: unset !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        max-width: 100vw !important;
+        max-height: 100vh !important;
+        max-height: 100dvh !important;
+        min-width: 0 !important;
         margin: 0 !important;
+        padding: 0 !important;
         border-radius: 0 !important;
         transform: none !important;
         overflow: hidden !important;
+        box-sizing: border-box !important;
       `;
       
       // Asegurar que el contenido scrolleable tenga altura correcta
       const modalScroll = modalContent.querySelector('.modal-scroll');
       if (modalScroll) {
-        modalScroll.style.maxHeight = `${screenHeight - 150}px`; // Restar header y footer
-        modalScroll.style.overflowY = 'auto';
+        modalScroll.style.cssText = `
+          max-height: calc(100vh - 140px) !important;
+          max-height: calc(100dvh - 140px) !important;
+          overflow-y: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+        `;
       }
+      
+      // Ocultar scroll del body
+      document.body.style.overflow = 'hidden';
     }
     
     this.addEscapeListener();
@@ -41628,11 +41655,21 @@ class InventarioCompleto {
       this.modalResizableInstance = null;
     }
     
-    // Remover clase de resizable
+    // Remover clase de resizable y limpiar estilos inline
     const modalContent = document.querySelector('.modal-content');
     if (modalContent) {
       modalContent.classList.remove('is-resizable');
+      modalContent.style.cssText = ''; // Limpiar estilos inline
     }
+    
+    // Limpiar estilos del overlay
+    const modalOverlay = document.getElementById('modal');
+    if (modalOverlay) {
+      modalOverlay.style.cssText = '';
+    }
+    
+    // Restaurar scroll del body
+    document.body.style.overflow = '';
     
     document.getElementById('modal').classList.remove('active');
     this.removeEscapeListener();
@@ -66760,7 +66797,7 @@ window.ImageFullscreenViewer = {
         
         this.applyTransform();
       } else if (e.touches.length === 2 && isPinching) {
-        // Pinch-to-zoom HACIA EL PUNTO DE PELLIZCO
+        // Pinch-to-zoom FLUIDO hacia el punto de pellizco
         e.preventDefault();
         
         const currentDistance = Math.hypot(
@@ -66768,41 +66805,60 @@ window.ImageFullscreenViewer = {
           e.touches[0].clientY - e.touches[1].clientY
         );
         
-        // Centro del pellizco (punto focal del zoom)
+        // Centro actual del pellizco
         const pinchCenterX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
         const pinchCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
         
-        // Calcular nuevo scale
+        // Calcular nuevo scale con suavizado
         const scaleRatio = currentDistance / initialDistance;
-        const newScale = Math.min(Math.max(initialScale * scaleRatio, 1), 5);
+        const targetScale = Math.min(Math.max(initialScale * scaleRatio, 1), 5);
         
-        if (newScale !== this.scale) {
-          // Obtener posición de la imagen
-          const rect = img.getBoundingClientRect();
-          const imgCenterX = rect.left + rect.width / 2;
-          const imgCenterY = rect.top + rect.height / 2;
+        // Suavizar el cambio de escala (interpolación)
+        const smoothFactor = 0.85;
+        const newScale = this.scale + (targetScale - this.scale) * smoothFactor;
+        
+        // Obtener posición de la imagen relativa al viewport
+        const rect = img.getBoundingClientRect();
+        
+        // Punto focal en coordenadas de la imagen (0-1)
+        const focalX = (pinchCenterX - rect.left) / rect.width;
+        const focalY = (pinchCenterY - rect.top) / rect.height;
+        
+        // Calcular el cambio de escala
+        const scaleChange = newScale / this.scale;
+        
+        if (Math.abs(newScale - this.scale) > 0.001) {
+          // Calcular nueva posición para mantener el punto focal fijo
+          // El punto focal debe permanecer en la misma posición de pantalla
+          const newWidth = rect.width * scaleChange;
+          const newHeight = rect.height * scaleChange;
           
-          // Calcular offset del punto de pellizco respecto al centro de la imagen
-          const offsetX = pinchCenterX - imgCenterX;
-          const offsetY = pinchCenterY - imgCenterY;
+          // Ajuste de traducción basado en el punto focal
+          const deltaX = (focalX - 0.5) * (newWidth - rect.width);
+          const deltaY = (focalY - 0.5) * (newHeight - rect.height);
           
-          // Calcular nueva traducción para mantener el punto focal
-          const scaleDiff = newScale - this.scale;
+          this.translateX = initialTranslateX - deltaX;
+          this.translateY = initialTranslateY - deltaY;
           
-          // Ajustar traducción para que el zoom vaya hacia el punto de pellizco
-          this.translateX = initialTranslateX - (offsetX * scaleDiff / newScale);
-          this.translateY = initialTranslateY - (offsetY * scaleDiff / newScale);
+          // Limitar traducción para mantener la imagen visible
+          const maxTranslateX = Math.max(0, (newScale - 1) * rect.width / (2 * this.scale));
+          const maxTranslateY = Math.max(0, (newScale - 1) * rect.height / (2 * this.scale));
           
-          // Limitar traducción para no salir de la imagen
-          const maxTranslate = (newScale - 1) * Math.max(rect.width, rect.height) / 2;
-          this.translateX = Math.max(-maxTranslate, Math.min(maxTranslate, this.translateX));
-          this.translateY = Math.max(-maxTranslate, Math.min(maxTranslate, this.translateY));
+          this.translateX = Math.max(-maxTranslateX, Math.min(maxTranslateX, this.translateX));
+          this.translateY = Math.max(-maxTranslateY, Math.min(maxTranslateY, this.translateY));
           
           this.scale = newScale;
           
-          if (this.scale > 1) {
+          // Actualizar valores iniciales para el siguiente frame
+          initialTranslateX = this.translateX;
+          initialTranslateY = this.translateY;
+          initialScale = this.scale;
+          initialDistance = currentDistance;
+          
+          if (this.scale > 1.05) {
             img?.classList.add('zoomed');
-          } else {
+          } else if (this.scale < 1.05) {
+            this.scale = 1;
             this.translateX = 0;
             this.translateY = 0;
             img?.classList.remove('zoomed');
