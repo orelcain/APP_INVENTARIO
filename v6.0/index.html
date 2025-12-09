@@ -343,19 +343,22 @@
         }
         
         const repuestosFirebase = window.app?.repuestos?.length || 0;
+        const firebaseActivo = window.firebaseService?.isAuthenticated?.();
         
         const confirmar = confirm(
-          `⚠️ LIMPIAR REPUESTOS LOCALES\n\n` +
+          `🗑️ LIMPIAR CACHE LOCAL\n\n` +
           `📦 Repuestos en localStorage: ${cantidadLocal}\n` +
-          `☁️ Repuestos en Firebase: ${repuestosFirebase}\n\n` +
-          `¿Estás seguro de eliminar los ${cantidadLocal} repuestos locales?\n\n` +
-          `(Los datos de Firebase NO se verán afectados)`
+          `☁️ Repuestos en Firebase: ${repuestosFirebase}\n` +
+          `🔥 Firebase activo: ${firebaseActivo ? 'Sí' : 'No'}\n\n` +
+          `${firebaseActivo ? '✅ Es seguro limpiar - Firebase tiene tus datos' : '⚠️ Firebase NO activo - asegúrate de no perder datos'}\n\n` +
+          `¿Limpiar localStorage?`
         );
         
         if (confirmar) {
           localStorage.removeItem('inventarioData');
-          console.log(`🗑️ Eliminados ${cantidadLocal} repuestos de localStorage`);
-          alert(`✅ Eliminados ${cantidadLocal} repuestos de localStorage\n\n🔄 Recarga la página para ver los cambios`);
+          const sizeBefore = (JSON.stringify(repuestosLocales).length / 1024).toFixed(1);
+          console.log(`🗑️ Eliminados ${cantidadLocal} repuestos de localStorage (${sizeBefore}KB liberados)`);
+          alert(`✅ localStorage limpiado\n\n• ${cantidadLocal} repuestos eliminados\n• ${sizeBefore}KB liberados\n\n${firebaseActivo ? '🔥 Tus datos siguen en Firebase' : '⚠️ Recarga para verificar'}`);
         }
       };
       
@@ -17516,7 +17519,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.019</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.020</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17735,7 +17738,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.019</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.020</span>
       </div>
     </div>
 
@@ -39283,6 +39286,16 @@ class InventarioCompleto {
     const toastId = this.showToast(' Guardando...', 'info', 10000);
     
     try {
+      // 🔥 FIREBASE-ONLY: Si Firebase está activo, NO usar localStorage
+      // Firebase se sincroniza en tiempo real, no necesitamos cache local
+      const firebaseActivo = window.firebaseService?.isAuthenticated?.() && window.syncActive;
+      
+      if (firebaseActivo) {
+        console.log('🔥 Firebase activo - Omitiendo localStorage (ya sincronizado)');
+        this.showToast('✅ Sincronizado con Firebase', 'success', 2000);
+        return true;
+      }
+      
       //  MVIL: Actualizar EMBEDDED_DATA automticamente
       if (this.isMobile && !this.hasFileSystemAPI && typeof EMBEDDED_DATA !== 'undefined') {
         console.log(' Actualizando EMBEDDED_DATA en memoria...');
@@ -65938,12 +65951,8 @@ function activarSincronizacionTiempoReal() {
                     console.log('🏠 Home actualizado con datos de Firebase');
                 }
                 
-                // También actualizar cache local
-                try {
-                    localStorage.setItem('inventarioData', JSON.stringify(data));
-                } catch (e) {
-                    console.warn('⚠️ No se pudo actualizar cache local:', e);
-                }
+                // 🔥 NO guardamos en localStorage - Firebase es la fuente única
+                // Esto evita problemas de límite de 5-10MB
                 
                 // Actualizar estado UI
                 actualizarEstadoFirebase();
