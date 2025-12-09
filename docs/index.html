@@ -1025,56 +1025,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       width: 100%;
     }
 
-    .app-warmup-progress {
-      position: relative;
-      width: 100%;
-      padding: 0 18px;
-      background: rgba(9, 17, 29, 0.25);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      opacity: 0;
-      pointer-events: none;
-      max-height: 0;
-      overflow: hidden;
-      transition: opacity 0.35s ease, max-height 0.35s ease, padding 0.35s ease;
-    }
-
-    .app-warmup-progress.active {
-      padding: 6px 18px 4px;
-      opacity: 1;
-      max-height: 48px;
-    }
-
-    .warmup-progress-label {
-      font-size: 0.72rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.55);
-    }
-
-    .warmup-progress-track {
-      position: relative;
-      width: 100%;
-      height: 4px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      overflow: hidden;
-    }
-
-    .warmup-progress-fill {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 0%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #4f8fc7, #7bd5ff);
-      box-shadow: 0 0 12px rgba(79, 143, 199, 0.4);
-      transition: width 0.3s ease-out;
-    }
+    /* CSS WarmupProgress removido - Firebase carga instantáneamente */
 
     .container {
       max-width: 100%;
@@ -15913,60 +15864,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   color: white;
 }
 
-/* ===== INDICADOR DE CARGA INICIAL ===== */
-#loadingIndicator {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-  color: white;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.loading-icon {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
-
-.loading-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.loading-text {
-  font-size: 14px;
-  opacity: 0.7;
-}
-
-.loading-bar-container {
-  margin-top: 30px;
-  width: 200px;
-  height: 4px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.loading-bar {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, #5b8bb4, #6ea8d4);
-  animation: loadBar 2s ease-in-out infinite;
-}
-
-@keyframes loadBar {
-  0% { width: 0%; margin-left: 0%; }
-  50% { width: 75%; margin-left: 0%; }
-  100% { width: 0%; margin-left: 100%; }
-}
+/* ===== INDICADOR DE CARGA INICIAL - REMOVIDO (Firebase es instantáneo) ===== */
 
 /* ================================================================== */
 /* 📱 MEJORAS RESPONSIVE PARA MÓVILES - COMPLETO                      */
@@ -17404,15 +17302,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 })();
 </script>
 
-<!--  INDICADOR DE CARGA INICIAL -->
-<div id="loadingIndicator">
-  <div class="loading-icon" style="font-size: 2rem;">⏳</div>
-  <div class="loading-title">Cargando</div>
-  <div class="loading-text">Iniciando aplicación...</div>
-  <div class="loading-bar-container">
-    <div class="loading-bar"></div>
-  </div>
-</div>
+<!-- INDICADOR DE CARGA REMOVIDO - Firebase carga instantáneamente -->
 
 <!--  MODAL DE CARGA CON BARRA DE PROGRESO -->
 <div id="loadingModal" class="loading-modal">
@@ -17530,12 +17420,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     </button>
   </div>
 
-  <div class="app-warmup-progress" id="appWarmupProgress">
-    <div class="warmup-progress-label" id="appWarmupProgressLabel">Preparando aplicación...</div>
-    <div class="warmup-progress-track">
-      <div class="warmup-progress-fill" id="appWarmupProgressFill"></div>
-    </div>
-  </div>
+  <!-- WarmupProgress removido - Firebase carga instantáneamente -->
 </div>
 
 <!-- CONTENEDOR PRINCIPAL -->
@@ -17548,7 +17433,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.016</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.017</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17767,7 +17652,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.016</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.017</span>
       </div>
     </div>
 
@@ -63549,79 +63434,13 @@ const LoadingModal = {
 };
 
 // ========================================================================
-//  INDICADOR NO BLOQUEANTE EN PESTAÑAS (BARRA SUPERIOR)
+//  INDICADOR WarmupProgress - REMOVIDO (Firebase carga instantáneamente)
 // ========================================================================
 const WarmupProgress = {
-  container: null,
-  fill: null,
-  label: null,
-  duration: 15000,
-  startTime: null,
-  hideTimer: null,
-  active: false,
-
-  init() {
-    if (this.container) return;
-    this.container = document.getElementById('appWarmupProgress');
-    this.fill = document.getElementById('appWarmupProgressFill');
-    this.label = document.getElementById('appWarmupProgressLabel');
-  },
-
-  start(message = 'Preparando aplicación...', duration = null) {
-    if (!this.container) this.init();
-    if (!this.container) return;
-    if (duration) {
-      this.duration = duration;
-    }
-    this.active = true;
-    this.startTime = Date.now();
-    this.container.classList.add('active');
-    this.setMessage(message);
-    if (this.hideTimer) {
-      clearTimeout(this.hideTimer);
-      this.hideTimer = null;
-    }
-    if (this.fill) {
-      this.fill.style.transition = 'none';
-      this.fill.style.width = '0%';
-      requestAnimationFrame(() => {
-        this.fill.style.transition = `width ${this.duration}ms linear`;
-        this.fill.style.width = '100%';
-      });
-    }
-  },
-
-  setMessage(message) {
-    if (this.label && message) {
-      this.label.textContent = message;
-    }
-  },
-
-  finish(message = 'Aplicación lista') {
-    if (!this.active || !this.container) return;
-    if (message) {
-      this.setMessage(message);
-    }
-    const elapsed = Date.now() - (this.startTime || Date.now());
-    const remaining = Math.max(0, this.duration - elapsed);
-    if (this.hideTimer) {
-      clearTimeout(this.hideTimer);
-    }
-    this.hideTimer = setTimeout(() => {
-      if (this.fill) {
-        this.fill.style.transition = 'width 0.4s ease-out';
-        this.fill.style.width = '100%';
-      }
-      setTimeout(() => {
-        this.container.classList.remove('active');
-        if (this.fill) {
-          this.fill.style.transition = 'none';
-          this.fill.style.width = '0%';
-        }
-        this.active = false;
-      }, 600);
-    }, remaining);
-  }
+  init() {},
+  start() {},
+  setMessage() {},
+  finish() {}
 };
 
 // ========================================================================
