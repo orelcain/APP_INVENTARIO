@@ -265,6 +265,73 @@
         }, 3000);
       });
       
+      // 🔍 BUSCAR REPUESTO EN TODAS LAS FUENTES (diagnóstico)
+      window.buscarRepuestoEn = async function(termino) {
+        console.log(`\n🔍 BUSCANDO "${termino}" EN TODAS LAS FUENTES...\n`);
+        
+        const terminoLower = termino.toLowerCase();
+        let encontrados = { memoria: [], firebase: [], localStorage: [] };
+        
+        // 1. Buscar en memoria (window.app.repuestos)
+        const enMemoria = (window.app?.repuestos || []).filter(r => 
+          r.nombre?.toLowerCase().includes(terminoLower) ||
+          r.codSAP?.toLowerCase().includes(terminoLower)
+        );
+        encontrados.memoria = enMemoria;
+        console.log(`📦 EN MEMORIA: ${enMemoria.length} encontrados`);
+        enMemoria.forEach(r => console.log(`   - ${r.nombre} (${r.codSAP}) - ID: ${r.id}`));
+        
+        // 2. Buscar en Firebase directamente
+        try {
+          if (window.firebaseService && window.firebaseService.isAuthenticated()) {
+            const result = await window.firebaseService.readAll('repuestos');
+            if (result.success) {
+              const enFirebase = result.data.filter(r => 
+                r.nombre?.toLowerCase().includes(terminoLower) ||
+                r.codSAP?.toLowerCase().includes(terminoLower)
+              );
+              encontrados.firebase = enFirebase;
+              console.log(`☁️ EN FIREBASE: ${enFirebase.length} encontrados (de ${result.data.length} total)`);
+              enFirebase.forEach(r => console.log(`   - ${r.nombre} (${r.codSAP}) - ID: ${r.id}`));
+            }
+          } else {
+            console.log('☁️ FIREBASE: No autenticado');
+          }
+        } catch (e) {
+          console.error('❌ Error buscando en Firebase:', e);
+        }
+        
+        // 3. Buscar en localStorage
+        try {
+          const local = JSON.parse(localStorage.getItem('inventarioData') || '[]');
+          const enLocal = local.filter(r => 
+            r.nombre?.toLowerCase().includes(terminoLower) ||
+            r.codSAP?.toLowerCase().includes(terminoLower)
+          );
+          encontrados.localStorage = enLocal;
+          console.log(`💾 EN LOCALSTORAGE: ${enLocal.length} encontrados (de ${local.length} total)`);
+          enLocal.forEach(r => console.log(`   - ${r.nombre} (${r.codSAP}) - ID: ${r.id}`));
+        } catch (e) {
+          console.error('❌ Error buscando en localStorage:', e);
+        }
+        
+        // Resumen
+        console.log(`\n📊 RESUMEN:`);
+        console.log(`   Memoria: ${encontrados.memoria.length}`);
+        console.log(`   Firebase: ${encontrados.firebase.length}`);
+        console.log(`   localStorage: ${encontrados.localStorage.length}`);
+        console.log(`   Sync activa: ${window.syncActive ? '✅' : '❌'}`);
+        
+        // Alertar si hay discrepancia
+        if (encontrados.firebase.length > 0 && encontrados.memoria.length === 0) {
+          console.warn('⚠️ PROBLEMA: El repuesto EXISTE en Firebase pero NO en memoria');
+          console.log('💡 Solución: Recarga la página o ejecuta window.app.loadData()');
+        }
+        
+        return encontrados;
+      };
+      console.log('💡 Usa: window.buscarRepuestoEn("perno") para diagnosticar');
+      
       // 🗑️ LIMPIAR REPUESTOS LOCALES (localStorage)
       window.limpiarRepuestosLocales = function() {
         const repuestosLocales = JSON.parse(localStorage.getItem('inventarioData') || '[]');
@@ -316,6 +383,19 @@
           }
         });
         
+        // 🔥 Consultar Firebase directamente
+        let repuestosFirebase = 0;
+        let syncActiva = false;
+        try {
+          if (window.firebaseService && window.firebaseService.isAuthenticated()) {
+            const result = await window.firebaseService.readAll('repuestos');
+            repuestosFirebase = result.success ? result.data.length : 0;
+            syncActiva = window.syncActive || false;
+          }
+        } catch (e) {
+          console.error('Error consultando Firebase:', e);
+        }
+        
         const info = `
 📊 ESTADO DE DATOS
 ═══════════════════════════════
@@ -323,7 +403,8 @@
 📦 REPUESTOS:
    • localStorage: ${repuestosLocal.length}
    • En memoria (app): ${repuestosMemoria.length}
-   • Firebase sync: ${syncEnabled ? '✅ Activa' : '❌ Inactiva'}
+   • En Firebase: ${repuestosFirebase}
+   • Sync listener activo: ${syncActiva ? '✅ Sí' : '❌ No'}
 
 🖼️ IMÁGENES:
    • En FileSystem (local): ${imagenesFileSystem}
@@ -339,10 +420,12 @@
    • Firebase Storage: ${window.firebaseImageStorage ? '✅ Activo' : '❌ No'}
 
 🔄 SINCRONIZACIÓN:
-   • Tiempo real: ${syncEnabled ? '✅ Activa' : '❌ Inactiva'}
+   • Tiempo real habilitada: ${syncEnabled ? '✅ Sí' : '❌ No'}
+   • Listener activo: ${syncActiva ? '✅ Sí' : '❌ No'}
 `;
         
         console.log(info);
+        alert(info);
         
         // Si hay diferencia entre localStorage y Firebase, ofrecer sincronizar
         if (repuestosLocal.length > repuestosMemoria.length) {
@@ -17433,7 +17516,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.018</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.019</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17652,7 +17735,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.018</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.019</span>
       </div>
     </div>
 
@@ -65819,6 +65902,7 @@ if (window.firebaseService && window.firebaseService.isAuthenticated()) {
 
 let syncListeners = []; // Almacena los listeners para poder desconectarlos
 let syncActive = false; // Estado de sincronización
+window.syncActive = syncActive; // Exponer globalmente para diagnóstico
 
 function activarSincronizacionTiempoReal() {
     if (!window.firebaseStorageAdapter) {
@@ -65831,6 +65915,7 @@ function activarSincronizacionTiempoReal() {
     // 💾 GUARDAR preferencia en localStorage
     localStorage.setItem('firebaseSyncEnabled', 'true');
     syncActive = true;
+    window.syncActive = true; // Actualizar global
 
     // Activar callbacks de sincronización para cada colección
     window.firebaseStorageAdapter.enableRealtimeSync({
@@ -65966,6 +66051,7 @@ function desactivarSincronizacionTiempoReal() {
         // 💾 GUARDAR preferencia en localStorage
         localStorage.setItem('firebaseSyncEnabled', 'false');
         syncActive = false;
+        window.syncActive = false; // Actualizar global
         
         // Actualizar estado visual de los botones
         const syncStatus = document.getElementById('sync-status');
