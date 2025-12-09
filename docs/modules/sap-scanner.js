@@ -2488,9 +2488,30 @@ class SAPScanner {
         this.countingRepuesto.ultimoConteo = new Date().toISOString();
         this.countingRepuesto.ultimaModificacion = new Date().toISOString();
         
-        // Guardar
+        // Guardar localmente
         if (window.app && window.app.saveData) {
             await window.app.saveData();
+        }
+        
+        // 🔥 SINCRONIZACIÓN CON FIREBASE: Guardar conteo en Firestore
+        if (window.firebaseStorageAdapter && window.firebaseStorageAdapter.guardarRepuestos) {
+            try {
+                console.log('🔥 [FIREBASE] Sincronizando conteo...');
+                await window.firebaseStorageAdapter.guardarRepuestos([this.countingRepuesto]);
+                console.log('✅ [FIREBASE] Conteo sincronizado');
+            } catch (firebaseError) {
+                console.error('❌ [FIREBASE] Error sincronizando conteo:', firebaseError);
+            }
+        }
+        
+        // 📋 ACTIVITY LOG: Registrar la acción
+        if (window.firebaseService && window.firebaseService.logActivity) {
+            await window.firebaseService.logActivity('count', 'repuesto', this.countingRepuesto.id, this.countingRepuesto.nombre, {
+                oldValue,
+                newValue,
+                diff: newValue - oldValue,
+                source: 'sap-scanner'
+            });
         }
         
         // Actualizar UI
@@ -2888,9 +2909,29 @@ class SAPScanner {
             if (window.app && window.app.repuestos) {
                 window.app.repuestos.unshift(nuevoRepuesto);
                 
-                // Guardar
+                // Guardar localmente
                 if (window.app.saveData) {
                     await window.app.saveData();
+                }
+                
+                // 🔥 SINCRONIZACIÓN CON FIREBASE: Guardar repuesto en Firestore
+                if (window.firebaseStorageAdapter && window.firebaseStorageAdapter.guardarRepuestos) {
+                    try {
+                        console.log('🔥 [FIREBASE] Sincronizando nuevo repuesto desde Scanner...');
+                        await window.firebaseStorageAdapter.guardarRepuestos([nuevoRepuesto]);
+                        console.log('✅ [FIREBASE] Repuesto sincronizado con Firestore');
+                    } catch (firebaseError) {
+                        console.error('❌ [FIREBASE] Error sincronizando:', firebaseError);
+                    }
+                }
+                
+                // 📋 ACTIVITY LOG: Registrar la acción
+                if (window.firebaseService && window.firebaseService.logActivity) {
+                    await window.firebaseService.logActivity('create', 'repuesto', nuevoRepuesto.id, nuevoRepuesto.nombre, {
+                        codSAP: nuevoRepuesto.codSAP,
+                        cantidad: nuevoRepuesto.cantidad,
+                        source: 'sap-scanner'
+                    });
                 }
                 
                 // Actualizar UI
