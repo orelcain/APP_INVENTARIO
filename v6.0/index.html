@@ -16801,7 +16801,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 /* ================================================================== */
-/* 📱 MODAL MÓVIL v6.029 - SCROLL ÚNICO (SIN TABS)                    */
+/* 📱 MODAL MÓVIL v6.030 - SCROLL ÚNICO (SIN TABS)                    */
 /* ================================================================== */
 
 /* Ocultar en desktop */
@@ -17092,6 +17092,96 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   .mobile-btn-save:active {
     transform: scale(0.98);
     box-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
+  }
+  
+  /* BOTÓN AGREGAR UBICACIÓN */
+  .mobile-btn-add-ubicacion,
+  .mobile-btn-add-foto {
+    width: 100%;
+    padding: 14px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    background: rgba(59, 130, 246, 0.15);
+    border: 2px dashed rgba(59, 130, 246, 0.4);
+    border-radius: 12px;
+    color: #60a5fa;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+  
+  .mobile-btn-add-ubicacion:active,
+  .mobile-btn-add-foto:active {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: #3b82f6;
+  }
+  
+  /* UBICACIÓN ITEM CON ELIMINAR */
+  .mobile-ubicacion-item {
+    padding: 12px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    border-left: 3px solid #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  
+  .mobile-ubicacion-item .ubicacion-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .mobile-ubicacion-item .btn-remove {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  
+  /* FOTO ITEM CON ELIMINAR */
+  .mobile-foto-item {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+  }
+  
+  .mobile-foto-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .mobile-foto-item .btn-remove-foto {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   /* INFO BOX */
@@ -17404,7 +17494,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     <button class="nav-tab" data-tab="configuracion">
       Configuracin
     </button>
-  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.029</span></h1>
+  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.030</span></h1>
 
   <!-- WarmupProgress removido - Firebase carga instantáneamente -->
 </div>
@@ -17419,7 +17509,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile2">v6.029</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile2">v6.030</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17623,7 +17713,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div style="display: inline-flex; align-items: stretch; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
           <span id="userEmail" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.05); font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 500; white-space: nowrap;"></span>
           <button id="btnLogout" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.08); border: none; border-left: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;" title="Cerrar sesión" onmouseover="this.style.background='rgba(248, 113, 113, 0.15)'; this.style.color='rgba(248, 113, 113, 0.9)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.5)'">
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.029</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.030</span>
           </button>
         </div>
       </div>
@@ -17638,7 +17728,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop2" style="margin-left: 8px;">v6.029</span>
+        <span class="version-badge" id="versionBadgeDesktop2" style="margin-left: 8px;">v6.030</span>
       </div>
     </div>
 
@@ -18706,7 +18796,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
 <!-- ============================================================== -->
 <!-- 📱 MODAL MÓVIL DEDICADO - Solo visible en pantallas < 768px    -->
-<!-- v6.029: Diseño completamente separado del modal PC             -->
+<!-- v6.030: Diseño completamente separado del modal PC             -->
 <!-- ============================================================== -->
 <div id="mobileModalOverlay" class="mobile-modal-overlay">
   <div class="mobile-modal">
@@ -18782,7 +18872,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         </div>
       </div>
       
-      <!-- SECCIÓN 3: UBICACIÓN (Solo lectura en móvil) -->
+      <!-- SECCIÓN 3: UBICACIÓN -->
       <div class="mobile-section">
         <div class="mobile-section-header">
           <span>📍 Ubicación</span>
@@ -18792,10 +18882,22 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
           <div id="mobile-ubicacion-list" class="mobile-ubicacion-list">
             <div class="mobile-empty-state">Sin ubicaciones asignadas</div>
           </div>
+          <!-- Selector de ubicación simplificado -->
+          <div class="mobile-ubicacion-selector" id="mobileUbicacionSelector" style="margin-top: 12px;">
+            <select id="mobile-area-select" class="mobile-form-select" onchange="app.onMobileAreaChange()">
+              <option value="">-- Seleccionar Área --</option>
+            </select>
+            <select id="mobile-subarea-select" class="mobile-form-select" style="margin-top: 8px; display: none;">
+              <option value="">-- Seleccionar Sub-área --</option>
+            </select>
+            <button type="button" class="mobile-btn-add-ubicacion" onclick="app.addMobileUbicacion()">
+              ➕ Agregar Ubicación
+            </button>
+          </div>
         </div>
       </div>
       
-      <!-- SECCIÓN 4: MULTIMEDIA (Solo lectura en móvil) -->
+      <!-- SECCIÓN 4: MULTIMEDIA -->
       <div class="mobile-section">
         <div class="mobile-section-header">
           <span>📷 Fotos</span>
@@ -18804,6 +18906,13 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="mobile-section-content">
           <div id="mobile-fotos-grid" class="mobile-fotos-grid">
             <div class="mobile-empty-state">Sin fotos</div>
+          </div>
+          <!-- Botón para agregar fotos -->
+          <div class="mobile-foto-actions" style="margin-top: 12px;">
+            <input type="file" id="mobile-foto-input" accept="image/*" capture="environment" multiple style="display: none;" onchange="app.onMobileFotoSelected(event)">
+            <button type="button" class="mobile-btn-add-foto" onclick="document.getElementById('mobile-foto-input').click()">
+              📷 Tomar / Seleccionar Foto
+            </button>
           </div>
         </div>
       </div>
@@ -41495,7 +41604,7 @@ class InventarioCompleto {
       this.refreshModalMultimediaBadge();
     }
     
-    // 📱 v6.029: MODAL MÓVIL DEDICADO - Re-detectar en cada apertura
+    // 📱 v6.030: MODAL MÓVIL DEDICADO - Re-detectar en cada apertura
     const esMobile = window.innerWidth < 768 || this.isMobile;
     console.log(`📱 [MODAL CHECK] innerWidth=${window.innerWidth}, isMobile=${this.isMobile}, esMobile=${esMobile}`);
     
@@ -41593,7 +41702,7 @@ class InventarioCompleto {
     console.log('========== MODAL ABIERTO ==========\n');
   }
 
-  // 📱 v6.029: MODAL MÓVIL SCROLL ÚNICO - Sin tabs
+  // 📱 v6.030: MODAL MÓVIL SCROLL ÚNICO - Con edición de ubicaciones y fotos
   async openMobileModal(mode, id = null) {
     console.log('📱 [MOBILE MODAL] Abriendo modal móvil (scroll único)');
     
@@ -41604,6 +41713,8 @@ class InventarioCompleto {
     }
     
     this.currentEditingId = id;
+    this.mobileUbicaciones = [];
+    this.mobileFotos = [];
     
     // Actualizar título
     const title = document.getElementById('mobileModalTitle');
@@ -41624,6 +41735,9 @@ class InventarioCompleto {
         }
       }
     });
+    
+    // Cargar áreas disponibles
+    this.loadMobileAreas();
     
     // Resetear secciones de ubicación y fotos
     const ubicacionList = document.getElementById('mobile-ubicacion-list');
@@ -41663,29 +41777,27 @@ class InventarioCompleto {
           unidadEl.value = repuesto.unidad;
         }
         
-        // Ubicaciones
+        // Cargar ubicaciones existentes
         if (repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
-          if (ubicacionCount) ubicacionCount.textContent = repuesto.ubicaciones.length;
-          if (ubicacionList) {
-            ubicacionList.innerHTML = repuesto.ubicaciones.map(u => `
-              <div class="mobile-ubicacion-item">
-                ${[u.areaGeneral, u.subArea, u.sistemaEquipo, u.subSistema].filter(Boolean).join(' › ') || 'Sin ubicación'}
-              </div>
-            `).join('');
-          }
+          this.mobileUbicaciones = repuesto.ubicaciones.map(u => ({
+            areaGeneral: u.areaGeneral || '',
+            subArea: u.subArea || '',
+            sistemaEquipo: u.sistemaEquipo || '',
+            subSistema: u.subSistema || ''
+          }));
+          this.renderMobileUbicaciones();
         }
         
-        // Fotos
+        // Cargar fotos existentes
         if (repuesto.multimedia && repuesto.multimedia.length > 0) {
-          const fotos = repuesto.multimedia.filter(m => m.type === 'image');
-          if (fotosCount) fotosCount.textContent = fotos.length;
-          if (fotosGrid && fotos.length > 0) {
-            fotosGrid.innerHTML = fotos.slice(0, 6).map(foto => `
-              <div class="mobile-foto-item">
-                <img src="${foto.url || foto.dataUrl}" alt="Foto" onerror="this.parentElement.innerHTML='📷'">
-              </div>
-            `).join('') + (fotos.length > 6 ? `<div class="mobile-foto-item" style="display:flex;align-items:center;justify-content:center;color:white;">+${fotos.length - 6}</div>` : '');
-          }
+          this.mobileFotos = repuesto.multimedia.filter(m => m.type === 'image').map(m => ({
+            type: 'image',
+            url: m.url,
+            dataUrl: m.dataUrl,
+            name: m.name,
+            isNew: false
+          }));
+          this.renderMobileFotos();
         }
       }
     }
@@ -41712,16 +41824,28 @@ class InventarioCompleto {
       descripcion: getVal('mobile-descripcion'),
       marca: getVal('mobile-marca'),
       modelo: getVal('mobile-modelo'),
-      stock_actual: parseInt(getVal('mobile-stock-actual')) || 0,
-      stock_minimo: parseInt(getVal('mobile-stock-minimo')) || 0,
-      stock_maximo: parseInt(getVal('mobile-stock-maximo')) || 0,
-      unidad: getVal('mobile-unidad') || 'unidad'
+      cantidad: parseInt(getVal('mobile-stock-actual')) || 0,
+      minimo: parseInt(getVal('mobile-stock-minimo')) || 0,
+      optimo: parseInt(getVal('mobile-stock-maximo')) || 0,
+      unidad: getVal('mobile-unidad') || 'unidad',
+      // Incluir ubicaciones y multimedia
+      ubicaciones: this.mobileUbicaciones || [],
+      multimedia: this.mobileFotos || []
     };
     
     if (!data.nombre.trim()) {
       this.showToast('El nombre es obligatorio', 'warning');
-      this.setMobileWizardStep(1);
+      // Scroll al campo nombre
+      document.getElementById('mobile-nombre')?.focus();
       return;
+    }
+    
+    // Mostrar estado de guardado
+    const saveBtn = document.querySelector('.mobile-btn-save');
+    const originalText = saveBtn?.innerHTML;
+    if (saveBtn) {
+      saveBtn.innerHTML = '⏳ Guardando...';
+      saveBtn.disabled = true;
     }
     
     try {
@@ -41743,7 +41867,12 @@ class InventarioCompleto {
       this.renderRepuestos();
     } catch (error) {
       console.error('Error guardando:', error);
-      this.showToast('❌ Error al guardar', 'error');
+      this.showToast('❌ Error al guardar: ' + error.message, 'error');
+    } finally {
+      if (saveBtn) {
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+      }
     }
   }
   
@@ -41754,7 +41883,204 @@ class InventarioCompleto {
     }
     document.body.style.overflow = '';
     this.currentEditingId = null;
+    this.mobileUbicaciones = [];
+    this.mobileFotos = [];
     console.log('📱 [MOBILE MODAL] Cerrado');
+  }
+  
+  // 📱 UBICACIONES - Cargar áreas disponibles
+  loadMobileAreas() {
+    const select = document.getElementById('mobile-area-select');
+    if (!select) return;
+    
+    // Obtener áreas únicas de los repuestos existentes
+    const areas = new Set();
+    this.repuestos.forEach(r => {
+      if (r.ubicaciones) {
+        r.ubicaciones.forEach(u => {
+          if (u.areaGeneral) areas.add(u.areaGeneral);
+        });
+      }
+    });
+    
+    // También de opcionesJerarquia si existe
+    if (this.opcionesJerarquia && this.opcionesJerarquia.areaGeneral) {
+      this.opcionesJerarquia.areaGeneral.forEach(a => areas.add(a));
+    }
+    
+    select.innerHTML = '<option value="">-- Seleccionar Área --</option>' + 
+      Array.from(areas).sort().map(a => `<option value="${a}">${a}</option>`).join('');
+  }
+  
+  // 📱 UBICACIONES - Cuando cambia el área
+  onMobileAreaChange() {
+    const areaSelect = document.getElementById('mobile-area-select');
+    const subAreaSelect = document.getElementById('mobile-subarea-select');
+    const area = areaSelect?.value;
+    
+    if (!area || !subAreaSelect) {
+      if (subAreaSelect) subAreaSelect.style.display = 'none';
+      return;
+    }
+    
+    // Obtener sub-áreas del área seleccionada
+    const subAreas = new Set();
+    this.repuestos.forEach(r => {
+      if (r.ubicaciones) {
+        r.ubicaciones.forEach(u => {
+          if (u.areaGeneral === area && u.subArea) {
+            subAreas.add(u.subArea);
+          }
+        });
+      }
+    });
+    
+    if (subAreas.size > 0) {
+      subAreaSelect.innerHTML = '<option value="">-- Sub-área (opcional) --</option>' + 
+        Array.from(subAreas).sort().map(s => `<option value="${s}">${s}</option>`).join('');
+      subAreaSelect.style.display = 'block';
+    } else {
+      subAreaSelect.style.display = 'none';
+    }
+  }
+  
+  // 📱 UBICACIONES - Agregar ubicación
+  addMobileUbicacion() {
+    const area = document.getElementById('mobile-area-select')?.value;
+    const subArea = document.getElementById('mobile-subarea-select')?.value;
+    
+    if (!area) {
+      this.showToast('Selecciona un área', 'warning');
+      return;
+    }
+    
+    // Inicializar array si no existe
+    if (!this.mobileUbicaciones) this.mobileUbicaciones = [];
+    
+    // Verificar duplicado
+    const existe = this.mobileUbicaciones.some(u => u.areaGeneral === area && u.subArea === subArea);
+    if (existe) {
+      this.showToast('Esta ubicación ya está agregada', 'warning');
+      return;
+    }
+    
+    this.mobileUbicaciones.push({
+      areaGeneral: area,
+      subArea: subArea || '',
+      sistemaEquipo: '',
+      subSistema: ''
+    });
+    
+    this.renderMobileUbicaciones();
+    
+    // Resetear selects
+    document.getElementById('mobile-area-select').value = '';
+    document.getElementById('mobile-subarea-select').style.display = 'none';
+    
+    this.showToast('✅ Ubicación agregada', 'success');
+  }
+  
+  // 📱 UBICACIONES - Eliminar ubicación
+  removeMobileUbicacion(index) {
+    if (this.mobileUbicaciones) {
+      this.mobileUbicaciones.splice(index, 1);
+      this.renderMobileUbicaciones();
+    }
+  }
+  
+  // 📱 UBICACIONES - Renderizar lista
+  renderMobileUbicaciones() {
+    const list = document.getElementById('mobile-ubicacion-list');
+    const count = document.getElementById('mobile-ubicacion-count');
+    
+    if (!list) return;
+    
+    if (!this.mobileUbicaciones || this.mobileUbicaciones.length === 0) {
+      list.innerHTML = '<div class="mobile-empty-state">Sin ubicaciones asignadas</div>';
+      if (count) count.textContent = '0';
+      return;
+    }
+    
+    list.innerHTML = this.mobileUbicaciones.map((u, i) => `
+      <div class="mobile-ubicacion-item">
+        <span class="ubicacion-text">${[u.areaGeneral, u.subArea].filter(Boolean).join(' › ')}</span>
+        <button type="button" class="btn-remove" onclick="app.removeMobileUbicacion(${i})">✕</button>
+      </div>
+    `).join('');
+    
+    if (count) count.textContent = this.mobileUbicaciones.length;
+  }
+  
+  // 📱 FOTOS - Cuando se selecciona una foto
+  async onMobileFotoSelected(event) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+    
+    // Inicializar array si no existe
+    if (!this.mobileFotos) this.mobileFotos = [];
+    
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      
+      try {
+        // Convertir a base64
+        const dataUrl = await this.fileToDataUrl(file);
+        
+        this.mobileFotos.push({
+          type: 'image',
+          dataUrl: dataUrl,
+          name: file.name,
+          isNew: true
+        });
+      } catch (err) {
+        console.error('Error procesando imagen:', err);
+      }
+    }
+    
+    this.renderMobileFotos();
+    event.target.value = ''; // Reset input
+    this.showToast(`✅ ${files.length} foto(s) agregada(s)`, 'success');
+  }
+  
+  // 📱 FOTOS - Convertir archivo a dataUrl
+  fileToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+  
+  // 📱 FOTOS - Eliminar foto
+  removeMobileFoto(index) {
+    if (this.mobileFotos) {
+      this.mobileFotos.splice(index, 1);
+      this.renderMobileFotos();
+    }
+  }
+  
+  // 📱 FOTOS - Renderizar grid
+  renderMobileFotos() {
+    const grid = document.getElementById('mobile-fotos-grid');
+    const count = document.getElementById('mobile-fotos-count');
+    
+    if (!grid) return;
+    
+    if (!this.mobileFotos || this.mobileFotos.length === 0) {
+      grid.innerHTML = '<div class="mobile-empty-state">Sin fotos</div>';
+      if (count) count.textContent = '0';
+      return;
+    }
+    
+    grid.innerHTML = this.mobileFotos.map((foto, i) => `
+      <div class="mobile-foto-item">
+        <img src="${foto.url || foto.dataUrl}" alt="Foto ${i+1}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📷</text></svg>'">
+        <button type="button" class="btn-remove-foto" onclick="app.removeMobileFoto(${i})">✕</button>
+      </div>
+    `).join('');
+    
+    if (count) count.textContent = this.mobileFotos.length;
   }
 
   closeModal() {
