@@ -16771,16 +16771,19 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   width: 100%;
   overflow: hidden;
   position: relative;
+  touch-action: none; /* Permite control total de gestos táctiles */
 }
 
 .image-fullscreen-viewer .viewer-image {
   max-width: 95%;
   max-height: 80vh;
   object-fit: contain;
-  transition: transform 0.3s ease;
+  transition: transform 0.15s ease-out; /* Más rápido para zoom fluido */
   cursor: zoom-in;
   user-select: none;
   -webkit-user-drag: none;
+  will-change: transform; /* Optimización GPU */
+  transform-origin: center center;
 }
 
 .image-fullscreen-viewer .viewer-image.zoomed {
@@ -17545,7 +17548,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.009</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.010</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17764,7 +17767,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.009</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.010</span>
       </div>
     </div>
 
@@ -66671,6 +66674,9 @@ window.ImageFullscreenViewer = {
     };
     
     container?.addEventListener('touchstart', (e) => {
+      // Desactivar transición durante gestos para mayor fluidez
+      if (img) img.style.transition = 'none';
+      
       if (e.touches.length === 1) {
         // Un dedo: preparar para pan o swipe
         touchStartX = e.touches[0].clientX;
@@ -66750,6 +66756,9 @@ window.ImageFullscreenViewer = {
         handleDoubleTap(e);
       }
       
+      // Restaurar transición después del gesto
+      if (img) img.style.transition = 'transform 0.15s ease-out';
+      
       // Swipe para cambiar imagen (solo si no hay zoom)
       if (this.scale === 1 && !isPinching) {
         const diffX = touchStartX - e.changedTouches[0].clientX;
@@ -66770,7 +66779,7 @@ window.ImageFullscreenViewer = {
         isPinching = false;
         initialDistance = 0;
         
-        // Si el zoom es muy bajo, resetear
+        // Si el zoom es muy bajo, resetear con animación suave
         if (this.scale < 1.1) {
           this.scale = 1;
           this.translateX = 0;
@@ -66918,6 +66927,113 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   --home-warning: #d97706;
   --home-warning-soft: rgba(217, 119, 6, 0.15);
   --home-success: #059669;
+}
+
+/* ================================================================== */
+/* 📱 MÓVIL: OCULTAR ELEMENTOS EN INVENTARIO + MODAL RESPONSIVE       */
+/* ================================================================== */
+@media (max-width: 768px) {
+  /* Ocultar toolbar completo en inventario móvil */
+  #inventario .toolbar {
+    display: none !important;
+  }
+  
+  /* Ocultar filtros en móvil */
+  #inventario .filters-selects {
+    display: none !important;
+  }
+  
+  /* Ajustar contenedor principal de inventario en móvil */
+  #inventario .main-content {
+    padding-top: 10px !important;
+  }
+  
+  /* Modal de repuesto responsive para móvil */
+  #modal .modal-content {
+    min-width: unset !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Cuando el modal es resizable en móvil */
+  #modal .modal-content.is-resizable {
+    min-width: unset !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+  }
+  
+  /* Ocultar handles de resize en móvil */
+  #modal .modal-resize-handle {
+    display: none !important;
+  }
+  
+  /* Wizard timeline horizontal en móvil */
+  #modal .wizard-timeline {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 10px !important;
+  }
+  
+  #modal .wizard-step-indicator {
+    flex: 0 0 auto !important;
+    min-width: 70px !important;
+    padding: 8px !important;
+  }
+  
+  #modal .wizard-step-meta {
+    display: none !important;
+  }
+  
+  /* Form grid en una columna para móvil */
+  #modal .sap-form-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+  }
+  
+  #modal .modal-scroll {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 10px !important;
+  }
+  
+  #modal .form-row-triple,
+  #modal .form-row-dual {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  #modal .form-group {
+    width: 100% !important;
+  }
+  
+  /* Botones de acción del modal en móvil */
+  #modal .modal-actions,
+  #modal .sap-modal-actions {
+    position: sticky !important;
+    bottom: 0 !important;
+    background: var(--bg-secondary) !important;
+    padding: 12px !important;
+    border-top: 1px solid var(--border-color) !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  
+  #modal .modal-actions button,
+  #modal .sap-modal-actions button {
+    flex: 1 1 calc(50% - 4px) !important;
+    min-width: 0 !important;
+  }
 }
 
 /* Oculto por defecto */
