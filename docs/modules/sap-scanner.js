@@ -703,11 +703,20 @@ class SAPScanner {
                         <div class="sap-suggestions-zoom-hint">
                             <span>👆 Pellizca o doble tap para zoom</span>
                         </div>
-                        <div class="sap-suggestions-ocr-result">
-                            <span class="ocr-label">OCR detectó:</span>
-                            <span class="ocr-code" id="sapSuggestionsOcrCode">--</span>
-                            <span class="ocr-confidence" id="sapSuggestionsConfidence">0%</span>
+                    </div>
+                    
+                    <!-- Campo editable para código OCR -->
+                    <div class="sap-suggestions-ocr-edit">
+                        <label class="ocr-edit-label">✏️ Código detectado (editable):</label>
+                        <div class="ocr-edit-row">
+                            <input type="text" id="sapSuggestionsOcrInput" class="ocr-edit-input" 
+                                   maxlength="12" inputmode="numeric" pattern="[0-9]*"
+                                   placeholder="Código SAP" />
+                            <span class="ocr-confidence-badge" id="sapSuggestionsConfidence">0%</span>
                         </div>
+                        <button type="button" class="sap-scanner-btn primary ocr-search-btn" onclick="window.sapScanner.searchEditedCode()">
+                            🔍 Buscar código corregido
+                        </button>
                     </div>
                     
                     <!-- Lista de sugerencias -->
@@ -718,10 +727,10 @@ class SAPScanner {
                         <!-- Se llena dinámicamente -->
                     </div>
                     
-                    <!-- Opción de usar código OCR tal cual -->
+                    <!-- Acciones -->
                     <div class="sap-suggestions-actions">
                         <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.useOcrCodeAsIs()">
-                            Usar código detectado
+                            Usar código actual
                         </button>
                         <button type="button" class="sap-scanner-btn secondary" onclick="window.sapScanner.closeSuggestionsModal(); window.sapScanner.openScan();">
                             Volver a escanear
@@ -747,30 +756,32 @@ class SAPScanner {
         styles.id = 'sapSuggestionsStyles';
         styles.textContent = `
             .sap-suggestions-modal .sap-suggestions-content {
-                max-width: 400px;
-                max-height: 90vh;
+                width: 95vw;
+                max-width: 500px;
+                max-height: 95vh;
                 padding: 0;
                 overflow: hidden;
             }
             
             .sap-suggestions-body {
-                padding: 16px;
+                padding: 12px;
                 overflow-y: auto;
-                max-height: calc(90vh - 60px);
+                max-height: calc(95vh - 50px);
+                -webkit-overflow-scrolling: touch;
             }
             
-            /* Contenedor de imagen con zoom */
+            /* Contenedor de imagen con zoom - más ancho */
             .sap-suggestions-image-container {
                 background: var(--bg-tertiary);
                 border-radius: 12px;
                 overflow: hidden;
-                margin-bottom: 16px;
+                margin-bottom: 12px;
             }
             
             .sap-suggestions-image-wrapper {
                 position: relative;
                 width: 100%;
-                height: 200px;
+                height: 180px;
                 overflow: hidden;
                 touch-action: pan-x pan-y pinch-zoom;
                 cursor: zoom-in;
@@ -778,7 +789,7 @@ class SAPScanner {
             
             .sap-suggestions-image-wrapper.zoomed {
                 cursor: grab;
-                height: 300px;
+                height: 280px;
             }
             
             .sap-suggestions-image-wrapper.zoomed:active {
@@ -799,66 +810,94 @@ class SAPScanner {
             
             .sap-suggestions-zoom-hint {
                 text-align: center;
-                padding: 8px;
-                font-size: 0.75rem;
+                padding: 6px;
+                font-size: 0.7rem;
                 color: var(--text-secondary);
                 background: rgba(0,0,0,0.05);
             }
             
-            .sap-suggestions-ocr-result {
+            /* Campo editable de código OCR */
+            .sap-suggestions-ocr-edit {
+                background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.05));
+                border-radius: 12px;
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+            
+            .sap-suggestions-ocr-edit .ocr-edit-label {
+                display: block;
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+                margin-bottom: 8px;
+            }
+            
+            .sap-suggestions-ocr-edit .ocr-edit-row {
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                gap: 8px;
-                padding: 12px;
-                background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.05));
-                border-top: 1px solid var(--border-color);
+                gap: 10px;
+                margin-bottom: 10px;
             }
             
-            .sap-suggestions-ocr-result .ocr-label {
-                font-size: 0.75rem;
-                color: var(--text-secondary);
-            }
-            
-            .sap-suggestions-ocr-result .ocr-code {
+            .sap-suggestions-ocr-edit .ocr-edit-input {
+                flex: 1;
                 font-family: monospace;
-                font-size: 1.1rem;
+                font-size: 1.3rem;
                 font-weight: 700;
-                color: var(--accent);
-                letter-spacing: 1px;
+                letter-spacing: 2px;
+                padding: 12px 16px;
+                border: 2px solid var(--accent);
+                border-radius: 10px;
+                background: var(--bg-primary);
+                color: var(--text-primary);
+                text-align: center;
             }
             
-            .sap-suggestions-ocr-result .ocr-confidence {
-                font-size: 0.7rem;
-                padding: 2px 6px;
+            .sap-suggestions-ocr-edit .ocr-edit-input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+            }
+            
+            .sap-suggestions-ocr-edit .ocr-confidence-badge {
+                font-size: 0.75rem;
+                padding: 4px 10px;
                 background: rgba(59,130,246,0.2);
                 color: var(--accent);
-                border-radius: 10px;
+                border-radius: 12px;
+                white-space: nowrap;
+            }
+            
+            .sap-suggestions-ocr-edit .ocr-search-btn {
+                width: 100%;
+                padding: 10px;
+                font-size: 0.9rem;
             }
             
             /* Lista de sugerencias */
             .sap-suggestions-list-header {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
                 color: var(--text-secondary);
-                margin-bottom: 10px;
+                margin-bottom: 8px;
                 padding-left: 4px;
             }
             
             .sap-suggestions-list {
                 display: flex;
                 flex-direction: column;
-                gap: 10px;
-                margin-bottom: 16px;
+                gap: 8px;
+                margin-bottom: 12px;
+                max-height: 250px;
+                overflow-y: auto;
             }
             
             .sap-suggestion-item {
                 display: flex;
                 align-items: center;
-                gap: 12px;
-                padding: 14px;
+                gap: 10px;
+                padding: 12px;
                 background: var(--bg-secondary);
                 border: 2px solid var(--border-color);
-                border-radius: 12px;
+                border-radius: 10px;
                 cursor: pointer;
                 transition: all 0.2s ease;
             }
@@ -978,10 +1017,10 @@ class SAPScanner {
             img.src = this.lastScan.imageData;
         }
         
-        // Mostrar código OCR detectado
-        const ocrCode = document.getElementById('sapSuggestionsOcrCode');
+        // Mostrar código OCR en campo editable
+        const ocrInput = document.getElementById('sapSuggestionsOcrInput');
         const confidence = document.getElementById('sapSuggestionsConfidence');
-        if (ocrCode) ocrCode.textContent = this.lastScan.codigoSAP || 'No detectado';
+        if (ocrInput) ocrInput.value = this.lastScan.codigoSAP || '';
         if (confidence) confidence.textContent = `${this.lastScan.confidence}%`;
         
         // Poblar lista de sugerencias
@@ -994,13 +1033,13 @@ class SAPScanner {
                     <div class="sap-suggestions-empty">
                         <div class="sap-suggestions-empty-icon">🔍</div>
                         <div>No se encontraron códigos similares</div>
-                        <div style="font-size: 0.8rem; margin-top: 8px;">Puedes usar el código detectado o volver a escanear</div>
+                        <div style="font-size: 0.8rem; margin-top: 8px;">Edita el código arriba y busca, o vuelve a escanear</div>
                     </div>
                 `;
             } else {
                 list.innerHTML = similarCodes.map((item, index) => `
                     <div class="sap-suggestion-item" onclick="window.sapScanner.selectSuggestedCode('${item.codigo}')">
-                        <div class="sap-suggestion-match ${item.matchingDigits >= 8 ? 'high' : 'medium'}">
+                        <div class="sap-suggestion-match ${item.matchingDigits >= 9 ? 'high' : 'medium'}">
                             ${item.matchingDigits}/10
                         </div>
                         <div class="sap-suggestion-info">
@@ -1136,12 +1175,82 @@ class SAPScanner {
     }
     
     /**
-     * 🆕 NUEVO: Usa el código OCR tal como fue detectado
+     * 🆕 NUEVO: Busca con el código editado manualmente
+     */
+    searchEditedCode() {
+        const input = document.getElementById('sapSuggestionsOcrInput');
+        if (!input) return;
+        
+        const editedCode = input.value.trim().replace(/\D/g, ''); // Solo dígitos
+        
+        if (editedCode.length < 6) {
+            this.showToast('El código debe tener al menos 6 dígitos', 'warning');
+            return;
+        }
+        
+        console.log(`📸 Buscando código editado: ${editedCode}`);
+        
+        // Actualizar el código en lastScan
+        this.lastScan.codigoSAP = editedCode;
+        
+        // Buscar coincidencia exacta
+        const exactMatch = window.app.repuestos.find(r => r.codSAP === editedCode);
+        
+        if (exactMatch) {
+            // ¡Encontrado exacto!
+            console.log(`📸 ¡Coincidencia exacta encontrada!`);
+            this.lastScan.similarCodes = [];
+            this.closeSuggestionsModal();
+            this.showConfirmModal();
+            return;
+        }
+        
+        // Buscar códigos similares con el código editado
+        const similarCodes = this.findSimilarCodes(editedCode);
+        this.lastScan.similarCodes = similarCodes;
+        
+        // Re-poblar la lista
+        const list = document.getElementById('sapSuggestionsList');
+        if (list) {
+            if (similarCodes.length === 0) {
+                list.innerHTML = `
+                    <div class="sap-suggestions-empty">
+                        <div class="sap-suggestions-empty-icon">🔍</div>
+                        <div>No se encontró "${editedCode}"</div>
+                        <div style="font-size: 0.8rem; margin-top: 8px;">Puedes usar este código para crear un nuevo repuesto</div>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = similarCodes.map((item) => `
+                    <div class="sap-suggestion-item" onclick="window.sapScanner.selectSuggestedCode('${item.codigo}')">
+                        <div class="sap-suggestion-match ${item.matchingDigits >= 9 ? 'high' : 'medium'}">
+                            ${item.matchingDigits}/10
+                        </div>
+                        <div class="sap-suggestion-info">
+                            <div class="sap-suggestion-code">${this.highlightDifferences(editedCode, item.codigo)}</div>
+                            <div class="sap-suggestion-name">${item.nombre}</div>
+                            <div class="sap-suggestion-qty">Stock: ${item.cantidad} unidades</div>
+                        </div>
+                        <div class="sap-suggestion-arrow">›</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        this.showToast(`${similarCodes.length} códigos similares encontrados`, 'info');
+    }
+    
+    /**
+     * 🆕 NUEVO: Usa el código del input (editado o no)
      */
     useOcrCodeAsIs() {
-        console.log(`📸 Usuario decidió usar código OCR: ${this.lastScan.codigoSAP}`);
+        const input = document.getElementById('sapSuggestionsOcrInput');
+        const codigo = input ? input.value.trim() : this.lastScan.codigoSAP;
         
-        // Limpiar sugerencias
+        console.log(`📸 Usuario decidió usar código: ${codigo}`);
+        
+        // Actualizar con el código del input (puede haber sido editado)
+        this.lastScan.codigoSAP = codigo;
         this.lastScan.similarCodes = [];
         
         // Cerrar modal
@@ -1157,6 +1266,9 @@ class SAPScanner {
     closeSuggestionsModal() {
         const modal = document.getElementById('sapSuggestionsModal');
         if (modal) modal.classList.remove('active');
+        
+        // Asegurar que la cámara esté detenida
+        this.stopCamera();
     }
     
     /**
@@ -1166,6 +1278,9 @@ class SAPScanner {
         const modal = document.getElementById('sapModeModal');
         if (modal) modal.classList.remove('active');
         this.refreshMobileFooter();
+        
+        // Asegurar que la cámara esté detenida
+        this.stopCamera();
     }
     
     /**
@@ -2086,8 +2201,8 @@ class SAPScanner {
                 }
             }
             
-            // 🎯 Mínimo 6 dígitos coincidentes (de 10)
-            if (matchingDigits >= 6) {
+            // 🎯 Mínimo 8 dígitos coincidentes (de 10) - solo 2 posibles errores
+            if (matchingDigits >= 8) {
                 candidates.push({
                     codigo: repuesto.codSAP,
                     nombre: repuesto.nombre || repuesto.descripcion || 'Sin nombre',
@@ -2099,10 +2214,10 @@ class SAPScanner {
             }
         }
         
-        // Ordenar por dígitos coincidentes (desc) y tomar máximo 3
+        // Ordenar por dígitos coincidentes (desc) y tomar máximo 8
         return candidates
             .sort((a, b) => b.matchingDigits - a.matchingDigits)
-            .slice(0, 3);
+            .slice(0, 8);
     }
     
     /**
