@@ -41557,23 +41557,26 @@ class InventarioCompleto {
       if (saveNormalBtn) saveNormalBtn.style.display = 'none';
     }
     
-    // 🎯 RESETEAR ESTILOS: Limpiar cualquier transformación o posición anterior
-    const modalContent = document.querySelector('.modal-content');
-    if (modalContent) {
-      modalContent.style.transform = '';
-      modalContent.style.top = '';
-      modalContent.style.left = '';
-      // No forzar position, dejar que el CSS lo maneje
+    // 🎯 RESETEAR ESTILOS: Limpiar cualquier transformación o posición anterior (solo desktop)
+    if (!this.isMobile) {
+      const modalContentReset = document.querySelector('.modal-content');
+      if (modalContentReset) {
+        modalContentReset.style.transform = '';
+        modalContentReset.style.top = '';
+        modalContentReset.style.left = '';
+        // No forzar position, dejar que el CSS lo maneje
+      }
     }
     
-    // Inicializar modal redimensionable y arrastrable
+    // Inicializar modal redimensionable y arrastrable (solo desktop)
     setTimeout(() => {
-      const modalContent = document.querySelector('.modal-content');
-      if (modalContent && window.ModalResizable) {
+      if (this.isMobile) return; // No usar resizable en móvil
+      const modalEl = document.querySelector('.modal-content');
+      if (modalEl && window.ModalResizable) {
         // Agregar clase para activar estilos de posicionamiento fijo
-        modalContent.classList.add('is-resizable');
+        modalEl.classList.add('is-resizable');
         
-        this.modalResizableInstance = ModalResizable.init(modalContent, {
+        this.modalResizableInstance = ModalResizable.init(modalEl, {
           minWidth: 900,
           minHeight: 500,
           draggable: true,
