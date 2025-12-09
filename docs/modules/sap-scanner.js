@@ -2925,14 +2925,24 @@ class SAPScanner {
                 }
                 
                 // 🔥 SINCRONIZACIÓN CON FIREBASE: Guardar repuesto en Firestore
+                console.log('🔍 [DEBUG] Verificando firebaseStorageAdapter:', {
+                    exists: !!window.firebaseStorageAdapter,
+                    hasGuardar: !!window.firebaseStorageAdapter?.guardarRepuestos,
+                    isAuthenticated: window.firebaseService?.isAuthenticated?.()
+                });
+                
                 if (window.firebaseStorageAdapter && window.firebaseStorageAdapter.guardarRepuestos) {
                     try {
-                        console.log('🔥 [FIREBASE] Sincronizando nuevo repuesto desde Scanner...');
+                        console.log('🔥 [FIREBASE] Sincronizando nuevo repuesto desde Scanner:', nuevoRepuesto.nombre);
                         await window.firebaseStorageAdapter.guardarRepuestos([nuevoRepuesto]);
-                        console.log('✅ [FIREBASE] Repuesto sincronizado con Firestore');
+                        console.log('✅ [FIREBASE] Repuesto sincronizado con Firestore:', nuevoRepuesto.id);
                     } catch (firebaseError) {
                         console.error('❌ [FIREBASE] Error sincronizando:', firebaseError);
+                        // Mostrar alerta al usuario
+                        alert('⚠️ Error al sincronizar con Firebase: ' + firebaseError.message);
                     }
+                } else {
+                    console.warn('⚠️ [FIREBASE] firebaseStorageAdapter NO disponible - repuesto solo guardado localmente');
                 }
                 
                 // 📋 ACTIVITY LOG: Registrar la acción
