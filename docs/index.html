@@ -17482,7 +17482,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.002</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.003</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17689,7 +17689,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.002</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.003</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -66537,68 +66537,162 @@ window.ImageFullscreenViewer = {
     };
     document.addEventListener('keydown', keyHandler);
     
-    // Swipe para móvil
+    // === SISTEMA TÁCTIL MEJORADO ===
     let touchStartX = 0;
     let touchStartY = 0;
-    let touchEndX = 0;
-    let touchEndY = 0;
-    
-    container?.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
-    
-    container?.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      touchEndY = e.changedTouches[0].screenY;
-      
-      const diffX = touchStartX - touchEndX;
-      const diffY = touchStartY - touchEndY;
-      
-      // Solo procesar swipes horizontales significativos
-      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-        if (diffX > 0) {
-          this.next(); // Swipe izquierda = siguiente
-        } else {
-          this.prev(); // Swipe derecha = anterior
-        }
-      }
-    }, { passive: true });
-    
-    // Pinch-to-zoom para móvil
+    let lastTouchX = 0;
+    let lastTouchY = 0;
     let initialDistance = 0;
     let initialScale = 1;
+    let initialTranslateX = 0;
+    let initialTranslateY = 0;
+    let isPanning = false;
+    let isPinching = false;
+    let lastTapTime = 0;
+    
+    // Doble tap para zoom
+    const handleDoubleTap = (e) => {
+      const now = Date.now();
+      const timeDiff = now - lastTapTime;
+      
+      if (timeDiff < 300 && timeDiff > 0) {
+        // Doble tap detectado
+        e.preventDefault();
+        if (this.scale === 1) {
+          // Zoom hacia el punto tocado
+          const rect = img.getBoundingClientRect();
+          const touchX = e.changedTouches[0].clientX;
+          const touchY = e.changedTouches[0].clientY;
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          
+          this.scale = 2.5;
+          this.translateX = (centerX - touchX) * 0.8;
+          this.translateY = (centerY - touchY) * 0.8;
+          img?.classList.add('zoomed');
+        } else {
+          // Reset zoom
+          this.scale = 1;
+          this.translateX = 0;
+          this.translateY = 0;
+          img?.classList.remove('zoomed');
+        }
+        this.applyTransform();
+        lastTapTime = 0;
+      } else {
+        lastTapTime = now;
+      }
+    };
     
     container?.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 2) {
+      if (e.touches.length === 1) {
+        // Un dedo: preparar para pan o swipe
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        lastTouchX = touchStartX;
+        lastTouchY = touchStartY;
+        initialTranslateX = this.translateX;
+        initialTranslateY = this.translateY;
+        isPanning = this.scale > 1;
+        isPinching = false;
+      } else if (e.touches.length === 2) {
+        // Dos dedos: preparar para pinch
+        isPanning = false;
+        isPinching = true;
         initialDistance = Math.hypot(
-          e.touches[0].pageX - e.touches[1].pageX,
-          e.touches[0].pageY - e.touches[1].pageY
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
         );
         initialScale = this.scale;
+        initialTranslateX = this.translateX;
+        initialTranslateY = this.translateY;
       }
     }, { passive: true });
     
     container?.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 2 && initialDistance) {
+      if (e.touches.length === 1 && isPanning && this.scale > 1) {
+        // Paneo con un dedo cuando hay zoom
+        e.preventDefault();
+        const deltaX = e.touches[0].clientX - lastTouchX;
+        const deltaY = e.touches[0].clientY - lastTouchY;
+        
+        // Calcular límites de paneo
+        const maxTranslate = (this.scale - 1) * 150;
+        
+        this.translateX = Math.max(-maxTranslate, Math.min(maxTranslate, this.translateX + deltaX));
+        this.translateY = Math.max(-maxTranslate, Math.min(maxTranslate, this.translateY + deltaY));
+        
+        lastTouchX = e.touches[0].clientX;
+        lastTouchY = e.touches[0].clientY;
+        
+        this.applyTransform();
+      } else if (e.touches.length === 2 && isPinching) {
+        // Pinch-to-zoom
+        e.preventDefault();
         const currentDistance = Math.hypot(
-          e.touches[0].pageX - e.touches[1].pageX,
-          e.touches[0].pageY - e.touches[1].pageY
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
         );
         
-        this.scale = Math.min(Math.max(initialScale * (currentDistance / initialDistance), 1), 4);
-        this.applyTransform();
+        // Calcular nuevo scale con suavizado
+        const scaleRatio = currentDistance / initialDistance;
+        const newScale = Math.min(Math.max(initialScale * scaleRatio, 1), 5);
         
-        if (this.scale > 1) {
-          img?.classList.add('zoomed');
-        } else {
-          img?.classList.remove('zoomed');
+        // Aplicar zoom centrado entre los dos dedos
+        const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        
+        if (newScale !== this.scale) {
+          this.scale = newScale;
+          
+          if (this.scale > 1) {
+            img?.classList.add('zoomed');
+          } else {
+            this.translateX = 0;
+            this.translateY = 0;
+            img?.classList.remove('zoomed');
+          }
+          
+          this.applyTransform();
         }
       }
-    }, { passive: true });
+    }, { passive: false });
     
-    container?.addEventListener('touchend', () => {
-      initialDistance = 0;
+    container?.addEventListener('touchend', (e) => {
+      // Detectar doble tap
+      if (e.touches.length === 0) {
+        handleDoubleTap(e);
+      }
+      
+      // Swipe para cambiar imagen (solo si no hay zoom)
+      if (this.scale === 1 && !isPinching) {
+        const diffX = touchStartX - e.changedTouches[0].clientX;
+        const diffY = touchStartY - e.changedTouches[0].clientY;
+        
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+          if (diffX > 0) {
+            this.next();
+          } else {
+            this.prev();
+          }
+        }
+      }
+      
+      // Reset estados
+      if (e.touches.length === 0) {
+        isPanning = false;
+        isPinching = false;
+        initialDistance = 0;
+        
+        // Si el zoom es muy bajo, resetear
+        if (this.scale < 1.1) {
+          this.scale = 1;
+          this.translateX = 0;
+          this.translateY = 0;
+          img?.classList.remove('zoomed');
+          this.applyTransform();
+        }
+      }
     }, { passive: true });
   }
 };
