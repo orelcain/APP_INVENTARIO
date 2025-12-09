@@ -42,7 +42,7 @@ service cloud.firestore {
     // Historial de acciones de usuarios
     match /user_actions/{actionId} {
       allow read: if isAdmin();
-      allow create: if true; // Permite crear registros para tracking
+      allow create: if isAuthenticated(); // Solo usuarios autenticados pueden crear registros
       allow update, delete: if isAdmin();
     }
     
