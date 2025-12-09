@@ -16801,7 +16801,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 /* ================================================================== */
-/* 📱 MODAL MÓVIL v6.028 - DISEÑO COMPLETAMENTE NUEVO                 */
+/* 📱 MODAL MÓVIL v6.029 - SCROLL ÚNICO (SIN TABS)                    */
 /* ================================================================== */
 
 /* Ocultar en desktop */
@@ -16810,7 +16810,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 @media (max-width: 768px) {
-  /* MODAL MÓVIL OVERLAY - Solo visible cuando está activo */
+  /* OVERLAY - Solo visible cuando está activo */
   .mobile-modal-overlay {
     display: none !important;
     position: fixed;
@@ -16838,308 +16838,276 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     overflow: hidden;
   }
   
-  /* HEADER */
+  /* HEADER FIJO */
   .mobile-modal-header {
     flex-shrink: 0;
-    padding: 16px;
-    padding-top: calc(16px + env(safe-area-inset-top));
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    height: 56px;
+    padding: 0 12px;
+    padding-top: env(safe-area-inset-top);
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 8px;
   }
   
   .mobile-modal-title {
-    font-size: 1.1rem;
-    font-weight: 700;
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 600;
     color: white;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
-  .mobile-modal-close {
-    width: 36px;
-    height: 36px;
+  .mobile-modal-close,
+  .mobile-modal-save {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: none;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.15);
     color: white;
     font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: background 0.2s;
   }
   
-  /* WIZARD TABS */
-  .mobile-wizard-tabs {
-    flex-shrink: 0;
-    display: flex;
-    gap: 8px;
-    padding: 12px 16px;
-    background: rgba(0,0,0,0.3);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .mobile-wizard-tabs::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .mobile-wizard-tab {
-    flex-shrink: 0;
-    padding: 10px 16px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.05);
-    color: rgba(255,255,255,0.6);
-    font-size: 0.85rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .mobile-wizard-tab.active {
-    background: #3b82f6;
-    border-color: #3b82f6;
-    color: white;
-  }
-  
-  .mobile-wizard-tab.completed {
-    background: rgba(34, 197, 94, 0.2);
-    border-color: #22c55e;
-    color: #22c55e;
-  }
-  
-  .mobile-tab-number {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-  
-  .mobile-wizard-tab.active .mobile-tab-number {
+  .mobile-modal-close:active,
+  .mobile-modal-save:active {
     background: rgba(255,255,255,0.3);
   }
   
-  .mobile-wizard-tab.completed .mobile-tab-number {
-    background: #22c55e;
-    color: white;
-  }
-  
-  /* BODY - CONTENIDO SCROLLEABLE */
+  /* BODY SCROLLEABLE */
   .mobile-modal-body {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 16px;
+    padding-bottom: 100px;
     -webkit-overflow-scrolling: touch;
   }
   
   /* SECCIONES */
-  .mobile-modal-body .form-section,
-  .mobile-modal-body .mobile-form-section {
+  .mobile-section {
     background: #1e293b;
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: 16px;
     margin-bottom: 16px;
-    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
   }
   
-  .mobile-modal-body .form-section-title,
-  .mobile-modal-body .section-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: white;
-    margin-bottom: 4px;
+  .mobile-section-header {
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    font-weight: 600;
+    color: white;
+    font-size: 0.95rem;
   }
   
-  .mobile-modal-body .form-section-description,
-  .mobile-modal-body .section-desc {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.5);
+  .mobile-section-badge {
+    background: #3b82f6;
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+  
+  .mobile-section-content {
+    padding: 16px;
+  }
+  
+  /* FORM GROUPS */
+  .mobile-form-group {
     margin-bottom: 16px;
   }
   
-  /* CAMPOS */
-  .mobile-modal-body .form-group {
-    margin-bottom: 16px;
-  }
-  
-  .mobile-modal-body .form-group:last-child {
+  .mobile-form-group:last-child {
     margin-bottom: 0;
   }
   
-  .mobile-modal-body label,
-  .mobile-modal-body .form-label {
+  .mobile-form-label {
     display: block;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255,255,255,0.5);
     margin-bottom: 8px;
   }
   
-  .mobile-modal-body input,
-  .mobile-modal-body select,
-  .mobile-modal-body textarea,
-  .mobile-modal-body .form-control {
+  .mobile-form-input,
+  .mobile-form-select,
+  .mobile-form-textarea {
     width: 100%;
     padding: 14px 16px;
-    font-size: 16px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 10px;
+    font-size: 16px; /* Previene zoom en iOS */
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
     color: white;
     outline: none;
     transition: all 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
   }
   
-  .mobile-modal-body input:focus,
-  .mobile-modal-body select:focus,
-  .mobile-modal-body textarea:focus,
-  .mobile-modal-body .form-control:focus {
+  .mobile-form-input:focus,
+  .mobile-form-select:focus,
+  .mobile-form-textarea:focus {
     border-color: #3b82f6;
     background: rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
   
-  .mobile-modal-body input::placeholder,
-  .mobile-modal-body textarea::placeholder {
+  .mobile-form-input::placeholder,
+  .mobile-form-textarea::placeholder {
     color: rgba(255,255,255,0.3);
   }
   
-  .mobile-modal-body select {
-    appearance: none;
+  .mobile-form-select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 16px center;
-    padding-right: 40px;
+    padding-right: 44px;
   }
   
-  .mobile-modal-body textarea {
-    min-height: 100px;
+  .mobile-form-textarea {
+    min-height: 80px;
     resize: vertical;
   }
   
-  /* GRIDS EN COLUMNA */
-  .mobile-modal-body .form-row,
-  .mobile-modal-body .form-row-triple,
-  .mobile-modal-body .form-row-quad,
-  .mobile-modal-body .form-stock-grid {
-    display: flex;
-    flex-direction: column;
+  /* ROWS - 2 columnas */
+  .mobile-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
   
-  /* UPLOAD ZONE */
-  .mobile-modal-body .image-upload-zone,
-  .mobile-modal-body .upload-zone {
-    border: 2px dashed rgba(255,255,255,0.2);
-    border-radius: 12px;
-    padding: 32px 16px;
+  .mobile-form-row .mobile-form-group {
+    margin-bottom: 0;
+  }
+  
+  /* ROWS - 3 columnas */
+  .mobile-form-row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  
+  .mobile-form-row-3 .mobile-form-group {
+    margin-bottom: 0;
+  }
+  
+  /* INPUTS NUMÉRICOS */
+  .mobile-input-number {
     text-align: center;
-    background: rgba(255,255,255,0.02);
-    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1rem;
   }
   
-  .mobile-modal-body .upload-icon {
-    font-size: 40px;
-    margin-bottom: 8px;
+  /* LISTA DE UBICACIONES */
+  .mobile-ubicacion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
   
-  .mobile-modal-body .upload-text {
+  .mobile-ubicacion-item {
+    padding: 12px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
     font-size: 0.9rem;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.8);
+    border-left: 3px solid #3b82f6;
   }
   
-  /* PREVIEW IMÁGENES */
-  .mobile-modal-body .multimedia-preview,
-  .mobile-modal-body #imagePreview,
-  .mobile-modal-body .image-grid {
+  /* GRID DE FOTOS */
+  .mobile-fotos-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    margin-top: 12px;
   }
   
-  .mobile-modal-body .preview-item,
-  .mobile-modal-body .image-thumb {
+  .mobile-foto-item {
     aspect-ratio: 1;
-    border-radius: 8px;
-    background: #1e293b;
-    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
     overflow: hidden;
-    position: relative;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
   }
   
-  .mobile-modal-body .preview-item img,
-  .mobile-modal-body .image-thumb img {
+  .mobile-foto-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
   
-  /* TREE UBICACIONES */
-  .mobile-modal-body .ubicaciones-tree-selector,
-  .mobile-modal-body #ubicacionesTreeContainer,
-  .mobile-modal-body .tree-container {
-    max-height: 200px;
-    overflow-y: auto;
-    background: rgba(0,0,0,0.2);
-    border-radius: 10px;
-    padding: 12px;
+  /* EMPTY STATE */
+  .mobile-empty-state {
+    text-align: center;
+    padding: 24px 16px;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.9rem;
   }
   
-  /* FOOTER */
+  /* FOOTER FIJO */
   .mobile-modal-footer {
-    flex-shrink: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     padding: 16px;
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
-    background: rgba(15, 23, 42, 0.95);
-    border-top: 1px solid rgba(255,255,255,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    background: linear-gradient(to top, #0f172a 0%, #0f172a 70%, transparent 100%);
   }
   
-  .mobile-btn {
+  .mobile-btn-save {
     width: 100%;
     padding: 16px;
-    border-radius: 12px;
-    border: none;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    border: none;
+    border-radius: 14px;
+    color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
   }
   
-  .mobile-btn-primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    color: white;
+  .mobile-btn-save:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
   }
   
-  .mobile-btn-success {
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    color: white;
+  /* INFO BOX */
+  .mobile-info-box {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
   }
-  
-  .mobile-btn-secondary {
-    background: rgba(255,255,255,0.1);
+}
+
+/* ================================================================== */
     color: rgba(255,255,255,0.7);
   }
   
@@ -17436,7 +17404,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     <button class="nav-tab" data-tab="configuracion">
       Configuracin
     </button>
-  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.028</span></h1>
+  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.029</span></h1>
 
   <!-- WarmupProgress removido - Firebase carga instantáneamente -->
 </div>
@@ -17451,7 +17419,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile2">v6.028</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile2">v6.029</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17655,7 +17623,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div style="display: inline-flex; align-items: stretch; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
           <span id="userEmail" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.05); font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 500; white-space: nowrap;"></span>
           <button id="btnLogout" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.08); border: none; border-left: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;" title="Cerrar sesión" onmouseover="this.style.background='rgba(248, 113, 113, 0.15)'; this.style.color='rgba(248, 113, 113, 0.9)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.5)'">
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.028</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.029</span>
           </button>
         </div>
       </div>
@@ -17670,7 +17638,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop2" style="margin-left: 8px;">v6.028</span>
+        <span class="version-badge" id="versionBadgeDesktop2" style="margin-left: 8px;">v6.029</span>
       </div>
     </div>
 
@@ -18738,126 +18706,114 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
 <!-- ============================================================== -->
 <!-- 📱 MODAL MÓVIL DEDICADO - Solo visible en pantallas < 768px    -->
-<!-- v6.028: Diseño completamente separado del modal PC             -->
+<!-- v6.029: Diseño completamente separado del modal PC             -->
 <!-- ============================================================== -->
 <div id="mobileModalOverlay" class="mobile-modal-overlay">
   <div class="mobile-modal">
-    <!-- HEADER -->
+    <!-- HEADER FIJO -->
     <div class="mobile-modal-header">
-      <span class="mobile-modal-title" id="mobileModalTitle">📦 Editar Repuesto</span>
       <button class="mobile-modal-close" onclick="app.closeMobileModal()">✕</button>
+      <span class="mobile-modal-title" id="mobileModalTitle">📦 Editar Repuesto</span>
+      <button class="mobile-modal-save" onclick="app.saveMobileModal()">💾</button>
     </div>
     
-    <!-- WIZARD TABS -->
-    <div class="mobile-wizard-tabs" id="mobileWizardTabs">
-      <button type="button" class="mobile-wizard-tab active" data-step="1" onclick="app.setMobileWizardStep(1)">
-        <span class="mobile-tab-number">1</span>
-        Identificación
-      </button>
-      <button type="button" class="mobile-wizard-tab" data-step="2" onclick="app.setMobileWizardStep(2)">
-        <span class="mobile-tab-number">2</span>
-        Stock
-      </button>
-      <button type="button" class="mobile-wizard-tab" data-step="3" onclick="app.setMobileWizardStep(3)">
-        <span class="mobile-tab-number">3</span>
-        Ubicación
-      </button>
-      <button type="button" class="mobile-wizard-tab" data-step="4" onclick="app.setMobileWizardStep(4)">
-        <span class="mobile-tab-number">4</span>
-        Multimedia
-      </button>
-    </div>
-    
-    <!-- CONTENIDO CON PASOS -->
+    <!-- CONTENIDO SCROLLEABLE - TODO EN UNA SOLA VISTA -->
     <div class="mobile-modal-body" id="mobileModalBody">
-      <!-- PASO 1: Identificación -->
-      <div class="mobile-wizard-step active" data-step="1">
-        <div class="mobile-form-group">
-          <label class="mobile-form-label">Nombre *</label>
-          <input type="text" id="mobile-nombre" class="mobile-form-input" placeholder="Nombre del repuesto" autocomplete="off">
-        </div>
-        <div class="mobile-form-group">
-          <label class="mobile-form-label">Descripción</label>
-          <textarea id="mobile-descripcion" class="mobile-form-textarea" rows="3" placeholder="Descripción detallada"></textarea>
-        </div>
-        <div class="mobile-form-group">
-          <label class="mobile-form-label">Marca</label>
-          <input type="text" id="mobile-marca" class="mobile-form-input" placeholder="Marca del repuesto" autocomplete="off">
-        </div>
-        <div class="mobile-form-group">
-          <label class="mobile-form-label">Modelo / Referencia</label>
-          <input type="text" id="mobile-modelo" class="mobile-form-input" placeholder="Modelo o referencia" autocomplete="off">
-        </div>
-      </div>
       
-      <!-- PASO 2: Stock -->
-      <div class="mobile-wizard-step" data-step="2">
-        <div class="mobile-form-group">
-          <label class="mobile-form-label">Stock Actual</label>
-          <input type="number" id="mobile-stock-actual" class="mobile-form-input" value="0" min="0">
+      <!-- SECCIÓN 1: IDENTIFICACIÓN -->
+      <div class="mobile-section">
+        <div class="mobile-section-header">
+          <span>🏷️ Identificación</span>
         </div>
-        <div class="mobile-form-group">
-          <label class="mobile-form-label">Stock Mínimo</label>
-          <input type="number" id="mobile-stock-minimo" class="mobile-form-input" value="0" min="0">
-        </div>
-        <div class="mobile-form-group">
-          <label class="mobile-form-label">Stock Máximo</label>
-          <input type="number" id="mobile-stock-maximo" class="mobile-form-input" value="0" min="0">
-        </div>
-        <div class="mobile-form-group">
-          <label class="mobile-form-label">Unidad</label>
-          <select id="mobile-unidad" class="mobile-form-select">
-            <option value="unidad">Unidad</option>
-            <option value="pieza">Pieza</option>
-            <option value="metro">Metro</option>
-            <option value="litro">Litro</option>
-            <option value="kg">Kilogramo</option>
-            <option value="caja">Caja</option>
-            <option value="rollo">Rollo</option>
-          </select>
-        </div>
-      </div>
-      
-      <!-- PASO 3: Ubicación -->
-      <div class="mobile-wizard-step" data-step="3">
-        <div class="mobile-info-box">
-          <span style="font-size: 1.5rem;">📍</span>
-          <div>
-            <strong>Ubicaciones actuales:</strong>
-            <div id="mobile-ubicacion-text" style="margin-top: 8px; color: var(--text-secondary);">
-              Sin ubicaciones asignadas
+        <div class="mobile-section-content">
+          <div class="mobile-form-group">
+            <label class="mobile-form-label">Nombre *</label>
+            <input type="text" id="mobile-nombre" class="mobile-form-input" placeholder="Nombre del repuesto" autocomplete="off">
+          </div>
+          <div class="mobile-form-group">
+            <label class="mobile-form-label">Descripción</label>
+            <textarea id="mobile-descripcion" class="mobile-form-textarea" rows="2" placeholder="Descripción detallada"></textarea>
+          </div>
+          <div class="mobile-form-row">
+            <div class="mobile-form-group">
+              <label class="mobile-form-label">Marca</label>
+              <input type="text" id="mobile-marca" class="mobile-form-input" placeholder="Marca" autocomplete="off">
+            </div>
+            <div class="mobile-form-group">
+              <label class="mobile-form-label">Modelo</label>
+              <input type="text" id="mobile-modelo" class="mobile-form-input" placeholder="Modelo" autocomplete="off">
             </div>
           </div>
         </div>
-        <p style="text-align: center; color: var(--text-secondary); margin-top: 16px; font-size: 0.9rem;">
-          Para editar ubicaciones, usa la versión de escritorio o el mapa interactivo.
-        </p>
       </div>
       
-      <!-- PASO 4: Multimedia -->
-      <div class="mobile-wizard-step" data-step="4">
-        <div class="mobile-info-box">
-          <span style="font-size: 1.5rem;">📷</span>
-          <div>
-            <strong>Fotos del repuesto:</strong>
-            <div id="mobile-fotos-preview" style="margin-top: 8px; color: var(--text-secondary);">
-              Sin fotos
+      <!-- SECCIÓN 2: STOCK -->
+      <div class="mobile-section">
+        <div class="mobile-section-header">
+          <span>📊 Stock</span>
+        </div>
+        <div class="mobile-section-content">
+          <div class="mobile-form-row mobile-form-row-3">
+            <div class="mobile-form-group">
+              <label class="mobile-form-label">Actual</label>
+              <input type="number" id="mobile-stock-actual" class="mobile-form-input mobile-input-number" value="0" min="0" inputmode="numeric">
+            </div>
+            <div class="mobile-form-group">
+              <label class="mobile-form-label">Mínimo</label>
+              <input type="number" id="mobile-stock-minimo" class="mobile-form-input mobile-input-number" value="0" min="0" inputmode="numeric">
+            </div>
+            <div class="mobile-form-group">
+              <label class="mobile-form-label">Máximo</label>
+              <input type="number" id="mobile-stock-maximo" class="mobile-form-input mobile-input-number" value="0" min="0" inputmode="numeric">
             </div>
           </div>
+          <div class="mobile-form-group">
+            <label class="mobile-form-label">Unidad de medida</label>
+            <select id="mobile-unidad" class="mobile-form-select">
+              <option value="unidad">Unidad</option>
+              <option value="pieza">Pieza</option>
+              <option value="metro">Metro</option>
+              <option value="litro">Litro</option>
+              <option value="kg">Kilogramo</option>
+              <option value="caja">Caja</option>
+              <option value="rollo">Rollo</option>
+            </select>
+          </div>
         </div>
-        <p style="text-align: center; color: var(--text-secondary); margin-top: 16px; font-size: 0.9rem;">
-          La gestión multimedia completa está disponible en la versión de escritorio.
-        </p>
       </div>
+      
+      <!-- SECCIÓN 3: UBICACIÓN (Solo lectura en móvil) -->
+      <div class="mobile-section">
+        <div class="mobile-section-header">
+          <span>📍 Ubicación</span>
+          <span class="mobile-section-badge" id="mobile-ubicacion-count">0</span>
+        </div>
+        <div class="mobile-section-content">
+          <div id="mobile-ubicacion-list" class="mobile-ubicacion-list">
+            <div class="mobile-empty-state">Sin ubicaciones asignadas</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- SECCIÓN 4: MULTIMEDIA (Solo lectura en móvil) -->
+      <div class="mobile-section">
+        <div class="mobile-section-header">
+          <span>📷 Fotos</span>
+          <span class="mobile-section-badge" id="mobile-fotos-count">0</span>
+        </div>
+        <div class="mobile-section-content">
+          <div id="mobile-fotos-grid" class="mobile-fotos-grid">
+            <div class="mobile-empty-state">Sin fotos</div>
+          </div>
+        </div>
+      </div>
+      
     </div>
     
-    <!-- FOOTER CON NAVEGACIÓN -->
+    <!-- FOOTER FIJO CON BOTÓN GUARDAR -->
     <div class="mobile-modal-footer">
-      <button type="button" class="btn btn-secondary" onclick="app.mobileWizardPrev()" style="visibility: hidden;">
-        ← Anterior
-      </button>
-      <button type="button" class="btn btn-primary" onclick="app.mobileWizardNext()">
-        Siguiente →
+      <button type="button" class="mobile-btn-save" onclick="app.saveMobileModal()">
+        💾 Guardar Cambios
       </button>
     </div>
   </div>
@@ -41539,7 +41495,7 @@ class InventarioCompleto {
       this.refreshModalMultimediaBadge();
     }
     
-    // 📱 v6.028: MODAL MÓVIL DEDICADO - Re-detectar en cada apertura
+    // 📱 v6.029: MODAL MÓVIL DEDICADO - Re-detectar en cada apertura
     const esMobile = window.innerWidth < 768 || this.isMobile;
     console.log(`📱 [MODAL CHECK] innerWidth=${window.innerWidth}, isMobile=${this.isMobile}, esMobile=${esMobile}`);
     
@@ -41637,9 +41593,9 @@ class InventarioCompleto {
     console.log('========== MODAL ABIERTO ==========\n');
   }
 
-  // 📱 v6.028: MODAL MÓVIL DEDICADO - Completamente separado del modal PC
+  // 📱 v6.029: MODAL MÓVIL SCROLL ÚNICO - Sin tabs
   async openMobileModal(mode, id = null) {
-    console.log('📱 [MOBILE MODAL] Abriendo modal móvil dedicado');
+    console.log('📱 [MOBILE MODAL] Abriendo modal móvil (scroll único)');
     
     const overlay = document.getElementById('mobileModalOverlay');
     if (!overlay) {
@@ -41648,15 +41604,37 @@ class InventarioCompleto {
     }
     
     this.currentEditingId = id;
-    this.mobileCurrentStep = 1;
+    
+    // Actualizar título
+    const title = document.getElementById('mobileModalTitle');
+    if (title) {
+      title.textContent = mode === 'edit' ? '✏️ Editar Repuesto' : '➕ Nuevo Repuesto';
+    }
     
     // Resetear formulario móvil
     const fields = ['mobile-nombre', 'mobile-descripcion', 'mobile-marca', 'mobile-modelo', 
                     'mobile-stock-actual', 'mobile-stock-minimo', 'mobile-stock-maximo', 'mobile-unidad'];
     fields.forEach(fieldId => {
       const el = document.getElementById(fieldId);
-      if (el) el.value = '';
+      if (el) {
+        if (el.tagName === 'SELECT') {
+          el.selectedIndex = 0;
+        } else {
+          el.value = '';
+        }
+      }
     });
+    
+    // Resetear secciones de ubicación y fotos
+    const ubicacionList = document.getElementById('mobile-ubicacion-list');
+    const ubicacionCount = document.getElementById('mobile-ubicacion-count');
+    const fotosGrid = document.getElementById('mobile-fotos-grid');
+    const fotosCount = document.getElementById('mobile-fotos-count');
+    
+    if (ubicacionList) ubicacionList.innerHTML = '<div class="mobile-empty-state">Sin ubicaciones asignadas</div>';
+    if (ubicacionCount) ubicacionCount.textContent = '0';
+    if (fotosGrid) fotosGrid.innerHTML = '<div class="mobile-empty-state">Sin fotos</div>';
+    if (fotosCount) fotosCount.textContent = '0';
     
     // Cargar datos si es edición
     if (mode === 'edit' && id) {
@@ -41664,27 +41642,50 @@ class InventarioCompleto {
       if (repuesto) {
         console.log('📱 Cargando repuesto:', repuesto.nombre);
         
-        // Paso 1: Identificación
-        const setVal = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val || ''; };
+        // Identificación
+        const setVal = (elId, val) => { 
+          const el = document.getElementById(elId); 
+          if (el) el.value = val || ''; 
+        };
         setVal('mobile-nombre', repuesto.nombre);
         setVal('mobile-descripcion', repuesto.descripcion);
         setVal('mobile-marca', repuesto.marca);
         setVal('mobile-modelo', repuesto.modelo);
         
-        // Paso 2: Stock
-        setVal('mobile-stock-actual', repuesto.stock_actual);
-        setVal('mobile-stock-minimo', repuesto.stock_minimo);
-        setVal('mobile-stock-maximo', repuesto.stock_maximo);
-        setVal('mobile-unidad', repuesto.unidad);
+        // Stock
+        setVal('mobile-stock-actual', repuesto.cantidad || repuesto.stock_actual || 0);
+        setVal('mobile-stock-minimo', repuesto.minimo || repuesto.stock_minimo || 0);
+        setVal('mobile-stock-maximo', repuesto.optimo || repuesto.stock_maximo || 0);
         
-        // Paso 3: Ubicación (mostrar texto)
-        const ubicacionText = document.getElementById('mobile-ubicacion-text');
-        if (ubicacionText && repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
-          ubicacionText.innerHTML = repuesto.ubicaciones.map(u => 
-            `<div style="padding: 8px; background: var(--bg-tertiary); border-radius: 8px; margin-bottom: 4px;">
-              ${u.planta || '-'} › ${u.area || '-'} › ${u.subarea || '-'}
-            </div>`
-          ).join('');
+        // Unidad
+        const unidadEl = document.getElementById('mobile-unidad');
+        if (unidadEl && repuesto.unidad) {
+          unidadEl.value = repuesto.unidad;
+        }
+        
+        // Ubicaciones
+        if (repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
+          if (ubicacionCount) ubicacionCount.textContent = repuesto.ubicaciones.length;
+          if (ubicacionList) {
+            ubicacionList.innerHTML = repuesto.ubicaciones.map(u => `
+              <div class="mobile-ubicacion-item">
+                ${[u.areaGeneral, u.subArea, u.sistemaEquipo, u.subSistema].filter(Boolean).join(' › ') || 'Sin ubicación'}
+              </div>
+            `).join('');
+          }
+        }
+        
+        // Fotos
+        if (repuesto.multimedia && repuesto.multimedia.length > 0) {
+          const fotos = repuesto.multimedia.filter(m => m.type === 'image');
+          if (fotosCount) fotosCount.textContent = fotos.length;
+          if (fotosGrid && fotos.length > 0) {
+            fotosGrid.innerHTML = fotos.slice(0, 6).map(foto => `
+              <div class="mobile-foto-item">
+                <img src="${foto.url || foto.dataUrl}" alt="Foto" onerror="this.parentElement.innerHTML='📷'">
+              </div>
+            `).join('') + (fotos.length > 6 ? `<div class="mobile-foto-item" style="display:flex;align-items:center;justify-content:center;color:white;">+${fotos.length - 6}</div>` : '');
+          }
         }
       }
     }
@@ -41693,45 +41694,11 @@ class InventarioCompleto {
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    // Ir al paso 1
-    this.setMobileWizardStep(1);
+    // Scroll al inicio
+    const body = document.getElementById('mobileModalBody');
+    if (body) body.scrollTop = 0;
     
     console.log('📱 [MOBILE MODAL] Abierto correctamente');
-  }
-  
-  setMobileWizardStep(step) {
-    this.mobileCurrentStep = step;
-    
-    // Actualizar tabs
-    document.querySelectorAll('.mobile-wizard-tab').forEach((tab, i) => {
-      tab.classList.toggle('active', i + 1 === step);
-    });
-    
-    // Actualizar contenido
-    document.querySelectorAll('.mobile-wizard-step').forEach((stepEl, i) => {
-      stepEl.classList.toggle('active', i + 1 === step);
-    });
-    
-    // Actualizar botones de navegación
-    const prevBtn = document.querySelector('.mobile-modal-footer .btn-secondary');
-    const nextBtn = document.querySelector('.mobile-modal-footer .btn-primary');
-    
-    if (prevBtn) prevBtn.style.visibility = step === 1 ? 'hidden' : 'visible';
-    if (nextBtn) nextBtn.textContent = step === 4 ? '💾 Guardar' : 'Siguiente →';
-  }
-  
-  mobileWizardPrev() {
-    if (this.mobileCurrentStep > 1) {
-      this.setMobileWizardStep(this.mobileCurrentStep - 1);
-    }
-  }
-  
-  mobileWizardNext() {
-    if (this.mobileCurrentStep < 4) {
-      this.setMobileWizardStep(this.mobileCurrentStep + 1);
-    } else {
-      this.saveMobileModal();
-    }
   }
   
   async saveMobileModal() {
