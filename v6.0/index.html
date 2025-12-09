@@ -293,7 +293,7 @@
       };
       
       // 📊 VER ESTADO DE DATOS
-      window.verEstadoDatos = function() {
+      window.verEstadoDatos = async function() {
         const repuestosLocal = JSON.parse(localStorage.getItem('inventarioData') || '[]');
         const repuestosMemoria = window.app?.repuestos || [];
         const jerarquiaLocal = JSON.parse(localStorage.getItem('jerarquiaAnidada') || '[]');
