@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v2.4.0 - Mejora en sistema de notificación de actualizaciones
+ * v6.012 - Fix variables duplicadas
  */
 
-const CACHE_NAME = 'inventario-v2.4.0-update-banner';
-const DYNAMIC_CACHE = 'inventario-dynamic-v2.4';
+const CACHE_NAME = 'inventario-v6.012';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.012';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
@@ -35,7 +35,7 @@ const NO_CACHE_URLS = [
 
 // Instalación del Service Worker
 self.addEventListener('install', (event) => {
-  console.log('🔧 [SW] Instalando Service Worker v2.4.0...');
+  console.log('🔧 [SW] Instalando Service Worker v6.012...');
   
   event.waitUntil(
     caches.open(CACHE_NAME)
