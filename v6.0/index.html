@@ -16801,340 +16801,357 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 /* ================================================================== */
-/* 📱 MODAL MÓVIL - RESET TOTAL Y FULLSCREEN GARANTIZADO v6.026       */
+/* 📱 MODAL MÓVIL v6.027 - DISEÑO COMPLETAMENTE NUEVO                 */
 /* ================================================================== */
+
+/* Ocultar en desktop */
+.mobile-modal-overlay {
+  display: none;
+}
+
 @media (max-width: 768px) {
-  /* PREVENIR SCROLL HORIZONTAL GLOBAL */
-  html, body {
-    overflow-x: hidden !important;
-    max-width: 100% !important;
-  }
-  
-  /* RESET ABSOLUTO - Todo el modal y sus hijos */
-  #modal,
-  #modal *,
-  #modal *::before,
-  #modal *::after {
-    box-sizing: border-box !important;
-    max-width: 100% !important;
-  }
-  
-  /* BACKDROP - Fullscreen */
+  /* OCULTAR MODAL ORIGINAL EN MÓVIL */
   #modal.modal,
   #modal.modal.active {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #0f172a !important;
-    z-index: 9999 !important;
-    overflow: hidden !important;
-    display: flex !important;
-  }
-  
-  /* CONTENIDO PRINCIPAL - Fullscreen */
-  #modal .modal-content,
-  #modal .modal-content.is-resizable {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    min-height: 0 !important;
-    max-height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    border-radius: 0 !important;
-    background: #0f172a !important;
-    box-shadow: none !important;
-    transform: none !important;
-    overflow: hidden !important;
-    animation: none !important;
-  }
-  
-  /* FORMULARIO */
-  #modal form,
-  #modal .sap-modal-form {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100% !important;
-    overflow: hidden !important;
-  }
-  
-  #modal .sap-form-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 !important;
-    overflow: hidden !important;
-  }
-  
-  /* OCULTAR RESIZE */
-  #modal .modal-resize-handle {
     display: none !important;
   }
   
-  /* BOTÓN CERRAR */
-  #modal .modal-close {
-    position: fixed !important;
-    top: 12px !important;
-    right: 12px !important;
-    z-index: 10000 !important;
-    width: 40px !important;
-    height: 40px !important;
-    background: rgba(255,255,255,0.15) !important;
-    border: none !important;
-    border-radius: 50% !important;
-    font-size: 20px !important;
-    color: white !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+  /* MODAL MÓVIL OVERLAY */
+  .mobile-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: #0f172a;
+    z-index: 10000;
+    overflow: hidden;
   }
   
-  /* WIZARD - TABS HORIZONTALES */
-  #modal .wizard-timeline {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    gap: 8px !important;
-    padding: 60px 12px 12px 12px !important;
-    background: rgba(0,0,0,0.3) !important;
-    flex-shrink: 0 !important;
+  .mobile-modal-overlay.active {
+    display: flex;
   }
   
-  #modal .wizard-timeline::-webkit-scrollbar {
-    display: none !important;
+  /* MODAL CONTAINER */
+  .mobile-modal {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
   
-  #modal .wizard-step-indicator {
-    flex: 0 0 auto !important;
-    padding: 8px 14px !important;
-    border-radius: 20px !important;
-    background: rgba(255,255,255,0.1) !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
+  /* HEADER */
+  .mobile-modal-header {
+    flex-shrink: 0;
+    padding: 16px;
+    padding-top: calc(16px + env(safe-area-inset-top));
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
   
-  #modal .wizard-step-indicator.is-active {
-    background: #3b82f6 !important;
-    border-color: #3b82f6 !important;
+  .mobile-modal-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
   }
   
-  #modal .wizard-step-indicator.is-completed {
-    background: #22c55e !important;
-    border-color: #22c55e !important;
+  .mobile-modal-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
   }
   
-  #modal .wizard-step-number {
-    width: 24px !important;
-    height: 24px !important;
-    background: rgba(255,255,255,0.2) !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 12px !important;
-    font-weight: bold !important;
+  /* WIZARD TABS */
+  .mobile-wizard-tabs {
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(0,0,0,0.3);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
-  #modal .wizard-step-meta {
-    display: flex !important;
-    flex-direction: column !important;
+  .mobile-wizard-tabs::-webkit-scrollbar {
+    display: none;
   }
   
-  #modal .wizard-step-label {
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    color: white !important;
-    white-space: nowrap !important;
+  .mobile-wizard-tab {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
   }
   
-  #modal .wizard-step-helper {
-    display: none !important;
+  .mobile-wizard-tab.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
   }
   
-  /* ÁREA DE SCROLL */
-  #modal .modal-scroll {
-    flex: 1 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    padding: 16px !important;
-    padding-bottom: 120px !important;
-    -webkit-overflow-scrolling: touch !important;
+  .mobile-wizard-tab.completed {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: #22c55e;
+    color: #22c55e;
   }
   
-  /* CONTENEDOR DE PASOS */
-  #modal .wizard-step-container {
-    padding-bottom: 100px !important;
+  .mobile-tab-number {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
   }
   
-  #modal .wizard-step {
-    display: none !important;
+  .mobile-wizard-tab.active .mobile-tab-number {
+    background: rgba(255,255,255,0.3);
   }
   
-  #modal .wizard-step.wizard-step--active {
-    display: block !important;
+  .mobile-wizard-tab.completed .mobile-tab-number {
+    background: #22c55e;
+    color: white;
+  }
+  
+  /* BODY - CONTENIDO SCROLLEABLE */
+  .mobile-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px;
+    -webkit-overflow-scrolling: touch;
   }
   
   /* SECCIONES */
-  #modal .form-section {
-    padding: 16px !important;
-    margin-bottom: 16px !important;
-    background: rgba(255,255,255,0.05) !important;
-    border-radius: 12px !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
+  .mobile-modal-body .form-section,
+  .mobile-modal-body .mobile-form-section {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
   }
   
-  #modal .form-section-title {
-    font-size: 1rem !important;
-    color: white !important;
-    margin-bottom: 8px !important;
+  .mobile-modal-body .form-section-title,
+  .mobile-modal-body .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   
-  #modal .form-section-description {
-    font-size: 0.8rem !important;
-    color: rgba(255,255,255,0.5) !important;
+  .mobile-modal-body .form-section-description,
+  .mobile-modal-body .section-desc {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 16px;
   }
   
   /* CAMPOS */
-  #modal .form-group {
-    margin-bottom: 16px !important;
+  .mobile-modal-body .form-group {
+    margin-bottom: 16px;
   }
   
-  #modal .form-group label {
-    display: block !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    color: rgba(255,255,255,0.7) !important;
-    margin-bottom: 6px !important;
-    text-transform: uppercase !important;
+  .mobile-modal-body .form-group:last-child {
+    margin-bottom: 0;
   }
   
-  #modal input,
-  #modal select,
-  #modal textarea {
-    width: 100% !important;
-    font-size: 16px !important;
-    padding: 14px !important;
-    background: rgba(255,255,255,0.08) !important;
-    border: 1px solid rgba(255,255,255,0.15) !important;
-    border-radius: 10px !important;
-    color: white !important;
+  .mobile-modal-body label,
+  .mobile-modal-body .form-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
   }
   
-  #modal input:focus,
-  #modal select:focus,
-  #modal textarea:focus {
-    outline: none !important;
-    border-color: #3b82f6 !important;
-    background: rgba(59, 130, 246, 0.15) !important;
+  .mobile-modal-body input,
+  .mobile-modal-body select,
+  .mobile-modal-body textarea,
+  .mobile-modal-body .form-control {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    color: white;
+    outline: none;
+    transition: all 0.2s;
   }
   
-  #modal textarea {
-    min-height: 100px !important;
-    resize: vertical !important;
+  .mobile-modal-body input:focus,
+  .mobile-modal-body select:focus,
+  .mobile-modal-body textarea:focus,
+  .mobile-modal-body .form-control:focus {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+  }
+  
+  .mobile-modal-body input::placeholder,
+  .mobile-modal-body textarea::placeholder {
+    color: rgba(255,255,255,0.3);
+  }
+  
+  .mobile-modal-body select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+  }
+  
+  .mobile-modal-body textarea {
+    min-height: 100px;
+    resize: vertical;
   }
   
   /* GRIDS EN COLUMNA */
-  #modal .form-row,
-  #modal .form-row-triple,
-  #modal .form-row-quad,
-  #modal .form-stock-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
+  .mobile-modal-body .form-row,
+  .mobile-modal-body .form-row-triple,
+  .mobile-modal-body .form-row-quad,
+  .mobile-modal-body .form-stock-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
   
   /* UPLOAD ZONE */
-  #modal .image-upload-zone {
-    padding: 30px !important;
-    border: 2px dashed rgba(255,255,255,0.3) !important;
-    border-radius: 12px !important;
-    background: rgba(255,255,255,0.03) !important;
-    text-align: center !important;
+  .mobile-modal-body .image-upload-zone,
+  .mobile-modal-body .upload-zone {
+    border: 2px dashed rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 32px 16px;
+    text-align: center;
+    background: rgba(255,255,255,0.02);
+    cursor: pointer;
+  }
+  
+  .mobile-modal-body .upload-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+  }
+  
+  .mobile-modal-body .upload-text {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.5);
   }
   
   /* PREVIEW IMÁGENES */
-  #modal .multimedia-preview,
-  #modal #imagePreview {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 8px !important;
-    padding: 12px !important;
-    background: rgba(0,0,0,0.2) !important;
-    border-radius: 10px !important;
+  .mobile-modal-body .multimedia-preview,
+  .mobile-modal-body #imagePreview,
+  .mobile-modal-body .image-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
   }
   
-  #modal .preview-item {
-    aspect-ratio: 1 !important;
-    border-radius: 8px !important;
-    overflow: hidden !important;
+  .mobile-modal-body .preview-item,
+  .mobile-modal-body .image-thumb {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    background: #1e293b;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .mobile-modal-body .preview-item img,
+  .mobile-modal-body .image-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   
   /* TREE UBICACIONES */
-  #modal .ubicaciones-tree-selector,
-  #modal #ubicacionesTreeContainer {
-    max-height: 250px !important;
-    overflow-y: auto !important;
-    padding: 12px !important;
-    background: rgba(0,0,0,0.2) !important;
-    border-radius: 10px !important;
+  .mobile-modal-body .ubicaciones-tree-selector,
+  .mobile-modal-body #ubicacionesTreeContainer,
+  .mobile-modal-body .tree-container {
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    padding: 12px;
   }
   
-  /* FOOTER FIJO - BOTONES */
-  #modal .step-actions-bottom {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    padding: 16px !important;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
-    background: rgba(15, 23, 42, 0.98) !important;
-    border-top: 1px solid rgba(255,255,255,0.1) !important;
-    z-index: 10001 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
+  /* FOOTER */
+  .mobile-modal-footer {
+    flex-shrink: 0;
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    background: rgba(15, 23, 42, 0.95);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
   
-  #modal .step-actions-bottom .btn {
-    width: 100% !important;
-    min-height: 52px !important;
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    border-radius: 12px !important;
-    border: none !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important;
+  .mobile-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
   }
   
-  #modal .step-actions-bottom .btn-primary {
-    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
-    color: white !important;
+  .mobile-btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
   }
   
-  #modal .step-actions-bottom .btn-success {
-    background: linear-gradient(135deg, #22c55e, #16a34a) !important;
-    color: white !important;
+  .mobile-btn-success {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
   }
   
-  #modal .step-actions-bottom .btn-secondary {
-    background: rgba(255,255,255,0.1) !important;
-    color: white !important;
+  .mobile-btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.7);
+  }
+  
+  .mobile-btn:active {
+    transform: scale(0.98);
+    opacity: 0.9;
   }
 }
 
@@ -17425,7 +17442,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     <button class="nav-tab" data-tab="configuracion">
       Configuracin
     </button>
-  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.026</span></h1>
+  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.027</span></h1>
 
   <!-- WarmupProgress removido - Firebase carga instantáneamente -->
 </div>
@@ -17440,7 +17457,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile2">v6.026</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile2">v6.027</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17644,7 +17661,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div style="display: inline-flex; align-items: stretch; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
           <span id="userEmail" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.05); font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 500; white-space: nowrap;"></span>
           <button id="btnLogout" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.08); border: none; border-left: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;" title="Cerrar sesión" onmouseover="this.style.background='rgba(248, 113, 113, 0.15)'; this.style.color='rgba(248, 113, 113, 0.9)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.5)'">
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.026</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.027</span>
           </button>
         </div>
       </div>
@@ -17659,7 +17676,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop2" style="margin-left: 8px;">v6.026</span>
+        <span class="version-badge" id="versionBadgeDesktop2" style="margin-left: 8px;">v6.027</span>
       </div>
     </div>
 
@@ -18725,7 +18742,134 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   </div>
 </div>
 
-<!-- MODAL FORMULARIO -->
+<!-- ============================================================== -->
+<!-- 📱 MODAL MÓVIL DEDICADO - Solo visible en pantallas < 768px    -->
+<!-- v6.027: Diseño completamente separado del modal PC             -->
+<!-- ============================================================== -->
+<div id="mobileModalOverlay" class="mobile-modal-overlay">
+  <div class="mobile-modal">
+    <!-- HEADER -->
+    <div class="mobile-modal-header">
+      <span class="mobile-modal-title" id="mobileModalTitle">📦 Editar Repuesto</span>
+      <button class="mobile-modal-close" onclick="app.closeMobileModal()">✕</button>
+    </div>
+    
+    <!-- WIZARD TABS -->
+    <div class="mobile-wizard-tabs" id="mobileWizardTabs">
+      <button type="button" class="mobile-wizard-tab active" data-step="1" onclick="app.setMobileWizardStep(1)">
+        <span class="mobile-tab-number">1</span>
+        Identificación
+      </button>
+      <button type="button" class="mobile-wizard-tab" data-step="2" onclick="app.setMobileWizardStep(2)">
+        <span class="mobile-tab-number">2</span>
+        Stock
+      </button>
+      <button type="button" class="mobile-wizard-tab" data-step="3" onclick="app.setMobileWizardStep(3)">
+        <span class="mobile-tab-number">3</span>
+        Ubicación
+      </button>
+      <button type="button" class="mobile-wizard-tab" data-step="4" onclick="app.setMobileWizardStep(4)">
+        <span class="mobile-tab-number">4</span>
+        Multimedia
+      </button>
+    </div>
+    
+    <!-- CONTENIDO CON PASOS -->
+    <div class="mobile-modal-body" id="mobileModalBody">
+      <!-- PASO 1: Identificación -->
+      <div class="mobile-wizard-step active" data-step="1">
+        <div class="mobile-form-group">
+          <label class="mobile-form-label">Nombre *</label>
+          <input type="text" id="mobile-nombre" class="mobile-form-input" placeholder="Nombre del repuesto" autocomplete="off">
+        </div>
+        <div class="mobile-form-group">
+          <label class="mobile-form-label">Descripción</label>
+          <textarea id="mobile-descripcion" class="mobile-form-textarea" rows="3" placeholder="Descripción detallada"></textarea>
+        </div>
+        <div class="mobile-form-group">
+          <label class="mobile-form-label">Marca</label>
+          <input type="text" id="mobile-marca" class="mobile-form-input" placeholder="Marca del repuesto" autocomplete="off">
+        </div>
+        <div class="mobile-form-group">
+          <label class="mobile-form-label">Modelo / Referencia</label>
+          <input type="text" id="mobile-modelo" class="mobile-form-input" placeholder="Modelo o referencia" autocomplete="off">
+        </div>
+      </div>
+      
+      <!-- PASO 2: Stock -->
+      <div class="mobile-wizard-step" data-step="2">
+        <div class="mobile-form-group">
+          <label class="mobile-form-label">Stock Actual</label>
+          <input type="number" id="mobile-stock-actual" class="mobile-form-input" value="0" min="0">
+        </div>
+        <div class="mobile-form-group">
+          <label class="mobile-form-label">Stock Mínimo</label>
+          <input type="number" id="mobile-stock-minimo" class="mobile-form-input" value="0" min="0">
+        </div>
+        <div class="mobile-form-group">
+          <label class="mobile-form-label">Stock Máximo</label>
+          <input type="number" id="mobile-stock-maximo" class="mobile-form-input" value="0" min="0">
+        </div>
+        <div class="mobile-form-group">
+          <label class="mobile-form-label">Unidad</label>
+          <select id="mobile-unidad" class="mobile-form-select">
+            <option value="unidad">Unidad</option>
+            <option value="pieza">Pieza</option>
+            <option value="metro">Metro</option>
+            <option value="litro">Litro</option>
+            <option value="kg">Kilogramo</option>
+            <option value="caja">Caja</option>
+            <option value="rollo">Rollo</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- PASO 3: Ubicación -->
+      <div class="mobile-wizard-step" data-step="3">
+        <div class="mobile-info-box">
+          <span style="font-size: 1.5rem;">📍</span>
+          <div>
+            <strong>Ubicaciones actuales:</strong>
+            <div id="mobile-ubicacion-text" style="margin-top: 8px; color: var(--text-secondary);">
+              Sin ubicaciones asignadas
+            </div>
+          </div>
+        </div>
+        <p style="text-align: center; color: var(--text-secondary); margin-top: 16px; font-size: 0.9rem;">
+          Para editar ubicaciones, usa la versión de escritorio o el mapa interactivo.
+        </p>
+      </div>
+      
+      <!-- PASO 4: Multimedia -->
+      <div class="mobile-wizard-step" data-step="4">
+        <div class="mobile-info-box">
+          <span style="font-size: 1.5rem;">📷</span>
+          <div>
+            <strong>Fotos del repuesto:</strong>
+            <div id="mobile-fotos-preview" style="margin-top: 8px; color: var(--text-secondary);">
+              Sin fotos
+            </div>
+          </div>
+        </div>
+        <p style="text-align: center; color: var(--text-secondary); margin-top: 16px; font-size: 0.9rem;">
+          La gestión multimedia completa está disponible en la versión de escritorio.
+        </p>
+      </div>
+    </div>
+    
+    <!-- FOOTER CON NAVEGACIÓN -->
+    <div class="mobile-modal-footer">
+      <button type="button" class="btn btn-secondary" onclick="app.mobileWizardPrev()" style="visibility: hidden;">
+        ← Anterior
+      </button>
+      <button type="button" class="btn btn-primary" onclick="app.mobileWizardNext()">
+        Siguiente →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FORMULARIO (PC) -->
 <div class="modal" id="modal">
   <div class="modal-content">
   <button class="modal-close" onclick="app.closeModal()" title="Cerrar" aria-label="Cerrar"></button>
@@ -41401,32 +41545,13 @@ class InventarioCompleto {
       this.refreshModalMultimediaBadge();
     }
     
-    document.getElementById('modal').classList.add('active');
-    
-    // 📱 MÓVIL: Forzar modal fullscreen - SIMPLIFICADO
-    const modalContent = document.querySelector('#modal .modal-content');
-    const modalOverlay = document.getElementById('modal');
-    if (this.isMobile && modalContent) {
-      console.log(`📱 Modal móvil FULLSCREEN: ${window.innerWidth}x${window.innerHeight}`);
-      
-      // Prevenir scroll horizontal en todo el documento
-      document.documentElement.style.overflowX = 'hidden';
-      document.body.style.overflowX = 'hidden';
-      document.body.style.overflow = 'hidden';
-      
-      // Limpiar TODOS los estilos inline del modal
-      modalOverlay.style.cssText = '';
-      modalContent.style.cssText = '';
-      
-      // Remover clase is-resizable que aplica transform
-      modalContent.classList.remove('is-resizable');
-      
-      // Asegurar que el contenido scrolleable funcione
-      const modalScroll = modalContent.querySelector('.modal-scroll');
-      if (modalScroll) {
-        modalScroll.style.cssText = '';
-      }
+    // 📱 v6.027: MODAL MÓVIL DEDICADO
+    if (this.isMobile) {
+      this.openMobileModal(mode, id);
+      return; // No continuar con el modal PC
     }
+    
+    document.getElementById('modal').classList.add('active');
     
     this.addEscapeListener();
     this.setupEnterNavigation();
@@ -41513,7 +41638,167 @@ class InventarioCompleto {
     console.log('========== MODAL ABIERTO ==========\n');
   }
 
+  // 📱 v6.027: MODAL MÓVIL DEDICADO - Completamente separado del modal PC
+  async openMobileModal(mode, id = null) {
+    console.log('📱 [MOBILE MODAL] Abriendo modal móvil dedicado');
+    
+    const overlay = document.getElementById('mobileModalOverlay');
+    if (!overlay) {
+      console.error('❌ No se encontró #mobileModalOverlay');
+      return;
+    }
+    
+    this.currentEditingId = id;
+    this.mobileCurrentStep = 1;
+    
+    // Resetear formulario móvil
+    const fields = ['mobile-nombre', 'mobile-descripcion', 'mobile-marca', 'mobile-modelo', 
+                    'mobile-stock-actual', 'mobile-stock-minimo', 'mobile-stock-maximo', 'mobile-unidad'];
+    fields.forEach(fieldId => {
+      const el = document.getElementById(fieldId);
+      if (el) el.value = '';
+    });
+    
+    // Cargar datos si es edición
+    if (mode === 'edit' && id) {
+      const repuesto = this.repuestos.find(r => String(r.id) === String(id));
+      if (repuesto) {
+        console.log('📱 Cargando repuesto:', repuesto.nombre);
+        
+        // Paso 1: Identificación
+        const setVal = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val || ''; };
+        setVal('mobile-nombre', repuesto.nombre);
+        setVal('mobile-descripcion', repuesto.descripcion);
+        setVal('mobile-marca', repuesto.marca);
+        setVal('mobile-modelo', repuesto.modelo);
+        
+        // Paso 2: Stock
+        setVal('mobile-stock-actual', repuesto.stock_actual);
+        setVal('mobile-stock-minimo', repuesto.stock_minimo);
+        setVal('mobile-stock-maximo', repuesto.stock_maximo);
+        setVal('mobile-unidad', repuesto.unidad);
+        
+        // Paso 3: Ubicación (mostrar texto)
+        const ubicacionText = document.getElementById('mobile-ubicacion-text');
+        if (ubicacionText && repuesto.ubicaciones && repuesto.ubicaciones.length > 0) {
+          ubicacionText.innerHTML = repuesto.ubicaciones.map(u => 
+            `<div style="padding: 8px; background: var(--bg-tertiary); border-radius: 8px; margin-bottom: 4px;">
+              ${u.planta || '-'} › ${u.area || '-'} › ${u.subarea || '-'}
+            </div>`
+          ).join('');
+        }
+      }
+    }
+    
+    // Mostrar overlay
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Ir al paso 1
+    this.setMobileWizardStep(1);
+    
+    console.log('📱 [MOBILE MODAL] Abierto correctamente');
+  }
+  
+  setMobileWizardStep(step) {
+    this.mobileCurrentStep = step;
+    
+    // Actualizar tabs
+    document.querySelectorAll('.mobile-wizard-tab').forEach((tab, i) => {
+      tab.classList.toggle('active', i + 1 === step);
+    });
+    
+    // Actualizar contenido
+    document.querySelectorAll('.mobile-wizard-step').forEach((stepEl, i) => {
+      stepEl.classList.toggle('active', i + 1 === step);
+    });
+    
+    // Actualizar botones de navegación
+    const prevBtn = document.querySelector('.mobile-modal-footer .btn-secondary');
+    const nextBtn = document.querySelector('.mobile-modal-footer .btn-primary');
+    
+    if (prevBtn) prevBtn.style.visibility = step === 1 ? 'hidden' : 'visible';
+    if (nextBtn) nextBtn.textContent = step === 4 ? '💾 Guardar' : 'Siguiente →';
+  }
+  
+  mobileWizardPrev() {
+    if (this.mobileCurrentStep > 1) {
+      this.setMobileWizardStep(this.mobileCurrentStep - 1);
+    }
+  }
+  
+  mobileWizardNext() {
+    if (this.mobileCurrentStep < 4) {
+      this.setMobileWizardStep(this.mobileCurrentStep + 1);
+    } else {
+      this.saveMobileModal();
+    }
+  }
+  
+  async saveMobileModal() {
+    console.log('📱 [MOBILE MODAL] Guardando...');
+    
+    // Recopilar datos del formulario móvil
+    const getVal = (id) => document.getElementById(id)?.value || '';
+    
+    const data = {
+      nombre: getVal('mobile-nombre'),
+      descripcion: getVal('mobile-descripcion'),
+      marca: getVal('mobile-marca'),
+      modelo: getVal('mobile-modelo'),
+      stock_actual: parseInt(getVal('mobile-stock-actual')) || 0,
+      stock_minimo: parseInt(getVal('mobile-stock-minimo')) || 0,
+      stock_maximo: parseInt(getVal('mobile-stock-maximo')) || 0,
+      unidad: getVal('mobile-unidad') || 'unidad'
+    };
+    
+    if (!data.nombre.trim()) {
+      this.showToast('El nombre es obligatorio', 'warning');
+      this.setMobileWizardStep(1);
+      return;
+    }
+    
+    try {
+      if (this.currentEditingId) {
+        // Actualizar existente
+        await this.updateRepuestoInFirestore(this.currentEditingId, data);
+        this.showToast('✅ Repuesto actualizado', 'success');
+      } else {
+        // Crear nuevo
+        const id = crypto.randomUUID();
+        data.id = id;
+        data.createdAt = new Date().toISOString();
+        await this.saveRepuestoToFirestore(data);
+        this.showToast('✅ Repuesto creado', 'success');
+      }
+      
+      this.closeMobileModal();
+      await this.loadRepuestos();
+      this.renderRepuestos();
+    } catch (error) {
+      console.error('Error guardando:', error);
+      this.showToast('❌ Error al guardar', 'error');
+    }
+  }
+  
+  closeMobileModal() {
+    const overlay = document.getElementById('mobileModalOverlay');
+    if (overlay) {
+      overlay.classList.remove('active');
+    }
+    document.body.style.overflow = '';
+    this.currentEditingId = null;
+    console.log('📱 [MOBILE MODAL] Cerrado');
+  }
+
   closeModal() {
+    // 📱 Si el modal móvil está activo, cerrarlo
+    const mobileOverlay = document.getElementById('mobileModalOverlay');
+    if (mobileOverlay && mobileOverlay.classList.contains('active')) {
+      this.closeMobileModal();
+      return;
+    }
+    
     // Limpiar estado multimedia al cerrar
     this.resetMultimediaState();
     
