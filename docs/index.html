@@ -17545,7 +17545,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.008</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.009</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17764,7 +17764,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.008</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.009</span>
       </div>
     </div>
 
@@ -40286,20 +40286,26 @@ class InventarioCompleto {
     //  Definir orden de niveles jerrquicos (8 niveles)
     const nivelOrder = { 'N1': 1, 'N2': 2, 'N3': 3, 'N4': 4, 'N5': 5, 'N6': 6, 'N7': 7, 'N8': 8 };
     
-    // Ordenar repuestos - PRIMERO por fecha (recientes primero), luego por nivel y campo
+    // Función para extraer timestamp del ID (varios formatos posibles)
+    const getTimestampFromId = (id) => {
+      if (!id) return 0;
+      // Formato: "repuesto-1733788000000-0" o "17337880000000.123456" o "1733788000000abc"
+      const match = id.match(/(\d{13})/); // Buscar 13 dígitos (timestamp en ms)
+      if (match) return parseInt(match[1]);
+      // Si no hay 13 dígitos, intentar extraer cualquier número al inicio
+      const numMatch = id.match(/\d+/);
+      return numMatch ? parseInt(numMatch[0]) : 0;
+    };
+    
+    // Ordenar repuestos - PRIMERO por fecha (recientes primero)
     const sortedRepuestos = [...repuestos].sort((a, b) => {
       // 🆕 PRIMERO: Ordenar por fecha de creación (más recientes primero)
-      // El ID contiene timestamp, así que podemos usarlo para ordenar
-      const idA = a.id || '';
-      const idB = b.id || '';
+      const timestampA = getTimestampFromId(a.id);
+      const timestampB = getTimestampFromId(b.id);
       
-      // Extraer timestamp del ID (formato: timestamp + random)
-      const timestampA = parseInt(idA.substring(0, 13)) || 0;
-      const timestampB = parseInt(idB.substring(0, 13)) || 0;
-      
-      // Si hay diferencia significativa de tiempo (más de 1 segundo), ordenar por fecha
-      if (Math.abs(timestampA - timestampB) > 1000) {
-        return timestampB - timestampA; // Descendente (más recientes primero)
+      // Si hay diferencia de tiempo, ordenar por fecha (más reciente primero)
+      if (timestampA !== timestampB) {
+        return timestampB - timestampA; // Descendente
       }
       
       // SEGUNDO: Si son del mismo momento, ordenar por nivel jerárquico
