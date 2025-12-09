@@ -17482,7 +17482,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario</h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.001</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17689,6 +17689,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.001</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -66683,6 +66684,32 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* 🏷️ Badge de Versión */
+.version-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  font-family: 'SF Mono', 'Consolas', monospace;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 51, 234, 0.2));
+  color: var(--accent-color, #3b82f6);
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+  margin-left: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Desktop version badge */
+#versionBadgeDesktop {
+  font-size: 0.65rem;
+  padding: 3px 8px;
+  background: rgba(59, 130, 246, 0.15);
+  color: rgba(147, 197, 253, 0.9);
+  border: 1px solid rgba(59, 130, 246, 0.25);
 }
 
 /* Header */
