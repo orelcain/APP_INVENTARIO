@@ -343,7 +343,70 @@
 `;
         
         console.log(info);
+        
+        // Si hay diferencia entre localStorage y Firebase, ofrecer sincronizar
+        if (repuestosLocal.length > repuestosMemoria.length) {
+          const diferencia = repuestosLocal.length - repuestosMemoria.length;
+          const syncMsg = `\n\n⚠️ HAY ${diferencia} REPUESTO(S) EN LOCALSTORAGE QUE NO ESTÁN EN FIREBASE\n\n¿Deseas sincronizar ahora?`;
+          
+          if (confirm(info + syncMsg)) {
+            await window.sincronizarLocalAFirebase();
+            return;
+          }
+        }
+        
         alert(info);
+      };
+      
+      // 🔄 SINCRONIZAR LOCALSTORAGE A FIREBASE
+      window.sincronizarLocalAFirebase = async function() {
+        const repuestosLocal = JSON.parse(localStorage.getItem('inventarioData') || '[]');
+        
+        if (repuestosLocal.length === 0) {
+          alert('❌ No hay repuestos en localStorage');
+          return;
+        }
+        
+        if (!window.firebaseStorageAdapter) {
+          alert('❌ Firebase no está disponible');
+          return;
+        }
+        
+        if (!window.firebaseService?.isAuthenticated?.()) {
+          alert('❌ Debes iniciar sesión primero');
+          return;
+        }
+        
+        const confirmar = confirm(
+          `🔄 SINCRONIZAR A FIREBASE\n\n` +
+          `Se subirán ${repuestosLocal.length} repuestos desde localStorage a Firebase.\n\n` +
+          `Esto sobrescribirá los datos en Firebase.\n\n` +
+          `¿Continuar?`
+        );
+        
+        if (!confirmar) return;
+        
+        try {
+          alert('🔄 Sincronizando... espera un momento');
+          
+          // Subir todos los repuestos de localStorage a Firebase
+          await window.firebaseStorageAdapter.guardarRepuestos(repuestosLocal);
+          
+          // Recargar desde Firebase para verificar
+          const repuestosFirebase = await window.firebaseStorageAdapter.cargarRepuestos();
+          
+          alert(
+            `✅ SINCRONIZACIÓN COMPLETADA\n\n` +
+            `• Subidos: ${repuestosLocal.length} repuestos\n` +
+            `• En Firebase: ${repuestosFirebase.length} repuestos\n\n` +
+            `🔄 Recargando página...`
+          );
+          
+          location.reload();
+        } catch (error) {
+          console.error('❌ Error sincronizando:', error);
+          alert('❌ Error al sincronizar: ' + error.message);
+        }
       };
       
       // 🖼️ MIGRAR IMÁGENES DE FILESYSTEM A FIREBASE STORAGE
@@ -17482,7 +17545,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.005</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.006</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17701,7 +17764,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.005</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.006</span>
       </div>
     </div>
 
