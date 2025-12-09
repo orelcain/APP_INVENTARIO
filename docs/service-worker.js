@@ -5,7 +5,7 @@
  * v6.012 - Fix variables duplicadas
  */
 
-const CACHE_NAME = 'inventario-v6.022';
+const CACHE_NAME = 'inventario-v6.023';
 const DYNAMIC_CACHE = 'inventario-dynamic-v6.012';
 
 // Archivos esenciales para funcionar offline
