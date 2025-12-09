@@ -17548,7 +17548,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.010</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.011</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17767,7 +17767,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.010</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.011</span>
       </div>
     </div>
 
@@ -41499,6 +41499,40 @@ class InventarioCompleto {
     }
     
     document.getElementById('modal').classList.add('active');
+    
+    // 📱 MÓVIL: Forzar modal fullscreen con dimensiones reales de pantalla
+    const modalContent = document.querySelector('#modal .modal-content');
+    if (this.isMobile && modalContent) {
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      console.log(`📱 Modal móvil: Adaptando a pantalla ${screenWidth}x${screenHeight}`);
+      
+      // Aplicar dimensiones exactas de pantalla
+      modalContent.style.cssText = `
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: ${screenWidth}px !important;
+        height: ${screenHeight}px !important;
+        max-width: ${screenWidth}px !important;
+        max-height: ${screenHeight}px !important;
+        min-width: unset !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        transform: none !important;
+        overflow: hidden !important;
+      `;
+      
+      // Asegurar que el contenido scrolleable tenga altura correcta
+      const modalScroll = modalContent.querySelector('.modal-scroll');
+      if (modalScroll) {
+        modalScroll.style.maxHeight = `${screenHeight - 150}px`; // Restar header y footer
+        modalScroll.style.overflowY = 'auto';
+      }
+    }
+    
     this.addEscapeListener();
     this.setupEnterNavigation();
     
@@ -66698,6 +66732,10 @@ window.ImageFullscreenViewer = {
         initialScale = this.scale;
         initialTranslateX = this.translateX;
         initialTranslateY = this.translateY;
+        
+        // Guardar centro inicial del pinch
+        this.pinchStartCenterX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        this.pinchStartCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
       }
     }, { passive: true });
     
@@ -66719,22 +66757,44 @@ window.ImageFullscreenViewer = {
         
         this.applyTransform();
       } else if (e.touches.length === 2 && isPinching) {
-        // Pinch-to-zoom
+        // Pinch-to-zoom HACIA EL PUNTO DE PELLIZCO
         e.preventDefault();
+        
         const currentDistance = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
           e.touches[0].clientY - e.touches[1].clientY
         );
         
-        // Calcular nuevo scale con suavizado
+        // Centro del pellizco (punto focal del zoom)
+        const pinchCenterX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const pinchCenterY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        
+        // Calcular nuevo scale
         const scaleRatio = currentDistance / initialDistance;
         const newScale = Math.min(Math.max(initialScale * scaleRatio, 1), 5);
         
-        // Aplicar zoom centrado entre los dos dedos
-        const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-        const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-        
         if (newScale !== this.scale) {
+          // Obtener posición de la imagen
+          const rect = img.getBoundingClientRect();
+          const imgCenterX = rect.left + rect.width / 2;
+          const imgCenterY = rect.top + rect.height / 2;
+          
+          // Calcular offset del punto de pellizco respecto al centro de la imagen
+          const offsetX = pinchCenterX - imgCenterX;
+          const offsetY = pinchCenterY - imgCenterY;
+          
+          // Calcular nueva traducción para mantener el punto focal
+          const scaleDiff = newScale - this.scale;
+          
+          // Ajustar traducción para que el zoom vaya hacia el punto de pellizco
+          this.translateX = initialTranslateX - (offsetX * scaleDiff / newScale);
+          this.translateY = initialTranslateY - (offsetY * scaleDiff / newScale);
+          
+          // Limitar traducción para no salir de la imagen
+          const maxTranslate = (newScale - 1) * Math.max(rect.width, rect.height) / 2;
+          this.translateX = Math.max(-maxTranslate, Math.min(maxTranslate, this.translateX));
+          this.translateY = Math.max(-maxTranslate, Math.min(maxTranslate, this.translateY));
+          
           this.scale = newScale;
           
           if (this.scale > 1) {
