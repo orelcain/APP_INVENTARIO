@@ -17433,7 +17433,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.017</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.018</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17652,7 +17652,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.017</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.018</span>
       </div>
     </div>
 
@@ -65847,6 +65847,19 @@ function activarSincronizacionTiempoReal() {
                     console.log('🔄 Grid re-renderizado con datos de Firebase');
                 }
                 
+                // 🏠 Actualizar Home con nuevos stats
+                if (window.updateMobileHome) {
+                    window.updateMobileHome();
+                    console.log('🏠 Home actualizado con datos de Firebase');
+                }
+                
+                // También actualizar cache local
+                try {
+                    localStorage.setItem('inventarioData', JSON.stringify(data));
+                } catch (e) {
+                    console.warn('⚠️ No se pudo actualizar cache local:', e);
+                }
+                
                 // Actualizar estado UI
                 actualizarEstadoFirebase();
             }
@@ -66069,6 +66082,62 @@ if (document.readyState === 'loading') {
 } else {
     setTimeout(restaurarEstadoSync, 500);
 }
+
+// 🔥 NUEVO: Escuchar evento de login para activar sincronización
+window.addEventListener('userLoggedIn', (event) => {
+    console.log('🔐 Usuario logueado, activando sincronización...', event.detail);
+    
+    // Pequeño delay para que Firebase termine de inicializar
+    setTimeout(() => {
+        if (!syncActive && window.firebaseStorageAdapter && window.firebaseService?.isAuthenticated()) {
+            activarSincronizacionTiempoReal();
+            
+            // Cargar datos iniciales desde Firebase
+            if (window.app?.loadData) {
+                window.app.loadData().then(() => {
+                    console.log('📦 Datos recargados desde Firebase después del login');
+                    if (window.updateMobileHome) window.updateMobileHome();
+                });
+            }
+        }
+    }, 300);
+});
+
+// 🔥 NUEVO: Escuchar evento de logout para desactivar sincronización
+window.addEventListener('userLoggedOut', () => {
+    console.log('🔐 Usuario deslogueado, desactivando sincronización...');
+    if (syncActive) {
+        desactivarSincronizacionTiempoReal();
+    }
+});
+
+// 🌐 NUEVO: Reconexión automática cuando se recupera internet
+window.addEventListener('online', () => {
+    console.log('🌐 Conexión a internet recuperada');
+    
+    // Verificar si deberíamos tener sincronización activa
+    if (window.firebaseService?.isAuthenticated() && !syncActive) {
+        console.log('🔄 Reactivando sincronización tras reconexión...');
+        
+        setTimeout(() => {
+            activarSincronizacionTiempoReal();
+            mostrarNotificacionSync('🌐 Conexión recuperada - Sincronización reactivada');
+            
+            // Recargar datos desde Firebase
+            if (window.app?.loadData) {
+                window.app.loadData().then(() => {
+                    console.log('📦 Datos recargados tras reconexión');
+                    if (window.updateMobileHome) window.updateMobileHome();
+                });
+            }
+        }, 1000);
+    }
+});
+
+window.addEventListener('offline', () => {
+    console.log('📴 Conexión a internet perdida');
+    mostrarNotificacionSync('📴 Sin conexión - Los cambios se guardarán localmente');
+});
 
 console.log('✅ Sistema de sincronización en tiempo real disponible');
 console.log('🔥 FIREBASE-ONLY: Sincronización automática activada');
