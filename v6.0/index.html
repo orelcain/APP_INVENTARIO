@@ -16876,29 +16876,30 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     backdrop-filter: blur(10px) !important;
   }
   
-  /* ===== MODAL CONTENT - CARD ESTILO iOS ===== */
+  /* ===== MODAL CONTENT - FULLSCREEN SIN CORTES ===== */
   .modal-content,
   .modal-content.is-resizable {
     position: fixed !important;
-    top: 8px !important;
-    left: 6px !important;
-    right: 6px !important;
-    bottom: 8px !important;
-    width: calc(100vw - 12px) !important;
-    height: calc(100dvh - 16px) !important;
-    max-width: calc(100vw - 12px) !important;
-    max-height: calc(100dvh - 16px) !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    border-radius: 20px !important;
+    border-radius: 0 !important;
     min-width: unset !important;
     overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
     transform: none !important;
     background: linear-gradient(180deg, #1a2332 0%, #0f172a 100%) !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important;
+    border: none !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
   }
   
   /* ===== FORMULARIO PRINCIPAL ===== */
@@ -17604,7 +17605,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.021</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.022</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17823,7 +17824,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.021</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.022</span>
       </div>
     </div>
 
