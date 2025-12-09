@@ -1941,7 +1941,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       border-radius: 20px;
       padding: 0;
       width: fit-content;
-      min-width: 1400px;
+      min-width: min(1400px, 100%);
       max-width: 90vw;
       min-height: fit-content;
       max-height: 88vh;
@@ -1961,7 +1961,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       position: fixed;
       margin: 0;
       width: auto;
-      min-width: 1200px;
+      min-width: min(1200px, 100%);
       max-width: 95vw;
       height: 85vh;
       top: 50%;
@@ -16801,10 +16801,16 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 /* ================================================================== */
-/* 📱 MODAL MÓVIL - RESET TOTAL Y FULLSCREEN GARANTIZADO v6.023       */
+/* 📱 MODAL MÓVIL - RESET TOTAL Y FULLSCREEN GARANTIZADO v6.026       */
 /* ================================================================== */
 @media (max-width: 768px) {
-  /* RESET ABSOLUTO - Todo el modal */
+  /* PREVENIR SCROLL HORIZONTAL GLOBAL */
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+  }
+  
+  /* RESET ABSOLUTO - Todo el modal y sus hijos */
   #modal,
   #modal *,
   #modal *::before,
@@ -16813,11 +16819,14 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     max-width: 100% !important;
   }
   
-  /* BACKDROP */
-  #modal.modal {
+  /* BACKDROP - Fullscreen */
+  #modal.modal,
+  #modal.modal.active {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
     width: 100% !important;
     height: 100% !important;
     margin: 0 !important;
@@ -16825,16 +16834,23 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     background: #0f172a !important;
     z-index: 9999 !important;
     overflow: hidden !important;
+    display: flex !important;
   }
   
-  /* CONTENIDO PRINCIPAL */
+  /* CONTENIDO PRINCIPAL - Fullscreen */
   #modal .modal-content,
   #modal .modal-content.is-resizable {
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
     width: 100% !important;
     height: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     border: none !important;
@@ -16842,9 +16858,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     background: #0f172a !important;
     box-shadow: none !important;
     transform: none !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
     overflow: hidden !important;
+    animation: none !important;
   }
   
   /* FORMULARIO */
@@ -17410,7 +17425,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     <button class="nav-tab" data-tab="configuracion">
       Configuracin
     </button>
-  </div>
+  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.026</span></h1>
 
   <!-- WarmupProgress removido - Firebase carga instantáneamente -->
 </div>
@@ -17629,7 +17644,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div style="display: inline-flex; align-items: stretch; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
           <span id="userEmail" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.05); font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 500; white-space: nowrap;"></span>
           <button id="btnLogout" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.08); border: none; border-left: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;" title="Cerrar sesión" onmouseover="this.style.background='rgba(248, 113, 113, 0.15)'; this.style.color='rgba(248, 113, 113, 0.9)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.5)'">
-            Salir
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.026</span>
           </button>
         </div>
       </div>
@@ -41388,65 +41403,29 @@ class InventarioCompleto {
     
     document.getElementById('modal').classList.add('active');
     
-    // 📱 MÓVIL: Forzar modal fullscreen - SIN USAR VW (causa scroll horizontal)
+    // 📱 MÓVIL: Forzar modal fullscreen - SIMPLIFICADO
     const modalContent = document.querySelector('#modal .modal-content');
     const modalOverlay = document.getElementById('modal');
     if (this.isMobile && modalContent) {
       console.log(`📱 Modal móvil FULLSCREEN: ${window.innerWidth}x${window.innerHeight}`);
       
-      // Forzar el overlay a cubrir toda la pantalla
-      modalOverlay.style.cssText = `
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        z-index: 9999 !important;
-        display: flex !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        background: #0f172a !important;
-        overflow: hidden !important;
-      `;
+      // Prevenir scroll horizontal en todo el documento
+      document.documentElement.style.overflowX = 'hidden';
+      document.body.style.overflowX = 'hidden';
+      document.body.style.overflow = 'hidden';
       
-      // Aplicar fullscreen real al contenido - SIN VW/VH
-      modalContent.style.cssText = `
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        max-width: 100% !important;
-        max-height: 100% !important;
-        min-width: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border-radius: 0 !important;
-        transform: none !important;
-        overflow: hidden !important;
-        box-sizing: border-box !important;
-        background: #0f172a !important;
-      `;
+      // Limpiar TODOS los estilos inline del modal
+      modalOverlay.style.cssText = '';
+      modalContent.style.cssText = '';
       
-      // Asegurar que el contenido scrolleable tenga altura correcta
+      // Remover clase is-resizable que aplica transform
+      modalContent.classList.remove('is-resizable');
+      
+      // Asegurar que el contenido scrolleable funcione
       const modalScroll = modalContent.querySelector('.modal-scroll');
       if (modalScroll) {
-        modalScroll.style.cssText = `
-          flex: 1 !important;
-          overflow-y: auto !important;
-          overflow-x: hidden !important;
-          -webkit-overflow-scrolling: touch !important;
-          padding: 16px !important;
-          padding-bottom: 120px !important;
-        `;
+        modalScroll.style.cssText = '';
       }
-      
-      // Ocultar scroll del body
-      document.body.style.overflow = 'hidden';
     }
     
     this.addEscapeListener();
