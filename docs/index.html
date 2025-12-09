@@ -38668,6 +38668,46 @@ class InventarioCompleto {
   }
 
   async loadData() {
+    // 🔥 PRIORIDAD 0: Cargar desde Firebase Firestore si está autenticado
+    if (window.firebaseStorageAdapter && window.firebaseService && window.firebaseService.isAuthenticated()) {
+      console.log('🔥 Firebase autenticado - Cargando repuestos desde Firestore...');
+      try {
+        const repuestosFirebase = await window.firebaseStorageAdapter.cargarRepuestos();
+        
+        if (repuestosFirebase && repuestosFirebase.length > 0) {
+          console.log(`✅ ${repuestosFirebase.length} repuestos cargados desde Firebase`);
+          
+          // Normalizar IDs
+          this.repuestos = repuestosFirebase.map((item, index) => {
+            if (!item.id || item.id === 'undefined' || item.id === 'null') {
+              item.id = `repuesto-${Date.now()}-${index}`;
+            } else {
+              item.id = String(item.id);
+            }
+            if (!item.multimedia || !Array.isArray(item.multimedia)) {
+              item.multimedia = [];
+            }
+            return item;
+          });
+          
+          // Limpiar formato antiguo
+          this.limpiarFormatoAntiguoUbicaciones();
+          
+          // También guardar en localStorage como cache
+          localStorage.setItem('inventarioData', JSON.stringify(this.repuestos));
+          console.log('💾 Cache local actualizado con datos de Firebase');
+          
+          this.loadMapData();
+          return; // Salir, ya cargamos desde Firebase
+        } else {
+          console.log('⚠️ Firebase no tiene repuestos, intentando fuentes locales...');
+        }
+      } catch (firebaseError) {
+        console.error('❌ Error cargando desde Firebase:', firebaseError);
+        console.log('🔄 Intentando fuentes locales como fallback...');
+      }
+    }
+    
     // PRIORIDAD 1: Intentar cargar desde FileSystem si est activo
     if (fsManager.isFileSystemMode) {
       console.log(' Modo FileSystem activo, intentando cargar desde archivo...');

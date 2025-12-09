@@ -2,8 +2,8 @@
  * FirebaseImageStorage - Servicio para almacenar imágenes en Firebase Storage
  * Maneja upload, download y eliminación de imágenes de repuestos
  * 
- * @version 1.0.0
- * @date 2024-12-04
+ * @version 1.1.0
+ * @date 2024-12-09
  */
 
 class FirebaseImageStorage {
@@ -27,6 +27,34 @@ class FirebaseImageStorage {
         this.ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         
         this.init();
+    }
+    
+    /**
+     * 🆕 Genera un nombre de carpeta amigable para Storage
+     * Formato: {numero}_{codSAP}_{nombre_sanitizado}
+     * Ejemplo: 058_3014567890_PERNO_M8X80_INOX
+     */
+    generateFriendlyFolderId(repuestoId, codSAP, nombre, index = null) {
+        // Sanitizar nombre (quitar caracteres especiales, espacios por guiones bajos)
+        const nombreSanitizado = (nombre || 'SIN_NOMBRE')
+            .toUpperCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Quitar acentos
+            .replace(/[^A-Z0-9]/g, '_') // Solo alfanuméricos
+            .replace(/_+/g, '_') // Múltiples guiones bajos a uno
+            .replace(/^_|_$/g, '') // Quitar guiones al inicio/final
+            .substring(0, 30); // Limitar longitud
+        
+        const codSAPPart = codSAP ? `${codSAP}_` : '';
+        
+        // Si tenemos índice, usarlo para el número
+        if (index !== null) {
+            const numPart = String(index).padStart(3, '0');
+            return `${numPart}_${codSAPPart}${nombreSanitizado}`;
+        }
+        
+        // Si no hay índice, usar timestamp corto
+        const shortId = Date.now().toString(36).toUpperCase();
+        return `${shortId}_${codSAPPart}${nombreSanitizado}`;
     }
     
     /**
@@ -78,9 +106,10 @@ class FirebaseImageStorage {
      * @param {string} repuestoId - ID del repuesto
      * @param {string} filename - Nombre del archivo (opcional)
      * @param {Function} onProgress - Callback de progreso (opcional)
+     * @param {Object} repuestoInfo - Info adicional para nombre amigable {codSAP, nombre} (opcional)
      * @returns {Promise<{success: boolean, url?: string, path?: string, error?: string}>}
      */
-    async uploadRepuestoImage(imageData, repuestoId, filename = null, onProgress = null) {
+    async uploadRepuestoImage(imageData, repuestoId, filename = null, onProgress = null, repuestoInfo = null) {
         if (!this.isReady()) {
             return { success: false, error: 'Firebase Storage no está inicializado' };
         }
@@ -101,8 +130,20 @@ class FirebaseImageStorage {
             const extension = this.getExtension(imageData);
             const finalFilename = filename || `${timestamp}_${Math.random().toString(36).substr(2, 9)}.${extension}`;
             
-            // Construir ruta: repuestos/{repuestoId}/{filename}
-            const storagePath = `${this.PATHS.REPUESTOS}/${repuestoId}/${finalFilename}`;
+            // 🆕 Usar nombre de carpeta amigable si tenemos info del repuesto
+            let folderId = repuestoId;
+            if (repuestoInfo && (repuestoInfo.codSAP || repuestoInfo.nombre)) {
+                folderId = this.generateFriendlyFolderId(
+                    repuestoId, 
+                    repuestoInfo.codSAP, 
+                    repuestoInfo.nombre,
+                    repuestoInfo.index
+                );
+                console.log(`📁 Carpeta amigable generada: ${folderId}`);
+            }
+            
+            // Construir ruta: repuestos/{folderId}/{filename}
+            const storagePath = `${this.PATHS.REPUESTOS}/${folderId}/${finalFilename}`;
             const storageRef = this.storage.ref(storagePath);
             
             // Configurar metadata
@@ -110,6 +151,8 @@ class FirebaseImageStorage {
                 contentType: imageData.type || 'image/webp',
                 customMetadata: {
                     repuestoId: repuestoId,
+                    codSAP: repuestoInfo?.codSAP || '',
+                    nombre: repuestoInfo?.nombre || '',
                     uploadedAt: new Date().toISOString(),
                     originalName: imageData.name || finalFilename
                 }

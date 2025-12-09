@@ -2888,10 +2888,20 @@ class SAPScanner {
                 // Subir a Firebase si está disponible
                 if (window.firebaseImageStorage && window.firebaseImageStorage.isReady()) {
                     console.log('📸 SAPScanner: Subiendo imagen a Firebase...');
+                    
+                    // 🆕 Contar repuestos para generar índice
+                    const repuestoIndex = (window.app?.repuestos?.length || 0) + 1;
+                    
                     const uploadResult = await window.firebaseImageStorage.uploadRepuestoImage(
                         blob,
                         nuevoRepuesto.id,
-                        `etiqueta_sap_${codigoSAP || 'sin_codigo'}.webp`
+                        `etiqueta_sap_${codigoSAP || 'sin_codigo'}.webp`,
+                        null, // onProgress
+                        { // 🆕 Info para nombre de carpeta amigable
+                            codSAP: codigoSAP,
+                            nombre: nombre,
+                            index: repuestoIndex
+                        }
                     );
                     
                     if (uploadResult.success) {
