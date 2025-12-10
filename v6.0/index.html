@@ -40707,64 +40707,8 @@ class InventarioCompleto {
           </div>
         </div>
         
-        <!-- 🎯 SECCIÓN UNIFICADA: Ubicación + Acciones Inteligentes -->
+        <!-- 🎯 SECCIÓN UNIFICADA: Ubicación + Acciones (v6.033 - sin duplicados) -->
         ${this.generarSeccionUbicacionUnificada(r)}
-            
-            <!-- Footer simplificado: solo Editar, Contar y Eliminar -->
-          <button class="card-btn" style="
-            background: var(--primary);
-            color: white;
-            border: 1px solid rgba(91, 139, 180, 0.3);
-            padding: 8px 14px;
-            border-radius: 4px;
-            font-weight: 500;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 80px;
-            flex: 0 1 auto;
-          " data-action="edit" data-id="${r.id}" 
-          onmouseover="this.style.background='#6a9dc4'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
-          onmouseout="this.style.background='var(--primary)'; this.style.boxShadow='none';">
-            Editar
-          </button>
-          
-          <button class="card-btn" style="
-            background: var(--success);
-            color: white;
-            border: 1px solid rgba(91, 155, 122, 0.3);
-            padding: 8px 14px;
-            border-radius: 4px;
-            font-weight: 500;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 80px;
-            flex: 0 1 auto;
-          " data-action="contar" data-id="${r.id}"
-          onmouseover="this.style.background='#6bae89'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
-          onmouseout="this.style.background='var(--success)'; this.style.boxShadow='none';">
-            Contar
-          </button>
-          
-          <button class="card-btn" style="
-            background: var(--danger);
-            color: white;
-            border: 1px solid rgba(184, 107, 107, 0.3);
-            padding: 8px 14px;
-            border-radius: 4px;
-            font-weight: 500;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 80px;
-            flex: 0 1 auto;
-          " data-action="delete" data-id="${r.id}"
-          onmouseover="this.style.background='#c88080'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.15)';"
-          onmouseout="this.style.background='var(--danger)'; this.style.boxShadow='none';">
-            Eliminar
-          </button>
-        </div>
       </div>
       `;
     }).join('');
@@ -54234,6 +54178,7 @@ class InventarioCompleto {
     const btnEditar = `${btnBase} background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.3); color: #eab308;`;
     const btnContar = `${btnBase} background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa;`;
     const btnAsignar = `${btnBase} background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171;`;
+    const btnEliminar = `${btnBase} background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171;`;
     
     // Tooltips descriptivos
     const tipVer = 'Ver ubicación del repuesto en el árbol de jerarquía';
@@ -54241,6 +54186,7 @@ class InventarioCompleto {
     const tipEditar = 'Modificar datos del repuesto';
     const tipContar = 'Actualizar cantidad en inventario';
     const tipAsignar = 'Asignar este repuesto a una ubicación en la jerarquía';
+    const tipEliminar = 'Eliminar este repuesto del inventario';
     
     let html = '<div style="padding: 0 12px 12px 12px;">';
     
@@ -54291,6 +54237,9 @@ class InventarioCompleto {
           <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
             Contar
           </button>
+          <button data-action="delete" data-id="${repuesto.id}" style="${btnEliminar}" title="${tipEliminar}">
+            Eliminar
+          </button>
         </div>
       `;
     }
@@ -54323,6 +54272,9 @@ class InventarioCompleto {
           </button>
           <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
             Contar
+          </button>
+          <button data-action="delete" data-id="${repuesto.id}" style="${btnEliminar}" title="${tipEliminar}">
+            Eliminar
           </button>
         </div>
       `;
@@ -54400,13 +54352,16 @@ class InventarioCompleto {
         `;
       }
       
-      // Editar y Contar siempre
+      // Editar, Contar y Eliminar siempre
       html += `
         <button onclick="app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
           Editar
         </button>
         <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
           Contar
+        </button>
+        <button data-action="delete" data-id="${repuesto.id}" style="${btnEliminar}" title="${tipEliminar}">
+          Eliminar
         </button>
       `;
       
