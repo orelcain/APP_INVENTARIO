@@ -17291,16 +17291,18 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 .quick-action-btn {
-  width: 40px;
-  height: 40px;
+  padding: 6px 10px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .quick-action-btn.count {
@@ -68203,7 +68205,7 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 
 /* 🆕 v6.033 - Botón agregar código SAP nuevo */
 .quick-search-add-btn {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: linear-gradient(135deg, #4a9066, #3d7a56);
   border: none;
   font-size: 18px;
   color: white;
@@ -68211,13 +68213,13 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   padding: 8px 12px;
   border-radius: 8px;
   transition: all 0.2s ease;
-  animation: pulseAdd 1.5s ease-in-out infinite;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
+  animation: pulseAdd 2s ease-in-out infinite;
+  box-shadow: 0 2px 8px rgba(74, 144, 102, 0.3);
 }
 
 .quick-search-add-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5);
+  box-shadow: 0 4px 12px rgba(74, 144, 102, 0.4);
 }
 
 .quick-search-add-btn:active {
@@ -68225,8 +68227,8 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 @keyframes pulseAdd {
-  0%, 100% { box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4); }
-  50% { box-shadow: 0 4px 16px rgba(34, 197, 94, 0.6); }
+  0%, 100% { box-shadow: 0 2px 8px rgba(74, 144, 102, 0.3); }
+  50% { box-shadow: 0 4px 14px rgba(74, 144, 102, 0.5); }
 }
 
 /* Resultados de búsqueda */
@@ -69902,10 +69904,10 @@ window.mobileHomeActions = {
             <div class="quick-search-empty-icon" style="font-size: 2rem; margin-bottom: 8px;">🆕</div>
             <div style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Código SAP no encontrado</div>
             <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
-              "<strong style="color: #22c55e; font-family: monospace;">${searchTerm}</strong>" no existe en el inventario
+              "<strong style="color: #4a9066; font-family: monospace;">${searchTerm}</strong>" no existe en el inventario
             </div>
             <button onclick="window.mobileHomeActions.addNewFromSearch()" 
-                    style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                    style="background: linear-gradient(135deg, #4a9066, #3d7a56); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
               ➕ Agregar nuevo repuesto
             </button>
           </div>
@@ -69977,10 +69979,10 @@ window.mobileHomeActions = {
             <div class="quick-result-stock-v2 ${stockClass}">${cantidad}</div>
             <div class="quick-action-buttons">
               <button class="quick-action-btn count" onclick="event.stopPropagation(); window.mobileHomeActions.openQuickCount('${r.id}')" title="Contar">
-                📊
+                📊 Contar
               </button>
               <button class="quick-action-btn edit" onclick="event.stopPropagation(); window.mobileHomeActions.openRepuesto('${r.id}')" title="Editar">
-                ✏️
+                ✏️ Editar
               </button>
             </div>
           </div>
