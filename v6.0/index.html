@@ -17198,6 +17198,396 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 /* ================================================================== */
+/* 📱 v6.033 - BÚSQUEDA RÁPIDA MEJORADA CON CONTEO                    */
+/* ================================================================== */
+
+/* Resultados de búsqueda mejorados */
+.quick-search-results-v2 {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  margin-top: 8px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  border: 1px solid var(--border-color);
+}
+
+.quick-result-item-v2 {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+  gap: 10px;
+}
+
+.quick-result-item-v2:last-child {
+  border-bottom: none;
+}
+
+.quick-result-info-v2 {
+  flex: 1;
+  min-width: 0;
+}
+
+.quick-result-name-v2 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.quick-result-code-v2 {
+  font-size: 0.95rem;
+  font-family: 'Consolas', 'Monaco', monospace;
+  color: #cbd5e1;
+  letter-spacing: 1px;
+}
+
+/* Resaltado de dígitos buscados en ROJO */
+.quick-result-code-v2 .highlight-match {
+  color: #ff4757;
+  font-weight: 700;
+  background: rgba(255, 71, 87, 0.15);
+  padding: 1px 2px;
+  border-radius: 2px;
+}
+
+.quick-result-area-v2 {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Stock badge */
+.quick-result-stock-v2 {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  min-width: 36px;
+  text-align: center;
+}
+
+.quick-result-stock-v2.low {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.quick-result-stock-v2.critical {
+  background: rgba(255, 71, 87, 0.2);
+  color: #ff4757;
+}
+
+/* Botones de acción rápida */
+.quick-action-buttons {
+  display: flex;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+.quick-action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+}
+
+.quick-action-btn.count {
+  background: linear-gradient(135deg, #6B8E7F, #557566);
+  color: white;
+}
+
+.quick-action-btn.count:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(107, 142, 127, 0.4);
+}
+
+.quick-action-btn.edit {
+  background: linear-gradient(135deg, #5B7C99, #4A6278);
+  color: white;
+}
+
+.quick-action-btn.edit:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(91, 124, 153, 0.4);
+}
+
+/* Header de resultados */
+.quick-search-header {
+  padding: 10px 12px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px 12px 0 0;
+}
+
+.quick-search-header span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.quick-search-header strong {
+  color: var(--primary);
+}
+
+/* ================================================================== */
+/* 📱 MODAL CONTEO RÁPIDO - OPTIMIZADO PARA MÓVIL v6.033              */
+/* ================================================================== */
+.modal-conteo-rapido {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+}
+
+.conteo-rapido-container {
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100vh;
+}
+
+.conteo-rapido-header {
+  background: linear-gradient(135deg, #4A5568, #5A6778);
+  color: white;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.conteo-rapido-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.conteo-rapido-close {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 🎯 BOTONES ARRIBA - Para acceso rápido */
+.conteo-rapido-actions {
+  padding: 12px 16px;
+  background: var(--bg-tertiary);
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.conteo-rapido-actions .btn-guardar {
+  flex: 1;
+  padding: 14px;
+  background: linear-gradient(135deg, #6B8E7F, #557566);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.conteo-rapido-actions .btn-cancelar {
+  padding: 14px 20px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* Info del producto compacta */
+.conteo-rapido-info {
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.conteo-rapido-nombre {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conteo-rapido-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 12px;
+}
+
+/* Área del contador principal */
+.conteo-rapido-body {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.conteo-rapido-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg-primary);
+  border-radius: 12px;
+}
+
+.conteo-btn-minus,
+.conteo-btn-plus {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  border: none;
+  font-size: 2rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+}
+
+.conteo-btn-minus {
+  background: linear-gradient(135deg, #C76B6B, #A85555);
+  color: white;
+}
+
+.conteo-btn-plus {
+  background: linear-gradient(135deg, #6B8E7F, #557566);
+  color: white;
+}
+
+.conteo-btn-minus:active,
+.conteo-btn-plus:active {
+  transform: scale(0.95);
+}
+
+.conteo-input-grande {
+  width: 120px;
+  height: 70px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  color: var(--text-primary);
+}
+
+/* Comparación actual vs nuevo */
+.conteo-rapido-comparacion {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.conteo-stat-box {
+  background: var(--bg-primary);
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  border-left: 3px solid var(--border-color);
+}
+
+.conteo-stat-box.actual {
+  border-left-color: #5B7C99;
+}
+
+.conteo-stat-box.minimo {
+  border-left-color: #D4976C;
+}
+
+.conteo-stat-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.conteo-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.conteo-flecha {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+/* Botones rápidos de cantidad */
+.conteo-rapido-presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.preset-btn {
+  padding: 10px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* ================================================================== */
 /* 📱 CONTEO MODAL - SIN SCROLL LATERAL                               */
 /* ================================================================== */
 @media (max-width: 768px) {
@@ -17484,7 +17874,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     <button class="nav-tab" data-tab="configuracion">
       Configuracin
     </button>
-  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.031</span></h1>
+  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.033</span></h1>
 
   <!-- WarmupProgress removido - Firebase carga instantáneamente -->
 </div>
@@ -17499,7 +17889,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile2">v6.031</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile2">v6.033</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17535,6 +17925,10 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
                onkeyup="event.stopPropagation();"
                onkeypress="event.stopPropagation();">
         <button class="quick-search-clear" onclick="window.mobileHomeActions?.clearQuickSearch()" style="display:none;">✕</button>
+        <!-- 🆕 v6.033 - Botón agregar cuando código SAP no existe -->
+        <button id="quickSearchAddBtn" class="quick-search-add-btn" onclick="window.mobileHomeActions?.addNewFromSearch()" style="display:none;">
+          ➕
+        </button>
       </div>
       <!-- Resultados de búsqueda -->
       <div id="quickSearchResults" class="quick-search-results" style="display:none;"></div>
@@ -17703,7 +18097,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div style="display: inline-flex; align-items: stretch; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
           <span id="userEmail" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.05); font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 500; white-space: nowrap;"></span>
           <button id="btnLogout" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.08); border: none; border-left: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;" title="Cerrar sesión" onmouseover="this.style.background='rgba(248, 113, 113, 0.15)'; this.style.color='rgba(248, 113, 113, 0.9)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.5)'">
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.031</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.033</span>
           </button>
         </div>
       </div>
@@ -17718,7 +18112,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop2" style="margin-left: 8px;">v6.031</span>
+        <span class="version-badge" id="versionBadgeDesktop2" style="margin-left: 8px;">v6.033</span>
       </div>
     </div>
 
@@ -45006,7 +45400,24 @@ class InventarioCompleto {
       }
     }
     
-    // Eliminar repuesto del array
+    // 🔥 v6.032 - ELIMINAR DE FIREBASE PRIMERO (antes de eliminar localmente)
+    if (window.firebaseStorageAdapter) {
+      try {
+        const eliminado = await window.firebaseStorageAdapter.eliminarRepuesto(id);
+        if (!eliminado) {
+          console.error('❌ Error eliminando repuesto de Firebase');
+          this.showToast('❌ Error al eliminar de Firebase', 'error');
+          return;
+        }
+        console.log(`✅ Repuesto ${id} eliminado de Firebase`);
+      } catch (error) {
+        console.error('❌ Error eliminando repuesto de Firebase:', error);
+        this.showToast('❌ Error al eliminar: ' + error.message, 'error');
+        return;
+      }
+    }
+    
+    // Eliminar repuesto del array local (después de confirmar eliminación en Firebase)
     this.repuestos = this.repuestos.filter(r => r.id !== id);
     await this.saveData();
     
@@ -45020,7 +45431,7 @@ class InventarioCompleto {
     
     await this.render();
     this.renderFilters();
-    this.showToast(' Repuesto e imgenes eliminados', 'success');
+    this.showToast('🗑️ Repuesto eliminado correctamente', 'success');
   }
 
   // 🖼️ Abrir visor de imágenes del repuesto
@@ -67790,6 +68201,34 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   color: var(--home-text);
 }
 
+/* 🆕 v6.033 - Botón agregar código SAP nuevo */
+.quick-search-add-btn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  animation: pulseAdd 1.5s ease-in-out infinite;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
+}
+
+.quick-search-add-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5);
+}
+
+.quick-search-add-btn:active {
+  transform: scale(0.98);
+}
+
+@keyframes pulseAdd {
+  0%, 100% { box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4); }
+  50% { box-shadow: 0 4px 16px rgba(34, 197, 94, 0.6); }
+}
+
 /* Resultados de búsqueda */
 .quick-search-results {
   position: absolute;
@@ -69398,29 +69837,39 @@ window.mobileHomeActions = {
     }, 250);
   },
   
-  // Ejecutar búsqueda
+  // Ejecutar búsqueda - v6.033 MEJORADA con resaltado y acciones rápidas
   performSearch: function(query) {
-    console.log('🔍 performSearch ejecutando con:', query);
+    console.log('🔍 performSearch v6.033 ejecutando con:', query);
     const resultsContainer = document.getElementById('quickSearchResults');
     if (!resultsContainer) return;
     
     if (!query || query.trim().length < 2) {
       resultsContainer.style.display = 'none';
+      resultsContainer.className = 'quick-search-results';
       return;
     }
     
-    const searchTerm = query.toLowerCase().trim();
+    const searchTerm = query.trim();
+    const searchTermLower = searchTerm.toLowerCase();
     const repuestos = window.app?.repuestos || [];
     
-    // Filtrar repuestos
+    // 🔍 Búsqueda mejorada: nombre, código SAP (parcial), área
     let results = repuestos.filter(r => {
       const nombre = (r.nombre || r.descripcion || '').toLowerCase();
-      const codigo = (r.codigo || r.codigoSAP || '').toLowerCase();
+      const codSAP = (r.codSAP || r.codigo || r.codigoSAP || '');
+      const codSAPLower = codSAP.toLowerCase();
       const area = (r.area || r.ubicacion || '').toLowerCase();
       
-      return nombre.includes(searchTerm) || 
-             codigo.includes(searchTerm) || 
-             area.includes(searchTerm);
+      // Buscar en nombre
+      if (nombre.includes(searchTermLower)) return true;
+      
+      // Buscar en código SAP (parcial - últimos dígitos)
+      if (codSAPLower.includes(searchTermLower)) return true;
+      
+      // Buscar en área
+      if (area.includes(searchTermLower)) return true;
+      
+      return false;
     });
     
     // Aplicar filtro de área si está activo
@@ -69431,44 +69880,321 @@ window.mobileHomeActions = {
       });
     }
     
-    // Limitar a 8 resultados
-    results = results.slice(0, 8);
+    // Limitar a 10 resultados
+    results = results.slice(0, 10);
+    
+    // 🆕 v6.033 - Detectar si es código SAP de 10 dígitos (para botón agregar)
+    const addBtn = document.getElementById('quickSearchAddBtn');
+    const isFullSAPCode = /^\d{10}$/.test(searchTerm); // Exactamente 10 dígitos
+    const isLongNumeric = /^\d{8,}$/.test(searchTerm); // 8 o más dígitos (posible SAP)
+    
+    // Guardar el código SAP para usarlo al agregar
+    this.pendingSAPCode = isFullSAPCode || isLongNumeric ? searchTerm : null;
     
     if (results.length === 0) {
-      resultsContainer.innerHTML = `
-        <div class="quick-search-empty">
-          <div class="quick-search-empty-icon">🔍</div>
-          <div>No se encontraron resultados</div>
-        </div>
-      `;
+      resultsContainer.className = 'quick-search-results quick-search-results-v2';
+      
+      // Si es código SAP completo (10 dígitos) y no existe, mostrar opción de agregar
+      if (isFullSAPCode) {
+        if (addBtn) addBtn.style.display = 'block';
+        resultsContainer.innerHTML = `
+          <div class="quick-search-empty" style="padding: 20px; text-align: center;">
+            <div class="quick-search-empty-icon" style="font-size: 2rem; margin-bottom: 8px;">🆕</div>
+            <div style="color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">Código SAP no encontrado</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">
+              "<strong style="color: #22c55e; font-family: monospace;">${searchTerm}</strong>" no existe en el inventario
+            </div>
+            <button onclick="window.mobileHomeActions.addNewFromSearch()" 
+                    style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+              ➕ Agregar nuevo repuesto
+            </button>
+          </div>
+        `;
+      } else if (isLongNumeric) {
+        // Si son 8-9 dígitos, sugerir completar a 10
+        if (addBtn) addBtn.style.display = 'none';
+        resultsContainer.innerHTML = `
+          <div class="quick-search-empty" style="padding: 20px; text-align: center;">
+            <div class="quick-search-empty-icon" style="font-size: 2rem; margin-bottom: 8px;">🔍</div>
+            <div style="color: var(--text-muted);">No se encontró "<strong>${searchTerm}</strong>"</div>
+            <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">
+              💡 Si es un código SAP nuevo, escribe los 10 dígitos completos para agregarlo
+            </div>
+          </div>
+        `;
+      } else {
+        if (addBtn) addBtn.style.display = 'none';
+        resultsContainer.innerHTML = `
+          <div class="quick-search-empty" style="padding: 24px; text-align: center;">
+            <div class="quick-search-empty-icon" style="font-size: 2.5rem; margin-bottom: 8px;">🔍</div>
+            <div style="color: var(--text-muted);">No se encontraron resultados para "<strong>${searchTerm}</strong>"</div>
+          </div>
+        `;
+      }
       resultsContainer.style.display = 'block';
       return;
     }
     
-    // Renderizar resultados
-    resultsContainer.innerHTML = results.map(r => {
-      const cantidad = parseInt(r.cantidad || r.stock) || 0;
-      const minimo = parseInt(r.minimo) || 0;
-      let stockClass = '';
-      if (cantidad === 0) stockClass = 'critical';
-      else if (cantidad <= minimo && minimo > 0) stockClass = 'low';
-      
-      const icon = this.getRepuestoIcon(r.tipo);
-      const area = r.area || r.ubicacion || 'Sin ubicación';
-      
-      return `
-        <div class="quick-result-item" onclick="window.mobileHomeActions.openRepuesto('${r.id}')">
-          <div class="quick-result-icon">${icon}</div>
-          <div class="quick-result-info">
-            <div class="quick-result-name">${r.nombre || r.descripcion || 'Sin nombre'}</div>
-            <div class="quick-result-meta">${r.codigo || r.codigoSAP || '---'} • ${area}</div>
+    // Si hay resultados, ocultar botón agregar
+    if (addBtn) addBtn.style.display = 'none';
+    
+    // 🎯 Función para resaltar coincidencias en ROJO
+    const highlightMatch = (text, search) => {
+      if (!text || !search) return text || '';
+      const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return text.replace(regex, '<span class="highlight-match">$1</span>');
+    };
+    
+    // Renderizar resultados con nuevo diseño
+    resultsContainer.className = 'quick-search-results quick-search-results-v2';
+    resultsContainer.innerHTML = `
+      <div class="quick-search-header">
+        <span>🔍 <strong>${results.length}</strong> resultado${results.length !== 1 ? 's' : ''}</span>
+        <span style="font-size: 0.75rem; color: #6B8E7F;">Buscar: "${searchTerm}"</span>
+      </div>
+      ${results.map(r => {
+        const cantidad = parseInt(r.cantidad || r.stock) || 0;
+        const minimo = parseInt(r.minimo) || 0;
+        let stockClass = '';
+        if (cantidad === 0) stockClass = 'critical';
+        else if (cantidad <= minimo && minimo > 0) stockClass = 'low';
+        
+        const codSAP = r.codSAP || r.codigo || r.codigoSAP || '---';
+        const area = r.area || r.ubicacion || 'Sin ubicación';
+        const nombre = r.nombre || r.descripcion || 'Sin nombre';
+        
+        // Resaltar coincidencias
+        const nombreHighlighted = highlightMatch(nombre, searchTerm);
+        const codSAPHighlighted = highlightMatch(codSAP, searchTerm);
+        
+        return `
+          <div class="quick-result-item-v2">
+            <div class="quick-result-info-v2">
+              <div class="quick-result-name-v2">${nombreHighlighted}</div>
+              <div class="quick-result-code-v2">${codSAPHighlighted}</div>
+              <div class="quick-result-area-v2">📍 ${area}</div>
+            </div>
+            <div class="quick-result-stock-v2 ${stockClass}">${cantidad}</div>
+            <div class="quick-action-buttons">
+              <button class="quick-action-btn count" onclick="event.stopPropagation(); window.mobileHomeActions.openQuickCount('${r.id}')" title="Contar">
+                📊
+              </button>
+              <button class="quick-action-btn edit" onclick="event.stopPropagation(); window.mobileHomeActions.openRepuesto('${r.id}')" title="Editar">
+                ✏️
+              </button>
+            </div>
           </div>
-          <div class="quick-result-stock ${stockClass}">${cantidad}</div>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('')}
+    `;
     
     resultsContainer.style.display = 'block';
+  },
+  
+  // 📊 v6.033 - Modal de conteo rápido optimizado para móvil
+  openQuickCount: function(id) {
+    const repuesto = window.app?.repuestos?.find(r => r.id === id);
+    if (!repuesto) {
+      alert('Repuesto no encontrado');
+      return;
+    }
+    
+    // Cerrar búsqueda
+    this.clearQuickSearch();
+    
+    const cantidadActual = parseInt(repuesto.cantidad || repuesto.stock) || 0;
+    const minimo = parseInt(repuesto.minimo) || 0;
+    const codSAP = repuesto.codSAP || repuesto.codigo || '---';
+    const nombre = repuesto.nombre || repuesto.descripcion || 'Sin nombre';
+    const area = repuesto.area || repuesto.ubicacion || 'Sin ubicación';
+    
+    // Crear modal optimizado
+    const modalHTML = `
+      <div class="modal-conteo-rapido" id="modalConteoRapido" onclick="if(event.target === this) window.mobileHomeActions.closeQuickCount()">
+        <div class="conteo-rapido-container">
+          <!-- Header -->
+          <div class="conteo-rapido-header">
+            <h3>📊 Conteo Rápido</h3>
+            <button class="conteo-rapido-close" onclick="window.mobileHomeActions.closeQuickCount()">✕</button>
+          </div>
+          
+          <!-- 🎯 BOTONES ARRIBA - Acceso rápido -->
+          <div class="conteo-rapido-actions">
+            <button class="btn-cancelar" onclick="window.mobileHomeActions.closeQuickCount()">
+              Cancelar
+            </button>
+            <button class="btn-guardar" onclick="window.mobileHomeActions.saveQuickCount('${id}')">
+              ✓ Guardar Conteo
+            </button>
+          </div>
+          
+          <!-- Info del producto compacta -->
+          <div class="conteo-rapido-info">
+            <div class="conteo-rapido-nombre">${nombre}</div>
+            <div class="conteo-rapido-meta">
+              <span>📋 ${codSAP}</span>
+              <span>📍 ${area}</span>
+            </div>
+          </div>
+          
+          <!-- Área del contador -->
+          <div class="conteo-rapido-body">
+            <!-- Contador principal con botones +/- grandes -->
+            <div class="conteo-rapido-display">
+              <button class="conteo-btn-minus" onclick="window.mobileHomeActions.adjustCount(-1)">−</button>
+              <input type="number" 
+                     id="inputConteoRapido" 
+                     class="conteo-input-grande" 
+                     value="${cantidadActual}" 
+                     min="0"
+                     inputmode="numeric"
+                     pattern="[0-9]*"
+                     onfocus="this.select()">
+              <button class="conteo-btn-plus" onclick="window.mobileHomeActions.adjustCount(1)">+</button>
+            </div>
+            
+            <!-- Comparación: Actual vs Mínimo -->
+            <div class="conteo-rapido-comparacion">
+              <div class="conteo-stat-box actual">
+                <div class="conteo-stat-label">📦 En Sistema</div>
+                <div class="conteo-stat-value" style="color: #5B7C99;">${cantidadActual}</div>
+              </div>
+              <div class="conteo-flecha">→</div>
+              <div class="conteo-stat-box minimo">
+                <div class="conteo-stat-label">⚠️ Mínimo</div>
+                <div class="conteo-stat-value" style="color: #D4976C;">${minimo}</div>
+              </div>
+            </div>
+            
+            <!-- Botones rápidos -->
+            <div class="conteo-rapido-presets">
+              <button class="preset-btn" onclick="document.getElementById('inputConteoRapido').value = 0; document.getElementById('inputConteoRapido').focus();">
+                🚫 Vacío (0)
+              </button>
+              <button class="preset-btn" onclick="document.getElementById('inputConteoRapido').value = ${cantidadActual}; document.getElementById('inputConteoRapido').focus();">
+                📦 = Sistema
+              </button>
+              <button class="preset-btn" onclick="document.getElementById('inputConteoRapido').value = ${minimo}; document.getElementById('inputConteoRapido').focus();">
+                ⚠️ = Mínimo
+              </button>
+            </div>
+            
+            <!-- Incrementos rápidos -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px;">
+              <button class="preset-btn" onclick="window.mobileHomeActions.adjustCount(-10)">-10</button>
+              <button class="preset-btn" onclick="window.mobileHomeActions.adjustCount(-5)">-5</button>
+              <button class="preset-btn" onclick="window.mobileHomeActions.adjustCount(+5)">+5</button>
+              <button class="preset-btn" onclick="window.mobileHomeActions.adjustCount(+10)">+10</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Inyectar modal
+    const container = document.createElement('div');
+    container.id = 'quickCountContainer';
+    container.innerHTML = modalHTML;
+    document.body.appendChild(container);
+    
+    // Focus en input
+    setTimeout(() => {
+      const input = document.getElementById('inputConteoRapido');
+      if (input) {
+        input.focus();
+        input.select();
+      }
+    }, 100);
+    
+    // Cerrar con ESC
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        this.closeQuickCount();
+        document.removeEventListener('keydown', handleEsc);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
+    
+    // Guardar con Enter
+    const handleEnter = (e) => {
+      if (e.key === 'Enter' && e.target.id === 'inputConteoRapido') {
+        this.saveQuickCount(id);
+        document.removeEventListener('keydown', handleEnter);
+      }
+    };
+    document.addEventListener('keydown', handleEnter);
+  },
+  
+  // Ajustar contador
+  adjustCount: function(delta) {
+    const input = document.getElementById('inputConteoRapido');
+    if (input) {
+      const current = parseInt(input.value) || 0;
+      input.value = Math.max(0, current + delta);
+      input.focus();
+    }
+  },
+  
+  // Cerrar modal de conteo rápido
+  closeQuickCount: function() {
+    const container = document.getElementById('quickCountContainer');
+    if (container) container.remove();
+  },
+  
+  // Guardar conteo rápido
+  saveQuickCount: async function(id) {
+    const input = document.getElementById('inputConteoRapido');
+    if (!input) return;
+    
+    const nuevaCantidad = parseInt(input.value) || 0;
+    const repuesto = window.app?.repuestos?.find(r => r.id === id);
+    
+    if (!repuesto) {
+      alert('Error: Repuesto no encontrado');
+      return;
+    }
+    
+    const cantidadAnterior = parseInt(repuesto.cantidad || repuesto.stock) || 0;
+    
+    // Actualizar localmente
+    repuesto.cantidad = nuevaCantidad;
+    repuesto.ultimoConteo = new Date().toISOString();
+    
+    // Guardar en Firebase
+    if (window.firebaseStorageAdapter && window.firebaseStorageAdapter.actualizarRepuesto) {
+      try {
+        await window.firebaseStorageAdapter.actualizarRepuesto(id, {
+          cantidad: nuevaCantidad,
+          ultimoConteo: repuesto.ultimoConteo
+        });
+        console.log('✅ Conteo guardado en Firebase');
+      } catch (error) {
+        console.error('❌ Error guardando conteo:', error);
+      }
+    }
+    
+    // Log de actividad
+    if (window.firebaseService && window.firebaseService.logActivity) {
+      await window.firebaseService.logActivity('count', 'repuesto', id, repuesto.nombre, {
+        cantidadAnterior,
+        cantidadNueva: nuevaCantidad,
+        diferencia: nuevaCantidad - cantidadAnterior
+      });
+    }
+    
+    // Cerrar modal
+    this.closeQuickCount();
+    
+    // Toast de confirmación
+    if (window.app && window.app.showToast) {
+      const diff = nuevaCantidad - cantidadAnterior;
+      const diffText = diff > 0 ? `+${diff}` : diff;
+      window.app.showToast(`✅ Conteo actualizado: ${cantidadAnterior} → ${nuevaCantidad} (${diffText})`, 'success');
+    }
+    
+    // Actualizar UI
+    if (window.app && window.app.render) window.app.render();
+    if (window.updateMobileHome) window.updateMobileHome();
   },
   
   // Limpiar búsqueda
@@ -69476,10 +70202,50 @@ window.mobileHomeActions = {
     const input = document.getElementById('mobileQuickSearch');
     const clearBtn = document.querySelector('.quick-search-clear');
     const resultsContainer = document.getElementById('quickSearchResults');
+    const addBtn = document.getElementById('quickSearchAddBtn');
     
     if (input) input.value = '';
     if (clearBtn) clearBtn.style.display = 'none';
     if (resultsContainer) resultsContainer.style.display = 'none';
+    if (addBtn) addBtn.style.display = 'none';
+    
+    // Limpiar código SAP pendiente
+    this.pendingSAPCode = null;
+  },
+  
+  // 🆕 v6.033 - Agregar nuevo repuesto desde búsqueda
+  addNewFromSearch: function() {
+    const sapCode = this.pendingSAPCode;
+    
+    // Limpiar búsqueda
+    this.clearQuickSearch();
+    
+    // Cambiar a tab de inventario
+    switchMobileTab('inventario');
+    
+    // Abrir modal de agregar con código SAP pre-llenado
+    setTimeout(() => {
+      if (window.app && window.app.openModal) {
+        window.app.openModal('add');
+        
+        // Pre-llenar el código SAP después de que el modal se abra
+        setTimeout(() => {
+          const codSAPInput = document.getElementById('codSAP');
+          if (codSAPInput && sapCode) {
+            codSAPInput.value = sapCode;
+            codSAPInput.focus();
+            // Disparar evento de cambio para validaciones
+            codSAPInput.dispatchEvent(new Event('input', { bubbles: true }));
+            console.log('✅ Código SAP pre-llenado:', sapCode);
+            
+            // Mostrar toast informativo
+            if (window.app && window.app.showToast) {
+              window.app.showToast(`📋 Código SAP ${sapCode} pre-llenado`, 'info');
+            }
+          }
+        }, 300);
+      }
+    }, 300);
   },
   
   // Abrir detalle de repuesto
