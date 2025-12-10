@@ -16801,7 +16801,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 /* ================================================================== */
-/* 📱 MODAL MÓVIL v6.030 - SCROLL ÚNICO (SIN TABS)                    */
+/* 📱 MODAL MÓVIL v6.031 - SCROLL ÚNICO (SIN TABS)                    */
 /* ================================================================== */
 
 /* Ocultar en desktop */
@@ -17484,7 +17484,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     <button class="nav-tab" data-tab="configuracion">
       Configuracin
     </button>
-  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.030</span></h1>
+  </div><h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.031</span></h1>
 
   <!-- WarmupProgress removido - Firebase carga instantáneamente -->
 </div>
@@ -17499,7 +17499,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile2">v6.030</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile2">v6.031</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -17703,7 +17703,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div style="display: inline-flex; align-items: stretch; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
           <span id="userEmail" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.05); font-size: 0.75rem; color: rgba(255,255,255,0.7); font-weight: 500; white-space: nowrap;"></span>
           <button id="btnLogout" style="display: flex; align-items: center; padding: 6px 12px; background: rgba(255,255,255,0.08); border: none; border-left: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;" title="Cerrar sesión" onmouseover="this.style.background='rgba(248, 113, 113, 0.15)'; this.style.color='rgba(248, 113, 113, 0.9)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.color='rgba(255,255,255,0.5)'">
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.030</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.031</span>
           </button>
         </div>
       </div>
@@ -17718,7 +17718,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         <div class="toolbar-separator"></div>
         <button onclick="undoAction()" class="glass-action-btn" title="Deshacer (Ctrl+Z)">↶</button>
         <button onclick="redoAction()" class="glass-action-btn" title="Rehacer (Ctrl+Y)">↷</button>
-        <span class="version-badge" id="versionBadgeDesktop2" style="margin-left: 8px;">v6.030</span>
+        <span class="version-badge" id="versionBadgeDesktop2" style="margin-left: 8px;">v6.031</span>
       </div>
     </div>
 
@@ -18786,7 +18786,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
 <!-- ============================================================== -->
 <!-- 📱 MODAL MÓVIL DEDICADO - Solo visible en pantallas < 768px    -->
-<!-- v6.030: Diseño completamente separado del modal PC             -->
+<!-- v6.031: Diseño completamente separado del modal PC             -->
 <!-- ============================================================== -->
 <div id="mobileModalOverlay" class="mobile-modal-overlay">
   <div class="mobile-modal">
@@ -40016,6 +40016,15 @@ class InventarioCompleto {
       }
 
       return matchSearch && matchArea && matchEquipo && matchTipo && matchStock && matchJerarquia;
+    }).sort((a, b) => {
+      // 📅 Ordenar por fecha de creación: más reciente primero
+      const fechaA = a.createdAt || a.fechaCreacion || a.id || '';
+      const fechaB = b.createdAt || b.fechaCreacion || b.id || '';
+      
+      // Si son fechas ISO, comparar como strings funciona
+      if (fechaA > fechaB) return -1;
+      if (fechaA < fechaB) return 1;
+      return 0;
     });
   }
 
@@ -41594,7 +41603,7 @@ class InventarioCompleto {
       this.refreshModalMultimediaBadge();
     }
     
-    // 📱 v6.030: MODAL MÓVIL DEDICADO - Re-detectar en cada apertura
+    // 📱 v6.031: MODAL MÓVIL DEDICADO - Re-detectar en cada apertura
     const esMobile = window.innerWidth < 768 || this.isMobile;
     console.log(`📱 [MODAL CHECK] innerWidth=${window.innerWidth}, isMobile=${this.isMobile}, esMobile=${esMobile}`);
     
@@ -41692,7 +41701,7 @@ class InventarioCompleto {
     console.log('========== MODAL ABIERTO ==========\n');
   }
 
-  // 📱 v6.030: MODAL MÓVIL SCROLL ÚNICO - Con edición de ubicaciones y fotos
+  // 📱 v6.031: MODAL MÓVIL SCROLL ÚNICO - Con edición de ubicaciones y fotos
   async openMobileModal(mode, id = null) {
     console.log('📱 [MOBILE MODAL] Abriendo modal móvil (scroll único)');
     
@@ -43742,6 +43751,17 @@ class InventarioCompleto {
       ultimaModificacion: new Date().toISOString(),
       ultimoConteo: null
     };
+    
+    // 📅 Fecha de creación: preservar original si es edición, crear nueva si es nuevo
+    if (this.currentEditingId) {
+      const repuestoOriginal = this.repuestos.find(r => r.id === this.currentEditingId);
+      if (repuestoOriginal && repuestoOriginal.createdAt) {
+        data.createdAt = repuestoOriginal.createdAt;
+      }
+    } else {
+      // Nuevo repuesto: asignar fecha de creación
+      data.createdAt = new Date().toISOString();
+    }
     
     console.log(` Guardando ${ubicacionesLimpias.length} ubicacin(es) para: ${data.nombre}`);
 
