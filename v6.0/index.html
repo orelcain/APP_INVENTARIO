@@ -17944,7 +17944,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.051</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.052</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18177,7 +18177,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.051</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.052</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -50039,6 +50039,24 @@ class InventarioCompleto {
     }
 
     const cantidadAnterior = repuesto.cantidad;
+    
+    // 🆕 v6.052 - VERIFICAR SI NECESITA APROBACIÓN
+    if (this.needsApproval) {
+      // Cerrar modal
+      this.cerrarModalConteoIndividual();
+      
+      // Crear solicitud de edición de conteo
+      await this.createActionRequest('edit', 'repuesto', id, repuesto.nombre, {
+        campo: 'cantidad',
+        cantidadAnterior: cantidadAnterior,
+        cantidadNueva: nuevaCantidad,
+        diferencia: nuevaCantidad - cantidadAnterior,
+        codSAP: repuesto.codSAP,
+        tipo: 'conteo'
+      });
+      
+      return; // No guardar directamente
+    }
 
     //  CERRAR MODAL INMEDIATAMENTE (antes de guardar)
     this.cerrarModalConteoIndividual();
@@ -60307,12 +60325,14 @@ window.loadPendingRequests = async function() {
   container.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Cargando solicitudes...</p>';
   
   try {
-    const snapshot = await window.firebaseService.db.collection('actionRequests')
-      .where('status', '==', 'pending')
-      .orderBy('requestedAt', 'desc')
-      .get();
+    // 🆕 v6.052 - Query simplificada para evitar necesitar índices compuestos
+    const snapshot = await window.firebaseService.db.collection('actionRequests').get();
     
-    const requests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // Filtrar y ordenar en JavaScript
+    let requests = snapshot.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter(req => req.status === 'pending')
+      .sort((a, b) => new Date(b.requestedAt || 0) - new Date(a.requestedAt || 0));
     
     if (countBadge) {
       countBadge.textContent = requests.length;
@@ -60330,16 +60350,24 @@ window.loadPendingRequests = async function() {
       const targetIcon = req.targetType === 'repuesto' ? '📦' : req.targetType === 'ubicacion' ? '📍' : req.targetType === 'mapa' ? '🗺️' : '📁';
       const timeAgo = formatTimeAgo(new Date(req.requestedAt));
       
+      // 🆕 v6.052 - Mostrar info específica según el tipo de solicitud
+      let detalleExtra = '';
+      if (req.data?.tipo === 'conteo') {
+        const diff = req.data.diferencia >= 0 ? '+' + req.data.diferencia : req.data.diferencia;
+        detalleExtra = `<div style="font-size: 0.75rem; color: #fbbf24; margin-top: 4px;">📊 Conteo: ${req.data.cantidadAnterior} → ${req.data.cantidadNueva} (${diff})</div>`;
+      }
+      
       return `
         <div style="padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border-left: 3px solid ${actionColor};">
-          <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
-            <div style="flex: 1;">
+          <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 180px;">
               <div style="font-weight: 500; color: rgba(255,255,255,0.9); font-size: 0.9rem;">
                 ${actionIcon} ${req.actionType === 'create' ? 'Crear' : req.actionType === 'edit' ? 'Editar' : 'Eliminar'} ${targetIcon} ${req.targetType}
               </div>
               <div style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 4px;">
                 <b>"${req.targetName || 'Sin nombre'}"</b>
               </div>
+              ${detalleExtra}
               <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 4px;">
                 👤 ${req.requestedBy} · ${timeAgo}
               </div>
@@ -60365,7 +60393,21 @@ window.loadPendingRequests = async function() {
     
   } catch (error) {
     console.error('❌ Error cargando solicitudes:', error);
-    container.innerHTML = `<p style="color: #f87171; font-size: 0.85rem;">Error: ${error.message}</p>`;
+    // Mostrar mensaje más claro sobre el error de permisos
+    if (error.message?.includes('permission') || error.code === 'permission-denied') {
+      container.innerHTML = `
+        <div style="padding: 12px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3);">
+          <p style="color: #fca5a5; font-size: 0.85rem; margin: 0 0 8px 0;">⚠️ Error de permisos en Firestore</p>
+          <p style="color: rgba(255,255,255,0.6); font-size: 0.75rem; margin: 0;">
+            Debes actualizar las reglas de Firestore a modo público.<br>
+            Ve a Firebase Console → Firestore → Reglas y pega:<br>
+            <code style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;">allow read, write: if true;</code>
+          </p>
+        </div>
+      `;
+    } else {
+      container.innerHTML = `<p style="color: #f87171; font-size: 0.85rem;">Error: ${error.message}</p>`;
+    }
   }
 };
 
@@ -60404,6 +60446,17 @@ window.approveRequest = async function(requestId) {
       if (request.targetType === 'repuesto' && request.targetId) {
         const result = await window.firebaseService.delete('repuestos', request.targetId);
         success = result.success;
+      }
+    } else if (request.actionType === 'edit-count') {
+      // 🆕 v6.052 - Actualizar solo la cantidad
+      if (request.targetType === 'repuesto' && request.targetId && request.data) {
+        const result = await window.firebaseService.update('repuestos', request.targetId, {
+          cantidad: request.data.nuevaCantidad
+        });
+        success = result.success;
+        if (success) {
+          console.log(`📊 Cantidad actualizada: ${request.data.cantidadAnterior} → ${request.data.nuevaCantidad}`);
+        }
       }
     }
     

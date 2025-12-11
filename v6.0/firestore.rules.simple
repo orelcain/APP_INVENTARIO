@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // REGLAS SIMPLIFICADAS - Seguridad manejada en JavaScript
+    // v6.052 - Acceso público para permitir usuarios con nick (sin Firebase Auth)
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
