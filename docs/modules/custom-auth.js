@@ -461,8 +461,41 @@ class CustomAuth {
      * 🆕 v6.038 - Completar login exitoso
      * 🆕 v6.044 - Guardar info de dispositivo
      * 🆕 v6.045 - Info completa: IP, geolocalización, hardware
+     * 🆕 v6.046 - AUTENTICAR CON FIREBASE AUTH para tener permisos en Firestore
      */
     async completeLogin(userData, collection, docId) {
+        // 🆕 v6.046 - PRIMERO autenticar con Firebase Auth usando email ficticio
+        // Esto es NECESARIO para que request.auth no sea null en las reglas de Firestore
+        const nickEmail = `${(userData.nick || userData.username).toLowerCase()}@inventario.local`;
+        const nickPassword = userData.password || 'default123456';
+        
+        console.log('🔐 [v6.046] Autenticando con Firebase Auth:', nickEmail);
+        
+        try {
+            // Intentar login con el email ficticio
+            await this.firebaseService.auth.signInWithEmailAndPassword(nickEmail, nickPassword);
+            console.log('✅ [v6.046] Firebase Auth login exitoso');
+        } catch (authError) {
+            console.log('⚠️ [v6.046] Firebase Auth login falló, intentando crear cuenta...', authError.code);
+            
+            if (authError.code === 'auth/user-not-found') {
+                // El usuario no existe en Firebase Auth, crearlo
+                try {
+                    await this.firebaseService.auth.createUserWithEmailAndPassword(nickEmail, nickPassword);
+                    console.log('✅ [v6.046] Cuenta Firebase Auth creada exitosamente');
+                } catch (createError) {
+                    console.warn('⚠️ [v6.046] No se pudo crear cuenta Firebase Auth:', createError.message);
+                    // Continuar sin Firebase Auth (algunas funciones no funcionarán)
+                }
+            } else if (authError.code === 'auth/wrong-password') {
+                // La contraseña en Firebase Auth es diferente, actualizar
+                console.warn('⚠️ [v6.046] Contraseña diferente en Firebase Auth, continuando...');
+                // No podemos actualizar sin acceso admin, pero el usuario ya validó en Firestore
+            } else {
+                console.warn('⚠️ [v6.046] Error de Firebase Auth:', authError.message);
+            }
+        }
+        
         // 🆕 v6.045 - Detectar información COMPLETA del dispositivo
         const deviceInfo = this.getDeviceInfo();
         
