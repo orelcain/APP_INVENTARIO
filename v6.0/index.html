@@ -102,6 +102,49 @@
         console.error('❌ Test ERROR - Esto es un error de prueba');
       };
       
+      // 🆕 v6.049 - MOSTRAR INFO DE RED EN TIEMPO REAL
+      window.showNetworkInfo = function() {
+        const display = document.getElementById('networkInfoDisplay');
+        if (!display) return;
+        
+        display.style.display = display.style.display === 'none' ? 'block' : 'none';
+        if (display.style.display === 'none') return;
+        
+        const updateNetInfo = () => {
+          const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+          const isOnline = navigator.onLine;
+          
+          let html = `<div style="display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; color: rgba(255,255,255,0.85);">`;
+          html += `<span style="color: #67e8f9;">Estado:</span><span>${isOnline ? '🟢 Online' : '🔴 Offline'}</span>`;
+          
+          if (conn) {
+            html += `<span style="color: #67e8f9;">Tipo efectivo:</span><span>📶 ${(conn.effectiveType || 'desconocido').toUpperCase()}</span>`;
+            if (conn.downlink) html += `<span style="color: #67e8f9;">Velocidad:</span><span>⬇️ ${conn.downlink} Mbps</span>`;
+            if (conn.rtt) html += `<span style="color: #67e8f9;">Latencia:</span><span>⏱️ ${conn.rtt} ms</span>`;
+            if (conn.saveData) html += `<span style="color: #67e8f9;">Ahorro datos:</span><span>⚠️ Activado</span>`;
+            if (conn.type) html += `<span style="color: #67e8f9;">Tipo conexión:</span><span>🔌 ${conn.type}</span>`;
+          } else {
+            html += `<span style="color: #fca5a5;" colspan="2">⚠️ Network Information API no disponible</span>`;
+          }
+          
+          html += `</div>`;
+          html += `<div style="margin-top: 8px; font-size: 0.75rem; color: rgba(255,255,255,0.5);">`;
+          html += `Actualizado: ${new Date().toLocaleTimeString()}`;
+          html += `</div>`;
+          
+          display.innerHTML = html;
+        };
+        
+        updateNetInfo();
+        
+        // Escuchar cambios de red
+        if (navigator.connection) {
+          navigator.connection.addEventListener('change', updateNetInfo);
+        }
+        window.addEventListener('online', updateNetInfo);
+        window.addEventListener('offline', updateNetInfo);
+      };
+      
       // 📋 COPIAR LOGS AL PORTAPAPELES
       window.copyDebugLogs = function() {
         if (window.debugLogs.length === 0) {
@@ -253,10 +296,20 @@
             const ua = navigator.userAgent;
             const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(ua);
             const browser = ua.includes('Chrome') ? 'Chrome' : ua.includes('Safari') ? 'Safari' : ua.includes('Firefox') ? 'Firefox' : 'Otro';
+            
+            // 🆕 v6.049 - Info de conexión de red
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            const netType = conn?.effectiveType?.toUpperCase() || 'Desconocido';
+            const netSpeed = conn?.downlink ? `${conn.downlink} Mbps` : '';
+            const netRtt = conn?.rtt ? `${conn.rtt}ms` : '';
+            const saveData = conn?.saveData ? '⚠️ Ahorro datos' : '';
+            const isOnline = navigator.onLine ? '🟢 Online' : '🔴 Offline';
+            
             infoDiv.innerHTML = `
               <strong>Dispositivo:</strong> ${isMobileDevice ? '📱 Móvil' : '🖥️ PC'}<br>
               <strong>Navegador:</strong> ${browser}<br>
               <strong>Pantalla:</strong> ${window.innerWidth}x${window.innerHeight}<br>
+              <strong>📶 Red:</strong> ${isOnline} | ${netType} ${netSpeed} ${netRtt} ${saveData}<br>
               <strong>Firebase Storage:</strong> ${window.firebaseImageStorage ? '✅ Activo' : '❌ No disponible'}<br>
               <strong>Service Worker:</strong> ${navigator.serviceWorker ? '✅ Soportado' : '❌ No soportado'}<br>
               <strong>Logs capturados:</strong> ${window.debugLogs.length}
@@ -17891,7 +17944,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.048</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.049</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18124,7 +18177,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.048</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.049</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -19234,6 +19287,16 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             <button onclick="window.testDebugLog()" class="btn btn-info" style="padding: 10px 20px;">
               🧪 Test Log
             </button>
+          </div>
+          
+          <!-- 🆕 v6.049 - Info de Red -->
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <button onclick="window.showNetworkInfo()" class="btn btn-info" style="padding: 10px 20px; background: linear-gradient(135deg, #06b6d4, #0891b2);">
+              📶 Ver Info de Red
+            </button>
+            <div id="networkInfoDisplay" style="flex: 1; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px; font-size: 0.85rem; display: none;">
+              <!-- Se llenará dinámicamente -->
+            </div>
           </div>
           
           <!-- Botones de Compartir/Copiar -->
