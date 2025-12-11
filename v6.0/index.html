@@ -17891,7 +17891,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.047</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.048</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18124,7 +18124,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.047</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.048</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60956,13 +60956,23 @@ const configuracion = {
   renderStorageUI() {
     const container = document.getElementById('storage-config-content');
     
-    // 🔥 FIREBASE-ONLY: Estado siempre activo
-    const isFirebaseAuth = window.firebaseService && window.firebaseService.isAuthenticated();
+    // 🆕 v6.048 - Considerar autenticados tanto Firebase Auth como usuarios nick
+    const isFirebaseAuth = window.firebaseService?.isAuthenticated?.() || false;
+    const isNickAuth = window.customAuthService?.currentUser || 
+                       window.customAuthService?.isAuthenticated?.() ||
+                       sessionStorage.getItem('customAuth') !== null;
+    const isAuthenticated = isFirebaseAuth || isNickAuth;
     const syncActive = true; // Siempre activa en modo Firebase-only
     
     // Obtener estadísticas
     const repuestosCount = window.app ? window.app.repuestos.length : '--';
     const mapasCount = window.mapStorage && window.mapStorage.state ? window.mapStorage.state.mapas.length : '--';
+    
+    // 🆕 v6.048 - Texto de estado según tipo de auth
+    const authStatusText = isFirebaseAuth ? '✓ Conectado (Admin)' : 
+                           isNickAuth ? '✓ Conectado (Usuario)' : 
+                           '✗ Desconectado';
+    const authStatusColor = isAuthenticated ? '#22c55e' : '#ef4444';
     
     container.innerHTML = `
       <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem; font-weight: 600;">
@@ -60976,8 +60986,8 @@ const configuracion = {
             <span style="color: var(--text-primary); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
               <span style="font-size: 1.2rem;">🔥</span> Firebase
             </span>
-            <span style="padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: ${isFirebaseAuth ? '#22c55e' : '#ef4444'}; color: white;">
-              ${isFirebaseAuth ? '✓ Conectado' : '✗ Desconectado'}
+            <span style="padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; background: ${authStatusColor}; color: white;">
+              ${authStatusText}
             </span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">

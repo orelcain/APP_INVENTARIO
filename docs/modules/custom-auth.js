@@ -479,6 +479,9 @@ class CustomAuth {
         this.userRole = userData.role;
         this.isGuest = false;
 
+        // 🆕 v6.048 - Guardar rol en sessionStorage para que mostrarSeccionesAdmin lo encuentre
+        sessionStorage.setItem('userRole', userData.role);
+
         // Guardar en sessionStorage para persistencia
         sessionStorage.setItem('customAuth', JSON.stringify({
             type: 'custom',
@@ -557,6 +560,14 @@ class CustomAuth {
                 role: this.userRole
             }
         }));
+
+        // 🆕 v6.048 - Llamar directamente a mostrarSeccionesAdmin para ocultar Config si no es admin
+        setTimeout(() => {
+            if (window.mostrarSeccionesAdmin) {
+                console.log('🔄 [v6.048] Llamando mostrarSeccionesAdmin después de login');
+                window.mostrarSeccionesAdmin();
+            }
+        }, 100);
 
         return { success: true, user: this.currentUser, role: this.userRole };
     }
