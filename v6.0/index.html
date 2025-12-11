@@ -17891,7 +17891,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.046</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.047</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18124,7 +18124,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.046</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.047</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60225,7 +60225,7 @@ window.createNewUser = async function() {
   try {
     window.showUserToast('Creando usuario...', 'info');
     
-    // Crear email interno basado en nick (normalizado a minúsculas)
+    // 🆕 v6.047 - Normalizar nick a minúsculas
     const nickLower = nick.toLowerCase();
     const internalEmail = `${nickLower}@inventario.local`;
     
@@ -60240,39 +60240,8 @@ window.createNewUser = async function() {
       return;
     }
     
-    // 🆕 v6.046 - CREAR USUARIO EN FIREBASE AUTH
-    // Guardamos el admin actual para restaurarlo después
-    const currentAdmin = firebase.auth().currentUser;
-    const adminEmail = currentAdmin?.email;
-    
-    console.log('🔐 [v6.046] Creando usuario en Firebase Auth:', internalEmail);
-    
-    let firebaseAuthCreated = false;
-    
-    try {
-      // Crear el usuario en Firebase Auth
-      // Nota: Esto cerrará la sesión del admin temporalmente
-      const userCredential = await firebase.auth().createUserWithEmailAndPassword(internalEmail, password);
-      console.log('✅ [v6.046] Usuario creado en Firebase Auth:', userCredential.user.uid);
-      firebaseAuthCreated = true;
-      
-      // Cerrar sesión del usuario recién creado
-      await firebase.auth().signOut();
-      
-      // Re-autenticar al admin
-      // El admin necesitará volver a iniciar sesión manualmente si esto falla
-      console.log('🔄 [v6.046] Restaurando sesión de admin...');
-      
-    } catch (authError) {
-      console.warn('⚠️ [v6.046] No se pudo crear en Firebase Auth:', authError.message);
-      if (authError.code === 'auth/email-already-in-use') {
-        console.log('ℹ️ Usuario ya existe en Firebase Auth, continuando...');
-        firebaseAuthCreated = true; // Ya existe, está bien
-      }
-      // Continuar de todos modos - el usuario se creará en Firestore
-    }
-    
-    // Crear documento en Firestore
+    // 🆕 v6.047 - CREAR SOLO EN FIRESTORE (sin Firebase Auth)
+    // Las reglas de Firestore ahora son públicas, la seguridad se maneja en el código
     const userId = `nick_${nickLower}_${Date.now()}`;
     
     await window.firebaseService.db.collection('usuarios').doc(userId).set({
@@ -60281,10 +60250,9 @@ window.createNewUser = async function() {
       role: role,
       password: password,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      createdBy: currentAdmin?.uid || 'admin',
+      createdBy: window.firebaseService.currentUser?.uid || 'admin',
       isNickUser: true,
-      active: true,
-      firebaseAuthCreated: firebaseAuthCreated
+      active: true
     });
     
     // Limpiar formulario
@@ -60292,15 +60260,7 @@ window.createNewUser = async function() {
     passwordInput.value = '';
     roleSelect.value = 'usuario';
     
-    if (firebaseAuthCreated) {
-      window.showUserToast(`✅ Usuario "${nick}" creado con rol ${role}. ⚠️ Necesitas volver a iniciar sesión como admin.`, 'success');
-      // Redirigir al login
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    } else {
-      window.showUserToast(`✅ Usuario "${nick}" creado en Firestore (sin Auth)`, 'warning');
-    }
+    window.showUserToast(`✅ Usuario "${nick}" creado con rol ${role}`, 'success');
     
     // Recargar lista de usuarios
     setTimeout(() => {

@@ -459,69 +459,16 @@ class CustomAuth {
 
     /**
      * 🆕 v6.038 - Completar login exitoso
-     * 🆕 v6.044 - Guardar info de dispositivo
-     * 🆕 v6.045 - Info completa: IP, geolocalización, hardware
-     * 🆕 v6.046 - AUTENTICAR CON FIREBASE AUTH para tener permisos en Firestore
+     * 🆕 v6.047 - SIMPLIFICADO: Sin Firebase Auth para usuarios nick
+     * La seguridad se maneja en el código, no en reglas de Firestore
      */
     async completeLogin(userData, collection, docId) {
-        // 🆕 v6.046 - PRIMERO autenticar con Firebase Auth usando email ficticio
-        // Esto es NECESARIO para que request.auth no sea null en las reglas de Firestore
-        const nickEmail = `${(userData.nick || userData.username).toLowerCase()}@inventario.local`;
-        const nickPassword = userData.password || 'default123456';
+        console.log('🔐 [v6.047] Completando login para:', userData.nick || userData.username);
         
-        console.log('🔐 [v6.046] Autenticando con Firebase Auth:', nickEmail);
-        
-        let firebaseAuthSuccess = false;
-        
-        try {
-            // Intentar login con el email ficticio
-            await this.firebaseService.auth.signInWithEmailAndPassword(nickEmail, nickPassword);
-            console.log('✅ [v6.046] Firebase Auth login exitoso');
-            firebaseAuthSuccess = true;
-        } catch (authError) {
-            console.log('⚠️ [v6.046] Firebase Auth login falló:', authError.code, authError.message);
-            
-            if (authError.code === 'auth/user-not-found') {
-                // El usuario no existe en Firebase Auth, crearlo
-                try {
-                    await this.firebaseService.auth.createUserWithEmailAndPassword(nickEmail, nickPassword);
-                    console.log('✅ [v6.046] Cuenta Firebase Auth creada exitosamente');
-                    firebaseAuthSuccess = true;
-                } catch (createError) {
-                    console.warn('⚠️ [v6.046] No se pudo crear cuenta Firebase Auth:', createError.message);
-                }
-            } else if (authError.code === 'auth/wrong-password') {
-                // La contraseña en Firebase Auth es diferente
-                // Intentar crear con la contraseña correcta después de "resetear"
-                console.warn('⚠️ [v6.046] Contraseña diferente en Firebase Auth');
-                console.log('ℹ️ [v6.046] El usuario existe en Auth con otra contraseña.');
-                console.log('ℹ️ [v6.046] Para sincronizar, elimine el usuario desde Firebase Console y recréelo.');
-                // No hay forma de arreglar esto sin Admin SDK
-            } else if (authError.code === 'auth/invalid-credential' || authError.code === 'auth/invalid-login-credentials') {
-                // Credenciales inválidas - puede ser usuario no existe o contraseña incorrecta
-                try {
-                    await this.firebaseService.auth.createUserWithEmailAndPassword(nickEmail, nickPassword);
-                    console.log('✅ [v6.046] Cuenta Firebase Auth creada (después de invalid-credential)');
-                    firebaseAuthSuccess = true;
-                } catch (createError) {
-                    if (createError.code === 'auth/email-already-in-use') {
-                        console.warn('⚠️ [v6.046] Email ya existe con otra contraseña');
-                    } else {
-                        console.warn('⚠️ [v6.046] No se pudo crear:', createError.message);
-                    }
-                }
-            } else {
-                console.warn('⚠️ [v6.046] Error inesperado de Firebase Auth:', authError.message);
-            }
-        }
-        
-        console.log('🔐 [v6.046] Firebase Auth success:', firebaseAuthSuccess);
-        console.log('🔐 [v6.046] Current Auth user:', this.firebaseService.auth.currentUser?.email);
-        
-        // 🆕 v6.045 - Detectar información COMPLETA del dispositivo
+        // Detectar información del dispositivo
         const deviceInfo = this.getDeviceInfo();
         
-        // Login exitoso
+        // Login exitoso - guardar en memoria
         this.currentUser = {
             id: docId,
             username: userData.username || userData.nick,
@@ -532,86 +479,70 @@ class CustomAuth {
         this.userRole = userData.role;
         this.isGuest = false;
 
-        // Guardar en sessionStorage
+        // Guardar en sessionStorage para persistencia
         sessionStorage.setItem('customAuth', JSON.stringify({
             type: 'custom',
             username: this.currentUser.username,
             displayName: this.currentUser.displayName,
             role: userData.role,
             collection: collection,
-            docId: docId
+            docId: docId,
+            loginTime: new Date().toISOString()
         }));
 
-        console.log('✅ Usuario regular autenticado:', this.currentUser.username);
-        console.log('📱 Dispositivo:', deviceInfo);
+        console.log('✅ [v6.047] Usuario autenticado:', this.currentUser.username, 'Rol:', this.userRole);
+        console.log('📱 Dispositivo:', deviceInfo.device, deviceInfo.browser);
 
-        // 🆕 v6.045 - Obtener IP y geolocalización en paralelo (no bloquear login)
+        // Actualizar presencia en Firestore (ahora funciona porque las reglas son públicas)
+        try {
+            await this.firebaseService.db.collection(collection).doc(docId).update({
+                'presence.status': 'online',
+                'presence.lastSeen': firebase.firestore.FieldValue.serverTimestamp(),
+                'presence.device': deviceInfo.device,
+                'presence.deviceModel': deviceInfo.deviceModel || '',
+                'presence.isMobile': deviceInfo.isMobile,
+                'presence.os': deviceInfo.os,
+                'presence.osVersion': deviceInfo.osVersion || '',
+                'presence.browser': deviceInfo.browser,
+                'presence.browserVersion': deviceInfo.browserVersion || '',
+                'presence.screen': deviceInfo.screen,
+                'presence.language': deviceInfo.language,
+                'presence.timezone': deviceInfo.timezone,
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            console.log('✅ [v6.047] Presencia actualizada en Firestore');
+        } catch (e) {
+            console.warn('⚠️ [v6.047] No se pudo actualizar presencia:', e.message);
+        }
+
+        // Obtener IP y geolocalización en background
         this.getPublicIP().then(async (ip) => {
             if (ip) {
                 const geoInfo = await this.getGeoLocation(ip);
-                console.log('🌍 IP:', ip, 'Ubicación:', geoInfo);
-                
-                // Actualizar con IP y ubicación
+                console.log('🌍 IP:', ip, 'Ubicación:', geoInfo?.city);
                 try {
                     await this.firebaseService.db.collection(collection).doc(docId).update({
                         'presence.ip': ip,
                         'presence.geo': geoInfo
                     });
                 } catch (e) {
-                    console.warn('⚠️ No se pudo guardar IP/Geo:', e);
+                    console.warn('⚠️ No se pudo guardar IP/Geo:', e.message);
                 }
             }
-        }).catch(e => console.warn('⚠️ Error obteniendo IP:', e));
+        }).catch(e => console.warn('⚠️ Error obteniendo IP:', e.message));
 
-        // Actualizar presencia con info COMPLETA del dispositivo
+        // Registrar login en historial
         try {
-            await this.firebaseService.db.collection(collection).doc(docId).update({
-                'presence.status': 'online',
-                'presence.lastSeen': firebase.firestore.FieldValue.serverTimestamp(),
-                // Dispositivo
-                'presence.device': deviceInfo.device,
-                'presence.deviceModel': deviceInfo.deviceModel || '',
-                'presence.isMobile': deviceInfo.isMobile,
-                // Sistema Operativo
-                'presence.os': deviceInfo.os,
-                'presence.osVersion': deviceInfo.osVersion || '',
-                'presence.platform': deviceInfo.platform,
-                // Navegador
-                'presence.browser': deviceInfo.browser,
-                'presence.browserVersion': deviceInfo.browserVersion || '',
-                // Pantalla
-                'presence.screen': deviceInfo.screen,
-                'presence.pixelRatio': deviceInfo.pixelRatio,
-                'presence.orientation': deviceInfo.orientation,
-                // Conexión
-                'presence.connectionType': deviceInfo.connectionType,
-                'presence.connectionSpeed': deviceInfo.connectionSpeed,
-                // Locale
-                'presence.language': deviceInfo.language,
-                'presence.timezone': deviceInfo.timezone,
-                // Hardware
-                'presence.cpuCores': deviceInfo.cpuCores,
-                'presence.memory': deviceInfo.memory,
-                'presence.touchPoints': deviceInfo.touchPoints,
-                // User Agent
-                'presence.userAgent': deviceInfo.userAgent,
-                // Timestamps
-                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            await this.logUserAction(this.currentUser.username, 'login', { 
+                timestamp: new Date(),
+                device: deviceInfo.device,
+                browser: deviceInfo.browser
             });
-            console.log('✅ Presencia actualizada correctamente');
         } catch (e) {
-            console.warn('⚠️ No se pudo actualizar presencia (permisos):', e.message);
-            // 🆕 v6.045 - NO bloquear login si falla la actualización de presencia
+            console.warn('⚠️ [v6.047] No se pudo registrar acción:', e.message);
         }
 
-        // Registrar login en historial (no bloquear si falla)
-        try {
-            await this.logUserAction(this.currentUser.username, 'login', { timestamp: new Date() });
-        } catch (e) {
-            console.warn('⚠️ No se pudo registrar acción en historial:', e.message);
-        }
-
-        // Disparar evento personalizado
+        // Disparar eventos para que la UI se actualice
         window.dispatchEvent(new CustomEvent('customAuthSuccess', {
             detail: {
                 user: this.currentUser,
@@ -620,7 +551,6 @@ class CustomAuth {
             }
         }));
 
-        // También disparar userLoggedIn para que se actualicen permisos
         window.dispatchEvent(new CustomEvent('userLoggedIn', {
             detail: {
                 user: this.currentUser,
