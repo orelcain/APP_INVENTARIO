@@ -17944,7 +17944,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.049</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.050</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18177,7 +18177,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.049</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.050</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60021,12 +60021,13 @@ window.loadAllUsers = async function() {
         </div>
       ` : '';
       
-      // 🆕 v6.045 - Info COMPLETA de conexión
+      // 🆕 v6.045 - Info COMPLETA de conexión (🆕 v6.050 - con sección actual)
       const hasConnectionData = p.device || p.browser || p.ip;
       const connectionInfo = hasConnectionData ? `
         <div style="margin-top: 8px; padding: 8px; background: rgba(0,100,200,0.15); border-radius: 6px; font-size: 0.7rem; border: 1px solid rgba(96,165,250,0.3);">
           <div style="color: rgba(255,255,255,0.6); margin-bottom: 6px;">🖥️ <b>Información de Conexión:</b></div>
           <div style="display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; color: rgba(255,255,255,0.7);">
+            ${p.currentSection ? `<span style="color: #a78bfa;">📍 En la app:</span><span style="color: #c4b5fd; font-weight: 500;">${p.currentSection}</span>` : ''}
             ${deviceDesc ? `<span style="color: #93c5fd;">Dispositivo:</span><span>${deviceIcon} ${deviceDesc}</span>` : ''}
             ${osDesc ? `<span style="color: #93c5fd;">Sistema:</span><span>🖥️ ${osDesc}</span>` : ''}
             ${browserDesc ? `<span style="color: #93c5fd;">Navegador:</span><span>🌐 ${browserDesc}</span>` : ''}
@@ -60034,7 +60035,7 @@ window.loadAllUsers = async function() {
             ${p.ip ? `<span style="color: #93c5fd;">IP:</span><span>🔗 ${p.ip}</span>` : ''}
             ${p.geo?.city ? `<span style="color: #93c5fd;">Ubicación:</span><span>📍 ${p.geo.city}, ${p.geo.country || ''}</span>` : ''}
             ${p.geo?.isp ? `<span style="color: #93c5fd;">ISP:</span><span>🏢 ${p.geo.isp}</span>` : ''}
-            ${p.connectionType ? `<span style="color: #93c5fd;">Conexión:</span><span>📶 ${p.connectionType.toUpperCase()} ${p.connectionSpeed || ''}</span>` : ''}
+            ${p.connectionType ? `<span style="color: #93c5fd;">Conexión:</span><span>📶 ${p.connectionType.toUpperCase()} ${p.connectionSpeed || ''} ${p.connectionRtt || ''}</span>` : ''}
             ${p.timezone ? `<span style="color: #93c5fd;">Zona horaria:</span><span>🕐 ${p.timezone}</span>` : ''}
             ${p.language ? `<span style="color: #93c5fd;">Idioma:</span><span>🌍 ${p.language}</span>` : ''}
             ${p.cpuCores ? `<span style="color: #93c5fd;">CPU:</span><span>⚡ ${p.cpuCores} núcleos</span>` : ''}

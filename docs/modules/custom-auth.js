@@ -184,9 +184,11 @@ class CustomAuth {
             pixelRatio: screenInfo.pixelRatio,
             orientation: screenInfo.orientation,
             
-            // Conexión
+            // 🆕 v6.050 - Conexión COMPLETA
             connectionType: connectionInfo.type,
             connectionSpeed: connectionInfo.downlink ? `${connectionInfo.downlink} Mbps` : 'unknown',
+            connectionRtt: connectionInfo.rtt ? `${connectionInfo.rtt}ms` : 'unknown',
+            connectionSaveData: connectionInfo.saveData,
             
             // Locale
             language: localeInfo.language,
@@ -206,6 +208,89 @@ class CustomAuth {
             // Timestamp
             detectedAt: new Date().toISOString()
         };
+    }
+
+    /**
+     * 🆕 v6.050 - Trackear ubicación actual en la app
+     */
+    getCurrentAppLocation() {
+        // Detectar qué pestaña/sección está activa
+        const activeTab = document.querySelector('.nav-tab.active, .tab-button.active, [data-tab].active');
+        let section = 'Desconocido';
+        
+        if (activeTab) {
+            section = activeTab.textContent?.trim() || activeTab.dataset?.tab || 'Tab activa';
+        } else {
+            // Buscar por visibilidad de contenedores
+            if (document.getElementById('inventario-view')?.style.display !== 'none') {
+                section = 'Inventario';
+            } else if (document.getElementById('jerarquia-view')?.style.display !== 'none') {
+                section = 'Jerarquía';
+            } else if (document.getElementById('mapa-view')?.style.display !== 'none') {
+                section = 'Mapa';
+            } else if (document.getElementById('configuracion-view')?.style.display !== 'none') {
+                section = 'Configuración';
+            }
+        }
+        
+        // Detectar si hay algún modal abierto
+        const modalOpen = document.querySelector('.modal.show, .mobile-modal-overlay.active, [class*="modal"]:not([style*="display: none"])');
+        if (modalOpen) {
+            const modalTitle = modalOpen.querySelector('.modal-title, .mobile-modal-title, h2, h3')?.textContent?.trim();
+            if (modalTitle) {
+                section += ` > ${modalTitle}`;
+            } else {
+                section += ' > Modal abierto';
+            }
+        }
+        
+        return section;
+    }
+
+    /**
+     * 🆕 v6.050 - Actualizar ubicación en app cada X segundos
+     */
+    startLocationTracking() {
+        if (this.locationTrackingInterval) return;
+        
+        const updateLocation = async () => {
+            if (!this.currentUser || !this.isAuthenticated()) return;
+            
+            const appLocation = this.getCurrentAppLocation();
+            const collection = this.currentUser.collection || 'usuarios';
+            const docId = this.currentUser.docId;
+            
+            if (!docId) return;
+            
+            try {
+                await this.firebaseService.db.collection(collection).doc(docId).update({
+                    'presence.currentSection': appLocation,
+                    'presence.lastActivity': firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (e) {
+                // Silencioso - no queremos llenar los logs
+            }
+        };
+        
+        // Actualizar inmediatamente
+        updateLocation();
+        
+        // Actualizar cada 30 segundos
+        this.locationTrackingInterval = setInterval(updateLocation, 30000);
+        
+        // También actualizar cuando cambie de pestaña
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-tab, .tab-button, [data-tab]')) {
+                setTimeout(updateLocation, 500);
+            }
+        });
+    }
+
+    stopLocationTracking() {
+        if (this.locationTrackingInterval) {
+            clearInterval(this.locationTrackingInterval);
+            this.locationTrackingInterval = null;
+        }
     }
 
     /**
@@ -511,6 +596,14 @@ class CustomAuth {
                 'presence.screen': deviceInfo.screen,
                 'presence.language': deviceInfo.language,
                 'presence.timezone': deviceInfo.timezone,
+                // 🆕 v6.050 - Más datos de conexión
+                'presence.connectionType': deviceInfo.connectionType || 'unknown',
+                'presence.connectionSpeed': deviceInfo.connectionSpeed || 'unknown',
+                'presence.connectionRtt': deviceInfo.connectionRtt || 'unknown',
+                'presence.online': deviceInfo.online,
+                'presence.cpuCores': deviceInfo.cpuCores || 0,
+                'presence.memory': deviceInfo.memory || 'unknown',
+                'presence.currentSection': 'Login',
                 lastLogin: firebase.firestore.FieldValue.serverTimestamp()
             });
             console.log('✅ [v6.047] Presencia actualizada en Firestore');
@@ -568,6 +661,11 @@ class CustomAuth {
                 window.mostrarSeccionesAdmin();
             }
         }, 100);
+
+        // 🆕 v6.050 - Iniciar tracking de ubicación en la app
+        this.currentUser.collection = collection;
+        this.currentUser.docId = docId;
+        setTimeout(() => this.startLocationTracking(), 1000);
 
         return { success: true, user: this.currentUser, role: this.userRole };
     }

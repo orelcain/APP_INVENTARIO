@@ -31,6 +31,9 @@ class FirebaseService {
             await this.loadUserRole();
             console.log('✅ Usuario autenticado:', user.email, '| Rol:', this.userRole);
             
+            // 🆕 v6.050 - Actualizar presencia de admin
+            this.updateAdminPresence(user);
+            
             // Disparar evento personalizado
             window.dispatchEvent(new CustomEvent('userLoggedIn', { 
                 detail: { user, role: this.userRole } 
@@ -42,6 +45,145 @@ class FirebaseService {
             
             window.dispatchEvent(new CustomEvent('userLoggedOut'));
         }
+    }
+
+    /**
+     * 🆕 v6.050 - Actualizar presencia del admin con toda la info de conexión
+     */
+    async updateAdminPresence(user) {
+        try {
+            // Usar getDeviceInfo de customAuthService si está disponible
+            const deviceInfo = window.customAuthService?.getDeviceInfo?.() || this.getBasicDeviceInfo();
+            
+            await this.db.collection('adminUsers').doc(user.uid).set({
+                email: user.email,
+                role: 'admin',
+                presence: {
+                    status: 'online',
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                    device: deviceInfo.device || 'PC',
+                    deviceModel: deviceInfo.deviceModel || '',
+                    isMobile: deviceInfo.isMobile || false,
+                    os: deviceInfo.os || 'unknown',
+                    osVersion: deviceInfo.osVersion || '',
+                    browser: deviceInfo.browser || 'unknown',
+                    browserVersion: deviceInfo.browserVersion || '',
+                    screen: deviceInfo.screen || '',
+                    language: deviceInfo.language || '',
+                    timezone: deviceInfo.timezone || '',
+                    connectionType: deviceInfo.connectionType || 'unknown',
+                    connectionSpeed: deviceInfo.connectionSpeed || 'unknown',
+                    connectionRtt: deviceInfo.connectionRtt || 'unknown',
+                    online: deviceInfo.online !== undefined ? deviceInfo.online : true,
+                    cpuCores: deviceInfo.cpuCores || 0,
+                    memory: deviceInfo.memory || 'unknown',
+                    currentSection: 'Login'
+                },
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+            
+            console.log('✅ [v6.050] Presencia de admin actualizada');
+            
+            // Obtener IP y geo para admin también
+            this.updateAdminIPGeo(user.uid);
+            
+            // Iniciar tracking de ubicación para admin
+            this.startAdminLocationTracking(user.uid);
+            
+        } catch (e) {
+            console.warn('⚠️ [v6.050] No se pudo actualizar presencia admin:', e.message);
+        }
+    }
+
+    /**
+     * 🆕 v6.050 - Obtener IP y geolocalización para admin
+     */
+    async updateAdminIPGeo(uid) {
+        try {
+            const ipResponse = await fetch('https://api.ipify.org?format=json');
+            const { ip } = await ipResponse.json();
+            
+            const geoResponse = await fetch(`https://ipapi.co/${ip}/json/`);
+            const geoData = await geoResponse.json();
+            
+            await this.db.collection('adminUsers').doc(uid).update({
+                'presence.ip': ip,
+                'presence.geo': {
+                    city: geoData.city || '',
+                    region: geoData.region || '',
+                    country: geoData.country_name || '',
+                    isp: geoData.org || ''
+                }
+            });
+        } catch (e) {
+            console.warn('⚠️ No se pudo obtener IP/Geo para admin:', e.message);
+        }
+    }
+
+    /**
+     * 🆕 v6.050 - Tracking de ubicación en app para admin
+     */
+    startAdminLocationTracking(uid) {
+        if (this.adminLocationInterval) return;
+        
+        const updateLocation = async () => {
+            const section = window.customAuthService?.getCurrentAppLocation?.() || this.getCurrentSection();
+            try {
+                await this.db.collection('adminUsers').doc(uid).update({
+                    'presence.currentSection': section,
+                    'presence.lastActivity': firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (e) { /* silencioso */ }
+        };
+        
+        updateLocation();
+        this.adminLocationInterval = setInterval(updateLocation, 30000);
+        
+        // Actualizar al cambiar de pestaña
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-tab, .tab-button, [data-tab]')) {
+                setTimeout(updateLocation, 500);
+            }
+        });
+    }
+
+    /**
+     * 🆕 v6.050 - Obtener sección actual de la app
+     */
+    getCurrentSection() {
+        const tabs = ['inventario', 'jerarquia', 'mapa', 'configuracion'];
+        for (const tab of tabs) {
+            const view = document.getElementById(`${tab}-view`);
+            if (view && view.style.display !== 'none') {
+                return tab.charAt(0).toUpperCase() + tab.slice(1);
+            }
+        }
+        return 'Desconocido';
+    }
+
+    /**
+     * 🆕 v6.050 - Info básica del dispositivo (fallback)
+     */
+    getBasicDeviceInfo() {
+        const ua = navigator.userAgent;
+        const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        
+        return {
+            device: isMobile ? 'Mobile' : 'PC',
+            isMobile,
+            browser: ua.includes('Chrome') ? 'Chrome' : ua.includes('Safari') ? 'Safari' : ua.includes('Firefox') ? 'Firefox' : 'Otro',
+            os: ua.includes('Windows') ? 'Windows' : ua.includes('Mac') ? 'macOS' : ua.includes('Android') ? 'Android' : ua.includes('iPhone') ? 'iOS' : 'unknown',
+            screen: `${window.screen.width}x${window.screen.height}`,
+            language: navigator.language,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            connectionType: conn?.effectiveType || 'unknown',
+            connectionSpeed: conn?.downlink ? `${conn.downlink} Mbps` : 'unknown',
+            connectionRtt: conn?.rtt ? `${conn.rtt}ms` : 'unknown',
+            online: navigator.onLine,
+            cpuCores: navigator.hardwareConcurrency || 0,
+            memory: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'unknown'
+        };
     }
 
     /**
@@ -254,17 +396,30 @@ class FirebaseService {
     }
 
     /**
-     * Obtener todos los usuarios (solo admin)
+     * Obtener todos los usuarios (solo admin) - 🆕 v6.050 incluye admins
      */
     async getAllUsers() {
         if (!this.isAdmin()) return [];
         
         try {
-            const snapshot = await this.db.collection(this.COLLECTIONS.USUARIOS).get();
-            return snapshot.docs.map(doc => ({
+            // Obtener usuarios normales
+            const usuariosSnapshot = await this.db.collection(this.COLLECTIONS.USUARIOS).get();
+            const usuarios = usuariosSnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+            
+            // 🆕 v6.050 - También obtener admins
+            const adminsSnapshot = await this.db.collection('adminUsers').get();
+            const admins = adminsSnapshot.docs.map(doc => ({
+                id: doc.id,
+                isAdminUser: true,
+                role: 'admin',
+                ...doc.data()
+            }));
+            
+            // Combinar: primero admins, luego usuarios
+            return [...admins, ...usuarios];
         } catch (error) {
             console.error('❌ Error obteniendo usuarios:', error);
             return [];
