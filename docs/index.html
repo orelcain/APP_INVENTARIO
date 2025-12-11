@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -17891,11 +17891,33 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.041</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.042</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
       <div class="home-header-actions">
+        <!-- 🆕 v6.042 - Botón Usuario/Logout para móvil -->
+        <button id="mobileUserBtn" class="home-user-btn" onclick="window.toggleMobileUserMenu()" title="Usuario" style="display: none;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+        <!-- Menú desplegable usuario móvil -->
+        <div id="mobileUserMenu" class="mobile-user-dropdown" style="display: none;">
+          <div class="mobile-user-info">
+            <span id="mobileUserEmail">No conectado</span>
+            <span id="mobileUserRole" class="mobile-user-role"></span>
+          </div>
+          <button onclick="window.mobileLogout()" class="mobile-logout-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Cerrar sesión
+          </button>
+        </div>
         <button class="home-refresh-btn" onclick="location.reload(true)" title="Refrescar página">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M23 4v6h-6"></path>
@@ -18102,7 +18124,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.041</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.042</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -59740,7 +59762,7 @@ window.addEventListener('customAuthSuccess', (event) => {
   };
   
   if (roleMessages[role]) {
-    window.showUserToast(`✅ ${roleMessages[role]}`, 'info');
+    app.mostrarToast(`✅ ${roleMessages[role]}`, 'info');
   }
 });
 
@@ -59956,6 +59978,146 @@ window.changeUserRole = async function(userId, newRole) {
     window.loadAllUsers();
   }
 };
+
+// 🆕 v6.039 - Helper para mostrar notificaciones
+window.showUserToast = function(mensaje, tipo = 'info') {
+  // Intentar usar el toast de la app si existe
+  if (window.app && typeof window.app.mostrarToast === 'function') {
+    window.app.mostrarToast(mensaje, tipo);
+  } else {
+    // Fallback: crear un toast simple
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      z-index: 99999;
+      animation: fadeIn 0.3s;
+      max-width: 80%;
+      text-align: center;
+      background: ${tipo === 'error' ? '#ef4444' : tipo === 'success' ? '#22c55e' : tipo === 'warning' ? '#f59e0b' : '#3b82f6'};
+    `;
+    toast.textContent = mensaje;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+};
+
+// 🆕 v6.042 - Toggle menú usuario móvil
+window.toggleMobileUserMenu = function() {
+  const menu = document.getElementById('mobileUserMenu');
+  if (!menu) return;
+  
+  const isVisible = menu.style.display !== 'none';
+  menu.style.display = isVisible ? 'none' : 'block';
+  
+  // Cerrar al hacer clic fuera
+  if (!isVisible) {
+    setTimeout(() => {
+      document.addEventListener('click', window.closeMobileUserMenuOnOutsideClick);
+    }, 10);
+  }
+};
+
+window.closeMobileUserMenuOnOutsideClick = function(e) {
+  const menu = document.getElementById('mobileUserMenu');
+  const btn = document.getElementById('mobileUserBtn');
+  if (!menu || !btn) return;
+  
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.style.display = 'none';
+    document.removeEventListener('click', window.closeMobileUserMenuOnOutsideClick);
+  }
+};
+
+// 🆕 v6.042 - Logout desde móvil
+window.mobileLogout = async function() {
+  // Cerrar menú
+  const menu = document.getElementById('mobileUserMenu');
+  if (menu) menu.style.display = 'none';
+  
+  try {
+    // Usar el logout del servicio de auth personalizado
+    if (window.customAuthService && typeof window.customAuthService.logout === 'function') {
+      await window.customAuthService.logout();
+    } else if (window.firebaseService && typeof window.firebaseService.logout === 'function') {
+      await window.firebaseService.logout();
+    } else if (typeof firebase !== 'undefined' && firebase.auth) {
+      await firebase.auth().signOut();
+    }
+    
+    // Ocultar botón de usuario
+    const userBtn = document.getElementById('mobileUserBtn');
+    if (userBtn) userBtn.style.display = 'none';
+    
+    window.showUserToast('Sesión cerrada', 'info');
+    
+    // Recargar para mostrar login
+    setTimeout(() => location.reload(), 500);
+  } catch (error) {
+    console.error('Error en logout móvil:', error);
+    window.showUserToast('Error al cerrar sesión', 'error');
+  }
+};
+
+// 🆕 v6.042 - Actualizar UI de usuario móvil
+window.updateMobileUserUI = function(user) {
+  const userBtn = document.getElementById('mobileUserBtn');
+  const emailSpan = document.getElementById('mobileUserEmail');
+  const roleSpan = document.getElementById('mobileUserRole');
+  
+  if (!userBtn) return;
+  
+  if (user) {
+    // Usuario conectado
+    userBtn.style.display = 'flex';
+    userBtn.classList.add('logged-in');
+    
+    // Mostrar nick o email
+    const displayName = user.nick || user.displayName || user.email?.split('@')[0] || 'Usuario';
+    if (emailSpan) emailSpan.textContent = displayName;
+    
+    // Mostrar rol
+    if (roleSpan) {
+      const role = user.role || window.firebaseService?.currentRole || 'usuario';
+      roleSpan.textContent = role.toUpperCase();
+      
+      // Color según rol
+      if (role === 'admin') {
+        roleSpan.style.background = 'rgba(239, 68, 68, 0.2)';
+        roleSpan.style.color = '#f87171';
+      } else if (role === 'usuario') {
+        roleSpan.style.background = 'rgba(34, 197, 94, 0.2)';
+        roleSpan.style.color = '#4ade80';
+      } else {
+        roleSpan.style.background = 'rgba(59, 130, 246, 0.2)';
+        roleSpan.style.color = '#60a5fa';
+      }
+    }
+  } else {
+    // No hay usuario
+    userBtn.style.display = 'none';
+    userBtn.classList.remove('logged-in');
+  }
+};
+
+// 🆕 v6.042 - Escuchar cambios de autenticación para actualizar UI móvil
+window.addEventListener('customAuthSuccess', (e) => {
+  window.updateMobileUserUI(e.detail?.user || e.detail);
+});
+
+window.addEventListener('userLoggedIn', (e) => {
+  window.updateMobileUserUI(e.detail?.user || e.detail);
+});
+
+window.addEventListener('customAuthLogout', () => {
+  window.updateMobileUserUI(null);
+});
 
 // 🆕 v6.038 - Crear nuevo usuario con nick
 window.createNewUser = async function() {
@@ -68645,6 +68807,92 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   color: var(--home-text);
 }
 
+/* 🆕 v6.042 - MENÚ USUARIO MÓVIL */
+.home-user-btn {
+  background: transparent;
+  border: none;
+  padding: 10px;
+  color: var(--accent-color, #3b82f6);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.home-user-btn:active {
+  background: var(--home-card);
+  color: var(--home-text);
+}
+
+.home-user-btn.logged-in {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.mobile-user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--home-card, #1a1a2e);
+  border: 1px solid var(--home-border, rgba(255,255,255,0.1));
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  min-width: 200px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.mobile-user-info {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--home-border, rgba(255,255,255,0.1));
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#mobileUserEmail {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--home-text, #fff);
+  word-break: break-all;
+}
+
+.mobile-user-role {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border-radius: 4px;
+  display: inline-block;
+  width: fit-content;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.mobile-logout-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: #f87171;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.mobile-logout-btn:active {
+  background: rgba(248, 113, 113, 0.15);
+}
+
+.home-header-actions {
+  position: relative;
+}
+
 /* 🔍 BÚSQUEDA RÁPIDA EN TIEMPO REAL */
 .home-quick-search {
   padding: 0 16px 8px;
@@ -70303,6 +70551,15 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Timeout de seguridad
     setTimeout(() => clearInterval(checkAppReady), 10000);
+    
+    // 🆕 v6.042 - Inicializar UI de usuario móvil
+    setTimeout(() => {
+      const currentUser = window.firebaseService?.currentUser || window.customAuthService?.currentUser;
+      if (currentUser) {
+        console.log('📱 Usuario detectado al iniciar:', currentUser);
+        window.updateMobileUserUI(currentUser);
+      }
+    }, 1500);
     
   } else {
     console.log('🖥️ Modo escritorio detectado');

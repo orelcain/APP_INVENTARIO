@@ -5,7 +5,7 @@
  * v6.041 - Fix showUserToast
  */
 
-const CACHE_NAME = 'inventario-v6.041';
+const CACHE_NAME = 'inventario-v6.042';
 const DYNAMIC_CACHE = 'inventario-dynamic-v6.041';
 
 // Archivos esenciales para funcionar offline
