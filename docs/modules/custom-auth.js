@@ -136,6 +136,7 @@ class CustomAuth {
     async loginCustomUser(username, password) {
         try {
             const usernameLower = username.toLowerCase().trim();
+            console.log('🔍 [DEBUG] Intentando login con nick:', usernameLower);
             
             // 1️⃣ Primero buscar en custom_users (usuarios predefinidos)
             const customUserDoc = await this.firebaseService.db
@@ -143,11 +144,15 @@ class CustomAuth {
                 .doc(usernameLower)
                 .get();
 
+            console.log('🔍 [DEBUG] Buscado en custom_users:', customUserDoc.exists);
+
             if (customUserDoc.exists) {
                 const userData = customUserDoc.data();
+                console.log('🔍 [DEBUG] Usuario encontrado en custom_users:', userData.username);
                 
                 // Verificar contraseña
                 if (userData.password !== password) {
+                    console.log('❌ [DEBUG] Contraseña incorrecta en custom_users');
                     return { success: false, error: 'Contraseña incorrecta' };
                 }
 
@@ -160,6 +165,7 @@ class CustomAuth {
             }
 
             // 2️⃣ Buscar en usuarios (creados desde panel admin con nick)
+            console.log('🔍 [DEBUG] Buscando en colección usuarios con nick:', usernameLower);
             const nickQuery = await this.firebaseService.db
                 .collection('usuarios')
                 .where('nick', '==', usernameLower)
@@ -167,15 +173,20 @@ class CustomAuth {
                 .limit(1)
                 .get();
 
+            console.log('🔍 [DEBUG] Resultados en usuarios:', nickQuery.empty ? 'VACÍO' : nickQuery.docs.length + ' encontrado(s)');
+
             if (!nickQuery.empty) {
                 const userDoc = nickQuery.docs[0];
                 const userData = userDoc.data();
+                console.log('🔍 [DEBUG] Usuario encontrado:', { nick: userData.nick, role: userData.role, hasPassword: !!userData.password });
                 
                 // Verificar contraseña
                 if (userData.password !== password) {
+                    console.log('❌ [DEBUG] Contraseña NO coincide. Esperada:', userData.password?.substring(0,3) + '***', 'Recibida:', password?.substring(0,3) + '***');
                     return { success: false, error: 'Contraseña incorrecta' };
                 }
 
+                console.log('✅ [DEBUG] Contraseña correcta, completando login...');
                 return await this.completeLogin({
                     ...userData,
                     username: userData.nick,
