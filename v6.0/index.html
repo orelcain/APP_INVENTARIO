@@ -40101,12 +40101,19 @@ class InventarioCompleto {
     }
     
     // 🆕 v6.034 - Verificar permisos para pestaña Configuración
-    if (tab === 'configuracion' && window.firebaseService && !window.firebaseService.canViewConfig()) {
-      console.log('⛔ Acceso denegado a Configuración');
-      if (typeof showToast === 'function') {
-        showToast('Solo administradores pueden acceder a Configuración', 'error');
+    // Solo bloquear si hay firebaseService Y el usuario NO es admin
+    if (tab === 'configuracion') {
+      const isAdmin = window.firebaseService?.userRole === 'admin' || 
+                      window.firebaseService?.isAdmin?.() ||
+                      window.app?.userRole === 'admin';
+      
+      if (window.firebaseService?.isAuthenticated?.() && !isAdmin) {
+        console.log('⛔ Acceso denegado a Configuración - Rol:', window.firebaseService?.userRole);
+        if (typeof showToast === 'function') {
+          showToast('Solo administradores pueden acceder a Configuración', 'error');
+        }
+        return;
       }
-      return;
     }
     
     document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
@@ -59850,24 +59857,35 @@ window.mostrarSeccionesAdmin = function() {
   const role = window.firebaseService?.userRole ||
                window.customAuth?.userRole || 
                window.app?.userPermissions?.role ||
+               window.app?.userRole ||
                localStorage.getItem('userRole') ||
                null;
   
-  console.log('🔍 mostrarSeccionesAdmin - Rol detectado:', role);
+  // Verificar si hay usuario autenticado
+  const isAuthenticated = window.firebaseService?.isAuthenticated?.() || 
+                          window.firebaseService?.currentUser ||
+                          false;
   
+  console.log('🔍 mostrarSeccionesAdmin - Rol detectado:', role, '- Autenticado:', isAuthenticated);
+  
+  // Es admin si el rol es 'admin' (minúsculas)
   const isAdmin = (role === 'admin');
   
-  // 🆕 v6.034 - Ocultar pestaña de Configuración para no-admin
+  // 🆕 v6.034 - Ocultar pestaña de Configuración SOLO si está autenticado y NO es admin
+  // Si no está autenticado o rol no determinado, mostrar por defecto
   const configTab = document.getElementById('navTabConfiguracion');
   if (configTab) {
-    configTab.style.display = isAdmin ? '' : 'none';
-    console.log(`⚙️ Pestaña Configuración: ${isAdmin ? 'visible' : 'oculta'}`);
+    // Ocultar solo si está autenticado Y definitivamente no es admin
+    const shouldHide = isAuthenticated && role && !isAdmin;
+    configTab.style.display = shouldHide ? 'none' : '';
+    console.log(`⚙️ Pestaña Configuración: ${shouldHide ? 'oculta' : 'visible'} (isAdmin=${isAdmin}, role=${role})`);
   }
   
   // 🆕 v6.034 - Ocultar botón config móvil para no-admin
   const mobileConfigBtns = document.querySelectorAll('.home-config-btn');
   mobileConfigBtns.forEach(btn => {
-    btn.style.display = isAdmin ? '' : 'none';
+    const shouldHide = isAuthenticated && role && !isAdmin;
+    btn.style.display = shouldHide ? 'none' : '';
   });
   
   // 🆕 v6.034 - Mostrar/ocultar sección de gestión de usuarios
