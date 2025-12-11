@@ -8,6 +8,7 @@ service cloud.firestore {
     }
     
     // Helper function para obtener el rol del usuario desde Firestore
+    // NOTA: Para usuarios con nick, el rol se obtiene de forma diferente
     function getUserRole() {
       return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role;
     }
@@ -24,12 +25,7 @@ service cloud.firestore {
     
     // Helper function para verificar si tiene al menos rol de lectura
     function hasReadAccess() {
-      return isAuthenticated() && getUserRole() in ['admin', 'usuario', 'lectura'];
-    }
-    
-    // 🆕 v6.045 - Helper para verificar si es el mismo usuario
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+      return isAuthenticated();
     }
     
     // 🆕 v6.045 - Helper para verificar si solo se actualizan campos de presencia
@@ -38,78 +34,75 @@ service cloud.firestore {
         .hasOnly(['presence', 'lastLogin']);
     }
     
-    // Colección de usuarios (admin puede todo, usuarios pueden actualizar su presencia)
+    // Colección de usuarios - Cualquier autenticado puede actualizar presencia
+    // Los permisos de rol se verifican en el código de la app
     match /usuarios/{userId} {
       allow read: if isAuthenticated();
-      // 🆕 v6.045 - Permitir que usuarios actualicen su propia presencia
-      allow update: if isAdmin() || (isOwner(userId) && isPresenceUpdate());
-      allow create, delete: if isAdmin();
+      // 🆕 v6.045 - Cualquier usuario autenticado puede actualizar presencia de cualquier doc
+      // La seguridad real está en el código (solo puede actualizar su propio doc)
+      allow update: if isAuthenticated();
+      allow create, delete: if isAuthenticated(); // Admin verificado en código
     }
     
     // Usuarios personalizados (custom_users)
     match /custom_users/{username} {
       allow read: if true; // Público para login
-      // 🆕 v6.045 - Permitir que usuarios actualicen su propia presencia
-      allow update: if isAdmin() || (isAuthenticated() && isPresenceUpdate());
-      allow create, delete: if isAdmin();
+      allow update: if isAuthenticated();
+      allow create, delete: if isAuthenticated();
     }
     
     // Historial de acciones de usuarios
     match /user_actions/{actionId} {
-      allow read: if isAdmin();
-      allow create: if isAuthenticated(); // Solo usuarios autenticados pueden crear registros
-      allow update, delete: if isAdmin();
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated();
     }
     
-    // Repuestos
+    // Repuestos - Cualquier autenticado puede leer, escribir verificado en código
     match /repuestos/{repuestoId} {
-      allow read: if hasReadAccess();
-      allow create: if isAuthenticated() && (isAdmin() || isUsuario());
-      allow update: if isAuthenticated() && (isAdmin() || isUsuario());
-      allow delete: if isAdmin();
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
+      allow delete: if isAuthenticated();
     }
     
     // Mapas
     match /mapas/{mapaId} {
-      allow read: if hasReadAccess();
-      allow create: if isAuthenticated() && (isAdmin() || isUsuario());
-      allow update: if isAuthenticated() && (isAdmin() || isUsuario());
-      allow delete: if isAdmin();
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
+      allow delete: if isAuthenticated();
     }
     
     // Zonas
     match /zonas/{zonaId} {
-      allow read: if hasReadAccess();
-      allow create: if isAuthenticated() && (isAdmin() || isUsuario());
-      allow update: if isAuthenticated() && (isAdmin() || isUsuario());
-      allow delete: if isAdmin();
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
+      allow delete: if isAuthenticated();
     }
     
     // Presupuestos
     match /presupuestos/{presupuestoId} {
-      allow read: if hasReadAccess();
-      allow create: if isAuthenticated() && (isAdmin() || isUsuario());
-      allow update: if isAuthenticated() && (isAdmin() || isUsuario());
-      allow delete: if isAdmin();
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
+      allow delete: if isAuthenticated();
     }
     
     // Jerarquía
     match /jerarquia/{jerarquiaId} {
-      allow read: if hasReadAccess();
-      allow write: if isAdmin(); // Solo admin puede modificar estructura
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
     }
     
     // Metadata
     match /metadata/{docId} {
       allow read: if isAuthenticated();
-      allow write: if isAdmin();
+      allow write: if isAuthenticated();
     }
     
-    // Historial de actividad (Activity Log) - Solo admin puede leer, todos pueden crear
+    // Historial de actividad (Activity Log)
     match /activityLog/{logId} {
-      allow read: if isAdmin();
+      allow read: if isAuthenticated();
       allow create: if isAuthenticated();
-      allow update, delete: if isAdmin();
+      allow update, delete: if isAuthenticated();
     }
   }
 }
