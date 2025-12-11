@@ -17873,7 +17873,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     <button class="nav-tab" data-tab="valores">
       Valores
     </button>
-    <button class="nav-tab" data-tab="configuracion">
+    <button class="nav-tab" data-tab="configuracion" id="navTabConfiguracion">
       Configuracin
     </button>
   </div>
@@ -17891,7 +17891,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.033</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.034</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18102,7 +18102,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.033</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.034</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -18709,6 +18709,57 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   <!-- TAB CONFIGURACIN -->
   <div id="configuracion" class="tab-content">
     <h2 class="config-title">Configuracin</h2>
+    
+    <!-- 🆕 v6.034 GESTIÓN DE USUARIOS (Solo Admin) -->
+    <div id="users-management-section" class="config-section" style="display: none;">
+      <div class="config-card" style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%); border: 1px solid rgba(147, 51, 234, 0.4);">
+        <div class="config-section-header-row">
+          <div onclick="toggleConfigSection('users-config')" class="config-section-clickable">
+            <div class="config-section-title-row">
+              <span id="users-config-icon">👥</span>
+              <h3 class="config-section-title" style="color: #c4b5fd;">
+                👥 Gestión de Usuarios y Permisos
+              </h3>
+            </div>
+          </div>
+        </div>
+        
+        <div id="users-config-content" class="config-section-content" style="display: block;">
+          <!-- Estado de Usuarios Conectados -->
+          <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h4 style="margin: 0; color: #c4b5fd; font-size: 1rem;">🟢 Usuarios Conectados</h4>
+              <button onclick="refreshOnlineUsers()" class="btn" style="padding: 6px 12px; font-size: 0.8rem; background: rgba(147, 51, 234, 0.3);">
+                🔄 Actualizar
+              </button>
+            </div>
+            <div id="onlineUsersContainer" style="display: grid; gap: 8px;">
+              <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin: 0;">Cargando usuarios...</p>
+            </div>
+          </div>
+          
+          <!-- Lista de Todos los Usuarios -->
+          <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px;">
+            <h4 style="margin: 0 0 12px 0; color: #93c5fd; font-size: 1rem;">📋 Todos los Usuarios</h4>
+            <div id="allUsersContainer" style="display: grid; gap: 8px;">
+              <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin: 0;">Cargando...</p>
+            </div>
+          </div>
+          
+          <!-- Leyenda de Roles -->
+          <div style="margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.15); border-radius: 8px;">
+            <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: rgba(255,255,255,0.7);">
+              <strong>Roles disponibles:</strong>
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.8rem;">
+              <span style="color: #f87171;">🔴 Admin: Control total</span>
+              <span style="color: #fbbf24;">🟡 Usuario: Crear/Editar/Contar</span>
+              <span style="color: #60a5fa;">🔵 Lectura: Solo ver</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     
     <div class="config-grid">
       <!-- ALMACENAMIENTO -->
@@ -33930,6 +33981,9 @@ class InventarioCompleto {
     this.canEdit = true; // Por defecto true hasta que se determine el rol
     this.canCreate = true;
     this.canDelete = true;
+    this.canAddPhotos = true; // 🆕 v6.034
+    this.canCount = true;     // 🆕 v6.034
+    this.canViewConfig = true; // 🆕 v6.034
     
     // Sistema de eliminación diferida de multimedia
     this.pendingDeletions = [];           // Archivos físicos a eliminar al guardar
@@ -34190,27 +34244,44 @@ class InventarioCompleto {
         this.canEdit = true;
         this.canCreate = true;
         this.canDelete = true;
+        this.canAddPhotos = true;     // 🆕 v6.034
+        this.canCount = true;         // 🆕 v6.034
+        this.canViewConfig = true;    // 🆕 v6.034
         break;
       case 'usuario':
         this.canEdit = true;
         this.canCreate = true;
         this.canDelete = false;
+        this.canAddPhotos = true;     // 🆕 v6.034
+        this.canCount = true;         // 🆕 v6.034
+        this.canViewConfig = false;   // 🆕 v6.034
         break;
       case 'lectura':
         this.canEdit = false;
         this.canCreate = false;
         this.canDelete = false;
+        this.canAddPhotos = false;    // 🆕 v6.034
+        this.canCount = false;        // 🆕 v6.034
+        this.canViewConfig = false;   // 🆕 v6.034
         break;
       default:
         this.canEdit = false;
         this.canCreate = false;
         this.canDelete = false;
+        this.canAddPhotos = false;    // 🆕 v6.034
+        this.canCount = false;        // 🆕 v6.034
+        this.canViewConfig = false;   // 🆕 v6.034
     }
     
-    console.log(`🔐 Permisos actualizados - Rol: ${role}, Editar: ${this.canEdit}, Crear: ${this.canCreate}, Eliminar: ${this.canDelete}`);
+    console.log(`🔐 Permisos actualizados - Rol: ${role}, Editar: ${this.canEdit}, Crear: ${this.canCreate}, Eliminar: ${this.canDelete}, Config: ${this.canViewConfig}`);
     
     // Actualizar UI según permisos
     this.updateUIForPermissions();
+    
+    // 🆕 v6.034 - Llamar a mostrarSeccionesAdmin para ocultar pestaña Config si no es admin
+    if (window.mostrarSeccionesAdmin) {
+      window.mostrarSeccionesAdmin();
+    }
   }
   
   /**
@@ -40029,6 +40100,15 @@ class InventarioCompleto {
       return; // No cambiar tabs si Mobile Home está activo en móvil
     }
     
+    // 🆕 v6.034 - Verificar permisos para pestaña Configuración
+    if (tab === 'configuracion' && window.firebaseService && !window.firebaseService.canViewConfig()) {
+      console.log('⛔ Acceso denegado a Configuración');
+      if (typeof showToast === 'function') {
+        showToast('Solo administradores pueden acceder a Configuración', 'error');
+      }
+      return;
+    }
+    
     document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
     document.getElementById(tab).style.display = 'block';
     
@@ -40036,6 +40116,19 @@ class InventarioCompleto {
     document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
     
     this.currentTab = tab;
+    
+    // 🆕 v6.034 - Actualizar presencia del usuario
+    if (window.updateUserPresence) {
+      const tabNames = {
+        'inventario': 'Inventario',
+        'jerarquia': 'Jerarquía',
+        'mapa': 'Mapas',
+        'stats': 'Estadísticas',
+        'valores': 'Valores',
+        'configuracion': 'Configuración'
+      };
+      window.updateUserPresence(tabNames[tab] || tab, 'Navegando');
+    }
     
     if (tab === 'jerarquia') {
       // 🌲 Renderizar árbol visual de jerarquía
@@ -59636,6 +59729,121 @@ window.addEventListener('customAuthLogout', () => {
 // 📋 FUNCIONES DE HISTORIAL DE ACTIVIDAD
 // ========================================
 
+// 🆕 v6.034 - Función para actualizar presencia del usuario actual
+window.updateUserPresence = async function(currentView = '', currentAction = '') {
+  if (window.firebaseService && window.firebaseService.updatePresence) {
+    await window.firebaseService.updatePresence('online', currentView, currentAction);
+  }
+};
+
+// 🆕 v6.034 - Actualizar usuarios conectados (solo admin)
+window.refreshOnlineUsers = async function() {
+  const container = document.getElementById('onlineUsersContainer');
+  if (!container || !window.firebaseService?.isAdmin()) return;
+  
+  container.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Cargando...</p>';
+  
+  const users = await window.firebaseService.getOnlineUsers();
+  
+  if (users.length === 0) {
+    container.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">No hay usuarios registrados</p>';
+    return;
+  }
+  
+  const onlineUsers = users.filter(u => u.isOnline);
+  container.innerHTML = onlineUsers.map(user => `
+    <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(34, 197, 94, 0.1); border-radius: 8px; border-left: 3px solid #22c55e;">
+      <span style="font-size: 1.2rem;">🟢</span>
+      <div style="flex: 1;">
+        <div style="font-weight: 600; color: #86efac;">${user.email}</div>
+        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">
+          ${user.currentView ? `📍 ${user.currentView}` : 'Conectado'}
+          ${user.currentAction ? ` - ${user.currentAction}` : ''}
+        </div>
+      </div>
+      <span class="role-badge-${user.role}" style="padding: 4px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold;">
+        ${user.role === 'admin' ? '🔴 Admin' : user.role === 'usuario' ? '🟡 Usuario' : '🔵 Lectura'}
+      </span>
+    </div>
+  `).join('') || '<p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Ningún usuario conectado ahora</p>';
+};
+
+// 🆕 v6.034 - Cargar todos los usuarios (solo admin)
+window.loadAllUsers = async function() {
+  const container = document.getElementById('allUsersContainer');
+  if (!container || !window.firebaseService?.isAdmin()) return;
+  
+  container.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Cargando...</p>';
+  
+  const users = await window.firebaseService.getAllUsers();
+  
+  if (users.length === 0) {
+    container.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">No hay usuarios registrados</p>';
+    return;
+  }
+  
+  container.innerHTML = users.map(user => {
+    const isOnline = user.presence?.status === 'online' && 
+                     user.presence?.lastSeen?.toDate && 
+                     (new Date() - user.presence.lastSeen.toDate()) < 5 * 60 * 1000;
+    const roleColor = user.role === 'admin' ? '#f87171' : user.role === 'usuario' ? '#fbbf24' : '#60a5fa';
+    const statusIcon = isOnline ? '🟢' : '⚪';
+    
+    return `
+      <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+        <span style="font-size: 1.1rem;">${statusIcon}</span>
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-weight: 500; color: rgba(255,255,255,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.email}</div>
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">
+            ${user.presence?.lastSeen ? `Última vez: ${formatTimeAgo(user.presence.lastSeen.toDate())}` : 'Nunca conectado'}
+          </div>
+        </div>
+        <select onchange="changeUserRole('${user.id}', this.value)" 
+                style="background: rgba(0,0,0,0.3); border: 1px solid ${roleColor}; color: ${roleColor}; padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+          <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>🔴 Admin</option>
+          <option value="usuario" ${user.role === 'usuario' ? 'selected' : ''}>🟡 Usuario</option>
+          <option value="lectura" ${user.role === 'lectura' ? 'selected' : ''}>🔵 Lectura</option>
+        </select>
+      </div>
+    `;
+  }).join('');
+};
+
+// 🆕 v6.034 - Cambiar rol de usuario
+window.changeUserRole = async function(userId, newRole) {
+  if (!window.firebaseService?.isAdmin()) {
+    showToast('Solo administradores pueden cambiar roles', 'error');
+    return;
+  }
+  
+  const result = await window.firebaseService.updateUserRole(userId, newRole);
+  
+  if (result.success) {
+    showToast(`Rol actualizado a "${newRole}"`, 'success');
+    // Recargar lista
+    setTimeout(() => window.loadAllUsers(), 500);
+  } else {
+    showToast(result.error || 'Error al cambiar rol', 'error');
+    // Recargar para restaurar valor anterior
+    window.loadAllUsers();
+  }
+};
+
+// 🆕 v6.034 - Formatear tiempo relativo
+window.formatTimeAgo = function(date) {
+  if (!date) return 'Nunca';
+  const now = new Date();
+  const diff = now - date;
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  
+  if (minutes < 1) return 'Ahora';
+  if (minutes < 60) return `Hace ${minutes}m`;
+  if (hours < 24) return `Hace ${hours}h`;
+  return `Hace ${days}d`;
+};
+
 // Función para mostrar secciones de admin según el rol actual
 window.mostrarSeccionesAdmin = function() {
   // Obtener el rol de varias fuentes posibles
@@ -59648,6 +59856,33 @@ window.mostrarSeccionesAdmin = function() {
   console.log('🔍 mostrarSeccionesAdmin - Rol detectado:', role);
   
   const isAdmin = (role === 'admin');
+  
+  // 🆕 v6.034 - Ocultar pestaña de Configuración para no-admin
+  const configTab = document.getElementById('navTabConfiguracion');
+  if (configTab) {
+    configTab.style.display = isAdmin ? '' : 'none';
+    console.log(`⚙️ Pestaña Configuración: ${isAdmin ? 'visible' : 'oculta'}`);
+  }
+  
+  // 🆕 v6.034 - Ocultar botón config móvil para no-admin
+  const mobileConfigBtns = document.querySelectorAll('.home-config-btn');
+  mobileConfigBtns.forEach(btn => {
+    btn.style.display = isAdmin ? '' : 'none';
+  });
+  
+  // 🆕 v6.034 - Mostrar/ocultar sección de gestión de usuarios
+  const usersSection = document.getElementById('users-management-section');
+  if (usersSection) {
+    usersSection.style.display = isAdmin ? 'block' : 'none';
+    if (isAdmin) {
+      // Cargar datos de usuarios
+      setTimeout(() => {
+        window.refreshOnlineUsers();
+        window.loadAllUsers();
+      }, 300);
+    }
+    console.log(`👥 Gestión Usuarios: ${isAdmin ? 'visible' : 'oculta'}`);
+  }
   
   // Mostrar/ocultar sección de historial
   const activitySection = document.getElementById('activity-log-section-admin');
@@ -67036,6 +67271,17 @@ window.addEventListener('userLoggedIn', (event) => {
                     if (window.updateMobileHome) window.updateMobileHome();
                 });
             }
+            
+            // 🆕 v6.034 - Configurar UI según permisos
+            setTimeout(() => {
+                if (window.mostrarSeccionesAdmin) {
+                    window.mostrarSeccionesAdmin();
+                }
+                // Actualizar presencia
+                if (window.updateUserPresence) {
+                    window.updateUserPresence('Home', 'Inicio de sesión');
+                }
+            }, 500);
         }
     }, 300);
 });
@@ -69950,6 +70196,16 @@ window.mobileHomeActions = {
   
   // 📊 v6.033 - Modal de conteo rápido optimizado para móvil
   openQuickCount: function(id) {
+    // 🆕 v6.034 - Verificar permisos
+    if (window.app && !window.app.canCount) {
+      if (typeof showToast === 'function') {
+        showToast('⛔ No tienes permisos para contar', 'warning');
+      } else {
+        alert('No tienes permisos para realizar conteos');
+      }
+      return;
+    }
+    
     const repuesto = window.app?.repuestos?.find(r => r.id === id);
     if (!repuesto) {
       alert('Repuesto no encontrado');

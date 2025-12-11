@@ -174,6 +174,142 @@ class FirebaseService {
         return this.userRole === this.USER_ROLES.ADMIN;
     }
 
+    // 🆕 v6.034 - Permisos granulares
+    canCreate() {
+        return this.userRole === this.USER_ROLES.ADMIN || 
+               this.userRole === this.USER_ROLES.USUARIO;
+    }
+
+    canAddPhotos() {
+        return this.userRole === this.USER_ROLES.ADMIN || 
+               this.userRole === this.USER_ROLES.USUARIO;
+    }
+
+    canCount() {
+        return this.userRole === this.USER_ROLES.ADMIN || 
+               this.userRole === this.USER_ROLES.USUARIO;
+    }
+
+    canViewConfig() {
+        return this.userRole === this.USER_ROLES.ADMIN;
+    }
+
+    // ========================================
+    // 🆕 PRESENCIA Y MONITOREO DE USUARIOS
+    // ========================================
+
+    /**
+     * Actualizar presencia del usuario (online/offline, qué está haciendo)
+     */
+    async updatePresence(status = 'online', currentView = '', currentAction = '') {
+        if (!this.currentUser) return;
+        
+        try {
+            await this.db.collection(this.COLLECTIONS.USUARIOS).doc(this.currentUser.uid).set({
+                presence: {
+                    status: status,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                    currentView: currentView,
+                    currentAction: currentAction,
+                    userAgent: navigator.userAgent.substring(0, 100)
+                }
+            }, { merge: true });
+        } catch (error) {
+            console.warn('⚠️ Error actualizando presencia:', error);
+        }
+    }
+
+    /**
+     * Obtener usuarios conectados (solo admin)
+     */
+    async getOnlineUsers() {
+        if (!this.isAdmin()) return [];
+        
+        try {
+            const snapshot = await this.db.collection(this.COLLECTIONS.USUARIOS).get();
+            const users = [];
+            const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+            
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const lastSeen = data.presence?.lastSeen?.toDate();
+                const isOnline = lastSeen && lastSeen > fiveMinutesAgo;
+                
+                users.push({
+                    id: doc.id,
+                    email: data.email,
+                    role: data.role,
+                    isOnline: isOnline,
+                    lastSeen: lastSeen,
+                    currentView: data.presence?.currentView || '',
+                    currentAction: data.presence?.currentAction || ''
+                });
+            });
+            
+            return users;
+        } catch (error) {
+            console.error('❌ Error obteniendo usuarios:', error);
+            return [];
+        }
+    }
+
+    /**
+     * Obtener todos los usuarios (solo admin)
+     */
+    async getAllUsers() {
+        if (!this.isAdmin()) return [];
+        
+        try {
+            const snapshot = await this.db.collection(this.COLLECTIONS.USUARIOS).get();
+            return snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+        } catch (error) {
+            console.error('❌ Error obteniendo usuarios:', error);
+            return [];
+        }
+    }
+
+    /**
+     * Actualizar rol de usuario (solo admin)
+     */
+    async updateUserRole(userId, newRole) {
+        if (!this.isAdmin()) {
+            return { success: false, error: 'Solo administradores pueden cambiar roles' };
+        }
+        
+        try {
+            await this.db.collection(this.COLLECTIONS.USUARIOS).doc(userId).update({
+                role: newRole,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedBy: this.currentUser.uid
+            });
+            return { success: true };
+        } catch (error) {
+            console.error('❌ Error actualizando rol:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Escuchar cambios en usuarios en tiempo real (solo admin)
+     */
+    listenToUsers(callback) {
+        if (!this.isAdmin()) return null;
+        
+        return this.db.collection(this.COLLECTIONS.USUARIOS)
+            .onSnapshot(snapshot => {
+                const users = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                callback(users);
+            }, error => {
+                console.error('❌ Error en listener de usuarios:', error);
+            });
+    }
+
     // ========================================
     // OPERACIONES CRUD FIRESTORE
     // ========================================
