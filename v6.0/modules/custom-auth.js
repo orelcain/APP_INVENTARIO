@@ -24,6 +24,50 @@ class CustomAuth {
     }
 
     /**
+     * 🆕 v6.044 - Detectar información del dispositivo y navegador
+     */
+    getDeviceInfo() {
+        const ua = navigator.userAgent;
+        let device = 'PC';
+        let browser = 'Desconocido';
+        let platform = navigator.platform || 'Desconocido';
+
+        // Detectar dispositivo móvil
+        if (/Android/i.test(ua)) {
+            device = 'Android';
+        } else if (/iPhone|iPad|iPod/i.test(ua)) {
+            device = 'iOS';
+        } else if (/Mobile/i.test(ua)) {
+            device = 'Mobile';
+        } else if (/Tablet/i.test(ua)) {
+            device = 'Tablet';
+        }
+
+        // Detectar navegador
+        if (/Edge/i.test(ua) || /Edg\//i.test(ua)) {
+            browser = 'Edge';
+        } else if (/Chrome/i.test(ua)) {
+            browser = 'Chrome';
+        } else if (/Firefox/i.test(ua)) {
+            browser = 'Firefox';
+        } else if (/Safari/i.test(ua)) {
+            browser = 'Safari';
+        } else if (/Opera|OPR/i.test(ua)) {
+            browser = 'Opera';
+        }
+
+        return {
+            device: device,
+            browser: browser,
+            platform: platform,
+            userAgent: ua.substring(0, 200), // Limitar longitud
+            isMobile: device !== 'PC',
+            screenWidth: window.screen?.width || 0,
+            screenHeight: window.screen?.height || 0
+        };
+    }
+
+    /**
      * Inicializar usuarios en Firestore (solo una vez)
      */
     async initializeUsers() {
@@ -203,8 +247,12 @@ class CustomAuth {
 
     /**
      * 🆕 v6.038 - Completar login exitoso
+     * 🆕 v6.044 - Guardar info de dispositivo
      */
     async completeLogin(userData, collection, docId) {
+        // 🆕 v6.044 - Detectar información del dispositivo
+        const deviceInfo = this.getDeviceInfo();
+        
         // Login exitoso
         this.currentUser = {
             id: docId,
@@ -227,12 +275,17 @@ class CustomAuth {
         }));
 
         console.log('✅ Usuario regular autenticado:', this.currentUser.username);
+        console.log('📱 Dispositivo:', deviceInfo);
 
-        // Actualizar presencia
+        // Actualizar presencia con info del dispositivo
         try {
             await this.firebaseService.db.collection(collection).doc(docId).update({
                 'presence.status': 'online',
                 'presence.lastSeen': firebase.firestore.FieldValue.serverTimestamp(),
+                'presence.device': deviceInfo.device,
+                'presence.browser': deviceInfo.browser,
+                'presence.platform': deviceInfo.platform,
+                'presence.userAgent': deviceInfo.userAgent,
                 lastLogin: firebase.firestore.FieldValue.serverTimestamp()
             });
         } catch (e) {

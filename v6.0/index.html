@@ -17891,7 +17891,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.043</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.044</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18124,7 +18124,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.043</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.044</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -59762,7 +59762,7 @@ window.addEventListener('customAuthSuccess', (event) => {
   };
   
   if (roleMessages[role]) {
-    app.mostrarToast(`✅ ${roleMessages[role]}`, 'info');
+    window.showUserToast(`✅ ${roleMessages[role]}`, 'info');
   }
   
   // 🆕 v6.043 - Actualizar visibilidad de secciones según rol
@@ -59922,10 +59922,39 @@ window.loadAllUsers = async function() {
                        user.presence?.lastSeen?.toDate && 
                        (new Date() - user.presence.lastSeen.toDate()) < 5 * 60 * 1000;
       const roleColor = user.role === 'admin' ? '#f87171' : user.role === 'usuario' ? '#fbbf24' : '#60a5fa';
+      const roleEmoji = user.role === 'admin' ? '🔴' : user.role === 'usuario' ? '🟡' : '🔵';
       const statusIcon = isOnline ? '🟢' : '⚪';
       const isCurrentUser = user.id === window.firebaseService?.currentUser?.uid;
       const isNickUser = user.isNickUser || user.nick;
       const displayName = user.nick || user.email || 'Sin nombre';
+      
+      // 🆕 v6.044 - Detectar dispositivo desde userAgent guardado
+      const deviceInfo = user.presence?.device || user.presence?.userAgent || '';
+      const isMobileDevice = /mobile|android|iphone|ipad/i.test(deviceInfo);
+      const deviceIcon = isMobileDevice ? '📱' : '💻';
+      const deviceLabel = isMobileDevice ? 'Móvil' : 'PC';
+      
+      // 🆕 v6.044 - Credenciales para login (solo usuarios con nick)
+      const loginCredentials = isNickUser ? `
+        <div style="margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 6px; font-size: 0.75rem;">
+          <div style="color: rgba(255,255,255,0.6); margin-bottom: 4px;">📋 Credenciales de acceso:</div>
+          <div style="display: grid; grid-template-columns: auto 1fr; gap: 4px 8px;">
+            <span style="color: #86efac;">Usuario:</span>
+            <code style="color: #fbbf24; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">${user.nick || displayName}</code>
+            <span style="color: #86efac;">Contraseña:</span>
+            <code style="color: #fbbf24; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">${user.password || '******'}</code>
+          </div>
+        </div>
+      ` : '';
+      
+      // 🆕 v6.044 - Info de conexión
+      const connectionInfo = user.presence ? `
+        <div style="margin-top: 4px; font-size: 0.7rem; color: rgba(255,255,255,0.4);">
+          ${deviceIcon} ${deviceLabel}
+          ${user.presence?.ip ? ` • IP: ${user.presence.ip}` : ''}
+          ${user.presence?.browser ? ` • ${user.presence.browser}` : ''}
+        </div>
+      ` : '';
       
       // Botones de acción para usuarios con nick (no el usuario actual)
       const actionButtons = (isNickUser && !isCurrentUser) ? `
@@ -59941,25 +59970,28 @@ window.loadAllUsers = async function() {
       ` : '';
       
       return `
-        <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; ${isCurrentUser ? 'border: 1px solid rgba(147, 51, 234, 0.5);' : ''}">
-          <span style="font-size: 1.1rem;">${statusIcon}</span>
-          <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 500; color: rgba(255,255,255,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-              ${isNickUser ? '👤 ' : ''}${displayName}${isCurrentUser ? ' (Tú)' : ''}
+        <div style="padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; ${isCurrentUser ? 'border: 1px solid rgba(147, 51, 234, 0.5);' : ''} margin-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 1.1rem;">${statusIcon}</span>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-weight: 500; color: rgba(255,255,255,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${isNickUser ? '👤 ' : ''}${displayName}${isCurrentUser ? ' (Tú)' : ''}
+              </div>
+              <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">
+                ${user.presence?.lastSeen ? `Última vez: ${formatTimeAgo(user.presence.lastSeen.toDate())}` : 'Nunca conectado'}
+              </div>
+              ${connectionInfo}
             </div>
-            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">
-              ${user.presence?.lastSeen ? `Última vez: ${formatTimeAgo(user.presence.lastSeen.toDate())}` : 'Nunca conectado'}
-              ${isNickUser ? ' • Usuario local' : ''}
-            </div>
+            ${actionButtons}
+            <select onchange="changeUserRole('${user.id}', this.value)" 
+                    style="background: rgba(0,0,0,0.3); border: 1px solid ${roleColor}; color: ${roleColor}; padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;"
+                    ${isCurrentUser ? 'disabled title="No puedes cambiar tu propio rol"' : ''}>
+              <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>🔴 Admin</option>
+              <option value="usuario" ${user.role === 'usuario' ? 'selected' : ''}>🟡 Usuario</option>
+              <option value="lectura" ${user.role === 'lectura' ? 'selected' : ''}>🔵 Lectura</option>
+            </select>
           </div>
-          ${actionButtons}
-          <select onchange="changeUserRole('${user.id}', this.value)" 
-                  style="background: rgba(0,0,0,0.3); border: 1px solid ${roleColor}; color: ${roleColor}; padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;"
-                  ${isCurrentUser ? 'disabled title="No puedes cambiar tu propio rol"' : ''}>
-            <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>🔴 Admin</option>
-            <option value="usuario" ${user.role === 'usuario' ? 'selected' : ''}>🟡 Usuario</option>
-            <option value="lectura" ${user.role === 'lectura' ? 'selected' : ''}>🔵 Lectura</option>
-          </select>
+          ${loginCredentials}
         </div>
       `;
     }).join('');
@@ -60360,16 +60392,20 @@ window.formatTimeAgo = function(date) {
 
 // Función para mostrar secciones de admin según el rol actual
 window.mostrarSeccionesAdmin = function() {
-  // Obtener el rol de varias fuentes posibles
-  const role = window.firebaseService?.userRole ||
+  // 🆕 v6.044 - Obtener el rol de varias fuentes, priorizando customAuth para usuarios con nick
+  const role = window.customAuthService?.userRole ||
                window.customAuth?.userRole || 
+               window.firebaseService?.userRole ||
                window.app?.userPermissions?.role ||
                window.app?.userRole ||
+               sessionStorage.getItem('userRole') ||
                localStorage.getItem('userRole') ||
                null;
   
   // Verificar si hay usuario autenticado
-  const isAuthenticated = window.firebaseService?.isAuthenticated?.() || 
+  const isAuthenticated = window.customAuthService?.isAuthenticated?.() ||
+                          window.customAuthService?.currentUser ||
+                          window.firebaseService?.isAuthenticated?.() || 
                           window.firebaseService?.currentUser ||
                           false;
   
@@ -60378,17 +60414,16 @@ window.mostrarSeccionesAdmin = function() {
   // Es admin si el rol es 'admin' (minúsculas)
   const isAdmin = (role === 'admin');
   
-  // 🆕 v6.034 - Ocultar pestaña de Configuración SOLO si está autenticado y NO es admin
-  // Si no está autenticado o rol no determinado, mostrar por defecto
+  // 🆕 v6.044 - Ocultar pestaña de Configuración para usuarios no-admin
   const configTab = document.getElementById('navTabConfiguracion');
   if (configTab) {
-    // Ocultar solo si está autenticado Y definitivamente no es admin
+    // Ocultar si está autenticado Y tiene un rol Y no es admin
     const shouldHide = isAuthenticated && role && !isAdmin;
     configTab.style.display = shouldHide ? 'none' : '';
     console.log(`⚙️ Pestaña Configuración: ${shouldHide ? 'oculta' : 'visible'} (isAdmin=${isAdmin}, role=${role})`);
   }
   
-  // 🆕 v6.034 - Ocultar botón config móvil para no-admin
+  // 🆕 v6.044 - Ocultar botón config móvil para no-admin
   const mobileConfigBtns = document.querySelectorAll('.home-config-btn');
   mobileConfigBtns.forEach(btn => {
     const shouldHide = isAuthenticated && role && !isAdmin;

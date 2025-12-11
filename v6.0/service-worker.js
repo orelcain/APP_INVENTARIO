@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v6.041 - Fix showUserToast
+ * v6.044 - Info dispositivo + fix rol Config tab
  */
 
-const CACHE_NAME = 'inventario-v6.043';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.041';
+const CACHE_NAME = 'inventario-v6.044';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.044';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
