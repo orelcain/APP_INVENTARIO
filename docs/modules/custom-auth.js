@@ -131,67 +131,124 @@ class CustomAuth {
 
     /**
      * Login de usuario regular con Firestore
+     * 🆕 v6.038 - Busca en custom_users y en usuarios (para nicks creados desde admin)
      */
     async loginCustomUser(username, password) {
         try {
-            // Buscar usuario en Firestore
-            const userDoc = await this.firebaseService.db
+            const usernameLower = username.toLowerCase().trim();
+            
+            // 1️⃣ Primero buscar en custom_users (usuarios predefinidos)
+            const customUserDoc = await this.firebaseService.db
                 .collection('custom_users')
-                .doc(username)
+                .doc(usernameLower)
                 .get();
 
-            if (!userDoc.exists) {
-                return { success: false, error: 'Usuario no encontrado' };
-            }
-
-            const userData = userDoc.data();
-
-            // Verificar contraseña
-            if (userData.password !== password) {
-                return { success: false, error: 'Contraseña incorrecta' };
-            }
-
-            // Verificar que esté activo
-            if (!userData.isActive) {
-                return { success: false, error: 'Usuario desactivado' };
-            }
-
-            // Login exitoso
-            this.currentUser = {
-                username: userData.username,
-                displayName: userData.displayName,
-                role: userData.role
-            };
-            this.userRole = userData.role;
-            this.isGuest = false;
-
-            // Guardar en sessionStorage
-            sessionStorage.setItem('customAuth', JSON.stringify({
-                type: 'custom',
-                username: username,
-                displayName: userData.displayName,
-                role: userData.role
-            }));
-
-            console.log('✅ Usuario regular autenticado:', username);
-
-            // Registrar login en historial
-            await this.logUserAction(username, 'login', { timestamp: new Date() });
-
-            // Disparar evento personalizado
-            window.dispatchEvent(new CustomEvent('customAuthSuccess', {
-                detail: {
-                    user: this.currentUser,
-                    role: this.userRole,
-                    type: 'custom'
+            if (customUserDoc.exists) {
+                const userData = customUserDoc.data();
+                
+                // Verificar contraseña
+                if (userData.password !== password) {
+                    return { success: false, error: 'Contraseña incorrecta' };
                 }
-            }));
 
-            return { success: true, user: this.currentUser, role: this.userRole };
+                // Verificar que esté activo
+                if (userData.isActive === false) {
+                    return { success: false, error: 'Usuario desactivado' };
+                }
+
+                return await this.completeLogin(userData, 'custom_users', usernameLower);
+            }
+
+            // 2️⃣ Buscar en usuarios (creados desde panel admin con nick)
+            const nickQuery = await this.firebaseService.db
+                .collection('usuarios')
+                .where('nick', '==', usernameLower)
+                .where('active', '==', true)
+                .limit(1)
+                .get();
+
+            if (!nickQuery.empty) {
+                const userDoc = nickQuery.docs[0];
+                const userData = userDoc.data();
+                
+                // Verificar contraseña
+                if (userData.password !== password) {
+                    return { success: false, error: 'Contraseña incorrecta' };
+                }
+
+                return await this.completeLogin({
+                    ...userData,
+                    username: userData.nick,
+                    displayName: userData.nick
+                }, 'usuarios', userDoc.id);
+            }
+
+            return { success: false, error: 'Usuario no encontrado' };
         } catch (error) {
             console.error('❌ Error en login usuario regular:', error);
             return { success: false, error: error.message };
         }
+    }
+
+    /**
+     * 🆕 v6.038 - Completar login exitoso
+     */
+    async completeLogin(userData, collection, docId) {
+        // Login exitoso
+        this.currentUser = {
+            id: docId,
+            username: userData.username || userData.nick,
+            displayName: userData.displayName || userData.nick || userData.username,
+            role: userData.role,
+            isNickUser: userData.isNickUser || collection === 'usuarios'
+        };
+        this.userRole = userData.role;
+        this.isGuest = false;
+
+        // Guardar en sessionStorage
+        sessionStorage.setItem('customAuth', JSON.stringify({
+            type: 'custom',
+            username: this.currentUser.username,
+            displayName: this.currentUser.displayName,
+            role: userData.role,
+            collection: collection,
+            docId: docId
+        }));
+
+        console.log('✅ Usuario regular autenticado:', this.currentUser.username);
+
+        // Actualizar presencia
+        try {
+            await this.firebaseService.db.collection(collection).doc(docId).update({
+                'presence.status': 'online',
+                'presence.lastSeen': firebase.firestore.FieldValue.serverTimestamp(),
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } catch (e) {
+            console.warn('⚠️ No se pudo actualizar presencia:', e);
+        }
+
+        // Registrar login en historial
+        await this.logUserAction(this.currentUser.username, 'login', { timestamp: new Date() });
+
+        // Disparar evento personalizado
+        window.dispatchEvent(new CustomEvent('customAuthSuccess', {
+            detail: {
+                user: this.currentUser,
+                role: this.userRole,
+                type: 'custom'
+            }
+        }));
+
+        // También disparar userLoggedIn para que se actualicen permisos
+        window.dispatchEvent(new CustomEvent('userLoggedIn', {
+            detail: {
+                user: this.currentUser,
+                role: this.userRole
+            }
+        }));
+
+        return { success: true, user: this.currentUser, role: this.userRole };
     }
 
     // Función loginAsGuest eliminada - solo usuarios autorizados
