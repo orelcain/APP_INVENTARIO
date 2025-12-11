@@ -17944,7 +17944,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.052</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.053</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18177,7 +18177,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.052</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.053</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -18800,6 +18800,67 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
         </div>
         
         <div id="users-config-content" class="config-section-content" style="display: block;">
+          <!-- 🆕 v6.053 - Panel de Control Admin -->
+          <div id="adminControlPanel" style="display: none; margin-bottom: 16px; background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%); border-radius: 12px; padding: 16px; border: 1px solid rgba(239, 68, 68, 0.3);">
+            <h4 style="margin: 0 0 12px 0; color: #f87171; font-size: 1rem;">⚡ Control de Administrador</h4>
+            <div style="display: grid; gap: 12px;">
+              <!-- Forzar actualización a todos los usuarios -->
+              <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                  <div>
+                    <div style="font-weight: 500; color: rgba(255,255,255,0.9); font-size: 0.9rem;">🔄 Forzar Actualización Global</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 2px;">
+                      Recarga automática para todos los usuarios conectados (sin preguntar)
+                    </div>
+                  </div>
+                  <button onclick="forceGlobalUpdate()" style="padding: 10px 16px; border-radius: 8px; border: none; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; font-weight: 600; cursor: pointer; font-size: 0.85rem; white-space: nowrap;">
+                    ⚡ Forzar Update
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Auto-update toggle -->
+              <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                  <div>
+                    <div style="font-weight: 500; color: rgba(255,255,255,0.9); font-size: 0.9rem;">🤖 Actualizaciones Automáticas</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 2px;">
+                      Los usuarios recibirán actualizaciones sin preguntar
+                    </div>
+                  </div>
+                  <label style="display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="autoUpdateToggle" onchange="toggleAutoUpdate(this.checked)" 
+                           style="width: 20px; height: 20px; accent-color: #22c55e; cursor: pointer;">
+                    <span id="autoUpdateStatus" style="margin-left: 8px; font-size: 0.8rem; color: #fbbf24;">OFF</span>
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Intervalo de actualización de tracking -->
+              <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                  <div>
+                    <div style="font-weight: 500; color: rgba(255,255,255,0.9); font-size: 0.9rem;">📡 Tracking en Tiempo Real</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 2px;">
+                      Ver actividad de usuarios cada X segundos
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <select id="trackingInterval" onchange="setTrackingInterval(this.value)" 
+                            style="padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(147, 51, 234, 0.5); background: rgba(0,0,0,0.3); color: white; font-size: 0.8rem;">
+                      <option value="0">Desactivado</option>
+                      <option value="5">5 seg</option>
+                      <option value="10" selected>10 seg</option>
+                      <option value="30">30 seg</option>
+                      <option value="60">1 min</option>
+                    </select>
+                    <span id="trackingStatus" style="font-size: 1.2rem;">📡</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <!-- Estado de Usuarios Conectados -->
           <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -60048,6 +60109,13 @@ window.addEventListener('customAuthSuccess', (event) => {
     }, 1000);
   }
   
+  // 🆕 v6.053 - Inicializar panel de admin y escuchar comandos
+  setTimeout(() => {
+    if (window.initAdminPanel) {
+      window.initAdminPanel();
+    }
+  }, 1500);
+  
   // 🆕 v6.043 - Actualizar visibilidad de secciones según rol
   setTimeout(() => {
     if (window.mostrarSeccionesAdmin) {
@@ -60241,25 +60309,38 @@ window.loadAllUsers = async function() {
         </div>
       ` : '';
       
-      // 🆕 v6.045 - Info COMPLETA de conexión (🆕 v6.050 - con sección actual) (🆕 v6.051 - siempre mostrar si hay presence)
+      // 🆕 v6.053 - Info COMPLETA de conexión COLAPSABLE (click para expandir/contraer)
+      const uniqueId = `conn-${user.id}`;
       const hasConnectionData = p && (p.device || p.browser || p.ip || p.os || p.status || p.currentSection || p.connectionType);
+      
+      // Sección actual prominente si está online
+      const currentSectionBadge = (isOnline && p.currentSection) ? `
+        <span style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.4), rgba(59, 130, 246, 0.4)); padding: 3px 8px; border-radius: 12px; font-size: 0.7rem; color: #c4b5fd; border: 1px solid rgba(147, 51, 234, 0.5);">
+          📍 ${p.currentSection}
+        </span>
+      ` : '';
+      
       const connectionInfo = hasConnectionData ? `
-        <div style="margin-top: 8px; padding: 8px; background: rgba(0,100,200,0.15); border-radius: 6px; font-size: 0.7rem; border: 1px solid rgba(96,165,250,0.3);">
-          <div style="color: rgba(255,255,255,0.6); margin-bottom: 6px;">🖥️ <b>Información de Conexión:</b></div>
-          <div style="display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; color: rgba(255,255,255,0.7);">
-            ${p.currentSection ? `<span style="color: #a78bfa;">📍 En la app:</span><span style="color: #c4b5fd; font-weight: 500;">${p.currentSection}</span>` : ''}
-            ${deviceDesc ? `<span style="color: #93c5fd;">Dispositivo:</span><span>${deviceIcon} ${deviceDesc}</span>` : ''}
-            ${osDesc ? `<span style="color: #93c5fd;">Sistema:</span><span>🖥️ ${osDesc}</span>` : ''}
-            ${browserDesc ? `<span style="color: #93c5fd;">Navegador:</span><span>🌐 ${browserDesc}</span>` : ''}
-            ${p.screen ? `<span style="color: #93c5fd;">Pantalla:</span><span>📐 ${p.screen}</span>` : ''}
-            ${p.ip ? `<span style="color: #93c5fd;">IP:</span><span>🔗 ${p.ip}</span>` : ''}
-            ${p.geo?.city ? `<span style="color: #93c5fd;">Ubicación:</span><span>📍 ${p.geo.city}, ${p.geo.country || ''}</span>` : ''}
-            ${p.geo?.isp ? `<span style="color: #93c5fd;">ISP:</span><span>🏢 ${p.geo.isp}</span>` : ''}
-            ${p.connectionType && p.connectionType !== 'unknown' ? `<span style="color: #93c5fd;">Conexión:</span><span>📶 ${p.connectionType.toUpperCase()} ${p.connectionSpeed || ''} ${p.connectionRtt || ''}</span>` : ''}
-            ${p.timezone ? `<span style="color: #93c5fd;">Zona horaria:</span><span>🕐 ${p.timezone}</span>` : ''}
-            ${p.language ? `<span style="color: #93c5fd;">Idioma:</span><span>🌍 ${p.language}</span>` : ''}
-            ${p.cpuCores ? `<span style="color: #93c5fd;">CPU:</span><span>⚡ ${p.cpuCores} núcleos</span>` : ''}
-            ${p.memory && p.memory !== 'unknown' ? `<span style="color: #93c5fd;">RAM:</span><span>💾 ${p.memory}</span>` : ''}
+        <div onclick="toggleConnectionInfo('${uniqueId}')" style="margin-top: 8px; padding: 8px; background: rgba(0,100,200,0.15); border-radius: 6px; font-size: 0.7rem; border: 1px solid rgba(96,165,250,0.3); cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: rgba(255,255,255,0.6);">🖥️ <b>Info de Conexión</b> ${p.currentSection ? `<span style="color: #a78bfa; margin-left: 8px;">📍 ${p.currentSection}</span>` : ''}</span>
+            <span id="${uniqueId}-icon" style="transition: transform 0.2s;">▼</span>
+          </div>
+          <div id="${uniqueId}" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; color: rgba(255,255,255,0.7);">
+              ${deviceDesc ? `<span style="color: #93c5fd;">Dispositivo:</span><span>${deviceIcon} ${deviceDesc}</span>` : ''}
+              ${osDesc ? `<span style="color: #93c5fd;">Sistema:</span><span>🖥️ ${osDesc}</span>` : ''}
+              ${browserDesc ? `<span style="color: #93c5fd;">Navegador:</span><span>🌐 ${browserDesc}</span>` : ''}
+              ${p.screen ? `<span style="color: #93c5fd;">Pantalla:</span><span>📐 ${p.screen}</span>` : ''}
+              ${p.ip ? `<span style="color: #93c5fd;">IP:</span><span>🔗 ${p.ip}</span>` : ''}
+              ${p.geo?.city ? `<span style="color: #93c5fd;">Ubicación:</span><span>📍 ${p.geo.city}, ${p.geo.country || ''}</span>` : ''}
+              ${p.geo?.isp ? `<span style="color: #93c5fd;">ISP:</span><span>🏢 ${p.geo.isp}</span>` : ''}
+              ${p.connectionType && p.connectionType !== 'unknown' ? `<span style="color: #93c5fd;">Conexión:</span><span>📶 ${p.connectionType.toUpperCase()} ${p.connectionSpeed || ''} ${p.connectionRtt || ''}</span>` : ''}
+              ${p.timezone ? `<span style="color: #93c5fd;">Zona horaria:</span><span>🕐 ${p.timezone}</span>` : ''}
+              ${p.language ? `<span style="color: #93c5fd;">Idioma:</span><span>🌍 ${p.language}</span>` : ''}
+              ${p.cpuCores ? `<span style="color: #93c5fd;">CPU:</span><span>⚡ ${p.cpuCores} núcleos</span>` : ''}
+              ${p.memory && p.memory !== 'unknown' ? `<span style="color: #93c5fd;">RAM:</span><span>💾 ${p.memory}</span>` : ''}
+            </div>
           </div>
         </div>
       ` : '<div style="margin-top: 8px; padding: 8px; background: rgba(100,100,100,0.15); border-radius: 6px; font-size: 0.7rem; color: rgba(255,255,255,0.4);"><span>📵 Sin datos de conexión - usuario nunca conectado</span></div>';
@@ -60499,6 +60580,173 @@ window.rejectRequest = async function(requestId) {
     console.error('❌ Error rechazando solicitud:', error);
     showToast('Error al rechazar: ' + error.message, 'error');
   }
+};
+
+// 🆕 v6.053 - Toggle para expandir/contraer info de conexión
+window.toggleConnectionInfo = function(uniqueId) {
+  const content = document.getElementById(uniqueId);
+  const icon = document.getElementById(`${uniqueId}-icon`);
+  if (!content) return;
+  
+  const isHidden = content.style.display === 'none';
+  content.style.display = isHidden ? 'block' : 'none';
+  if (icon) {
+    icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+  }
+};
+
+// 🆕 v6.053 - Variables para tracking en tiempo real
+window.trackingIntervalId = null;
+
+// 🆕 v6.053 - Forzar actualización global a todos los usuarios
+window.forceGlobalUpdate = async function() {
+  if (!confirm('⚠️ Esto forzará una recarga en TODOS los usuarios conectados.\n\n¿Continuar?')) {
+    return;
+  }
+  
+  try {
+    // Guardar comando de actualización en Firestore
+    await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      triggeredBy: window.firebaseService.currentUser?.email || 'admin',
+      version: 'v6.053'
+    });
+    
+    showToast('⚡ Comando de actualización enviado a todos los usuarios', 'success');
+    console.log('⚡ Comando de actualización global enviado');
+    
+  } catch (error) {
+    console.error('❌ Error enviando actualización:', error);
+    showToast('Error: ' + error.message, 'error');
+  }
+};
+
+// 🆕 v6.053 - Toggle auto-update
+window.toggleAutoUpdate = async function(enabled) {
+  try {
+    await window.firebaseService.db.collection('systemSettings').doc('autoUpdate').set({
+      enabled: enabled,
+      updatedBy: window.firebaseService.currentUser?.email || 'admin',
+      updatedAt: new Date().toISOString()
+    });
+    
+    const statusEl = document.getElementById('autoUpdateStatus');
+    if (statusEl) {
+      statusEl.textContent = enabled ? 'ON' : 'OFF';
+      statusEl.style.color = enabled ? '#22c55e' : '#fbbf24';
+    }
+    
+    showToast(`🤖 Actualizaciones automáticas ${enabled ? 'ACTIVADAS' : 'DESACTIVADAS'}`, enabled ? 'success' : 'info');
+    
+  } catch (error) {
+    console.error('❌ Error configurando auto-update:', error);
+    showToast('Error: ' + error.message, 'error');
+  }
+};
+
+// 🆕 v6.053 - Configurar intervalo de tracking
+window.setTrackingInterval = function(seconds) {
+  const intervalSec = parseInt(seconds);
+  const statusEl = document.getElementById('trackingStatus');
+  
+  // Limpiar intervalo anterior
+  if (window.trackingIntervalId) {
+    clearInterval(window.trackingIntervalId);
+    window.trackingIntervalId = null;
+  }
+  
+  if (intervalSec === 0) {
+    if (statusEl) statusEl.textContent = '📡';
+    showToast('📡 Tracking en tiempo real desactivado', 'info');
+    return;
+  }
+  
+  // Crear nuevo intervalo
+  window.trackingIntervalId = setInterval(() => {
+    console.log(`📡 [Tracking] Actualizando usuarios... (cada ${intervalSec}s)`);
+    window.loadAllUsers();
+  }, intervalSec * 1000);
+  
+  if (statusEl) statusEl.textContent = '📡✅';
+  showToast(`📡 Tracking activo: actualización cada ${intervalSec} segundos`, 'success');
+};
+
+// 🆕 v6.053 - Escuchar comandos del sistema (para usuarios)
+window.listenForSystemCommands = function() {
+  if (!window.firebaseService?.db) return;
+  
+  // Escuchar comandos de actualización forzada
+  window.firebaseService.db.collection('systemCommands').doc('forceUpdate')
+    .onSnapshot((doc) => {
+      if (!doc.exists) return;
+      const data = doc.data();
+      
+      // Verificar que el comando es reciente (últimos 30 segundos)
+      const timestamp = data.timestamp?.toDate?.();
+      if (timestamp && (new Date() - timestamp) < 30000) {
+        console.log('⚡ Comando de actualización recibido del admin!');
+        
+        // Si no es el admin que lo envió, recargar
+        const currentUser = window.firebaseService.currentUser?.email;
+        if (currentUser !== data.triggeredBy) {
+          showToast('⚡ El administrador ha enviado una actualización. Recargando...', 'info');
+          setTimeout(() => {
+            // Forzar recarga saltando cache
+            window.location.reload(true);
+          }, 2000);
+        }
+      }
+    }, (error) => {
+      console.warn('⚠️ Error escuchando comandos:', error);
+    });
+  
+  // Escuchar configuración de auto-update
+  window.firebaseService.db.collection('systemSettings').doc('autoUpdate')
+    .onSnapshot((doc) => {
+      if (!doc.exists) return;
+      const data = doc.data();
+      
+      // Guardar configuración localmente
+      window.autoUpdateEnabled = data.enabled;
+      console.log(`🤖 Auto-update: ${data.enabled ? 'ACTIVADO' : 'DESACTIVADO'}`);
+    }, (error) => {
+      console.warn('⚠️ Error escuchando auto-update:', error);
+    });
+};
+
+// 🆕 v6.053 - Inicializar panel de admin
+window.initAdminPanel = function() {
+  const isAdmin = window.firebaseService?.userRole === 'admin' || window.firebaseService?.isAdmin?.();
+  const adminPanel = document.getElementById('adminControlPanel');
+  
+  if (adminPanel) {
+    adminPanel.style.display = isAdmin ? 'block' : 'none';
+  }
+  
+  if (isAdmin) {
+    // Cargar configuración de auto-update
+    window.firebaseService.db.collection('systemSettings').doc('autoUpdate')
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const enabled = doc.data().enabled;
+          const toggle = document.getElementById('autoUpdateToggle');
+          const statusEl = document.getElementById('autoUpdateStatus');
+          if (toggle) toggle.checked = enabled;
+          if (statusEl) {
+            statusEl.textContent = enabled ? 'ON' : 'OFF';
+            statusEl.style.color = enabled ? '#22c55e' : '#fbbf24';
+          }
+        }
+      })
+      .catch(console.warn);
+    
+    // Iniciar tracking por defecto (10 segundos)
+    setTrackingInterval(10);
+  }
+  
+  // Todos los usuarios escuchan comandos del sistema
+  window.listenForSystemCommands();
 };
 
 // 🆕 v6.034 - Cambiar rol de usuario
@@ -72153,9 +72401,20 @@ console.log('🏠 Mobile Home Dashboard inicializado');
           
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // Mostrar notificación de actualización disponible
-              if (confirm('🆕 Nueva versión disponible. ¿Actualizar ahora?')) {
-                window.location.reload();
+              // 🆕 v6.053 - Verificar si auto-update está activado
+              if (window.autoUpdateEnabled) {
+                console.log('⚡ Auto-update activado - Recargando automáticamente...');
+                showToast?.('⚡ Nueva versión detectada. Actualizando automáticamente...', 'info');
+                setTimeout(() => {
+                  newWorker.postMessage({ type: 'SKIP_WAITING' });
+                  window.location.reload(true);
+                }, 2000);
+              } else {
+                // Preguntar al usuario
+                if (confirm('🆕 Nueva versión disponible. ¿Actualizar ahora?')) {
+                  newWorker.postMessage({ type: 'SKIP_WAITING' });
+                  window.location.reload(true);
+                }
               }
             }
           });
