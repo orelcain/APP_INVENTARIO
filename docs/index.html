@@ -17891,7 +17891,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.044</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.045</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18124,7 +18124,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.044</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.045</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -59928,16 +59928,27 @@ window.loadAllUsers = async function() {
       const isNickUser = user.isNickUser || user.nick;
       const displayName = user.nick || user.email || 'Sin nombre';
       
-      // 🆕 v6.044 - Detectar dispositivo desde userAgent guardado
-      const deviceInfo = user.presence?.device || user.presence?.userAgent || '';
-      const isMobileDevice = /mobile|android|iphone|ipad/i.test(deviceInfo);
+      // 🆕 v6.045 - Info COMPLETA del dispositivo
+      const p = user.presence || {};
+      const isMobileDevice = p.isMobile || /mobile|android|iphone|ipad/i.test(p.device || '');
       const deviceIcon = isMobileDevice ? '📱' : '💻';
-      const deviceLabel = isMobileDevice ? 'Móvil' : 'PC';
       
-      // 🆕 v6.044 - Credenciales para login (solo usuarios con nick)
+      // Construir descripción del dispositivo
+      let deviceDesc = p.device || (isMobileDevice ? 'Móvil' : 'PC');
+      if (p.deviceModel) deviceDesc += ` ${p.deviceModel}`;
+      
+      // Sistema operativo
+      let osDesc = p.os || '';
+      if (p.osVersion) osDesc += ` ${p.osVersion}`;
+      
+      // Navegador
+      let browserDesc = p.browser || '';
+      if (p.browserVersion) browserDesc += ` ${p.browserVersion.split('.')[0]}`; // Solo versión mayor
+      
+      // 🆕 v6.045 - Credenciales para login (solo usuarios con nick)
       const loginCredentials = isNickUser ? `
         <div style="margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 6px; font-size: 0.75rem;">
-          <div style="color: rgba(255,255,255,0.6); margin-bottom: 4px;">📋 Credenciales de acceso:</div>
+          <div style="color: rgba(255,255,255,0.6); margin-bottom: 4px;">📋 <b>Credenciales de acceso:</b></div>
           <div style="display: grid; grid-template-columns: auto 1fr; gap: 4px 8px;">
             <span style="color: #86efac;">Usuario:</span>
             <code style="color: #fbbf24; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px;">${user.nick || displayName}</code>
@@ -59947,12 +59958,25 @@ window.loadAllUsers = async function() {
         </div>
       ` : '';
       
-      // 🆕 v6.044 - Info de conexión
-      const connectionInfo = user.presence ? `
-        <div style="margin-top: 4px; font-size: 0.7rem; color: rgba(255,255,255,0.4);">
-          ${deviceIcon} ${deviceLabel}
-          ${user.presence?.ip ? ` • IP: ${user.presence.ip}` : ''}
-          ${user.presence?.browser ? ` • ${user.presence.browser}` : ''}
+      // 🆕 v6.045 - Info COMPLETA de conexión
+      const hasConnectionData = p.device || p.browser || p.ip;
+      const connectionInfo = hasConnectionData ? `
+        <div style="margin-top: 8px; padding: 8px; background: rgba(0,100,200,0.15); border-radius: 6px; font-size: 0.7rem; border: 1px solid rgba(96,165,250,0.3);">
+          <div style="color: rgba(255,255,255,0.6); margin-bottom: 6px;">🖥️ <b>Información de Conexión:</b></div>
+          <div style="display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; color: rgba(255,255,255,0.7);">
+            ${deviceDesc ? `<span style="color: #93c5fd;">Dispositivo:</span><span>${deviceIcon} ${deviceDesc}</span>` : ''}
+            ${osDesc ? `<span style="color: #93c5fd;">Sistema:</span><span>🖥️ ${osDesc}</span>` : ''}
+            ${browserDesc ? `<span style="color: #93c5fd;">Navegador:</span><span>🌐 ${browserDesc}</span>` : ''}
+            ${p.screen ? `<span style="color: #93c5fd;">Pantalla:</span><span>📐 ${p.screen}</span>` : ''}
+            ${p.ip ? `<span style="color: #93c5fd;">IP:</span><span>🔗 ${p.ip}</span>` : ''}
+            ${p.geo?.city ? `<span style="color: #93c5fd;">Ubicación:</span><span>📍 ${p.geo.city}, ${p.geo.country || ''}</span>` : ''}
+            ${p.geo?.isp ? `<span style="color: #93c5fd;">ISP:</span><span>🏢 ${p.geo.isp}</span>` : ''}
+            ${p.connectionType ? `<span style="color: #93c5fd;">Conexión:</span><span>📶 ${p.connectionType.toUpperCase()} ${p.connectionSpeed || ''}</span>` : ''}
+            ${p.timezone ? `<span style="color: #93c5fd;">Zona horaria:</span><span>🕐 ${p.timezone}</span>` : ''}
+            ${p.language ? `<span style="color: #93c5fd;">Idioma:</span><span>🌍 ${p.language}</span>` : ''}
+            ${p.cpuCores ? `<span style="color: #93c5fd;">CPU:</span><span>⚡ ${p.cpuCores} núcleos</span>` : ''}
+            ${p.memory && p.memory !== 'unknown' ? `<span style="color: #93c5fd;">RAM:</span><span>💾 ${p.memory}</span>` : ''}
+          </div>
         </div>
       ` : '';
       
@@ -59980,7 +60004,6 @@ window.loadAllUsers = async function() {
               <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">
                 ${user.presence?.lastSeen ? `Última vez: ${formatTimeAgo(user.presence.lastSeen.toDate())}` : 'Nunca conectado'}
               </div>
-              ${connectionInfo}
             </div>
             ${actionButtons}
             <select onchange="changeUserRole('${user.id}', this.value)" 
@@ -59992,6 +60015,7 @@ window.loadAllUsers = async function() {
             </select>
           </div>
           ${loginCredentials}
+          ${connectionInfo}
         </div>
       `;
     }).join('');

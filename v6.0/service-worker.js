@@ -5,8 +5,8 @@
  * v6.044 - Info dispositivo + fix rol Config tab
  */
 
-const CACHE_NAME = 'inventario-v6.044';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.044';
+const CACHE_NAME = 'inventario-v6.045';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.045';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
