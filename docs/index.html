@@ -17891,7 +17891,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.042</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.043</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18124,7 +18124,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.042</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.043</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -59764,6 +59764,13 @@ window.addEventListener('customAuthSuccess', (event) => {
   if (roleMessages[role]) {
     app.mostrarToast(`✅ ${roleMessages[role]}`, 'info');
   }
+  
+  // 🆕 v6.043 - Actualizar visibilidad de secciones según rol
+  setTimeout(() => {
+    if (window.mostrarSeccionesAdmin) {
+      window.mostrarSeccionesAdmin();
+    }
+  }, 500);
 });
 
 // Actualizar permisos al logout
@@ -59922,6 +59929,9 @@ window.loadAllUsers = async function() {
       
       // Botones de acción para usuarios con nick (no el usuario actual)
       const actionButtons = (isNickUser && !isCurrentUser) ? `
+        <button onclick="editUserNick('${user.id}', '${user.nick || displayName}')" 
+                style="padding: 4px 8px; border-radius: 4px; border: none; background: rgba(34, 197, 94, 0.3); color: #86efac; font-size: 0.7rem; cursor: pointer;" 
+                title="Editar nick">✏️</button>
         <button onclick="resetUserPassword('${user.id}', '${user.nick || displayName}')" 
                 style="padding: 4px 8px; border-radius: 4px; border: none; background: rgba(59, 130, 246, 0.3); color: #93c5fd; font-size: 0.7rem; cursor: pointer;" 
                 title="Cambiar contraseña">🔑</button>
@@ -60125,7 +60135,9 @@ window.createNewUser = async function() {
   const passwordInput = document.getElementById('newUserPassword');
   const roleSelect = document.getElementById('newUserRole');
   
+  // 🆕 v6.043 - Nick en minúsculas para búsqueda consistente
   const nick = nickInput?.value?.trim().toLowerCase();
+  // Contraseña se mantiene EXACTAMENTE como se escribió (respeta mayúsculas/minúsculas)
   const password = passwordInput?.value;
   const role = roleSelect?.value || 'lectura';
   
@@ -60137,7 +60149,7 @@ window.createNewUser = async function() {
   }
   
   if (!/^[a-z0-9_]+$/.test(nick)) {
-    window.showUserToast('El nick solo puede contener letras, números y guion bajo', 'error');
+    window.showUserToast('El nick solo puede contener letras minúsculas, números y guion bajo', 'error');
     nickInput?.focus();
     return;
   }
@@ -60232,6 +60244,60 @@ window.resetUserPassword = async function(userId, nick) {
     window.showUserToast(`✅ Contraseña de "${nick}" actualizada`, 'success');
   } catch (error) {
     console.error('❌ Error cambiando contraseña:', error);
+    window.showUserToast(`Error: ${error.message}`, 'error');
+  }
+};
+
+// 🆕 v6.043 - Editar nick de usuario
+window.editUserNick = async function(userId, currentNick) {
+  if (!window.firebaseService?.isAdmin()) {
+    window.showUserToast('Solo administradores pueden editar usuarios', 'error');
+    return;
+  }
+  
+  const newNick = prompt(`Nuevo nick para "${currentNick}":\n(solo letras, números y guion bajo)`, currentNick);
+  
+  if (!newNick || newNick === currentNick) return;
+  
+  const nickLower = newNick.toLowerCase().trim();
+  
+  if (nickLower.length < 3) {
+    window.showUserToast('El nick debe tener al menos 3 caracteres', 'error');
+    return;
+  }
+  
+  if (!/^[a-z0-9_]+$/.test(nickLower)) {
+    window.showUserToast('El nick solo puede contener letras, números y guion bajo', 'error');
+    return;
+  }
+  
+  try {
+    // Verificar que el nuevo nick no exista
+    const existingUser = await window.firebaseService.db
+      .collection('usuarios')
+      .where('nick', '==', nickLower)
+      .get();
+    
+    if (!existingUser.empty && existingUser.docs[0].id !== userId) {
+      window.showUserToast(`El nick "${nickLower}" ya está en uso`, 'error');
+      return;
+    }
+    
+    await window.firebaseService.db.collection('usuarios').doc(userId).update({
+      nick: nickLower,
+      email: `${nickLower}@inventario.local`,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedBy: window.firebaseService.currentUser?.uid
+    });
+    
+    window.showUserToast(`✅ Nick cambiado a "${nickLower}"`, 'success');
+    
+    setTimeout(() => {
+      window.loadAllUsers();
+      window.refreshOnlineUsers();
+    }, 500);
+  } catch (error) {
+    console.error('❌ Error editando nick:', error);
     window.showUserToast(`Error: ${error.message}`, 'error');
   }
 };
