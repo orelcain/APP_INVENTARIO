@@ -471,30 +471,52 @@ class CustomAuth {
         
         console.log('🔐 [v6.046] Autenticando con Firebase Auth:', nickEmail);
         
+        let firebaseAuthSuccess = false;
+        
         try {
             // Intentar login con el email ficticio
             await this.firebaseService.auth.signInWithEmailAndPassword(nickEmail, nickPassword);
             console.log('✅ [v6.046] Firebase Auth login exitoso');
+            firebaseAuthSuccess = true;
         } catch (authError) {
-            console.log('⚠️ [v6.046] Firebase Auth login falló, intentando crear cuenta...', authError.code);
+            console.log('⚠️ [v6.046] Firebase Auth login falló:', authError.code, authError.message);
             
             if (authError.code === 'auth/user-not-found') {
                 // El usuario no existe en Firebase Auth, crearlo
                 try {
                     await this.firebaseService.auth.createUserWithEmailAndPassword(nickEmail, nickPassword);
                     console.log('✅ [v6.046] Cuenta Firebase Auth creada exitosamente');
+                    firebaseAuthSuccess = true;
                 } catch (createError) {
                     console.warn('⚠️ [v6.046] No se pudo crear cuenta Firebase Auth:', createError.message);
-                    // Continuar sin Firebase Auth (algunas funciones no funcionarán)
                 }
             } else if (authError.code === 'auth/wrong-password') {
-                // La contraseña en Firebase Auth es diferente, actualizar
-                console.warn('⚠️ [v6.046] Contraseña diferente en Firebase Auth, continuando...');
-                // No podemos actualizar sin acceso admin, pero el usuario ya validó en Firestore
+                // La contraseña en Firebase Auth es diferente
+                // Intentar crear con la contraseña correcta después de "resetear"
+                console.warn('⚠️ [v6.046] Contraseña diferente en Firebase Auth');
+                console.log('ℹ️ [v6.046] El usuario existe en Auth con otra contraseña.');
+                console.log('ℹ️ [v6.046] Para sincronizar, elimine el usuario desde Firebase Console y recréelo.');
+                // No hay forma de arreglar esto sin Admin SDK
+            } else if (authError.code === 'auth/invalid-credential' || authError.code === 'auth/invalid-login-credentials') {
+                // Credenciales inválidas - puede ser usuario no existe o contraseña incorrecta
+                try {
+                    await this.firebaseService.auth.createUserWithEmailAndPassword(nickEmail, nickPassword);
+                    console.log('✅ [v6.046] Cuenta Firebase Auth creada (después de invalid-credential)');
+                    firebaseAuthSuccess = true;
+                } catch (createError) {
+                    if (createError.code === 'auth/email-already-in-use') {
+                        console.warn('⚠️ [v6.046] Email ya existe con otra contraseña');
+                    } else {
+                        console.warn('⚠️ [v6.046] No se pudo crear:', createError.message);
+                    }
+                }
             } else {
-                console.warn('⚠️ [v6.046] Error de Firebase Auth:', authError.message);
+                console.warn('⚠️ [v6.046] Error inesperado de Firebase Auth:', authError.message);
             }
         }
+        
+        console.log('🔐 [v6.046] Firebase Auth success:', firebaseAuthSuccess);
+        console.log('🔐 [v6.046] Current Auth user:', this.firebaseService.auth.currentUser?.email);
         
         // 🆕 v6.045 - Detectar información COMPLETA del dispositivo
         const deviceInfo = this.getDeviceInfo();
