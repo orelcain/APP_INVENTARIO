@@ -17944,7 +17944,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.050</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.051</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18177,7 +18177,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.050</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.051</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -18821,15 +18821,31 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             </div>
           </div>
           
-          <!-- Leyenda de Roles -->
+          <!-- 🆕 v6.051 - Solicitudes Pendientes de Aprobación -->
+          <div id="pendingRequestsSection" style="margin-top: 16px; background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%); border-radius: 12px; padding: 16px; border: 1px solid rgba(251, 191, 36, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h4 style="margin: 0; color: #fbbf24; font-size: 1rem;">
+                📝 Solicitudes Pendientes 
+                <span id="pendingRequestsCount" style="background: #ef4444; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; margin-left: 8px;">0</span>
+              </h4>
+              <button onclick="loadPendingRequests()" class="btn" style="padding: 6px 12px; font-size: 0.8rem; background: rgba(251, 191, 36, 0.3);">
+                🔄 Actualizar
+              </button>
+            </div>
+            <div id="pendingRequestsContainer" style="display: grid; gap: 8px; max-height: 400px; overflow-y: auto;">
+              <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin: 0;">Cargando solicitudes...</p>
+            </div>
+          </div>
+          
+          <!-- Leyenda de Roles (🆕 v6.051 actualizada) -->
           <div style="margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.15); border-radius: 8px;">
             <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: rgba(255,255,255,0.7);">
               <strong>Roles disponibles:</strong>
             </p>
-            <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.8rem;">
-              <span style="color: #f87171;">🔴 Admin: Control total</span>
-              <span style="color: #fbbf24;">🟡 Usuario: Crear/Editar/Contar</span>
-              <span style="color: #60a5fa;">🔵 Lectura: Solo ver</span>
+            <div style="display: grid; gap: 8px; font-size: 0.8rem;">
+              <span style="color: #f87171;">🔴 <b>Admin:</b> Control total sin restricciones</span>
+              <span style="color: #fbbf24;">🟡 <b>Usuario:</b> Puede crear/editar/eliminar pero requiere aprobación del Admin</span>
+              <span style="color: #60a5fa;">🔵 <b>Lectura:</b> Solo puede ver información, sin botones de edición</span>
             </div>
           </div>
           
@@ -34345,7 +34361,7 @@ class InventarioCompleto {
 
   // Detectar si el navegador es Microsoft Edge
   // ===============================================
-  // SISTEMA DE PERMISOS
+  // SISTEMA DE PERMISOS (🆕 v6.051 - Sistema de solicitudes)
   // ===============================================
   
   /**
@@ -34359,36 +34375,40 @@ class InventarioCompleto {
         this.canEdit = true;
         this.canCreate = true;
         this.canDelete = true;
-        this.canAddPhotos = true;     // 🆕 v6.034
-        this.canCount = true;         // 🆕 v6.034
-        this.canViewConfig = true;    // 🆕 v6.034
+        this.canAddPhotos = true;
+        this.canCount = true;
+        this.canViewConfig = true;
+        this.needsApproval = false;   // 🆕 v6.051
         break;
       case 'usuario':
-        this.canEdit = true;
-        this.canCreate = true;
-        this.canDelete = false;
-        this.canAddPhotos = true;     // 🆕 v6.034
-        this.canCount = true;         // 🆕 v6.034
-        this.canViewConfig = false;   // 🆕 v6.034
+        this.canEdit = true;          // Puede intentar, pero requiere aprobación
+        this.canCreate = true;        // Puede intentar, pero requiere aprobación
+        this.canDelete = true;        // Puede intentar, pero requiere aprobación
+        this.canAddPhotos = true;
+        this.canCount = true;
+        this.canViewConfig = false;
+        this.needsApproval = true;    // 🆕 v6.051 - Todas las acciones requieren aprobación
         break;
       case 'lectura':
         this.canEdit = false;
         this.canCreate = false;
         this.canDelete = false;
-        this.canAddPhotos = false;    // 🆕 v6.034
-        this.canCount = false;        // 🆕 v6.034
-        this.canViewConfig = false;   // 🆕 v6.034
+        this.canAddPhotos = false;
+        this.canCount = true;         // 🆕 v6.051 - Solo puede contar/ver
+        this.canViewConfig = false;
+        this.needsApproval = false;   // No puede hacer nada que requiera aprobación
         break;
       default:
         this.canEdit = false;
         this.canCreate = false;
         this.canDelete = false;
-        this.canAddPhotos = false;    // 🆕 v6.034
-        this.canCount = false;        // 🆕 v6.034
-        this.canViewConfig = false;   // 🆕 v6.034
+        this.canAddPhotos = false;
+        this.canCount = false;
+        this.canViewConfig = false;
+        this.needsApproval = false;
     }
     
-    console.log(`🔐 Permisos actualizados - Rol: ${role}, Editar: ${this.canEdit}, Crear: ${this.canCreate}, Eliminar: ${this.canDelete}, Config: ${this.canViewConfig}`);
+    console.log(`🔐 Permisos actualizados - Rol: ${role}, Editar: ${this.canEdit}, Crear: ${this.canCreate}, Eliminar: ${this.canDelete}, Requiere aprobación: ${this.needsApproval}`);
     
     // Actualizar UI según permisos
     this.updateUIForPermissions();
@@ -34397,6 +34417,55 @@ class InventarioCompleto {
     if (window.mostrarSeccionesAdmin) {
       window.mostrarSeccionesAdmin();
     }
+  }
+  
+  /**
+   * 🆕 v6.051 - Crear solicitud de acción pendiente
+   */
+  async createActionRequest(actionType, targetType, targetId, targetName, data) {
+    if (!this.needsApproval) return { needsApproval: false };
+    
+    const currentUser = window.customAuthService?.currentUser || window.firebaseService?.currentUser;
+    const userName = currentUser?.displayName || currentUser?.username || currentUser?.email || 'Usuario';
+    
+    const request = {
+      id: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      actionType: actionType,        // 'create', 'edit', 'delete'
+      targetType: targetType,        // 'repuesto', 'ubicacion', 'mapa', 'zona'
+      targetId: targetId,
+      targetName: targetName,
+      data: data,                    // Datos de la acción solicitada
+      requestedBy: userName,
+      requestedByUid: currentUser?.id || currentUser?.uid,
+      requestedAt: new Date().toISOString(),
+      status: 'pending',             // 'pending', 'approved', 'rejected'
+      reviewedBy: null,
+      reviewedAt: null,
+      reviewNote: null
+    };
+    
+    try {
+      // Guardar en Firestore
+      await window.firebaseService.db.collection('actionRequests').add(request);
+      
+      this.mostrarToast(`📝 Solicitud de ${this.getActionLabel(actionType)} enviada. Esperando aprobación del admin.`, 'info', 4000);
+      console.log('📝 Solicitud creada:', request);
+      
+      return { needsApproval: true, request };
+    } catch (error) {
+      console.error('❌ Error creando solicitud:', error);
+      this.mostrarToast('Error al enviar solicitud', 'error');
+      return { needsApproval: true, error };
+    }
+  }
+  
+  getActionLabel(actionType) {
+    const labels = {
+      'create': 'creación',
+      'edit': 'edición', 
+      'delete': 'eliminación'
+    };
+    return labels[actionType] || actionType;
   }
   
   /**
@@ -34433,34 +34502,64 @@ class InventarioCompleto {
   }
   
   /**
-   * Actualizar UI según permisos del usuario
+   * 🆕 v6.051 - Actualizar UI según permisos del usuario (mejorado)
    */
   updateUIForPermissions() {
-    // Deshabilitar botones de crear/editar/eliminar para usuarios de solo lectura
-    if (!this.canCreate) {
-      const btnNuevo = document.getElementById('btnNuevoRepuesto');
-      if (btnNuevo) {
-        btnNuevo.disabled = true;
-        btnNuevo.title = 'No tienes permisos para crear';
-        btnNuevo.style.opacity = '0.5';
-        btnNuevo.style.cursor = 'not-allowed';
+    const isLectura = this.userRole === 'lectura';
+    const isAdmin = this.userRole === 'admin';
+    
+    // === BOTONES PRINCIPALES ===
+    
+    // Botón Agregar repuesto (header móvil)
+    const btnAgregarMobile = document.querySelector('.mobile-quick-actions .btn-agregar, [onclick*="openAddModal"], .btn-add-repuesto');
+    
+    // Botón Nuevo en el header
+    const btnNuevo = document.getElementById('btnNuevoRepuesto');
+    if (btnNuevo) {
+      if (isLectura) {
+        btnNuevo.style.display = 'none';
+      } else {
+        btnNuevo.style.display = '';
+        btnNuevo.disabled = false;
+        btnNuevo.style.opacity = '1';
       }
     }
     
-    // Ocultar botones de eliminar en las tarjetas
-    if (!this.canDelete) {
-      document.querySelectorAll('.card-actions .btn-danger').forEach(btn => {
-        btn.style.display = 'none';
-      });
-    }
+    // === OCULTAR/MOSTRAR ELEMENTOS SEGÚN ROL ===
     
-    // Deshabilitar edición en conteo
-    if (!this.canEdit && this.currentTab === 'conteo') {
-      document.querySelectorAll('.conteo-input').forEach(input => {
-        input.disabled = true;
-        input.style.cursor = 'not-allowed';
+    // Elementos a ocultar para lectura
+    const elementsToHideForLectura = [
+      '.btn-agregar',
+      '.btn-delete',
+      '.btn-eliminar', 
+      '.node-btn-add',
+      '.node-btn-delete',
+      '.sap-btn-add',
+      '.sap-btn-delete',
+      '[onclick*="eliminar"]',
+      '[onclick*="delete"]',
+      '[onclick*="agregar"]',
+      '[onclick*="agregarNodo"]',
+      '#btnAgregarOtraUbicacion',
+      '.btn-agregar-ubicacion'
+    ];
+    
+    elementsToHideForLectura.forEach(selector => {
+      document.querySelectorAll(selector).forEach(el => {
+        if (isLectura) {
+          el.style.display = 'none';
+        }
       });
-    }
+    });
+    
+    // Botones de edición en tarjetas
+    document.querySelectorAll('.btn-edit, .btn-editar, [onclick*="editarRepuesto"], [onclick*="openEditModal"]').forEach(btn => {
+      if (isLectura) {
+        btn.style.display = 'none';
+      }
+    });
+    
+    console.log(`🎨 UI actualizada para rol: ${this.userRole}`);
   }
 
   detectEdge() {
@@ -43967,6 +44066,60 @@ class InventarioCompleto {
     }
   }
 
+  /**
+   * 🆕 v6.051 - Recopilar datos del formulario para solicitud
+   */
+  collectFormData() {
+    try {
+      // Sincronizar ubicaciones primero
+      this.sincronizarUbicacionesDesdeDOM();
+      
+      const nombre = document.getElementById('nombre')?.value?.trim() || '';
+      const codSAP = document.getElementById('codSAP')?.value?.trim() || '';
+      
+      if (!nombre) {
+        this.mostrarToast('El nombre del repuesto es obligatorio', 'warning');
+        return null;
+      }
+      
+      // Validar ubicaciones
+      const ubicacionesValidas = (this.ubicacionesActuales || []).filter(ub => ub.areaGeneral && ub.areaGeneral.trim() !== '');
+      if (ubicacionesValidas.length === 0) {
+        this.mostrarToast('Debes especificar al menos un Área General', 'warning');
+        return null;
+      }
+      
+      return {
+        nombre: nombre,
+        codSAP: codSAP,
+        tipo: document.getElementById('tipo')?.value?.trim() || '',
+        codProv: document.getElementById('codProv')?.value?.trim() || '',
+        cantidad: parseInt(document.getElementById('cantidad')?.value) || 1,
+        stockMinimo: parseInt(document.getElementById('stockMinimo')?.value) || 0,
+        comentarios: document.getElementById('comentarios')?.value?.trim() || '',
+        ubicaciones: ubicacionesValidas.map(ub => ({
+          areaGeneral: ub.areaGeneral?.trim() || '',
+          subArea: ub.subArea?.trim() || '',
+          sistemaEquipo: ub.sistemaEquipo?.trim() || '',
+          subSistema: ub.subSistema?.trim() || '',
+          seccion: ub.seccion?.trim() || '',
+          subSeccion: ub.subSeccion?.trim() || '',
+          detalle: ub.detalle?.trim() || '',
+          cantidadEnUbicacion: ub.cantidadEnUbicacion || 1
+        })),
+        multimedia: (this.currentMultimedia || []).slice(0, 5).map(m => ({
+          type: m.type,
+          caption: m.caption || ''
+          // No incluir data base64 para no sobrecargar la solicitud
+        }))
+      };
+    } catch (error) {
+      console.error('❌ Error recopilando datos del formulario:', error);
+      this.mostrarToast('Error al procesar el formulario', 'error');
+      return null;
+    }
+  }
+
   sincronizarUbicacionesDesdeDOM() {
     if (!Array.isArray(this.ubicacionesActuales)) return;
 
@@ -44007,6 +44160,28 @@ class InventarioCompleto {
     if (!isEdit && !this.checkCreatePermission()) {
       this.isSavingRepuesto = false;
       return;
+    }
+    
+    // 🆕 v6.051 - SISTEMA DE SOLICITUDES PARA USUARIOS
+    if (this.needsApproval) {
+      // Recopilar datos del formulario para la solicitud
+      const formData = this.collectFormData();
+      if (!formData) {
+        this.isSavingRepuesto = false;
+        return;
+      }
+      
+      const actionType = isEdit ? 'edit' : 'create';
+      const targetName = formData.nombre || 'Sin nombre';
+      const targetId = this.currentEditingId;
+      
+      const result = await this.createActionRequest(actionType, 'repuesto', targetId, targetName, formData);
+      
+      if (result.needsApproval) {
+        this.isSavingRepuesto = false;
+        this.closeModal();
+        return;
+      }
     }
     
     // 🔴 Si forceValidation=true, saltar wizard y guardar inmediatamente (desde botones Steps)
@@ -45538,12 +45713,30 @@ class InventarioCompleto {
   }
 
   async deleteRepuesto(id) {
-    if (!confirm('Eliminar este repuesto?')) return;
+    // 🔐 v6.051 - VERIFICAR PERMISOS
+    if (!this.checkDeletePermission()) {
+      return;
+    }
     
     //  Buscar el repuesto para eliminar sus imgenes fsicas
     const repuesto = this.repuestos.find(r => r.id === id);
-    
     if (!repuesto) return;
+    
+    // 🆕 v6.051 - SISTEMA DE SOLICITUDES PARA USUARIOS
+    if (this.needsApproval) {
+      if (!confirm(`¿Solicitar eliminación del repuesto "${repuesto.nombre}"?\n\nEsta acción requiere aprobación del administrador.`)) {
+        return;
+      }
+      
+      await this.createActionRequest('delete', 'repuesto', id, repuesto.nombre, {
+        codSAP: repuesto.codSAP,
+        cantidad: repuesto.cantidad,
+        ubicaciones: repuesto.ubicaciones?.map(u => u.areaGeneral).join(', ')
+      });
+      return;
+    }
+    
+    if (!confirm('¿Eliminar este repuesto?')) return;
     
     // Guardar estado para deshacer
     saveState('delete', JSON.parse(JSON.stringify(repuesto)));
@@ -59817,15 +60010,24 @@ window.addEventListener('customAuthSuccess', (event) => {
     console.error('❌ No se encontró el elemento activity-log-section-admin');
   }
   
-  // Mensaje de bienvenida según rol
+  // Mensaje de bienvenida según rol (🆕 v6.051 actualizado)
   const roleMessages = {
     'admin': 'Acceso completo al sistema',
-    'usuario': 'Puedes crear y editar registros',
-    'lectura': 'Modo solo lectura - No puedes modificar datos'
+    'usuario': 'Tus acciones requieren aprobación del admin',
+    'lectura': 'Modo solo lectura - Solo puedes ver información'
   };
   
   if (roleMessages[role]) {
     window.showUserToast(`✅ ${roleMessages[role]}`, 'info');
+  }
+  
+  // 🆕 v6.051 - Cargar solicitudes pendientes si es admin
+  if (role === 'admin') {
+    setTimeout(() => {
+      if (window.loadPendingRequests) {
+        window.loadPendingRequests();
+      }
+    }, 1000);
   }
   
   // 🆕 v6.043 - Actualizar visibilidad de secciones según rol
@@ -60021,8 +60223,8 @@ window.loadAllUsers = async function() {
         </div>
       ` : '';
       
-      // 🆕 v6.045 - Info COMPLETA de conexión (🆕 v6.050 - con sección actual)
-      const hasConnectionData = p.device || p.browser || p.ip;
+      // 🆕 v6.045 - Info COMPLETA de conexión (🆕 v6.050 - con sección actual) (🆕 v6.051 - siempre mostrar si hay presence)
+      const hasConnectionData = p && (p.device || p.browser || p.ip || p.os || p.status || p.currentSection || p.connectionType);
       const connectionInfo = hasConnectionData ? `
         <div style="margin-top: 8px; padding: 8px; background: rgba(0,100,200,0.15); border-radius: 6px; font-size: 0.7rem; border: 1px solid rgba(96,165,250,0.3);">
           <div style="color: rgba(255,255,255,0.6); margin-bottom: 6px;">🖥️ <b>Información de Conexión:</b></div>
@@ -60035,14 +60237,14 @@ window.loadAllUsers = async function() {
             ${p.ip ? `<span style="color: #93c5fd;">IP:</span><span>🔗 ${p.ip}</span>` : ''}
             ${p.geo?.city ? `<span style="color: #93c5fd;">Ubicación:</span><span>📍 ${p.geo.city}, ${p.geo.country || ''}</span>` : ''}
             ${p.geo?.isp ? `<span style="color: #93c5fd;">ISP:</span><span>🏢 ${p.geo.isp}</span>` : ''}
-            ${p.connectionType ? `<span style="color: #93c5fd;">Conexión:</span><span>📶 ${p.connectionType.toUpperCase()} ${p.connectionSpeed || ''} ${p.connectionRtt || ''}</span>` : ''}
+            ${p.connectionType && p.connectionType !== 'unknown' ? `<span style="color: #93c5fd;">Conexión:</span><span>📶 ${p.connectionType.toUpperCase()} ${p.connectionSpeed || ''} ${p.connectionRtt || ''}</span>` : ''}
             ${p.timezone ? `<span style="color: #93c5fd;">Zona horaria:</span><span>🕐 ${p.timezone}</span>` : ''}
             ${p.language ? `<span style="color: #93c5fd;">Idioma:</span><span>🌍 ${p.language}</span>` : ''}
             ${p.cpuCores ? `<span style="color: #93c5fd;">CPU:</span><span>⚡ ${p.cpuCores} núcleos</span>` : ''}
             ${p.memory && p.memory !== 'unknown' ? `<span style="color: #93c5fd;">RAM:</span><span>💾 ${p.memory}</span>` : ''}
           </div>
         </div>
-      ` : '';
+      ` : '<div style="margin-top: 8px; padding: 8px; background: rgba(100,100,100,0.15); border-radius: 6px; font-size: 0.7rem; color: rgba(255,255,255,0.4);"><span>📵 Sin datos de conexión - usuario nunca conectado</span></div>';
       
       // Botones de acción para usuarios con nick (no el usuario actual)
       const actionButtons = (isNickUser && !isCurrentUser) ? `
@@ -60086,6 +60288,163 @@ window.loadAllUsers = async function() {
   } catch (error) {
     console.error('❌ Error en loadAllUsers:', error);
     container.innerHTML = `<p style="color: #f87171; font-size: 0.85rem;">Error: ${error.message}</p>`;
+  }
+};
+
+// 🆕 v6.051 - Cargar solicitudes pendientes de aprobación
+window.loadPendingRequests = async function() {
+  const container = document.getElementById('pendingRequestsContainer');
+  const countBadge = document.getElementById('pendingRequestsCount');
+  if (!container) return;
+  
+  const isAdmin = window.firebaseService?.userRole === 'admin' || window.firebaseService?.isAdmin?.();
+  if (!isAdmin) {
+    container.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Solo administradores pueden ver solicitudes</p>';
+    if (countBadge) countBadge.textContent = '0';
+    return;
+  }
+  
+  container.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">Cargando solicitudes...</p>';
+  
+  try {
+    const snapshot = await window.firebaseService.db.collection('actionRequests')
+      .where('status', '==', 'pending')
+      .orderBy('requestedAt', 'desc')
+      .get();
+    
+    const requests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    if (countBadge) {
+      countBadge.textContent = requests.length;
+      countBadge.style.display = requests.length > 0 ? 'inline' : 'none';
+    }
+    
+    if (requests.length === 0) {
+      container.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; text-align: center;">✅ No hay solicitudes pendientes</p>';
+      return;
+    }
+    
+    container.innerHTML = requests.map(req => {
+      const actionIcon = req.actionType === 'create' ? '➕' : req.actionType === 'edit' ? '✏️' : '🗑️';
+      const actionColor = req.actionType === 'create' ? '#22c55e' : req.actionType === 'edit' ? '#3b82f6' : '#ef4444';
+      const targetIcon = req.targetType === 'repuesto' ? '📦' : req.targetType === 'ubicacion' ? '📍' : req.targetType === 'mapa' ? '🗺️' : '📁';
+      const timeAgo = formatTimeAgo(new Date(req.requestedAt));
+      
+      return `
+        <div style="padding: 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border-left: 3px solid ${actionColor};">
+          <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
+            <div style="flex: 1;">
+              <div style="font-weight: 500; color: rgba(255,255,255,0.9); font-size: 0.9rem;">
+                ${actionIcon} ${req.actionType === 'create' ? 'Crear' : req.actionType === 'edit' ? 'Editar' : 'Eliminar'} ${targetIcon} ${req.targetType}
+              </div>
+              <div style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 4px;">
+                <b>"${req.targetName || 'Sin nombre'}"</b>
+              </div>
+              <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 4px;">
+                👤 ${req.requestedBy} · ${timeAgo}
+              </div>
+              ${req.data ? `
+                <details style="margin-top: 8px;">
+                  <summary style="cursor: pointer; font-size: 0.75rem; color: #93c5fd;">Ver detalles</summary>
+                  <pre style="font-size: 0.65rem; color: rgba(255,255,255,0.6); background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; margin-top: 4px; overflow-x: auto; max-height: 150px;">${JSON.stringify(req.data, null, 2)}</pre>
+                </details>
+              ` : ''}
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button onclick="approveRequest('${req.id}')" 
+                      style="padding: 6px 12px; border-radius: 6px; border: none; background: #22c55e; color: white; font-size: 0.75rem; cursor: pointer; font-weight: 500;"
+                      title="Aprobar solicitud">✓ Aprobar</button>
+              <button onclick="rejectRequest('${req.id}')" 
+                      style="padding: 6px 12px; border-radius: 6px; border: none; background: #ef4444; color: white; font-size: 0.75rem; cursor: pointer; font-weight: 500;"
+                      title="Rechazar solicitud">✕ Rechazar</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+  } catch (error) {
+    console.error('❌ Error cargando solicitudes:', error);
+    container.innerHTML = `<p style="color: #f87171; font-size: 0.85rem;">Error: ${error.message}</p>`;
+  }
+};
+
+// 🆕 v6.051 - Aprobar solicitud
+window.approveRequest = async function(requestId) {
+  if (!confirm('¿Aprobar esta solicitud? La acción se ejecutará inmediatamente.')) return;
+  
+  try {
+    const docRef = window.firebaseService.db.collection('actionRequests').doc(requestId);
+    const doc = await docRef.get();
+    
+    if (!doc.exists) {
+      showToast('Solicitud no encontrada', 'error');
+      return;
+    }
+    
+    const request = doc.data();
+    
+    // Ejecutar la acción según el tipo
+    let success = false;
+    
+    if (request.actionType === 'create') {
+      // Crear el elemento
+      if (request.targetType === 'repuesto' && request.data) {
+        const result = await window.firebaseService.create('repuestos', request.data);
+        success = result.success;
+      }
+    } else if (request.actionType === 'edit') {
+      // Editar el elemento
+      if (request.targetType === 'repuesto' && request.targetId && request.data) {
+        const result = await window.firebaseService.update('repuestos', request.targetId, request.data);
+        success = result.success;
+      }
+    } else if (request.actionType === 'delete') {
+      // Eliminar el elemento
+      if (request.targetType === 'repuesto' && request.targetId) {
+        const result = await window.firebaseService.delete('repuestos', request.targetId);
+        success = result.success;
+      }
+    }
+    
+    // Actualizar estado de la solicitud
+    await docRef.update({
+      status: 'approved',
+      reviewedBy: window.firebaseService.currentUser?.email || 'admin',
+      reviewedAt: new Date().toISOString()
+    });
+    
+    showToast(`✅ Solicitud aprobada${success ? ' y ejecutada' : ''}`, 'success');
+    
+    // Recargar solicitudes y datos
+    loadPendingRequests();
+    if (window.app) window.app.cargarDatos();
+    
+  } catch (error) {
+    console.error('❌ Error aprobando solicitud:', error);
+    showToast('Error al aprobar: ' + error.message, 'error');
+  }
+};
+
+// 🆕 v6.051 - Rechazar solicitud
+window.rejectRequest = async function(requestId) {
+  const reason = prompt('Motivo del rechazo (opcional):');
+  if (reason === null) return; // Canceló
+  
+  try {
+    await window.firebaseService.db.collection('actionRequests').doc(requestId).update({
+      status: 'rejected',
+      reviewedBy: window.firebaseService.currentUser?.email || 'admin',
+      reviewedAt: new Date().toISOString(),
+      reviewNote: reason || 'Sin motivo especificado'
+    });
+    
+    showToast('❌ Solicitud rechazada', 'info');
+    loadPendingRequests();
+    
+  } catch (error) {
+    console.error('❌ Error rechazando solicitud:', error);
+    showToast('Error al rechazar: ' + error.message, 'error');
   }
 };
 
