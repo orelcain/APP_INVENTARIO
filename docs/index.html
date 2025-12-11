@@ -17891,7 +17891,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.038</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.039</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18102,7 +18102,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.038</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.039</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -18765,8 +18765,12 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <input type="text" id="newUserNick" placeholder="Nick (ej: juan)" 
                        style="padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-size: 0.9rem;">
-                <input type="password" id="newUserPassword" placeholder="Contraseña" 
-                       style="padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-size: 0.9rem;">
+                <div style="position: relative;">
+                  <input type="password" id="newUserPassword" placeholder="Contraseña" 
+                         style="padding: 10px 12px; padding-right: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-size: 0.9rem; width: 100%; box-sizing: border-box;">
+                  <button type="button" onclick="togglePasswordVisibility('newUserPassword', this)" 
+                          style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 1.1rem; padding: 4px;" title="Ver/ocultar contraseña">👁️</button>
+                </div>
               </div>
               <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px;">
                 <select id="newUserRole" style="padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; font-size: 0.9rem;">
@@ -59965,31 +59969,31 @@ window.createNewUser = async function() {
   
   // Validaciones
   if (!nick || nick.length < 3) {
-    showToast('El nick debe tener al menos 3 caracteres', 'error');
+    app.mostrarToast('El nick debe tener al menos 3 caracteres', 'error');
     nickInput?.focus();
     return;
   }
   
   if (!/^[a-z0-9_]+$/.test(nick)) {
-    showToast('El nick solo puede contener letras, números y guion bajo', 'error');
+    app.mostrarToast('El nick solo puede contener letras, números y guion bajo', 'error');
     nickInput?.focus();
     return;
   }
   
   if (!password || password.length < 6) {
-    showToast('La contraseña debe tener al menos 6 caracteres', 'error');
+    app.mostrarToast('La contraseña debe tener al menos 6 caracteres', 'error');
     passwordInput?.focus();
     return;
   }
   
   // Verificar si es admin
   if (!window.firebaseService?.isAdmin()) {
-    showToast('Solo administradores pueden crear usuarios', 'error');
+    app.mostrarToast('Solo administradores pueden crear usuarios', 'error');
     return;
   }
   
   try {
-    showToast('Creando usuario...', 'info');
+    app.mostrarToast('Creando usuario...', 'info');
     
     // Crear email interno basado en nick
     const internalEmail = `${nick}@inventario.local`;
@@ -60001,7 +60005,7 @@ window.createNewUser = async function() {
       .get();
     
     if (!existingUser.empty) {
-      showToast(`El nick "${nick}" ya está en uso`, 'error');
+      app.mostrarToast(`El nick "${nick}" ya está en uso`, 'error');
       return;
     }
     
@@ -60026,7 +60030,7 @@ window.createNewUser = async function() {
     passwordInput.value = '';
     roleSelect.value = 'usuario';
     
-    showToast(`✅ Usuario "${nick}" creado con rol ${role}`, 'success');
+    app.mostrarToast(`✅ Usuario "${nick}" creado con rol ${role}`, 'success');
     
     // Recargar lista de usuarios
     setTimeout(() => {
@@ -60036,14 +60040,14 @@ window.createNewUser = async function() {
     
   } catch (error) {
     console.error('❌ Error creando usuario:', error);
-    showToast(`Error: ${error.message}`, 'error');
+    app.mostrarToast(`Error: ${error.message}`, 'error');
   }
 };
 
 // 🆕 v6.038 - Resetear contraseña de usuario
 window.resetUserPassword = async function(userId, nick) {
   if (!window.firebaseService?.isAdmin()) {
-    showToast('Solo administradores pueden cambiar contraseñas', 'error');
+    app.mostrarToast('Solo administradores pueden cambiar contraseñas', 'error');
     return;
   }
   
@@ -60052,7 +60056,7 @@ window.resetUserPassword = async function(userId, nick) {
   if (!newPassword) return;
   
   if (newPassword.length < 6) {
-    showToast('La contraseña debe tener al menos 6 caracteres', 'error');
+    app.mostrarToast('La contraseña debe tener al menos 6 caracteres', 'error');
     return;
   }
   
@@ -60063,17 +60067,17 @@ window.resetUserPassword = async function(userId, nick) {
       passwordChangedBy: window.firebaseService.currentUser?.uid
     });
     
-    showToast(`✅ Contraseña de "${nick}" actualizada`, 'success');
+    app.mostrarToast(`✅ Contraseña de "${nick}" actualizada`, 'success');
   } catch (error) {
     console.error('❌ Error cambiando contraseña:', error);
-    showToast(`Error: ${error.message}`, 'error');
+    app.mostrarToast(`Error: ${error.message}`, 'error');
   }
 };
 
 // 🆕 v6.038 - Eliminar usuario
 window.deleteUser = async function(userId, nick) {
   if (!window.firebaseService?.isAdmin()) {
-    showToast('Solo administradores pueden eliminar usuarios', 'error');
+    app.mostrarToast('Solo administradores pueden eliminar usuarios', 'error');
     return;
   }
   
@@ -60083,7 +60087,7 @@ window.deleteUser = async function(userId, nick) {
   
   try {
     await window.firebaseService.db.collection('usuarios').doc(userId).delete();
-    showToast(`✅ Usuario "${nick}" eliminado`, 'success');
+    app.mostrarToast(`✅ Usuario "${nick}" eliminado`, 'success');
     
     setTimeout(() => {
       window.loadAllUsers();
@@ -60091,7 +60095,23 @@ window.deleteUser = async function(userId, nick) {
     }, 500);
   } catch (error) {
     console.error('❌ Error eliminando usuario:', error);
-    showToast(`Error: ${error.message}`, 'error');
+    app.mostrarToast(`Error: ${error.message}`, 'error');
+  }
+};
+
+// 🆕 v6.038 - Mostrar/ocultar contraseña
+window.togglePasswordVisibility = function(inputId, button) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  
+  if (input.type === 'password') {
+    input.type = 'text';
+    button.textContent = '🙈';
+    button.title = 'Ocultar contraseña';
+  } else {
+    input.type = 'password';
+    button.textContent = '👁️';
+    button.title = 'Ver contraseña';
   }
 };
 
