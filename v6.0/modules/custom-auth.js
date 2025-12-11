@@ -543,12 +543,18 @@ class CustomAuth {
                 // Timestamps
                 lastLogin: firebase.firestore.FieldValue.serverTimestamp()
             });
+            console.log('✅ Presencia actualizada correctamente');
         } catch (e) {
-            console.warn('⚠️ No se pudo actualizar presencia:', e);
+            console.warn('⚠️ No se pudo actualizar presencia (permisos):', e.message);
+            // 🆕 v6.045 - NO bloquear login si falla la actualización de presencia
         }
 
-        // Registrar login en historial
-        await this.logUserAction(this.currentUser.username, 'login', { timestamp: new Date() });
+        // Registrar login en historial (no bloquear si falla)
+        try {
+            await this.logUserAction(this.currentUser.username, 'login', { timestamp: new Date() });
+        } catch (e) {
+            console.warn('⚠️ No se pudo registrar acción en historial:', e.message);
+        }
 
         // Disparar evento personalizado
         window.dispatchEvent(new CustomEvent('customAuthSuccess', {

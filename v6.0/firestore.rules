@@ -27,16 +27,31 @@ service cloud.firestore {
       return isAuthenticated() && getUserRole() in ['admin', 'usuario', 'lectura'];
     }
     
-    // Colección de usuarios (solo admin puede escribir)
+    // 🆕 v6.045 - Helper para verificar si es el mismo usuario
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // 🆕 v6.045 - Helper para verificar si solo se actualizan campos de presencia
+    function isPresenceUpdate() {
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['presence', 'lastLogin']);
+    }
+    
+    // Colección de usuarios (admin puede todo, usuarios pueden actualizar su presencia)
     match /usuarios/{userId} {
       allow read: if isAuthenticated();
-      allow write: if isAdmin();
+      // 🆕 v6.045 - Permitir que usuarios actualicen su propia presencia
+      allow update: if isAdmin() || (isOwner(userId) && isPresenceUpdate());
+      allow create, delete: if isAdmin();
     }
     
     // Usuarios personalizados (custom_users)
     match /custom_users/{username} {
       allow read: if true; // Público para login
-      allow write: if isAdmin();
+      // 🆕 v6.045 - Permitir que usuarios actualicen su propia presencia
+      allow update: if isAdmin() || (isAuthenticated() && isPresenceUpdate());
+      allow create, delete: if isAdmin();
     }
     
     // Historial de acciones de usuarios
