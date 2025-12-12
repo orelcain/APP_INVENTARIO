@@ -41681,6 +41681,7 @@ class InventarioCompleto {
 
               <!-- BOTONES DE ACCIÓN CORPORATIVOS -->
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                <!-- 🆕 v6.087 - Botón CONTAR: Visible para todos (admin, usuario, lectura) -->
                 <button 
                   onclick="app.abrirModalConteoIndividual('${r.id}')"
                   style="
@@ -41700,6 +41701,8 @@ class InventarioCompleto {
                 >
                   Contar
                 </button>
+                <!-- 🆕 v6.087 - Botón EDITAR: Visible solo para admin y usuario -->
+                ${this.canEdit ? `
                 <button 
                   onclick="app.openModal('edit', '${r.id}')"
                   style="
@@ -41719,6 +41722,26 @@ class InventarioCompleto {
                 >
                   Editar
                 </button>
+                ` : `
+                <button 
+                  disabled
+                  style="
+                    background: rgba(100, 116, 139, 0.3);
+                    color: rgba(255,255,255,0.4);
+                    border: none;
+                    padding: 12px 8px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                    cursor: not-allowed;
+                  "
+                  title="Solo Admin o Usuario pueden editar"
+                >
+                  🔒 Editar
+                </button>
+                `}
+                <!-- 🆕 v6.087 - Botón ELIMINAR: Visible solo para admin y usuario -->
+                ${this.canDelete ? `
                 <button 
                   onclick="app.deleteRepuesto('${r.id}')"
                   style="
@@ -41738,6 +41761,24 @@ class InventarioCompleto {
                 >
                   Eliminar
                 </button>
+                ` : `
+                <button 
+                  disabled
+                  style="
+                    background: rgba(100, 116, 139, 0.3);
+                    color: rgba(255,255,255,0.4);
+                    border: none;
+                    padding: 12px 8px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                    cursor: not-allowed;
+                  "
+                  title="Solo Admin o Usuario pueden eliminar"
+                >
+                  🔒 Eliminar
+                </button>
+                `}
               </div>
 
               ${r.ultimoConteo ? `
