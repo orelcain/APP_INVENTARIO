@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.079</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.080</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.079</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.080</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60334,6 +60334,9 @@ window.loadAllUsers = async function() {
         statusText = 'Desconectado';
         statusColor = '#9ca3af';
       }
+      
+      // 🆕 v6.080 - Determinar si está online (activo o inactivo, no away ni offline)
+      const isOnline = (status === 'active' || status === 'inactive');
       
       const roleColor = user.role === 'admin' ? '#f87171' : user.role === 'usuario' ? '#fbbf24' : '#60a5fa';
       const roleEmoji = user.role === 'admin' ? '🔴' : user.role === 'usuario' ? '🟡' : '🔵';
