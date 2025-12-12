@@ -54847,11 +54847,11 @@ class InventarioCompleto {
             🔒 Editar
           </button>
           `}
-          <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
+          <button onclick="app.abrirModalConteoIndividual('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
             Contar
           </button>
           ${this.canDelete ? `
-          <button data-action="delete" data-id="${repuesto.id}" style="${btnEliminar}" title="${tipEliminar}">
+          <button onclick="app.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
             Eliminar
           </button>
           ` : `
@@ -54898,11 +54898,11 @@ class InventarioCompleto {
             🔒 Editar
           </button>
           `}
-          <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
+          <button onclick="app.abrirModalConteoIndividual('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
             Contar
           </button>
           ${this.canDelete ? `
-          <button data-action="delete" data-id="${repuesto.id}" style="${btnEliminar}" title="${tipEliminar}">
+          <button onclick="app.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
             Eliminar
           </button>
           ` : `
@@ -55011,7 +55011,7 @@ class InventarioCompleto {
       
       // Contar (todos los roles)
       html += `
-        <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
+        <button onclick="app.abrirModalConteoIndividual('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
           Contar
         </button>
       `;
@@ -55019,7 +55019,7 @@ class InventarioCompleto {
       // Eliminar (solo si canDelete)
       if (this.canDelete) {
         html += `
-          <button data-action="delete" data-id="${repuesto.id}" style="${btnEliminar}" title="${tipEliminar}">
+          <button onclick="app.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
             Eliminar
           </button>
         `;
