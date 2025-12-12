@@ -50118,8 +50118,11 @@ class InventarioCompleto {
 
     const cantidadAnterior = repuesto.cantidad;
     
-    console.log(`📊 [Conteo] Usuario: ${window.firebaseService?.currentUser?.email}`);
+    const currentUser = window.customAuthService?.currentUser || window.firebaseService?.currentUser;
+    console.log(`📊 [Conteo] Usuario: ${currentUser?.email || currentUser?.username}`);
+    console.log(`📊 [Conteo] Rol actual: ${window.firebaseService?.userRole}`);
     console.log(`📊 [Conteo] needsApproval: ${this.needsApproval}`);
+    console.log(`📊 [Conteo] canEdit: ${this.canEdit}`);
     console.log(`📊 [Conteo] Cantidad: ${cantidadAnterior} → ${nuevaCantidad}`);
     
     // 🆕 v6.087 - VERIFICAR SI NECESITA APROBACIÓN
@@ -50145,6 +50148,8 @@ class InventarioCompleto {
                         'Usuario';
         this.showToast(`📝 Solicitud de conteo enviada al Admin por ${userName}`, 'success', 4000);
         console.log('✅ [Conteo] Solicitud creada exitosamente');
+      } else {
+        console.error('❌ [Conteo] Error al crear solicitud:', result);
       }
       
       return; // No guardar directamente
