@@ -34521,8 +34521,13 @@ class InventarioCompleto {
       // Guardar en Firestore
       await window.firebaseService.db.collection('actionRequests').add(request);
       
-      this.mostrarToast(`📝 Solicitud de ${this.getActionLabel(actionType)} enviada. Esperando aprobación del admin.`, 'info', 4000);
-      console.log('📝 Solicitud creada:', request);
+      console.log('✅ [createActionRequest] Solicitud guardada en Firestore:', request);
+      console.log(`   - requestedBy: ${request.requestedBy}`);
+      console.log(`   - actionType: ${request.actionType}`);
+      console.log(`   - targetName: ${request.targetName}`);
+      
+      // 🆕 v6.087 - Mensaje removido (se muestra en guardarConteoIndividual)
+      // this.mostrarToast ya no se llama aquí para conteos
       
       return { needsApproval: true, request };
     } catch (error) {
@@ -50107,19 +50112,25 @@ class InventarioCompleto {
     const repuesto = this.repuestos.find(r => r.id === id);
     
     if (!repuesto) {
-      this.showToast(' Error: Repuesto no encontrado', 'error');
+      this.showToast('❌ Error: Repuesto no encontrado', 'error');
       return;
     }
 
     const cantidadAnterior = repuesto.cantidad;
     
-    // 🆕 v6.052 - VERIFICAR SI NECESITA APROBACIÓN
+    console.log(`📊 [Conteo] Usuario: ${window.firebaseService?.currentUser?.email}`);
+    console.log(`📊 [Conteo] needsApproval: ${this.needsApproval}`);
+    console.log(`📊 [Conteo] Cantidad: ${cantidadAnterior} → ${nuevaCantidad}`);
+    
+    // 🆕 v6.087 - VERIFICAR SI NECESITA APROBACIÓN
     if (this.needsApproval) {
+      console.log('📝 [Conteo] Creando solicitud de aprobación...');
+      
       // Cerrar modal
       this.cerrarModalConteoIndividual();
       
       // Crear solicitud de edición de conteo
-      await this.createActionRequest('edit', 'repuesto', id, repuesto.nombre, {
+      const result = await this.createActionRequest('edit', 'repuesto', id, repuesto.nombre, {
         campo: 'cantidad',
         cantidadAnterior: cantidadAnterior,
         cantidadNueva: nuevaCantidad,
@@ -50128,10 +50139,20 @@ class InventarioCompleto {
         tipo: 'conteo'
       });
       
+      if (result?.needsApproval) {
+        const userName = window.customAuthService?.currentUser?.username || 
+                        window.firebaseService?.currentUser?.email?.split('@')[0] || 
+                        'Usuario';
+        this.showToast(`📝 Solicitud de conteo enviada al Admin por ${userName}`, 'success', 4000);
+        console.log('✅ [Conteo] Solicitud creada exitosamente');
+      }
+      
       return; // No guardar directamente
     }
 
-    //  CERRAR MODAL INMEDIATAMENTE (antes de guardar)
+    console.log('💾 [Conteo] Guardando directamente (admin o sin aprobación)');
+    
+    // ✅ CERRAR MODAL INMEDIATAMENTE (antes de guardar)
     this.cerrarModalConteoIndividual();
 
     // Actualizar cantidad y fecha de conteo
