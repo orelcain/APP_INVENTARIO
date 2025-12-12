@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.080</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.081</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.080</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.081</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60280,6 +60280,15 @@ window.loadAllUsers = async function() {
     }
     
     container.innerHTML = users.map(user => {
+      // 🆕 v6.081 - Debug: Log de presencia
+      console.log(`👤 [DEBUG] Usuario: ${user.email || user.nick}`, {
+        presence: user.presence,
+        hasPresence: !!user.presence,
+        status: user.presence?.status,
+        lastSeen: user.presence?.lastSeen,
+        lastActive: user.presence?.lastActive
+      });
+      
       // 🆕 v6.079 - Sistema de estados mejorado
       let lastSeenTime = null;
       let lastActiveTime = null;
