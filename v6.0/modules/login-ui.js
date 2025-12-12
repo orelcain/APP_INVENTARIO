@@ -11,7 +11,7 @@ class LoginUI {
         this.firebaseService = window.firebaseService;
         this.customAuth = window.customAuth;
         this.isLoginModalCreated = false;
-        this.APP_VERSION = 'v6.075'; // 🆕 v6.075 - Fix restauración de sesión completa con UI
+        this.APP_VERSION = 'v6.076'; // 🆕 v6.076 - Fix timing de carga de localStorage
         
         // 🆕 v6.070 - Limpiar rol corrupto de admin conocido ANTES de restaurar sesión
         this.fixAdminRoleIfNeeded();
@@ -52,40 +52,44 @@ class LoginUI {
 
     /**
      * 🆕 v6.060 - Verificar si hay sesión guardada antes de mostrar login
+     * 🆕 v6.076 - Esperar 200ms para dar tiempo a que localStorage se cargue completamente
      */
     checkSavedSession() {
-        const savedAuth = localStorage.getItem('customAuth');
-        console.log('🔍 [v6.060] Verificando sesión guardada:', savedAuth ? 'ENCONTRADA' : 'NO HAY');
-        
-        if (savedAuth) {
-            try {
-                const authData = JSON.parse(savedAuth);
-                console.log('📋 [v6.060] Tipo de sesión:', authData.type, '- Usuario:', authData.username || authData.email);
-                
-                // Hay sesión válida guardada - NO mostrar login
-                this.sessionRestored = true;
-                this.savedAuthData = authData;
-                
-                // Inicializar después de que el DOM esté listo
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', () => this.initWithSession());
-                } else {
-                    this.initWithSession();
+        // 🔧 v6.076 - Dar tiempo al browser para cargar localStorage
+        setTimeout(() => {
+            const savedAuth = localStorage.getItem('customAuth');
+            console.log('🔍 [v6.076] Verificando sesión guardada:', savedAuth ? 'ENCONTRADA' : 'NO HAY');
+            
+            if (savedAuth) {
+                try {
+                    const authData = JSON.parse(savedAuth);
+                    console.log('📋 [v6.076] Tipo de sesión:', authData.type, '- Usuario:', authData.username || authData.email);
+                    
+                    // Hay sesión válida guardada - NO mostrar login
+                    this.sessionRestored = true;
+                    this.savedAuthData = authData;
+                    
+                    // Inicializar después de que el DOM esté listo
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', () => this.initWithSession());
+                    } else {
+                        this.initWithSession();
+                    }
+                    return;
+                } catch (e) {
+                    console.error('❌ [v6.076] Error parseando sesión:', e);
+                    localStorage.removeItem('customAuth');
                 }
-                return;
-            } catch (e) {
-                console.error('❌ [v6.060] Error parseando sesión:', e);
-                localStorage.removeItem('customAuth');
             }
-        }
-        
-        // No hay sesión guardada - iniciar normalmente
-        this.sessionRestored = false;
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.init());
-        } else {
-            this.init();
-        }
+            
+            // No hay sesión guardada - iniciar normalmente
+            this.sessionRestored = false;
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.init());
+            } else {
+                this.init();
+            }
+        }, 200); // 🔧 v6.076 - Esperar 200ms para localStorage
     }
     
     /**
