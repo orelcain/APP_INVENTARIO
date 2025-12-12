@@ -24,12 +24,36 @@ class FirebaseService {
 
     /**
      * Manejar cambios en el estado de autenticación
+     * 🆕 v6.058 - Guardar en localStorage para persistencia entre actualizaciones
+     * 🆕 v6.066 - Ignorar usuarios anónimos (usados para custom auth)
      */
     async handleAuthStateChanged(user) {
+        console.log('🔥 [v6.066] handleAuthStateChanged llamado:', user ? `UID: ${user.uid}, isAnonymous: ${user.isAnonymous}, email: ${user.email}` : 'NULL');
+        
         if (user) {
+            // 🆕 v6.066 - Ignorar usuarios anónimos de Firebase (usados para custom auth)
+            if (user.isAnonymous) {
+                console.log('🔄 [v6.066] Usuario anónimo de Firebase detectado - ignorando (usado para custom auth)');
+                // NO hacer nada más - la sesión custom ya está manejada
+                return;
+            }
+            
+            // Solo procesar usuarios NO anónimos (admins con email/password)
+            console.log('✅ [v6.066] Usuario NO anónimo - procesando como admin...');
+            
             this.currentUser = user;
             await this.loadUserRole();
             console.log('✅ Usuario autenticado:', user.email, '| Rol:', this.userRole);
+            
+            // 🆕 v6.058 - Guardar en localStorage para persistir entre actualizaciones
+            localStorage.setItem('customAuth', JSON.stringify({
+                type: 'admin',
+                email: user.email,
+                role: this.userRole,
+                uid: user.uid,
+                loginTime: new Date().toISOString()
+            }));
+            localStorage.setItem('userRole', this.userRole);
             
             // 🆕 v6.050 - Actualizar presencia de admin
             this.updateAdminPresence(user);
@@ -41,7 +65,24 @@ class FirebaseService {
         } else {
             this.currentUser = null;
             this.userRole = null;
-            console.log('❌ Usuario no autenticado');
+            
+            // 🆕 v6.064 - NO disparar userLoggedOut si hay sesión custom activa
+            const customAuth = localStorage.getItem('customAuth');
+            if (customAuth) {
+                try {
+                    const authData = JSON.parse(customAuth);
+                    if (authData.type !== 'admin') {
+                        console.log('🔄 [v6.064] Firebase sin usuario, pero hay sesión custom activa:', authData.username);
+                        // NO disparar userLoggedOut - hay sesión custom válida
+                        return;
+                    }
+                } catch (e) {}
+            }
+            
+            console.log('❌ Usuario no autenticado (sin sesión custom)');
+            
+            // 🆕 v6.058 - Limpiar localStorage solo si fue un logout explícito
+            // (no si simplemente no hay sesión al cargar)
             
             window.dispatchEvent(new CustomEvent('userLoggedOut'));
         }
@@ -200,10 +241,14 @@ class FirebaseService {
     }
 
     /**
-     * Logout
+     * Logout - 🆕 v6.058 - Limpia localStorage
      */
     async logout() {
         try {
+            // 🆕 v6.058 - Limpiar localStorage al hacer logout explícito
+            localStorage.removeItem('customAuth');
+            localStorage.removeItem('userRole');
+            
             await this.auth.signOut();
             this.detachAllListeners();
             return { success: true };
@@ -243,12 +288,51 @@ class FirebaseService {
 
     /**
      * Cargar rol del usuario desde Firestore
+     * 🆕 v6.068 - Buscar primero en adminUsers y auto-reparar si es necesario
      */
     async loadUserRole() {
         if (!this.currentUser) return null;
 
         try {
             console.log('🔍 Buscando rol para UID:', this.currentUser.uid);
+            
+            // 🆕 v6.068 - Primero verificar si es un admin conocido por email
+            const adminEmails = ['orelcain@hotmail.com']; // Lista de emails admin
+            const isKnownAdmin = this.currentUser.email && adminEmails.includes(this.currentUser.email.toLowerCase());
+            
+            if (isKnownAdmin) {
+                console.log('✅ [v6.068] Email reconocido como admin:', this.currentUser.email);
+                this.userRole = this.USER_ROLES.ADMIN;
+                
+                // Auto-reparar: crear/actualizar documento en adminUsers
+                try {
+                    await this.db.collection('adminUsers').doc(this.currentUser.uid).set({
+                        email: this.currentUser.email,
+                        role: 'admin',
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        autoRepaired: true
+                    }, { merge: true });
+                    console.log('✅ [v6.068] Documento admin auto-reparado en adminUsers');
+                } catch (e) {
+                    console.warn('⚠️ [v6.068] No se pudo auto-reparar adminUsers:', e.message);
+                }
+                
+                // También en usuarios para consistencia
+                try {
+                    await this.db.collection(this.COLLECTIONS.USUARIOS).doc(this.currentUser.uid).set({
+                        email: this.currentUser.email,
+                        role: 'admin',
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                    console.log('✅ [v6.068] Documento admin auto-reparado en usuarios');
+                } catch (e) {
+                    console.warn('⚠️ [v6.068] No se pudo auto-reparar usuarios:', e.message);
+                }
+                
+                return this.userRole;
+            }
+            
+            // Para usuarios no-admin, buscar normalmente
             const doc = await this.db.collection(this.COLLECTIONS.USUARIOS)
                 .doc(this.currentUser.uid)
                 .get();
@@ -268,7 +352,7 @@ class FirebaseService {
                 }
             } else {
                 console.warn('⚠️ Usuario no encontrado en Firestore, asignando rol lectura');
-                // Usuario nuevo, asignar rol por defecto
+                // Usuario nuevo, asignar rol por defecto (NO admin)
                 this.userRole = this.USER_ROLES.LECTURA;
                 await this.setUserRole(this.currentUser.uid, this.userRole);
             }
@@ -396,29 +480,56 @@ class FirebaseService {
     }
 
     /**
-     * Obtener todos los usuarios (solo admin) - 🆕 v6.050 incluye admins
+     * Obtener todos los usuarios (solo admin)
+     * 🆕 v6.054 - Fix duplicados mejorado: excluir por email Y por ID
      */
     async getAllUsers() {
         if (!this.isAdmin()) return [];
         
         try {
-            // Obtener usuarios normales
-            const usuariosSnapshot = await this.db.collection(this.COLLECTIONS.USUARIOS).get();
-            const usuarios = usuariosSnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            
-            // 🆕 v6.050 - También obtener admins
+            // 🆕 v6.054 - Primero obtener admins de adminUsers
             const adminsSnapshot = await this.db.collection('adminUsers').get();
             const admins = adminsSnapshot.docs.map(doc => ({
                 id: doc.id,
                 isAdminUser: true,
                 role: 'admin',
                 ...doc.data()
-            }));
+            }))
+            // Filtrar admins sin email válido
+            .filter(admin => admin.email && !admin.email.includes('undefined') && admin.email.length > 3);
             
-            // Combinar: primero admins, luego usuarios
+            // Crear Sets para filtrar duplicados
+            const adminEmails = new Set(admins.map(a => a.email?.toLowerCase()).filter(Boolean));
+            const adminIds = new Set(admins.map(a => a.id));
+            
+            // Obtener usuarios de la colección 'usuarios'
+            const usuariosSnapshot = await this.db.collection(this.COLLECTIONS.USUARIOS).get();
+            const usuarios = usuariosSnapshot.docs
+                .map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+                // 🆕 v6.054 - Filtrar:
+                // 1. Usuarios que ya están en adminUsers (por email o ID)
+                // 2. Usuarios sin identidad válida (sin nick, username, ni email)
+                // 3. Usuarios con rol admin que ya aparecen arriba
+                .filter(user => {
+                    const userEmail = (user.email || '').toLowerCase();
+                    const emailMatch = userEmail && adminEmails.has(userEmail);
+                    const idMatch = adminIds.has(user.id);
+                    const isAdminRole = user.role === 'admin';
+                    const hasValidIdentity = user.nick || user.username || (userEmail && !userEmail.includes('undefined') && userEmail.length > 3);
+                    
+                    // Excluir si: coincide email con admin, coincide ID, es admin sin estar en adminUsers, o no tiene identidad
+                    if (emailMatch || idMatch) return false;
+                    if (isAdminRole && userEmail && adminEmails.has(userEmail)) return false;
+                    if (!hasValidIdentity) return false;
+                    
+                    return true;
+                });
+            
+            // Combinar: primero admins, luego usuarios (sin duplicados)
+            console.log(`📋 [v6.054] Usuarios: ${admins.length} admins + ${usuarios.length} usuarios válidos`);
             return [...admins, ...usuarios];
         } catch (error) {
             console.error('❌ Error obteniendo usuarios:', error);
