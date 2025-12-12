@@ -17944,7 +17944,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.069</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.070</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18177,7 +18177,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.069</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.070</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60855,7 +60855,7 @@ window.mobileLogout = async function() {
   }
 };
 
-// 🆕 v6.069 - Actualizar UI de usuario móvil con colores de rol
+// 🆕 v6.070 - Actualizar UI de usuario móvil con colores de rol (botón + badge)
 window.updateMobileUserUI = function(user) {
   const userBtn = document.getElementById('mobileUserBtn');
   const emailSpan = document.getElementById('mobileUserEmail');
@@ -60872,13 +60872,31 @@ window.updateMobileUserUI = function(user) {
     const displayName = user.nick || user.displayName || user.email?.split('@')[0] || 'Usuario';
     if (emailSpan) emailSpan.textContent = displayName;
     
-    // 🆕 v6.069 - Obtener rol de múltiples fuentes
+    // 🆕 v6.070 - Obtener rol de múltiples fuentes
     const role = user.role || 
                  window.firebaseService?.userRole || 
                  localStorage.getItem('userRole') || 
                  'lectura';
     
-    // Mostrar rol con emoji y color
+    // 🆕 v6.070 - Colores según rol para botón e icono
+    const roleColors = {
+      'admin': { bg: 'rgba(239, 68, 68, 0.15)', color: '#f87171', icon: '#ef4444' },
+      'usuario': { bg: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', icon: '#f59e0b' },
+      'lectura': { bg: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', icon: '#3b82f6' }
+    };
+    const colors = roleColors[role] || roleColors['lectura'];
+    
+    // Aplicar color al botón de usuario según rol
+    userBtn.style.background = colors.bg;
+    userBtn.style.color = colors.color;
+    
+    // Cambiar color del SVG del botón
+    const svg = userBtn.querySelector('svg');
+    if (svg) {
+      svg.style.stroke = colors.icon;
+    }
+    
+    // Mostrar rol con emoji y color en el badge
     if (roleSpan) {
       const roleLabels = {
         'admin': '🔴 ADMIN',
@@ -60887,27 +60905,22 @@ window.updateMobileUserUI = function(user) {
       };
       roleSpan.textContent = roleLabels[role] || role.toUpperCase();
       
-      // Color según rol
-      if (role === 'admin') {
-        roleSpan.style.background = 'rgba(239, 68, 68, 0.2)';
-        roleSpan.style.color = '#f87171';
-        roleSpan.style.border = '1px solid rgba(248, 113, 113, 0.3)';
-      } else if (role === 'usuario') {
-        roleSpan.style.background = 'rgba(245, 158, 11, 0.2)';
-        roleSpan.style.color = '#fbbf24';
-        roleSpan.style.border = '1px solid rgba(251, 191, 36, 0.3)';
-      } else {
-        roleSpan.style.background = 'rgba(59, 130, 246, 0.2)';
-        roleSpan.style.color = '#60a5fa';
-        roleSpan.style.border = '1px solid rgba(96, 165, 250, 0.3)';
-      }
+      // Color según rol para el badge
+      roleSpan.style.background = colors.bg;
+      roleSpan.style.color = colors.color;
+      roleSpan.style.border = `1px solid ${colors.color}40`;
     }
     
-    console.log(`🎨 [v6.069] UI móvil actualizada: ${displayName} | Rol: ${role}`);
+    console.log(`🎨 [v6.070] UI móvil actualizada: ${displayName} | Rol: ${role} | Color: ${colors.color}`);
   } else {
     // No hay usuario
     userBtn.style.display = 'none';
     userBtn.classList.remove('logged-in');
+    // Restaurar estilos por defecto
+    userBtn.style.background = '';
+    userBtn.style.color = '';
+    const svg = userBtn.querySelector('svg');
+    if (svg) svg.style.stroke = '';
   }
 };
 
@@ -69698,9 +69711,10 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   color: var(--home-text);
 }
 
+/* 🆕 v6.070 - Color por defecto, será sobrescrito dinámicamente según rol */
 .home-user-btn.logged-in {
-  background: rgba(34, 197, 94, 0.1);
-  color: #22c55e;
+  /* Los colores se aplican dinámicamente via JS según el rol del usuario */
+  /* admin: rojo, usuario: amarillo, lectura: azul */
 }
 
 .mobile-user-dropdown {
