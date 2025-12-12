@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.083</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.087</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.083</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.087</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60692,7 +60692,7 @@ window.forceGlobalUpdate = async function() {
     await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
       timestamp: now, // 🆕 v6.084 - Date() en lugar de serverTimestamp
       triggeredBy: window.firebaseService.currentUser?.email || 'admin',
-      version: 'v6.084'
+      version: 'v6.087'
     });
     
     console.log(`✅ [forceGlobalUpdate] Comando escrito en Firestore`);
@@ -60813,26 +60813,33 @@ window.listenForSystemCommands = function() {
         lastProcessedTimestamp = timestampStr; // Marcar como procesado
         sessionStorage.setItem(RELOAD_FLAG_KEY, 'true'); // Marcar flag global
         
-        // 🆕 v6.086 - Forzar actualización del Service Worker en PWA
+        showToast('⚡ El administrador ha enviado una actualización. Recargando...', 'info');
+        
+        // 🆕 v6.087 - Fix: Solo un método de reload, no ambos
         if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-          console.log('📱 [PWA] Enviando mensaje de actualización al Service Worker...');
+          console.log('📱 [PWA] Detectado - Enviando mensaje al Service Worker...');
           navigator.serviceWorker.controller.postMessage({
             type: 'SKIP_WAITING'
           });
           
-          // Esperar a que el nuevo SW tome control
+          // Esperar a que el nuevo SW tome control, luego recargar UNA VEZ
           navigator.serviceWorker.addEventListener('controllerchange', () => {
-            console.log('🔄 [PWA] Service Worker actualizado, recargando...');
+            console.log('🔄 [PWA] Service Worker actualizado, recargando AHORA...');
             window.location.reload(true);
           }, { once: true });
+          
+          // Timeout de seguridad: si el SW no responde en 3s, recargar igual
+          setTimeout(() => {
+            console.log('⏱️ [PWA] Timeout - Recargando sin esperar SW...');
+            window.location.reload(true);
+          }, 3000);
+        } else {
+          // Navegador normal (no PWA): reload directo
+          console.log('🌐 [Browser] No PWA - Recargando directamente...');
+          setTimeout(() => {
+            window.location.reload(true);
+          }, 1500);
         }
-        
-        showToast('⚡ El administrador ha enviado una actualización. Recargando...', 'info');
-        setTimeout(() => {
-          // Forzar recarga saltando cache
-          console.log('🔄 [RELOAD] Ejecutando location.reload()...');
-          window.location.reload(true);
-        }, 2000);
       } else {
         // Es el admin que lo envió, solo marcar como procesado
         console.log('👑 [onSnapshot] Soy el admin que envió el comando, ignorando');

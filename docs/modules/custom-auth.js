@@ -248,7 +248,7 @@ class CustomAuth {
     }
 
     /**
-     * 🆕 v6.079 - Sistema de presencia avanzado con estados detallados
+     * 🆕 v6.087 - Sistema de presencia mejorado para PWA móviles
      * Estados: 'active', 'inactive', 'background', 'away', 'offline'
      */
     startAdvancedPresenceTracking() {
@@ -276,18 +276,18 @@ class CustomAuth {
                 }
                 
                 await this.firebaseService.db.collection(collection).doc(docId).update(presenceData);
-                console.log(`💚 [v6.079] Presencia actualizada: ${state}`);
+                console.log(`💚 [v6.087] Presencia actualizada: ${state}`);
             } catch (e) {
                 console.warn('⚠️ Error actualizando presencia:', e.message);
             }
         };
         
-        // Heartbeat cada 30 segundos cuando está activo
+        // 🆕 Heartbeat más agresivo: cada 15 segundos (antes 30)
+        // Importante para PWA móviles que pueden pausar JS
         this.presenceTrackingInterval = setInterval(() => {
-            if (!document.hidden) {
-                updatePresence('active');
-            }
-        }, 30000);
+            updatePresence('active');
+            console.log('💓 [Heartbeat] Actualizando presencia...');
+        }, 15000);
         
         // Page Visibility API - detectar cuando se minimiza/cambia de tab
         document.addEventListener('visibilitychange', () => {
@@ -299,6 +299,28 @@ class CustomAuth {
                 console.log('📱 App activa nuevamente');
             }
         });
+        
+        // 🆕 Focus/Blur events - más confiables en PWA móviles
+        window.addEventListener('focus', () => {
+            updatePresence('active');
+            console.log('✨ [Focus] App obtuvo foco - ACTIVA');
+        });
+        
+        window.addEventListener('blur', () => {
+            updatePresence('inactive');
+            console.log('😴 [Blur] App perdió foco - INACTIVA');
+        });
+        
+        // 🆕 Page lifecycle events para PWA (freeze/resume)
+        document.addEventListener('freeze', () => {
+            updatePresence('background');
+            console.log('❄️ [Freeze] App congelada por el sistema');
+        }, { capture: true });
+        
+        document.addEventListener('resume', () => {
+            updatePresence('active');
+            console.log('🔥 [Resume] App reanudada por el sistema');
+        }, { capture: true });
         
         // Detectar cuando se cierra la app
         window.addEventListener('beforeunload', () => {
@@ -315,6 +337,19 @@ class CustomAuth {
             }
         });
         
+        // 🆕 pagehide para iOS (más confiable que beforeunload)
+        window.addEventListener('pagehide', () => {
+            if (this.currentUser?.docId && this.firebaseService?.db) {
+                const collection = this.currentUser.collection || 'usuarios';
+                const docId = this.currentUser.docId;
+                
+                this.firebaseService.db.collection(collection).doc(docId).update({
+                    'presence.status': 'away',
+                    'presence.lastSeen': firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(() => {});
+            }
+        });
+        
         // Actualizar cuando cambie de sección
         document.addEventListener('click', (e) => {
             if (e.target.closest('.nav-tab, .tab-button, [data-tab]')) {
@@ -324,6 +359,7 @@ class CustomAuth {
         
         // Primera actualización inmediata
         updatePresence('active');
+        console.log('🚀 [v6.087] Sistema de presencia iniciado con soporte PWA móvil');
     }
 
     stopAdvancedPresenceTracking() {
