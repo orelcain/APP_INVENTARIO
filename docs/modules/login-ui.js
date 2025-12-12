@@ -500,7 +500,7 @@ class LoginUI {
 
     /**
      * Mostrar menú de usuario
-     * 🆕 v6.055 - Cambiar color del icono según rol
+     * 🆕 v6.069 - Colores mejorados para badge de rol
      */
     showUserMenu(user, role) {
         console.log('📋 showUserMenu llamado:', { user, role, roleType: typeof role });
@@ -517,16 +517,16 @@ class LoginUI {
 
         if (userMenu && userEmail) {
             const roleLabels = {
-                'admin': 'Admin',
-                'usuario': 'Usuario',
-                'lectura': 'Invitado'
+                'admin': '🔴 Admin',
+                'usuario': '🟡 Usuario',
+                'lectura': '🔵 Lectura'
             };
             
-            // 🆕 v6.055 - Colores según rol: rojo=admin, amarillo=usuario, azul=lectura
+            // 🆕 v6.069 - Colores según rol
             const roleColors = {
-                'admin': '#ef4444',    // Rojo
-                'usuario': '#f59e0b',  // Amarillo/Naranja
-                'lectura': '#3b82f6'   // Azul
+                'admin': { bg: 'rgba(239, 68, 68, 0.2)', text: '#f87171', icon: '#ef4444' },
+                'usuario': { bg: 'rgba(245, 158, 11, 0.2)', text: '#fbbf24', icon: '#f59e0b' },
+                'lectura': { bg: 'rgba(59, 130, 246, 0.2)', text: '#60a5fa', icon: '#3b82f6' }
             };
             
             // Determinar nombre a mostrar
@@ -540,18 +540,30 @@ class LoginUI {
             }
             
             const displayRole = roleLabels[role] || role;
-            const iconColor = roleColors[role] || '#3b82f6';
+            const colors = roleColors[role] || roleColors['lectura'];
             
-            userEmail.textContent = `${displayName} • ${displayRole}`;
+            // 🆕 v6.069 - Formato con badge de color para el rol
+            userEmail.innerHTML = `
+                <span style="margin-right: 8px;">${displayName}</span>
+                <span style="
+                    padding: 3px 8px; 
+                    border-radius: 4px; 
+                    font-size: 0.7rem; 
+                    font-weight: 600;
+                    background: ${colors.bg}; 
+                    color: ${colors.text};
+                    border: 1px solid ${colors.text}40;
+                ">${displayRole}</span>
+            `;
             userMenu.style.display = 'flex';
             
             // 🆕 v6.055 - Cambiar color del icono de login según rol
             if (loginBtn) {
                 const svg = loginBtn.querySelector('svg');
                 if (svg) {
-                    svg.style.stroke = iconColor;
+                    svg.style.stroke = colors.icon;
                     svg.style.transition = 'stroke 0.3s ease';
-                    console.log(`🎨 [v6.055] Icono cambiado a color ${role}: ${iconColor}`);
+                    console.log(`🎨 [v6.069] Icono cambiado a color ${role}: ${colors.icon}`);
                 }
             }
             
@@ -559,7 +571,7 @@ class LoginUI {
                 displayName,
                 role: role,
                 displayRole: displayRole,
-                iconColor: iconColor,
+                colors: colors,
                 display: userMenu.style.display
             });
         } else {

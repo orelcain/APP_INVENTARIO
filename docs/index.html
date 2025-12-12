@@ -17944,7 +17944,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.053</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.069</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18177,7 +18177,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.053</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.069</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60855,7 +60855,7 @@ window.mobileLogout = async function() {
   }
 };
 
-// 🆕 v6.042 - Actualizar UI de usuario móvil
+// 🆕 v6.069 - Actualizar UI de usuario móvil con colores de rol
 window.updateMobileUserUI = function(user) {
   const userBtn = document.getElementById('mobileUserBtn');
   const emailSpan = document.getElementById('mobileUserEmail');
@@ -60872,23 +60872,38 @@ window.updateMobileUserUI = function(user) {
     const displayName = user.nick || user.displayName || user.email?.split('@')[0] || 'Usuario';
     if (emailSpan) emailSpan.textContent = displayName;
     
-    // Mostrar rol
+    // 🆕 v6.069 - Obtener rol de múltiples fuentes
+    const role = user.role || 
+                 window.firebaseService?.userRole || 
+                 localStorage.getItem('userRole') || 
+                 'lectura';
+    
+    // Mostrar rol con emoji y color
     if (roleSpan) {
-      const role = user.role || window.firebaseService?.currentRole || 'usuario';
-      roleSpan.textContent = role.toUpperCase();
+      const roleLabels = {
+        'admin': '🔴 ADMIN',
+        'usuario': '🟡 USUARIO', 
+        'lectura': '🔵 LECTURA'
+      };
+      roleSpan.textContent = roleLabels[role] || role.toUpperCase();
       
       // Color según rol
       if (role === 'admin') {
         roleSpan.style.background = 'rgba(239, 68, 68, 0.2)';
         roleSpan.style.color = '#f87171';
+        roleSpan.style.border = '1px solid rgba(248, 113, 113, 0.3)';
       } else if (role === 'usuario') {
-        roleSpan.style.background = 'rgba(34, 197, 94, 0.2)';
-        roleSpan.style.color = '#4ade80';
+        roleSpan.style.background = 'rgba(245, 158, 11, 0.2)';
+        roleSpan.style.color = '#fbbf24';
+        roleSpan.style.border = '1px solid rgba(251, 191, 36, 0.3)';
       } else {
         roleSpan.style.background = 'rgba(59, 130, 246, 0.2)';
         roleSpan.style.color = '#60a5fa';
+        roleSpan.style.border = '1px solid rgba(96, 165, 250, 0.3)';
       }
     }
+    
+    console.log(`🎨 [v6.069] UI móvil actualizada: ${displayName} | Rol: ${role}`);
   } else {
     // No hay usuario
     userBtn.style.display = 'none';
