@@ -69722,10 +69722,11 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   color: var(--home-text);
 }
 
-/* 🆕 v6.070 - Color por defecto, será sobrescrito dinámicamente según rol */
+/* 🆕 v6.071 - Color base para logged-in, sobrescrito dinámicamente por JS según rol */
 .home-user-btn.logged-in {
-  /* Los colores se aplican dinámicamente via JS según el rol del usuario */
-  /* admin: rojo, usuario: amarillo, lectura: azul */
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  /* JS aplicará: admin=rojo, usuario=amarillo, lectura=azul */
 }
 
 .mobile-user-dropdown {
