@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.076</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.077</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.076</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.077</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60280,9 +60280,33 @@ window.loadAllUsers = async function() {
     }
     
     container.innerHTML = users.map(user => {
+      // 🆕 v6.076 - Fix detección de usuarios online (dfcortes, mantencion no aparecían)
+      let lastSeenTime = null;
+      if (user.presence?.lastSeen) {
+        // Si es un Timestamp de Firestore con toDate()
+        if (typeof user.presence.lastSeen.toDate === 'function') {
+          lastSeenTime = user.presence.lastSeen.toDate();
+        }
+        // Si ya es un Date
+        else if (user.presence.lastSeen instanceof Date) {
+          lastSeenTime = user.presence.lastSeen;
+        }
+        // Si es un timestamp numérico
+        else if (typeof user.presence.lastSeen === 'number') {
+          lastSeenTime = new Date(user.presence.lastSeen);
+        }
+        // Si es un objeto con seconds (Firestore Timestamp serializado)
+        else if (user.presence.lastSeen.seconds) {
+          lastSeenTime = new Date(user.presence.lastSeen.seconds * 1000);
+        }
+      }
+      
       const isOnline = user.presence?.status === 'online' && 
-                       user.presence?.lastSeen?.toDate && 
-                       (new Date() - user.presence.lastSeen.toDate()) < 5 * 60 * 1000;
+                       lastSeenTime && 
+                       (new Date() - lastSeenTime) < 5 * 60 * 1000;
+      
+      console.log(`👤 [v6.076] ${user.nick || user.email}: online=${isOnline}, status=${user.presence?.status}, lastSeen=${lastSeenTime}`);
+      
       const roleColor = user.role === 'admin' ? '#f87171' : user.role === 'usuario' ? '#fbbf24' : '#60a5fa';
       const roleEmoji = user.role === 'admin' ? '🔴' : user.role === 'usuario' ? '🟡' : '🔵';
       const statusIcon = isOnline ? '🟢' : '⚪';
