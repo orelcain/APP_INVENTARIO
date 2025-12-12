@@ -54778,6 +54778,18 @@ class InventarioCompleto {
     const tieneUbicaciones = repuesto.ubicaciones && repuesto.ubicaciones.length > 0;
     const tieneMultiplesUbicaciones = repuesto.ubicaciones && repuesto.ubicaciones.length > 1;
     
+    // 🔧 DEBUG temporal
+    if (repuesto.nombre && repuesto.nombre.includes('CAJA HIDROBOX')) {
+      console.log('🔧 DEBUG CAJA HIDROBOX:', {
+        nombre: repuesto.nombre,
+        progreso: estado.progreso,
+        tieneUbicaciones: tieneUbicaciones,
+        tieneJerarquia: estado.tieneJerarquia,
+        ubicacionesArray: repuesto.ubicaciones,
+        areaGeneral: repuesto.areaGeneral
+      });
+    }
+    
     // Estilos de botones consistentes con la app (sobrios, opacos)
     const btnBase = 'padding: 6px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 500; cursor: pointer; transition: all 0.2s; flex: 1; min-width: 65px; text-align: center;';
     const btnVer = `${btnBase} background: rgba(91, 155, 122, 0.2); border: 1px solid rgba(91, 155, 122, 0.4); color: #6bae89;`;
