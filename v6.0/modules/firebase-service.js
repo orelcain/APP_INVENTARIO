@@ -66,23 +66,25 @@ class FirebaseService {
             this.currentUser = null;
             this.userRole = null;
             
-            // 🆕 v6.064 - NO disparar userLoggedOut si hay sesión custom activa
-            const customAuth = localStorage.getItem('customAuth');
+            // 🆕 v6.074 - NO disparar userLoggedOut si hay sesión custom activa
+            const customAuth = localStorage.getItem('customAuth') || sessionStorage.getItem('customAuth');
             if (customAuth) {
                 try {
                     const authData = JSON.parse(customAuth);
-                    if (authData.type !== 'admin') {
-                        console.log('🔄 [v6.064] Firebase sin usuario, pero hay sesión custom activa:', authData.username);
-                        // NO disparar userLoggedOut - hay sesión custom válida
+                    // Si hay CUALQUIER tipo de sesión guardada, NO disparar logout
+                    if (authData.type === 'custom' || authData.type === 'guest' || authData.type === 'admin') {
+                        console.log('🔄 [v6.074] Firebase sin usuario, pero hay sesión guardada:', authData.username || authData.email, '| Tipo:', authData.type);
+                        // Restaurar userRole desde storage
+                        this.userRole = authData.role || localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+                        // NO disparar userLoggedOut - hay sesión válida
                         return;
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.warn('⚠️ Error parseando customAuth:', e);
+                }
             }
             
             console.log('❌ Usuario no autenticado (sin sesión custom)');
-            
-            // 🆕 v6.058 - Limpiar localStorage solo si fue un logout explícito
-            // (no si simplemente no hay sesión al cargar)
             
             window.dispatchEvent(new CustomEvent('userLoggedOut'));
         }

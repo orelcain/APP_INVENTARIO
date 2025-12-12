@@ -414,12 +414,14 @@ class CustomAuth {
                 this.userRole = result.role;
                 this.isGuest = false;
 
-                // Guardar en sessionStorage
-                sessionStorage.setItem('customAuth', JSON.stringify({
+                // 🆕 v6.074 - Guardar en localStorage para persistencia entre refrescos
+                localStorage.setItem('customAuth', JSON.stringify({
                     type: 'admin',
                     email: email,
-                    role: this.userRole
+                    role: this.userRole,
+                    loginTime: new Date().toISOString()
                 }));
+                localStorage.setItem('userRole', this.userRole);
 
                 console.log('✅ Admin autenticado:', email);
 
@@ -564,11 +566,11 @@ class CustomAuth {
         this.userRole = userData.role;
         this.isGuest = false;
 
-        // 🆕 v6.048 - Guardar rol en sessionStorage para que mostrarSeccionesAdmin lo encuentre
-        sessionStorage.setItem('userRole', userData.role);
+        // 🆕 v6.074 - Guardar rol en localStorage para que mostrarSeccionesAdmin lo encuentre
+        localStorage.setItem('userRole', userData.role);
 
-        // Guardar en sessionStorage para persistencia
-        sessionStorage.setItem('customAuth', JSON.stringify({
+        // 🆕 v6.074 - Guardar en localStorage para persistencia entre refrescos
+        localStorage.setItem('customAuth', JSON.stringify({
             type: 'custom',
             username: this.currentUser.username,
             displayName: this.currentUser.displayName,
@@ -674,9 +676,10 @@ class CustomAuth {
 
     /**
      * Logout
+     * 🆕 v6.074 - Limpiar tanto localStorage como sessionStorage
      */
     async logout() {
-        const authData = JSON.parse(sessionStorage.getItem('customAuth') || '{}');
+        const authData = JSON.parse(localStorage.getItem('customAuth') || sessionStorage.getItem('customAuth') || '{}');
 
         // Si es admin, hacer logout de Firebase
         if (authData.type === 'admin') {
@@ -687,7 +690,12 @@ class CustomAuth {
         this.currentUser = null;
         this.userRole = null;
         this.isGuest = false;
+        
+        // 🆕 v6.074 - Limpiar ambos storages
+        localStorage.removeItem('customAuth');
+        localStorage.removeItem('userRole');
         sessionStorage.removeItem('customAuth');
+        sessionStorage.removeItem('userRole');
 
         console.log('👋 Logout exitoso');
 
@@ -701,8 +709,15 @@ class CustomAuth {
      * Verificar si hay sesión activa
      */
     hasActiveSession() {
-        const authData = sessionStorage.getItem('customAuth');
+        const authData = sessionStorage.getItem('customAuth') || localStorage.getItem('customAuth');
         return !!authData;
+    }
+
+    /**
+     * 🆕 v6.074 - Verificar si está autenticado (alias de hasActiveSession)
+     */
+    isAuthenticated() {
+        return this.currentUser !== null || this.hasActiveSession();
     }
 
     /**

@@ -11,7 +11,7 @@ class LoginUI {
         this.firebaseService = window.firebaseService;
         this.customAuth = window.customAuth;
         this.isLoginModalCreated = false;
-        this.APP_VERSION = 'v6.073'; // 🆕 v6.073 - Fix sesión persistente + botón refresh único
+        this.APP_VERSION = 'v6.074'; // 🆕 v6.074 - Fix sesión persistente localStorage
         
         // 🆕 v6.070 - Limpiar rol corrupto de admin conocido ANTES de restaurar sesión
         this.fixAdminRoleIfNeeded();
