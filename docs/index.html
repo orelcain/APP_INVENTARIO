@@ -54791,21 +54791,33 @@ class InventarioCompleto {
         </div>
       `;
       
-      // Botones sobrios
+      // 🆕 v6.088 - Botones condicionados por ROL + ESTADO
       html += `
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
           <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="${btnVer}" title="${tipVer}">
             Jerarquía
           </button>
+          ${this.canEdit ? `
           <button onclick="app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
             Editar
           </button>
+          ` : `
+          <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed;" title="Solo Admin o Usuario pueden editar">
+            🔒 Editar
+          </button>
+          `}
           <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
             Contar
           </button>
+          ${this.canDelete ? `
           <button data-action="delete" data-id="${repuesto.id}" style="${btnEliminar}" title="${tipEliminar}">
             Eliminar
           </button>
+          ` : `
+          <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed;" title="Solo Admin o Usuario pueden eliminar">
+            🔒 Eliminar
+          </button>
+          `}
         </div>
       `;
     }
@@ -54829,19 +54841,35 @@ class InventarioCompleto {
           </div>
         </div>
         
+        // 🆕 v6.088 - Botones condicionados por ROL + ESTADO
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          ${this.canEdit ? `
           <button onclick="app.asignarJerarquiaYMostrar('${repuesto.id}')" style="${btnAsignar} flex: 2; min-width: 100px;" title="${tipAsignar}">
             + Ubicación
           </button>
           <button onclick="app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
             Editar
           </button>
+          ` : `
+          <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed; flex: 2; min-width: 100px;" title="Solo Admin o Usuario pueden asignar ubicación">
+            🔒 Ubicación
+          </button>
+          <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed;" title="Solo Admin o Usuario pueden editar">
+            🔒 Editar
+          </button>
+          `}
           <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
             Contar
           </button>
+          ${this.canDelete ? `
           <button data-action="delete" data-id="${repuesto.id}" style="${btnEliminar}" title="${tipEliminar}">
             Eliminar
           </button>
+          ` : `
+          <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed;" title="Solo Admin o Usuario pueden eliminar">
+            🔒 Eliminar
+          </button>
+          `}
         </div>
       `;
     }
@@ -54899,37 +54927,69 @@ class InventarioCompleto {
         </div>
       `;
       
-      // Botones según lo que falta
+      // 🆕 v6.088 - Botones según ESTADO + ROL
       html += '<div style="display: flex; gap: 6px; flex-wrap: wrap;">';
       
-      // Siempre mostrar Ver Jerarquía
+      // Siempre mostrar Ver Jerarquía (todos los roles)
       html += `
         <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="${btnVer}" title="${tipVer}">
           Jerarquía
         </button>
       `;
       
-      // Si falta mapa/área/marcador, mostrar botón para asignar
+      // Si falta mapa/área/marcador, mostrar botón para asignar (solo si canEdit)
       if (!estado.tieneMapa || !estado.tieneArea || !estado.tieneMarcador) {
+        if (this.canEdit) {
+          html += `
+            <button onclick="app.repuestoEnFlujo='${repuesto.id}'; app.continuarAMapa();" style="${btnMapa}" title="${tipMapa}">
+              Ubicar
+            </button>
+          `;
+        } else {
+          html += `
+            <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed;" title="Solo Admin o Usuario pueden ubicar en mapa">
+              🔒 Ubicar
+            </button>
+          `;
+        }
+      }
+      
+      // Editar (solo si canEdit)
+      if (this.canEdit) {
         html += `
-          <button onclick="app.repuestoEnFlujo='${repuesto.id}'; app.continuarAMapa();" style="${btnMapa}" title="${tipMapa}">
-            Ubicar
+          <button onclick="app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
+            Editar
+          </button>
+        `;
+      } else {
+        html += `
+          <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed;" title="Solo Admin o Usuario pueden editar">
+            🔒 Editar
           </button>
         `;
       }
       
-      // Editar, Contar y Eliminar siempre
+      // Contar (todos los roles)
       html += `
-        <button onclick="app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
-          Editar
-        </button>
         <button data-action="contar" data-id="${repuesto.id}" style="${btnContar}" title="${tipContar}">
           Contar
         </button>
-        <button data-action="delete" data-id="${repuesto.id}" style="${btnEliminar}" title="${tipEliminar}">
-          Eliminar
-        </button>
       `;
+      
+      // Eliminar (solo si canDelete)
+      if (this.canDelete) {
+        html += `
+          <button data-action="delete" data-id="${repuesto.id}" style="${btnEliminar}" title="${tipEliminar}">
+            Eliminar
+          </button>
+        `;
+      } else {
+        html += `
+          <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed;" title="Solo Admin o Usuario pueden eliminar">
+            🔒 Eliminar
+          </button>
+        `;
+      }
       
       html += '</div>';
     }
