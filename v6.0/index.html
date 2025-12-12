@@ -60813,6 +60813,20 @@ window.listenForSystemCommands = function() {
         lastProcessedTimestamp = timestampStr; // Marcar como procesado
         sessionStorage.setItem(RELOAD_FLAG_KEY, 'true'); // Marcar flag global
         
+        // 🆕 v6.086 - Forzar actualización del Service Worker en PWA
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+          console.log('📱 [PWA] Enviando mensaje de actualización al Service Worker...');
+          navigator.serviceWorker.controller.postMessage({
+            type: 'SKIP_WAITING'
+          });
+          
+          // Esperar a que el nuevo SW tome control
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            console.log('🔄 [PWA] Service Worker actualizado, recargando...');
+            window.location.reload(true);
+          }, { once: true });
+        }
+        
         showToast('⚡ El administrador ha enviado una actualización. Recargando...', 'info');
         setTimeout(() => {
           // Forzar recarga saltando cache
