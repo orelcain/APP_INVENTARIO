@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.090</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.091</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.090</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.091</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -55046,11 +55046,81 @@ class InventarioCompleto {
       html += '</div>';
     }
     // ══════════════════════════════════════════════════════════════
-    // CASO 4 (FALLBACK): Repuestos sin array ubicaciones[] - Mostrar botones básicos
+    // CASO 4 (FALLBACK): Repuestos sin array ubicaciones[] - Mostrar estado + botones
     // ══════════════════════════════════════════════════════════════
     else {
-      // Sin badge de estado, solo botones básicos
+      // Mostrar badge de estado según progreso
+      const progresoColor = estado.progreso === 100 ? '#22c55e' : estado.progreso >= 60 ? '#eab308' : '#f87171';
+      
+      // Generar ruta de jerarquía desde campos antiguos
+      const rutaJerarquia = [
+        repuesto.areaGeneral,
+        repuesto.subArea,
+        repuesto.sistemaEquipo,
+        repuesto.subSistema
+      ].filter(Boolean).join(' → ') || 'Sin ubicación';
+      
+      html += `
+        <div style="
+          background: rgba(${estado.progreso === 100 ? '34, 197, 94' : estado.progreso >= 60 ? '234, 179, 8' : '239, 68, 68'}, 0.06);
+          border-left: 3px solid ${progresoColor};
+          padding: 8px 10px;
+          border-radius: 4px;
+          margin-bottom: 10px;
+        ">
+          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+            <span style="color: ${progresoColor}; font-size: 0.68rem; font-weight: 600;">
+              ${estado.progreso}% COMPLETO
+            </span>
+          </div>
+          
+          <!-- Barra de progreso -->
+          <div style="width: 100%; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-bottom: 5px; overflow: hidden;">
+            <div style="width: ${estado.progreso}%; height: 100%; background: ${progresoColor}; transition: width 0.3s;"></div>
+          </div>
+          
+          <!-- Ubicación actual -->
+          <div style="font-size: 0.68rem; color: var(--text-secondary); margin-bottom: 3px;">
+            📍 ${rutaJerarquia}
+          </div>
+          
+          <!-- Lo que falta -->
+          ${estado.faltantes.length > 0 ? `
+            <div style="font-size: 0.6rem; color: var(--text-muted);">
+              Falta: ${estado.faltantes.join(', ')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+      
+      // Botones según estado + rol
       html += '<div style="display: flex; gap: 6px; flex-wrap: wrap;">';
+      
+      // Siempre mostrar Ver Jerarquía (si tiene jerarquía)
+      if (estado.tieneJerarquia) {
+        html += `
+          <button onclick="app.verRepuestoEnJerarquia('${repuesto.id}')" style="${btnVer}" title="${tipVer}">
+            Jerarquía
+          </button>
+        `;
+      }
+      
+      // Si falta mapa/área/marcador, mostrar botón Ubicar (solo si canEdit)
+      if (!estado.tieneMapa || !estado.tieneArea || !estado.tieneMarcador) {
+        if (this.canEdit) {
+          html += `
+            <button onclick="app.repuestoEnFlujo='${repuesto.id}'; app.continuarAMapa();" style="${btnMapa}" title="${tipMapa}">
+              Ubicar
+            </button>
+          `;
+        } else {
+          html += `
+            <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed;" title="Solo Admin o Usuario pueden ubicar en mapa">
+              🔒 Ubicar
+            </button>
+          `;
+        }
+      }
       
       // Botón Editar (condicional)
       if (this.canEdit) {
@@ -60948,7 +61018,7 @@ window.forceGlobalUpdate = async function() {
     await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
       timestamp: now, // 🆕 v6.084 - Date() en lugar de serverTimestamp
       triggeredBy: window.firebaseService.currentUser?.email || 'admin',
-      version: 'v6.090'
+      version: 'v6.091'
     });
     
     console.log(`✅ [forceGlobalUpdate] Comando escrito en Firestore`);
