@@ -66,17 +66,35 @@ class FirebaseService {
             this.currentUser = null;
             this.userRole = null;
             
-            // 🆕 v6.074 - NO disparar userLoggedOut si hay sesión custom activa
+            // 🆕 v6.075 - NO disparar userLoggedOut si hay sesión custom activa
             const customAuth = localStorage.getItem('customAuth') || sessionStorage.getItem('customAuth');
             if (customAuth) {
                 try {
                     const authData = JSON.parse(customAuth);
-                    // Si hay CUALQUIER tipo de sesión guardada, NO disparar logout
+                    // Si hay CUALQUIER tipo de sesión guardada, restaurar y NO disparar logout
                     if (authData.type === 'custom' || authData.type === 'guest' || authData.type === 'admin') {
-                        console.log('🔄 [v6.074] Firebase sin usuario, pero hay sesión guardada:', authData.username || authData.email, '| Tipo:', authData.type);
+                        console.log('🔄 [v6.075] Firebase sin usuario, pero hay sesión guardada:', authData.username || authData.email, '| Tipo:', authData.type);
                         // Restaurar userRole desde storage
                         this.userRole = authData.role || localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
-                        // NO disparar userLoggedOut - hay sesión válida
+                        
+                        // 🆕 v6.075 - DISPARAR evento de login para restaurar la UI
+                        const userSession = {
+                            user: {
+                                username: authData.username,
+                                email: authData.email,
+                                displayName: authData.displayName || authData.username || authData.email,
+                                role: this.userRole
+                            },
+                            role: this.userRole,
+                            type: authData.type
+                        };
+                        console.log('✅ [v6.075] Restaurando sesión y actualizando UI:', userSession.user.username || userSession.user.email);
+                        
+                        // Disparar evento para que LoginUI actualice la UI
+                        setTimeout(() => {
+                            window.dispatchEvent(new CustomEvent('customAuthSuccess', { detail: userSession }));
+                        }, 100);
+                        
                         return;
                     }
                 } catch (e) {
