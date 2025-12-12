@@ -391,9 +391,50 @@ class FirebaseService {
 
     /**
      * Verificar permisos
+     * 🆕 v6.072 - También considera sesiones custom (usuarios con nick)
      */
     isAuthenticated() {
-        return !!this.currentUser;
+        // Firebase Auth user
+        if (this.currentUser) return true;
+        
+        // 🆕 v6.072 - También verificar sesión custom (usuario con nick)
+        // Esto permite que usuarios "usuario" y "lectura" puedan leer datos
+        const customAuth = localStorage.getItem('customAuth') || sessionStorage.getItem('customAuth');
+        if (customAuth) {
+            try {
+                const authData = JSON.parse(customAuth);
+                if (authData.type === 'custom' || authData.type === 'admin' || authData.type === 'guest') {
+                    // Establecer userRole si no está establecido
+                    if (!this.userRole && authData.role) {
+                        this.userRole = authData.role;
+                    }
+                    return true;
+                }
+            } catch (e) {}
+        }
+        
+        return false;
+    }
+
+    /**
+     * 🆕 v6.072 - Obtener el rol actual (desde memoria o storage)
+     */
+    getUserRole() {
+        if (this.userRole) return this.userRole;
+        
+        // Intentar obtener de storage
+        const customAuth = localStorage.getItem('customAuth') || sessionStorage.getItem('customAuth');
+        if (customAuth) {
+            try {
+                const authData = JSON.parse(customAuth);
+                if (authData.role) {
+                    this.userRole = authData.role;
+                    return this.userRole;
+                }
+            } catch (e) {}
+        }
+        
+        return localStorage.getItem('userRole') || sessionStorage.getItem('userRole') || null;
     }
 
     isAdmin() {
