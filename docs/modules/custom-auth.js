@@ -248,49 +248,100 @@ class CustomAuth {
     }
 
     /**
-     * 🆕 v6.050 - Actualizar ubicación en app cada X segundos
+     * 🆕 v6.079 - Sistema de presencia avanzado con estados detallados
+     * Estados: 'active', 'inactive', 'background', 'away', 'offline'
      */
-    startLocationTracking() {
-        if (this.locationTrackingInterval) return;
+    startAdvancedPresenceTracking() {
+        if (this.presenceTrackingInterval) return;
         
-        const updateLocation = async () => {
+        const updatePresence = async (state = 'active') => {
             if (!this.currentUser || !this.isAuthenticated()) return;
             
-            const appLocation = this.getCurrentAppLocation();
             const collection = this.currentUser.collection || 'usuarios';
             const docId = this.currentUser.docId;
-            
             if (!docId) return;
             
             try {
-                await this.firebaseService.db.collection(collection).doc(docId).update({
-                    'presence.currentSection': appLocation,
-                    'presence.lastActivity': firebase.firestore.FieldValue.serverTimestamp()
-                });
+                const presenceData = {
+                    'presence.status': state,
+                    'presence.lastSeen': firebase.firestore.FieldValue.serverTimestamp(),
+                    'presence.currentSection': this.getCurrentAppLocation(),
+                    'presence.device': this.getDeviceInfo().type,
+                    'presence.browser': this.getDeviceInfo().browser
+                };
+                
+                // Solo actualizar lastActive cuando realmente está activo
+                if (state === 'active') {
+                    presenceData['presence.lastActive'] = firebase.firestore.FieldValue.serverTimestamp();
+                }
+                
+                await this.firebaseService.db.collection(collection).doc(docId).update(presenceData);
+                console.log(`💚 [v6.079] Presencia actualizada: ${state}`);
             } catch (e) {
-                // Silencioso - no queremos llenar los logs
+                console.warn('⚠️ Error actualizando presencia:', e.message);
             }
         };
         
-        // Actualizar inmediatamente
-        updateLocation();
+        // Heartbeat cada 30 segundos cuando está activo
+        this.presenceTrackingInterval = setInterval(() => {
+            if (!document.hidden) {
+                updatePresence('active');
+            }
+        }, 30000);
         
-        // Actualizar cada 30 segundos
-        this.locationTrackingInterval = setInterval(updateLocation, 30000);
-        
-        // También actualizar cuando cambie de pestaña
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.nav-tab, .tab-button, [data-tab]')) {
-                setTimeout(updateLocation, 500);
+        // Page Visibility API - detectar cuando se minimiza/cambia de tab
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                updatePresence('inactive');
+                console.log('📱 App inactiva (minimizada o cambió de tab)');
+            } else {
+                updatePresence('active');
+                console.log('📱 App activa nuevamente');
             }
         });
+        
+        // Detectar cuando se cierra la app
+        window.addEventListener('beforeunload', () => {
+            // Usar sendBeacon para enviar antes de cerrar
+            if (this.currentUser?.docId && this.firebaseService?.db) {
+                const collection = this.currentUser.collection || 'usuarios';
+                const docId = this.currentUser.docId;
+                
+                // Actualización síncrona final
+                this.firebaseService.db.collection(collection).doc(docId).update({
+                    'presence.status': 'away',
+                    'presence.lastSeen': firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(() => {}); // Silencioso
+            }
+        });
+        
+        // Actualizar cuando cambie de sección
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.nav-tab, .tab-button, [data-tab]')) {
+                setTimeout(() => updatePresence('active'), 500);
+            }
+        });
+        
+        // Primera actualización inmediata
+        updatePresence('active');
+    }
+
+    stopAdvancedPresenceTracking() {
+        if (this.presenceTrackingInterval) {
+            clearInterval(this.presenceTrackingInterval);
+            this.presenceTrackingInterval = null;
+        }
+    }
+    
+    /**
+     * @deprecated Usar startAdvancedPresenceTracking()
+     */
+    startLocationTracking() {
+        this.startAdvancedPresenceTracking();
     }
 
     stopLocationTracking() {
-        if (this.locationTrackingInterval) {
-            clearInterval(this.locationTrackingInterval);
-            this.locationTrackingInterval = null;
-        }
+        this.stopAdvancedPresenceTracking();
     }
 
     /**

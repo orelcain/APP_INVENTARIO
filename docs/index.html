@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.078</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.079</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.078</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.079</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60280,36 +60280,63 @@ window.loadAllUsers = async function() {
     }
     
     container.innerHTML = users.map(user => {
-      // 🆕 v6.076 - Fix detección de usuarios online (dfcortes, mantencion no aparecían)
+      // 🆕 v6.079 - Sistema de estados mejorado
       let lastSeenTime = null;
+      let lastActiveTime = null;
+      
       if (user.presence?.lastSeen) {
-        // Si es un Timestamp de Firestore con toDate()
         if (typeof user.presence.lastSeen.toDate === 'function') {
           lastSeenTime = user.presence.lastSeen.toDate();
-        }
-        // Si ya es un Date
-        else if (user.presence.lastSeen instanceof Date) {
+        } else if (user.presence.lastSeen instanceof Date) {
           lastSeenTime = user.presence.lastSeen;
-        }
-        // Si es un timestamp numérico
-        else if (typeof user.presence.lastSeen === 'number') {
+        } else if (typeof user.presence.lastSeen === 'number') {
           lastSeenTime = new Date(user.presence.lastSeen);
-        }
-        // Si es un objeto con seconds (Firestore Timestamp serializado)
-        else if (user.presence.lastSeen.seconds) {
+        } else if (user.presence.lastSeen.seconds) {
           lastSeenTime = new Date(user.presence.lastSeen.seconds * 1000);
         }
       }
       
-      const isOnline = user.presence?.status === 'online' && 
-                       lastSeenTime && 
-                       (new Date() - lastSeenTime) < 5 * 60 * 1000;
+      if (user.presence?.lastActive) {
+        if (typeof user.presence.lastActive.toDate === 'function') {
+          lastActiveTime = user.presence.lastActive.toDate();
+        } else if (user.presence.lastActive instanceof Date) {
+          lastActiveTime = user.presence.lastActive;
+        } else if (typeof user.presence.lastActive === 'number') {
+          lastActiveTime = new Date(user.presence.lastActive);
+        } else if (user.presence.lastActive.seconds) {
+          lastActiveTime = new Date(user.presence.lastActive.seconds * 1000);
+        }
+      }
       
-      console.log(`👤 [v6.076] ${user.nick || user.email}: online=${isOnline}, status=${user.presence?.status}, lastSeen=${lastSeenTime}`);
+      // 🆕 v6.079 - Estados detallados
+      const now = new Date();
+      const status = user.presence?.status || 'offline';
+      
+      let statusIcon, statusText, statusColor;
+      
+      if (status === 'active') {
+        const activeAgo = lastActiveTime ? Math.floor((now - lastActiveTime) / 1000) : 999;
+        statusIcon = '🟢';
+        statusText = activeAgo < 60 ? 'Activo ahora' : `Activo hace ${Math.floor(activeAgo / 60)}m`;
+        statusColor = '#22c55e';
+      } else if (status === 'inactive') {
+        const inactiveAgo = lastSeenTime ? Math.floor((now - lastSeenTime) / 60000) : 999;
+        statusIcon = '🟡';
+        statusText = `Inactivo hace ${inactiveAgo}m`;
+        statusColor = '#fbbf24';
+      } else if (status === 'away') {
+        const awayAgo = lastSeenTime ? Math.floor((now - lastSeenTime) / 60000) : 999;
+        statusIcon = '🔵';
+        statusText = `Ausente hace ${awayAgo}m`;
+        statusColor = '#60a5fa';
+      } else {
+        statusIcon = '⚪';
+        statusText = 'Desconectado';
+        statusColor = '#9ca3af';
+      }
       
       const roleColor = user.role === 'admin' ? '#f87171' : user.role === 'usuario' ? '#fbbf24' : '#60a5fa';
       const roleEmoji = user.role === 'admin' ? '🔴' : user.role === 'usuario' ? '🟡' : '🔵';
-      const statusIcon = isOnline ? '🟢' : '⚪';
       const isCurrentUser = user.id === window.firebaseService?.currentUser?.uid;
       const isNickUser = user.isNickUser || user.nick;
       const displayName = user.nick || user.email || 'Sin nombre';
@@ -60401,8 +60428,8 @@ window.loadAllUsers = async function() {
               <div style="font-weight: 500; color: rgba(255,255,255,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 ${isNickUser ? '👤 ' : ''}${displayName}${isCurrentUser ? ' (Tú)' : ''}
               </div>
-              <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">
-                ${user.presence?.lastSeen ? `Última vez: ${formatTimeAgo(user.presence.lastSeen.toDate())}` : 'Nunca conectado'}
+              <div style="font-size: 0.75rem; color: ${statusColor};">
+                ${statusText}
               </div>
             </div>
             ${actionButtons}
@@ -60707,13 +60734,16 @@ window.setTrackingInterval = function(seconds) {
 };
 
 // 🆕 v6.053 - Escuchar comandos del sistema (para usuarios)
+// 🆕 v6.079 - Fix: Evitar recargas múltiples con flag
 window.listenForSystemCommands = function() {
   if (!window.firebaseService?.db) return;
+  
+  let isReloading = false; // 🆕 v6.079 - Flag para evitar recargas múltiples
   
   // Escuchar comandos de actualización forzada
   window.firebaseService.db.collection('systemCommands').doc('forceUpdate')
     .onSnapshot((doc) => {
-      if (!doc.exists) return;
+      if (!doc.exists || isReloading) return; // 🆕 v6.079 - Verificar flag
       const data = doc.data();
       
       // Verificar que el comando es reciente (últimos 30 segundos)
@@ -60722,8 +60752,11 @@ window.listenForSystemCommands = function() {
         console.log('⚡ Comando de actualización recibido del admin!');
         
         // Si no es el admin que lo envió, recargar
-        const currentUser = window.firebaseService.currentUser?.email;
+        const currentUser = window.firebaseService.currentUser?.email || 
+                           window.customAuthService?.currentUser?.username;
+        
         if (currentUser !== data.triggeredBy) {
+          isReloading = true; // 🆕 v6.079 - Marcar flag
           showToast('⚡ El administrador ha enviado una actualización. Recargando...', 'info');
           setTimeout(() => {
             // Forzar recarga saltando cache
