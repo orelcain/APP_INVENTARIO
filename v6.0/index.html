@@ -60756,8 +60756,14 @@ window.setTrackingInterval = function(seconds) {
 
 // 🆕 v6.053 - Escuchar comandos del sistema (para usuarios)
 // 🆕 v6.079 - Fix: Evitar recargas múltiples con flag
+// 🆕 v6.084 - Fix: Asegurar recarga para TODOS los usuarios
 window.listenForSystemCommands = function() {
-  if (!window.firebaseService?.db) return;
+  if (!window.firebaseService?.db) {
+    console.log('⚠️ [listenForSystemCommands] NO disponible: firebaseService.db no existe');
+    return;
+  }
+  
+  console.log('🎧 [listenForSystemCommands] Iniciando listener para comandos del sistema...');
   
   // 🆕 v6.082 - Flag GLOBAL con sessionStorage para evitar múltiples recargas
   const RELOAD_FLAG_KEY = 'app_is_reloading';
@@ -60770,45 +60776,52 @@ window.listenForSystemCommands = function() {
   // Escuchar comandos de actualización forzada
   window.firebaseService.db.collection('systemCommands').doc('forceUpdate')
     .onSnapshot((doc) => {
+      console.log(`📡 [onSnapshot] Comando recibido: exists=${doc.exists}`);
       if (!doc.exists) return;
       
       // 🆕 v6.082 - Verificar flag de recarga global
       if (sessionStorage.getItem(RELOAD_FLAG_KEY) === 'true') {
+        console.log('🔄 [onSnapshot] Flag activa, ignorando comando');
         return; // Ya se procesó este comando
       }
       
       const data = doc.data();
+      console.log(`📦 [onSnapshot] Data: triggeredBy=${data.triggeredBy}, timestamp=${data.timestamp?.toDate?.()}`);
       
       // Verificar que el comando es reciente (últimos 30 segundos)
       const timestamp = data.timestamp?.toDate?.();
       if (!timestamp || (new Date() - timestamp) >= 30000) {
+        console.log(`⏰ [onSnapshot] Comando expirado o inválido`);
         return; // Comando expirado o inválido
       }
       
       // 🆕 v6.082 - Evitar procesar el mismo timestamp múltiples veces
       const timestampStr = timestamp.getTime().toString();
       if (lastProcessedTimestamp === timestampStr) {
-        console.log('⚠️ Comando ya procesado, ignorando duplicado');
+        console.log('⚠️ [onSnapshot] Comando ya procesado, ignorando duplicado');
         return;
       }
-      
-      console.log('⚡ Comando de actualización recibido del admin!');
       
       // Si no es el admin que lo envió, recargar
       const currentUser = window.firebaseService.currentUser?.email || 
                          window.customAuthService?.currentUser?.username;
       
+      console.log(`👤 [onSnapshot] currentUser=${currentUser}, triggeredBy=${data.triggeredBy}`);
+      
       if (currentUser !== data.triggeredBy) {
+        console.log('⚡ [onSnapshot] Comando de actualización recibido del admin! RECARGANDO...');
         lastProcessedTimestamp = timestampStr; // Marcar como procesado
         sessionStorage.setItem(RELOAD_FLAG_KEY, 'true'); // Marcar flag global
         
         showToast('⚡ El administrador ha enviado una actualización. Recargando...', 'info');
         setTimeout(() => {
           // Forzar recarga saltando cache
+          console.log('🔄 [RELOAD] Ejecutando location.reload()...');
           window.location.reload(true);
         }, 2000);
       } else {
         // Es el admin que lo envió, solo marcar como procesado
+        console.log('👑 [onSnapshot] Soy el admin que envió el comando, ignorando');
         lastProcessedTimestamp = timestampStr;
       }
     }, (error) => {
