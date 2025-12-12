@@ -60682,21 +60682,21 @@ window.toggleConnectionInfo = function(uniqueId) {
 window.trackingIntervalId = null;
 
 // 🆕 v6.053 - Forzar actualización global a todos los usuarios
+// 🆕 v6.084 - Fix: Timestamp con Date() + eliminar confirmación
 window.forceGlobalUpdate = async function() {
-  if (!confirm('⚠️ Esto forzará una recarga en TODOS los usuarios conectados.\n\n¿Continuar?')) {
-    return;
-  }
-  
   try {
+    const now = new Date();
+    console.log(`📤 [forceGlobalUpdate] Enviando comando: ${now.toISOString()}`);
+    
     // Guardar comando de actualización en Firestore
     await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      timestamp: now, // 🆕 v6.084 - Date() en lugar de serverTimestamp
       triggeredBy: window.firebaseService.currentUser?.email || 'admin',
-      version: 'v6.053'
+      version: 'v6.084'
     });
     
+    console.log(`✅ [forceGlobalUpdate] Comando escrito en Firestore`);
     showToast('⚡ Comando de actualización enviado a todos los usuarios', 'success');
-    console.log('⚡ Comando de actualización global enviado');
     
   } catch (error) {
     console.error('❌ Error enviando actualización:', error);
