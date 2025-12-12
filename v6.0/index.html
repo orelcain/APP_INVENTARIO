@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.081</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.082</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.081</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.082</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -60319,7 +60319,12 @@ window.loadAllUsers = async function() {
       
       // 🆕 v6.079 - Estados detallados
       const now = new Date();
-      const status = user.presence?.status || 'offline';
+      let status = user.presence?.status || 'offline';
+      
+      // 🆕 v6.082 - Compatibilidad con sistema antiguo: 'online' → 'active'
+      if (status === 'online') {
+        status = 'active';
+      }
       
       let statusIcon, statusText, statusColor;
       
@@ -60750,31 +60755,60 @@ window.setTrackingInterval = function(seconds) {
 window.listenForSystemCommands = function() {
   if (!window.firebaseService?.db) return;
   
-  let isReloading = false; // 🆕 v6.079 - Flag para evitar recargas múltiples
+  // 🆕 v6.082 - Flag GLOBAL con sessionStorage para evitar múltiples recargas
+  const RELOAD_FLAG_KEY = 'app_is_reloading';
+  
+  // Si ya está en proceso de recarga, no configurar listener
+  if (sessionStorage.getItem(RELOAD_FLAG_KEY) === 'true') {
+    console.log('⚠️ Recarga ya en curso, no escuchar comandos');
+    return;
+  }
+  
+  let lastProcessedTimestamp = null; // 🆕 v6.082 - Evitar procesar mismo comando múltiples veces
   
   // Escuchar comandos de actualización forzada
   window.firebaseService.db.collection('systemCommands').doc('forceUpdate')
     .onSnapshot((doc) => {
-      if (!doc.exists || isReloading) return; // 🆕 v6.079 - Verificar flag
+      if (!doc.exists) return;
+      
+      // 🆕 v6.082 - Verificar flag de recarga global
+      if (sessionStorage.getItem(RELOAD_FLAG_KEY) === 'true') {
+        return; // Ya se procesó este comando
+      }
+      
       const data = doc.data();
       
       // Verificar que el comando es reciente (últimos 30 segundos)
       const timestamp = data.timestamp?.toDate?.();
-      if (timestamp && (new Date() - timestamp) < 30000) {
-        console.log('⚡ Comando de actualización recibido del admin!');
+      if (!timestamp || (new Date() - timestamp) >= 30000) {
+        return; // Comando expirado o inválido
+      }
+      
+      // 🆕 v6.082 - Evitar procesar el mismo timestamp múltiples veces
+      const timestampStr = timestamp.getTime().toString();
+      if (lastProcessedTimestamp === timestampStr) {
+        console.log('⚠️ Comando ya procesado, ignorando duplicado');
+        return;
+      }
+      
+      console.log('⚡ Comando de actualización recibido del admin!');
+      
+      // Si no es el admin que lo envió, recargar
+      const currentUser = window.firebaseService.currentUser?.email || 
+                         window.customAuthService?.currentUser?.username;
+      
+      if (currentUser !== data.triggeredBy) {
+        lastProcessedTimestamp = timestampStr; // Marcar como procesado
+        sessionStorage.setItem(RELOAD_FLAG_KEY, 'true'); // Marcar flag global
         
-        // Si no es el admin que lo envió, recargar
-        const currentUser = window.firebaseService.currentUser?.email || 
-                           window.customAuthService?.currentUser?.username;
-        
-        if (currentUser !== data.triggeredBy) {
-          isReloading = true; // 🆕 v6.079 - Marcar flag
-          showToast('⚡ El administrador ha enviado una actualización. Recargando...', 'info');
-          setTimeout(() => {
-            // Forzar recarga saltando cache
-            window.location.reload(true);
-          }, 2000);
-        }
+        showToast('⚡ El administrador ha enviado una actualización. Recargando...', 'info');
+        setTimeout(() => {
+          // Forzar recarga saltando cache
+          window.location.reload(true);
+        }, 2000);
+      } else {
+        // Es el admin que lo envió, solo marcar como procesado
+        lastProcessedTimestamp = timestampStr;
       }
     }, (error) => {
       console.warn('⚠️ Error escuchando comandos:', error);
