@@ -4953,10 +4953,10 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       to { transform: rotate(360deg); }
     }
 
-    /* Mostrar solo en móvil */
+    /* 🆕 v6.073 - Botón PWA refresh flotante OCULTO - solo usamos el del header */
     @media (max-width: 768px) {
       .pwa-refresh-btn {
-        display: flex;
+        display: none !important; /* Oculto - solo un botón de refresh en header */
       }
       
       /* Ajustar posición de la campana en móvil para no chocar */
@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.072</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.073</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.072</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.073</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->

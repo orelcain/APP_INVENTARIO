@@ -5,13 +5,13 @@
 
 class LoginUI {
     constructor() {
-        console.log('🔐 [v6.070] LoginUI CONSTRUCTOR - INICIO');
-        console.log('🔐 [v6.070] customAuth en localStorage AHORA:', localStorage.getItem('customAuth') ? 'EXISTE' : 'NULL');
+        console.log('🔐 [v6.073] LoginUI CONSTRUCTOR - INICIO');
+        console.log('🔐 [v6.073] customAuth en localStorage AHORA:', localStorage.getItem('customAuth') ? 'EXISTE' : 'NULL');
         
         this.firebaseService = window.firebaseService;
         this.customAuth = window.customAuth;
         this.isLoginModalCreated = false;
-        this.APP_VERSION = 'v6.070'; // 🆕 v6.070 - Fix caché rol admin + versión scripts
+        this.APP_VERSION = 'v6.073'; // 🆕 v6.073 - Fix sesión persistente + botón refresh único
         
         // 🆕 v6.070 - Limpiar rol corrupto de admin conocido ANTES de restaurar sesión
         this.fixAdminRoleIfNeeded();
@@ -154,7 +154,7 @@ class LoginUI {
     }
 
     init() {
-        console.log('🔐 [v6.060] Iniciando LoginUI sin sesión previa...');
+        console.log('🔐 [v6.073] Iniciando LoginUI sin sesión previa...');
         
         // Crear modal de login
         this.createLoginModal();
@@ -168,19 +168,31 @@ class LoginUI {
         window.addEventListener('userLoggedOut', () => this.handleLogout());
         window.addEventListener('customAuthLogout', () => this.handleLogout());
         
+        // 🆕 v6.073 - Verificar PRIMERO si hay sesión en storage (más rápido que esperar Firebase)
+        const savedAuth = localStorage.getItem('customAuth') || sessionStorage.getItem('customAuth');
+        if (savedAuth) {
+            console.log('✅ [v6.073] Hay sesión en storage, no mostrar login');
+            this.hideLoginModal();
+            return;
+        }
+        
         // Si Firebase está autenticando, esperar
         if (this.firebaseService?.isAuthenticated()) {
-            console.log('✅ [v6.060] Firebase ya tiene sesión activa');
+            console.log('✅ [v6.073] Firebase ya tiene sesión activa');
             this.hideLoginModal();
             return;
         }
         
         // Mostrar modal de login después de un breve delay
-        console.log('⏳ [v6.060] Esperando 1s para verificar sesión de Firebase...');
+        console.log('⏳ [v6.073] Esperando 1s para verificar sesión de Firebase...');
         setTimeout(() => {
-            if (!this.firebaseService?.isAuthenticated() && !localStorage.getItem('customAuth')) {
-                console.log('🔐 [v6.060] No hay sesión - mostrando login');
+            // 🆕 v6.073 - Doble verificación antes de mostrar modal
+            const hasStoredSession = localStorage.getItem('customAuth') || sessionStorage.getItem('customAuth');
+            if (!this.firebaseService?.isAuthenticated() && !hasStoredSession) {
+                console.log('🔐 [v6.073] No hay sesión - mostrando login');
                 this.showLoginModal();
+            } else {
+                console.log('✅ [v6.073] Sesión detectada durante espera, NO mostrar login');
             }
         }, 1000);
     }
