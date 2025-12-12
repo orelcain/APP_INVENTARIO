@@ -723,6 +723,17 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       
       console.log('🔧 Sistema de Debug Universal inicializado');
     })();
+    
+    // 🆕 v6.071 - Función global showToast (wrapper para app.showToast)
+    window.showToast = function(message, type = 'info', duration = 3200) {
+      if (typeof app !== 'undefined' && typeof app.showToast === 'function') {
+        app.showToast(message, type, duration);
+      } else {
+        // Fallback: mostrar en consola si app no está disponible
+        const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+        console.log(`${icons[type] || 'ℹ️'} [Toast] ${message}`);
+      }
+    };
   </script>
 
   <!-- CSS Modular para Jerarquía de Mapas -->
@@ -17944,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.070</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.071</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18177,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.070</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.071</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
