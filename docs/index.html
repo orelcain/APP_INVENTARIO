@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.088</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.089</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.088</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.089</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -41385,6 +41385,7 @@ class InventarioCompleto {
             <div style="font-size: 0.6rem; color: ${stockColor}; font-weight: 600; text-align: center; margin-top: 0px; line-height: 1;">${stockText}</div>
           </div>
           <div class="list-actions">
+            <!-- 🆕 v6.088 - Botón CONTAR: Visible para todos (admin, usuario, lectura) -->
             <button class="btn" style="
               background: #557566;
               color: white;
@@ -41405,6 +41406,8 @@ class InventarioCompleto {
             onmouseout="this.style.background='#557566'; this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.15)'">
               Contar
             </button>
+            <!-- 🆕 v6.088 - Botón EDITAR: Condicionado por rol -->
+            ${this.canEdit ? `
             <button class="btn" style="
               background: #4A6278;
               color: white;
@@ -41425,6 +41428,26 @@ class InventarioCompleto {
             onmouseout="this.style.background='#4A6278'; this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.15)'">
               Editar
             </button>
+            ` : `
+            <button class="btn" disabled style="
+              background: rgba(100, 116, 139, 0.3);
+              color: rgba(255,255,255,0.4);
+              border: 1px solid rgba(100, 116, 139, 0.4);
+              padding: 6px 8px;
+              font-size: 0.65rem;
+              border-radius: 4px;
+              font-weight: 600;
+              cursor: not-allowed;
+              white-space: nowrap;
+              line-height: 1.1;
+              width: 55px;
+              flex: 0 0 55px;
+            " title="Solo Admin o Usuario pueden editar">
+              🔒
+            </button>
+            `}
+            <!-- 🆕 v6.088 - Botón ELIMINAR: Condicionado por rol -->
+            ${this.canDelete ? `
             <button class="btn" style="
               background: #A85555;
               color: white;
@@ -41445,6 +41468,24 @@ class InventarioCompleto {
             onmouseout="this.style.background='#A85555'; this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.15)'">
               Eliminar
             </button>
+            ` : `
+            <button class="btn" disabled style="
+              background: rgba(139, 90, 90, 0.3);
+              color: rgba(255,255,255,0.4);
+              border: 1px solid rgba(139, 90, 90, 0.4);
+              padding: 6px 8px;
+              font-size: 0.65rem;
+              border-radius: 4px;
+              font-weight: 600;
+              cursor: not-allowed;
+              white-space: nowrap;
+              line-height: 1.1;
+              width: 55px;
+              flex: 0 0 55px;
+            " title="Solo Admin o Usuario pueden eliminar">
+              🔒
+            </button>
+            `}
           </div>
         </div>
         `;
@@ -60850,7 +60891,7 @@ window.forceGlobalUpdate = async function() {
     await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
       timestamp: now, // 🆕 v6.084 - Date() en lugar de serverTimestamp
       triggeredBy: window.firebaseService.currentUser?.email || 'admin',
-      version: 'v6.087'
+      version: 'v6.089'
     });
     
     console.log(`✅ [forceGlobalUpdate] Comando escrito en Firestore`);

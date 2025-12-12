@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v6.088 - Botones contextuales por ROL + ESTADO
+ * v6.089 - Botones por ROL en TODAS las vistas (PC + PWA móvil)
  */
 
-const CACHE_NAME = 'inventario-v6.088';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.088';
+const CACHE_NAME = 'inventario-v6.089';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.089';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
