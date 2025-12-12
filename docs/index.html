@@ -34498,7 +34498,8 @@ class InventarioCompleto {
     if (!this.needsApproval) return { needsApproval: false };
     
     const currentUser = window.customAuthService?.currentUser || window.firebaseService?.currentUser;
-    const userName = currentUser?.displayName || currentUser?.username || currentUser?.email || 'Usuario';
+    // 🆕 v6.087 - Obtener nombre real del usuario
+    const userName = currentUser?.username || currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Usuario';
     
     const request = {
       id: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -60495,8 +60496,9 @@ window.loadPendingRequests = async function() {
     console.log(`📝 [Solicitudes] Total docs en actionRequests: ${snapshot.size}`);
     
     // Filtrar y ordenar en JavaScript
+    // 🆕 v6.087 - Usar doc.id de Firestore (no el campo id interno)
     let requests = snapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .map(doc => ({ firestoreId: doc.id, ...doc.data() }))
       .filter(req => req.status === 'pending')
       .sort((a, b) => new Date(b.requestedAt || 0) - new Date(a.requestedAt || 0));
     
@@ -60557,10 +60559,10 @@ window.loadPendingRequests = async function() {
               ` : ''}
             </div>
             <div style="display: flex; gap: 6px;">
-              <button onclick="approveRequest('${req.id}')" 
+              <button onclick="approveRequest('${req.firestoreId}')" 
                       style="padding: 6px 12px; border-radius: 6px; border: none; background: #22c55e; color: white; font-size: 0.75rem; cursor: pointer; font-weight: 500;"
                       title="Aprobar solicitud">✓ Aprobar</button>
-              <button onclick="rejectRequest('${req.id}')" 
+              <button onclick="rejectRequest('${req.firestoreId}')" 
                       style="padding: 6px 12px; border-radius: 6px; border: none; background: #ef4444; color: white; font-size: 0.75rem; cursor: pointer; font-weight: 500;"
                       title="Rechazar solicitud">✕ Rechazar</button>
             </div>
