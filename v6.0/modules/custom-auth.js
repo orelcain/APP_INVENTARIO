@@ -706,10 +706,17 @@ class CustomAuth {
     }
 
     /**
-     * Restaurar sesión desde sessionStorage
+     * Restaurar sesión desde sessionStorage o localStorage
+     * 🆕 v6.069 - Priorizar localStorage para admins y verificar rol con firebaseService
      */
     restoreSession() {
-        const authData = JSON.parse(sessionStorage.getItem('customAuth') || '{}');
+        // 🆕 v6.069 - Primero intentar localStorage (usado por firebase-service para admins)
+        let authData = JSON.parse(localStorage.getItem('customAuth') || '{}');
+        
+        // Si no hay en localStorage, intentar sessionStorage
+        if (!authData.type) {
+            authData = JSON.parse(sessionStorage.getItem('customAuth') || '{}');
+        }
 
         if (!authData.type) {
             return null;
@@ -717,8 +724,14 @@ class CustomAuth {
 
         if (authData.type === 'admin') {
             this.currentUser = { email: authData.email };
-            this.userRole = authData.role;
+            // 🆕 v6.069 - Obtener rol del firebaseService si está disponible, o de localStorage
+            this.userRole = this.firebaseService?.userRole || 
+                           authData.role || 
+                           localStorage.getItem('userRole') || 
+                           'admin'; // Default para admins conocidos
             this.isGuest = false;
+            
+            console.log('🔄 [v6.069] Sesión admin restaurada, rol:', this.userRole);
         } else if (authData.type === 'custom') {
             this.currentUser = {
                 username: authData.username,

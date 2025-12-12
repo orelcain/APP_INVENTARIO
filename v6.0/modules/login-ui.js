@@ -439,13 +439,21 @@ class LoginUI {
             return;
         }
         
-        // Obtener rol de múltiples fuentes
-        const role = detail.role || 
-                     detail.user?.role || 
-                     localStorage.getItem('userRole') ||
-                     'lectura';
+        // 🆕 v6.069 - Obtener rol de múltiples fuentes, priorizando firebaseService para admins
+        let role = detail.role || 
+                   detail.user?.role || 
+                   window.firebaseService?.userRole ||
+                   localStorage.getItem('userRole');
         
-        console.log('✅ [v6.058] Usuario autenticado:', detail.user, 'Rol:', role);
+        // 🆕 v6.069 - Si es tipo admin y el rol está indefinido, asumir 'admin'
+        if (!role && detail.type === 'admin') {
+            role = 'admin';
+        }
+        
+        // Default a lectura si todo falla
+        role = role || 'lectura';
+        
+        console.log('✅ [v6.069] Usuario autenticado:', detail.user, 'Rol:', role, 'Type:', detail.type);
 
         // Ocultar modal de login
         this.hideLoginModal();

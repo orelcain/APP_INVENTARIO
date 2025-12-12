@@ -229,11 +229,17 @@ class FirebaseService {
 
     /**
      * Login con email y password
+     * 🆕 v6.069 - Devuelve el rol después de cargarlo
      */
     async login(email, password) {
         try {
             const userCredential = await this.auth.signInWithEmailAndPassword(email, password);
-            return { success: true, user: userCredential.user };
+            this.currentUser = userCredential.user;
+            
+            // 🆕 v6.069 - Cargar rol inmediatamente y devolverlo
+            await this.loadUserRole();
+            
+            return { success: true, user: userCredential.user, role: this.userRole };
         } catch (error) {
             console.error('❌ Error en login:', error);
             return { success: false, error: this.getErrorMessage(error) };
@@ -484,56 +490,65 @@ class FirebaseService {
 
     /**
      * Obtener todos los usuarios (solo admin)
-     * 🆕 v6.054 - Fix duplicados mejorado: excluir por email Y por ID
+     * 🆕 v6.069 - Fix duplicados DEFINITIVO: usar Map para garantizar unicidad por email
      */
     async getAllUsers() {
         if (!this.isAdmin()) return [];
         
         try {
-            // 🆕 v6.054 - Primero obtener admins de adminUsers
+            // Map para almacenar usuarios únicos por email (normalizado)
+            const uniqueUsers = new Map();
+            
+            // 1. Primero obtener admins de adminUsers
             const adminsSnapshot = await this.db.collection('adminUsers').get();
-            const admins = adminsSnapshot.docs.map(doc => ({
-                id: doc.id,
-                isAdminUser: true,
-                role: 'admin',
-                ...doc.data()
-            }))
-            // Filtrar admins sin email válido
-            .filter(admin => admin.email && !admin.email.includes('undefined') && admin.email.length > 3);
+            adminsSnapshot.docs.forEach(doc => {
+                const data = doc.data();
+                const email = (data.email || '').toLowerCase().trim();
+                if (email && email.length > 3 && !email.includes('undefined')) {
+                    uniqueUsers.set(email, {
+                        id: doc.id,
+                        isAdminUser: true,
+                        role: 'admin',
+                        ...data,
+                        email: email
+                    });
+                }
+            });
             
-            // Crear Sets para filtrar duplicados
-            const adminEmails = new Set(admins.map(a => a.email?.toLowerCase()).filter(Boolean));
-            const adminIds = new Set(admins.map(a => a.id));
-            
-            // Obtener usuarios de la colección 'usuarios'
+            // 2. Obtener usuarios de la colección 'usuarios'
             const usuariosSnapshot = await this.db.collection(this.COLLECTIONS.USUARIOS).get();
-            const usuarios = usuariosSnapshot.docs
-                .map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }))
-                // 🆕 v6.054 - Filtrar:
-                // 1. Usuarios que ya están en adminUsers (por email o ID)
-                // 2. Usuarios sin identidad válida (sin nick, username, ni email)
-                // 3. Usuarios con rol admin que ya aparecen arriba
-                .filter(user => {
-                    const userEmail = (user.email || '').toLowerCase();
-                    const emailMatch = userEmail && adminEmails.has(userEmail);
-                    const idMatch = adminIds.has(user.id);
-                    const isAdminRole = user.role === 'admin';
-                    const hasValidIdentity = user.nick || user.username || (userEmail && !userEmail.includes('undefined') && userEmail.length > 3);
-                    
-                    // Excluir si: coincide email con admin, coincide ID, es admin sin estar en adminUsers, o no tiene identidad
-                    if (emailMatch || idMatch) return false;
-                    if (isAdminRole && userEmail && adminEmails.has(userEmail)) return false;
-                    if (!hasValidIdentity) return false;
-                    
-                    return true;
-                });
+            usuariosSnapshot.docs.forEach(doc => {
+                const data = doc.data();
+                const email = (data.email || '').toLowerCase().trim();
+                const nick = data.nick || data.username;
+                
+                // Si tiene nick (usuario custom), usar nick como clave
+                if (nick) {
+                    const nickKey = `nick:${nick.toLowerCase()}`;
+                    if (!uniqueUsers.has(nickKey)) {
+                        uniqueUsers.set(nickKey, {
+                            id: doc.id,
+                            ...data,
+                            nick: nick
+                        });
+                    }
+                } 
+                // Si tiene email válido y NO está ya como admin
+                else if (email && email.length > 3 && !email.includes('undefined')) {
+                    // Solo agregar si no existe ya (los admins tienen prioridad)
+                    if (!uniqueUsers.has(email)) {
+                        uniqueUsers.set(email, {
+                            id: doc.id,
+                            ...data,
+                            email: email
+                        });
+                    }
+                }
+            });
             
-            // Combinar: primero admins, luego usuarios (sin duplicados)
-            console.log(`📋 [v6.054] Usuarios: ${admins.length} admins + ${usuarios.length} usuarios válidos`);
-            return [...admins, ...usuarios];
+            const result = Array.from(uniqueUsers.values());
+            console.log(`📋 [v6.069] Usuarios únicos: ${result.length} (sin duplicados)`);
+            return result;
         } catch (error) {
             console.error('❌ Error obteniendo usuarios:', error);
             return [];

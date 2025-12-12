@@ -24,12 +24,36 @@ class FirebaseService {
 
     /**
      * Manejar cambios en el estado de autenticación
+     * 🆕 v6.058 - Guardar en localStorage para persistencia entre actualizaciones
+     * 🆕 v6.066 - Ignorar usuarios anónimos (usados para custom auth)
      */
     async handleAuthStateChanged(user) {
+        console.log('🔥 [v6.066] handleAuthStateChanged llamado:', user ? `UID: ${user.uid}, isAnonymous: ${user.isAnonymous}, email: ${user.email}` : 'NULL');
+        
         if (user) {
+            // 🆕 v6.066 - Ignorar usuarios anónimos de Firebase (usados para custom auth)
+            if (user.isAnonymous) {
+                console.log('🔄 [v6.066] Usuario anónimo de Firebase detectado - ignorando (usado para custom auth)');
+                // NO hacer nada más - la sesión custom ya está manejada
+                return;
+            }
+            
+            // Solo procesar usuarios NO anónimos (admins con email/password)
+            console.log('✅ [v6.066] Usuario NO anónimo - procesando como admin...');
+            
             this.currentUser = user;
             await this.loadUserRole();
             console.log('✅ Usuario autenticado:', user.email, '| Rol:', this.userRole);
+            
+            // 🆕 v6.058 - Guardar en localStorage para persistir entre actualizaciones
+            localStorage.setItem('customAuth', JSON.stringify({
+                type: 'admin',
+                email: user.email,
+                role: this.userRole,
+                uid: user.uid,
+                loginTime: new Date().toISOString()
+            }));
+            localStorage.setItem('userRole', this.userRole);
             
             // 🆕 v6.050 - Actualizar presencia de admin
             this.updateAdminPresence(user);
@@ -41,7 +65,24 @@ class FirebaseService {
         } else {
             this.currentUser = null;
             this.userRole = null;
-            console.log('❌ Usuario no autenticado');
+            
+            // 🆕 v6.064 - NO disparar userLoggedOut si hay sesión custom activa
+            const customAuth = localStorage.getItem('customAuth');
+            if (customAuth) {
+                try {
+                    const authData = JSON.parse(customAuth);
+                    if (authData.type !== 'admin') {
+                        console.log('🔄 [v6.064] Firebase sin usuario, pero hay sesión custom activa:', authData.username);
+                        // NO disparar userLoggedOut - hay sesión custom válida
+                        return;
+                    }
+                } catch (e) {}
+            }
+            
+            console.log('❌ Usuario no autenticado (sin sesión custom)');
+            
+            // 🆕 v6.058 - Limpiar localStorage solo si fue un logout explícito
+            // (no si simplemente no hay sesión al cargar)
             
             window.dispatchEvent(new CustomEvent('userLoggedOut'));
         }
@@ -188,11 +229,17 @@ class FirebaseService {
 
     /**
      * Login con email y password
+     * 🆕 v6.069 - Devuelve el rol después de cargarlo
      */
     async login(email, password) {
         try {
             const userCredential = await this.auth.signInWithEmailAndPassword(email, password);
-            return { success: true, user: userCredential.user };
+            this.currentUser = userCredential.user;
+            
+            // 🆕 v6.069 - Cargar rol inmediatamente y devolverlo
+            await this.loadUserRole();
+            
+            return { success: true, user: userCredential.user, role: this.userRole };
         } catch (error) {
             console.error('❌ Error en login:', error);
             return { success: false, error: this.getErrorMessage(error) };
@@ -200,10 +247,14 @@ class FirebaseService {
     }
 
     /**
-     * Logout
+     * Logout - 🆕 v6.058 - Limpia localStorage
      */
     async logout() {
         try {
+            // 🆕 v6.058 - Limpiar localStorage al hacer logout explícito
+            localStorage.removeItem('customAuth');
+            localStorage.removeItem('userRole');
+            
             await this.auth.signOut();
             this.detachAllListeners();
             return { success: true };
@@ -243,7 +294,7 @@ class FirebaseService {
 
     /**
      * Cargar rol del usuario desde Firestore
-     * 🆕 v6.069 - Verificar primero si es admin conocido por email
+     * 🆕 v6.068 - Buscar primero en adminUsers y auto-reparar si es necesario
      */
     async loadUserRole() {
         if (!this.currentUser) return null;
@@ -259,19 +310,32 @@ class FirebaseService {
             console.log('🔍 [v6.069] isKnownAdmin:', isKnownAdmin);
             
             if (isKnownAdmin) {
-                console.log('✅ [v6.069] Email reconocido como admin:', this.currentUser.email);
+                console.log('✅ [v6.068] Email reconocido como admin:', this.currentUser.email);
                 this.userRole = this.USER_ROLES.ADMIN;
                 
-                // Auto-reparar: actualizar documento en usuarios para consistencia
+                // Auto-reparar: crear/actualizar documento en adminUsers
+                try {
+                    await this.db.collection('adminUsers').doc(this.currentUser.uid).set({
+                        email: this.currentUser.email,
+                        role: 'admin',
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        autoRepaired: true
+                    }, { merge: true });
+                    console.log('✅ [v6.068] Documento admin auto-reparado en adminUsers');
+                } catch (e) {
+                    console.warn('⚠️ [v6.068] No se pudo auto-reparar adminUsers:', e.message);
+                }
+                
+                // También en usuarios para consistencia
                 try {
                     await this.db.collection(this.COLLECTIONS.USUARIOS).doc(this.currentUser.uid).set({
                         email: this.currentUser.email,
                         role: 'admin',
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     }, { merge: true });
-                    console.log('✅ [v6.069] Documento admin auto-reparado en usuarios');
+                    console.log('✅ [v6.068] Documento admin auto-reparado en usuarios');
                 } catch (e) {
-                    console.warn('⚠️ [v6.069] No se pudo auto-reparar usuarios:', e.message);
+                    console.warn('⚠️ [v6.068] No se pudo auto-reparar usuarios:', e.message);
                 }
                 
                 return this.userRole;
@@ -425,30 +489,66 @@ class FirebaseService {
     }
 
     /**
-     * Obtener todos los usuarios (solo admin) - 🆕 v6.050 incluye admins
+     * Obtener todos los usuarios (solo admin)
+     * 🆕 v6.069 - Fix duplicados DEFINITIVO: usar Map para garantizar unicidad por email
      */
     async getAllUsers() {
         if (!this.isAdmin()) return [];
         
         try {
-            // Obtener usuarios normales
-            const usuariosSnapshot = await this.db.collection(this.COLLECTIONS.USUARIOS).get();
-            const usuarios = usuariosSnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            // Map para almacenar usuarios únicos por email (normalizado)
+            const uniqueUsers = new Map();
             
-            // 🆕 v6.050 - También obtener admins
+            // 1. Primero obtener admins de adminUsers
             const adminsSnapshot = await this.db.collection('adminUsers').get();
-            const admins = adminsSnapshot.docs.map(doc => ({
-                id: doc.id,
-                isAdminUser: true,
-                role: 'admin',
-                ...doc.data()
-            }));
+            adminsSnapshot.docs.forEach(doc => {
+                const data = doc.data();
+                const email = (data.email || '').toLowerCase().trim();
+                if (email && email.length > 3 && !email.includes('undefined')) {
+                    uniqueUsers.set(email, {
+                        id: doc.id,
+                        isAdminUser: true,
+                        role: 'admin',
+                        ...data,
+                        email: email
+                    });
+                }
+            });
             
-            // Combinar: primero admins, luego usuarios
-            return [...admins, ...usuarios];
+            // 2. Obtener usuarios de la colección 'usuarios'
+            const usuariosSnapshot = await this.db.collection(this.COLLECTIONS.USUARIOS).get();
+            usuariosSnapshot.docs.forEach(doc => {
+                const data = doc.data();
+                const email = (data.email || '').toLowerCase().trim();
+                const nick = data.nick || data.username;
+                
+                // Si tiene nick (usuario custom), usar nick como clave
+                if (nick) {
+                    const nickKey = `nick:${nick.toLowerCase()}`;
+                    if (!uniqueUsers.has(nickKey)) {
+                        uniqueUsers.set(nickKey, {
+                            id: doc.id,
+                            ...data,
+                            nick: nick
+                        });
+                    }
+                } 
+                // Si tiene email válido y NO está ya como admin
+                else if (email && email.length > 3 && !email.includes('undefined')) {
+                    // Solo agregar si no existe ya (los admins tienen prioridad)
+                    if (!uniqueUsers.has(email)) {
+                        uniqueUsers.set(email, {
+                            id: doc.id,
+                            ...data,
+                            email: email
+                        });
+                    }
+                }
+            });
+            
+            const result = Array.from(uniqueUsers.values());
+            console.log(`📋 [v6.069] Usuarios únicos: ${result.length} (sin duplicados)`);
+            return result;
         } catch (error) {
             console.error('❌ Error obteniendo usuarios:', error);
             return [];
