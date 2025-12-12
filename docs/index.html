@@ -60492,11 +60492,21 @@ window.loadPendingRequests = async function() {
     // 🆕 v6.052 - Query simplificada para evitar necesitar índices compuestos
     const snapshot = await window.firebaseService.db.collection('actionRequests').get();
     
+    console.log(`📝 [Solicitudes] Total docs en actionRequests: ${snapshot.size}`);
+    
     // Filtrar y ordenar en JavaScript
     let requests = snapshot.docs
       .map(doc => ({ id: doc.id, ...doc.data() }))
       .filter(req => req.status === 'pending')
       .sort((a, b) => new Date(b.requestedAt || 0) - new Date(a.requestedAt || 0));
+    
+    console.log(`📝 [Solicitudes] Pendientes: ${requests.length}`);
+    requests.forEach((req, idx) => {
+      console.log(`  ${idx+1}. [${req.actionType}] "${req.targetName}" por ${req.requestedBy} - ${new Date(req.requestedAt).toLocaleString()}`);
+      if (req.data?.tipo === 'conteo') {
+        console.log(`     📊 Conteo: ${req.data.cantidadAnterior} → ${req.data.cantidadNueva} (${req.data.diferencia >= 0 ? '+' : ''}${req.data.diferencia})`);
+      }
+    });
     
     if (countBadge) {
       countBadge.textContent = requests.length;
@@ -60504,6 +60514,7 @@ window.loadPendingRequests = async function() {
     }
     
     if (requests.length === 0) {
+      console.log('✅ [Solicitudes] No hay pendientes');
       container.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; text-align: center;">✅ No hay solicitudes pendientes</p>';
       return;
     }
@@ -60588,10 +60599,16 @@ window.approveRequest = async function(requestId) {
     
     if (!doc.exists) {
       showToast('Solicitud no encontrada', 'error');
+      console.error('❌ [Aprobar] Solicitud no encontrada:', requestId);
       return;
     }
     
     const request = doc.data();
+    console.log(`✅ [Aprobar] Procesando solicitud:`, request);
+    console.log(`   - Tipo: ${request.actionType}`);
+    console.log(`   - Target: ${request.targetType} "${request.targetName}"`);
+    console.log(`   - Usuario: ${request.requestedBy}`);
+    console.log(`   - Fecha: ${new Date(request.requestedAt).toLocaleString()}`);
     
     // Ejecutar la acción según el tipo
     let success = false;
@@ -60638,6 +60655,7 @@ window.approveRequest = async function(requestId) {
       reviewedAt: new Date().toISOString()
     });
     
+    console.log(`✅ [Aprobar] Solicitud aprobada y ejecutada. Success: ${success}`);
     showToast(`✅ Solicitud aprobada${success ? ' y ejecutada' : ''}`, 'success');
     
     // Recargar solicitudes y datos
@@ -60656,6 +60674,9 @@ window.rejectRequest = async function(requestId) {
   if (reason === null) return; // Canceló
   
   try {
+    console.log(`❌ [Rechazar] Rechazando solicitud: ${requestId}`);
+    console.log(`   - Motivo: ${reason || 'Sin motivo especificado'}`);
+    
     await window.firebaseService.db.collection('actionRequests').doc(requestId).update({
       status: 'rejected',
       reviewedBy: window.firebaseService.currentUser?.email || 'admin',
@@ -60663,6 +60684,7 @@ window.rejectRequest = async function(requestId) {
       reviewNote: reason || 'Sin motivo especificado'
     });
     
+    console.log('✅ [Rechazar] Solicitud rechazada correctamente');
     showToast('❌ Solicitud rechazada', 'info');
     loadPendingRequests();
     
