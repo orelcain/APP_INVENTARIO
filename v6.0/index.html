@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.089</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.090</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.089</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.090</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -55033,6 +55033,52 @@ class InventarioCompleto {
       
       html += '</div>';
     }
+    // ══════════════════════════════════════════════════════════════
+    // CASO 4 (FALLBACK): Repuestos sin array ubicaciones[] - Mostrar botones básicos
+    // ══════════════════════════════════════════════════════════════
+    else {
+      // Sin badge de estado, solo botones básicos
+      html += '<div style="display: flex; gap: 6px; flex-wrap: wrap;">';
+      
+      // Botón Editar (condicional)
+      if (this.canEdit) {
+        html += `
+          <button onclick="app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
+            Editar
+          </button>
+        `;
+      } else {
+        html += `
+          <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed;" title="Solo Admin o Usuario pueden editar">
+            🔒 Editar
+          </button>
+        `;
+      }
+      
+      // Botón Contar (todos)
+      html += `
+        <button onclick="app.abrirModalConteoIndividual('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
+          Contar
+        </button>
+      `;
+      
+      // Botón Eliminar (condicional)
+      if (this.canDelete) {
+        html += `
+          <button onclick="app.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
+            Eliminar
+          </button>
+        `;
+      } else {
+        html += `
+          <button disabled style="${btnBase} background: rgba(100, 116, 139, 0.2); color: rgba(255,255,255,0.3); cursor: not-allowed;" title="Solo Admin o Usuario pueden eliminar">
+            🔒 Eliminar
+          </button>
+        `;
+      }
+      
+      html += '</div>';
+    }
     
     html += '</div>';
     return html;
@@ -60890,7 +60936,7 @@ window.forceGlobalUpdate = async function() {
     await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
       timestamp: now, // 🆕 v6.084 - Date() en lugar de serverTimestamp
       triggeredBy: window.firebaseService.currentUser?.email || 'admin',
-      version: 'v6.089'
+      version: 'v6.090'
     });
     
     console.log(`✅ [forceGlobalUpdate] Comando escrito en Firestore`);
