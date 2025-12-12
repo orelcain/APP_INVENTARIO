@@ -243,12 +243,41 @@ class FirebaseService {
 
     /**
      * Cargar rol del usuario desde Firestore
+     * 🆕 v6.069 - Verificar primero si es admin conocido por email
      */
     async loadUserRole() {
         if (!this.currentUser) return null;
 
         try {
             console.log('🔍 Buscando rol para UID:', this.currentUser.uid);
+            
+            // 🆕 v6.069 - Primero verificar si es un admin conocido por email
+            const adminEmails = ['orelcain@hotmail.com']; // Lista de emails admin
+            const userEmail = (this.currentUser.email || '').toLowerCase().trim();
+            console.log('🔍 [v6.069] Verificando email:', userEmail, '| adminEmails:', adminEmails);
+            const isKnownAdmin = userEmail && adminEmails.includes(userEmail);
+            console.log('🔍 [v6.069] isKnownAdmin:', isKnownAdmin);
+            
+            if (isKnownAdmin) {
+                console.log('✅ [v6.069] Email reconocido como admin:', this.currentUser.email);
+                this.userRole = this.USER_ROLES.ADMIN;
+                
+                // Auto-reparar: actualizar documento en usuarios para consistencia
+                try {
+                    await this.db.collection(this.COLLECTIONS.USUARIOS).doc(this.currentUser.uid).set({
+                        email: this.currentUser.email,
+                        role: 'admin',
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                    console.log('✅ [v6.069] Documento admin auto-reparado en usuarios');
+                } catch (e) {
+                    console.warn('⚠️ [v6.069] No se pudo auto-reparar usuarios:', e.message);
+                }
+                
+                return this.userRole;
+            }
+            
+            // Para usuarios no-admin, buscar normalmente
             const doc = await this.db.collection(this.COLLECTIONS.USUARIOS)
                 .doc(this.currentUser.uid)
                 .get();
@@ -268,7 +297,7 @@ class FirebaseService {
                 }
             } else {
                 console.warn('⚠️ Usuario no encontrado en Firestore, asignando rol lectura');
-                // Usuario nuevo, asignar rol por defecto
+                // Usuario nuevo, asignar rol por defecto (NO admin)
                 this.userRole = this.USER_ROLES.LECTURA;
                 await this.setUserRole(this.currentUser.uid, this.userRole);
             }

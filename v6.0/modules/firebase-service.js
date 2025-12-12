@@ -296,9 +296,12 @@ class FirebaseService {
         try {
             console.log('🔍 Buscando rol para UID:', this.currentUser.uid);
             
-            // 🆕 v6.068 - Primero verificar si es un admin conocido por email
+            // 🆕 v6.069 - Primero verificar si es un admin conocido por email
             const adminEmails = ['orelcain@hotmail.com']; // Lista de emails admin
-            const isKnownAdmin = this.currentUser.email && adminEmails.includes(this.currentUser.email.toLowerCase());
+            const userEmail = (this.currentUser.email || '').toLowerCase().trim();
+            console.log('🔍 [v6.069] Verificando email:', userEmail, '| adminEmails:', adminEmails);
+            const isKnownAdmin = userEmail && adminEmails.includes(userEmail);
+            console.log('🔍 [v6.069] isKnownAdmin:', isKnownAdmin);
             
             if (isKnownAdmin) {
                 console.log('✅ [v6.068] Email reconocido como admin:', this.currentUser.email);
