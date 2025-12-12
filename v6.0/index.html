@@ -60532,12 +60532,15 @@ window.loadPendingRequests = async function() {
                 <b>"${req.targetName || 'Sin nombre'}"</b>
               </div>
               ${detalleExtra}
+              <div style="font-size: 0.8rem; color: #60a5fa; margin-top: 6px; background: rgba(96, 165, 250, 0.1); padding: 4px 8px; border-radius: 4px; display: inline-block;">
+                👤 <strong>${req.requestedBy || 'Usuario desconocido'}</strong>
+              </div>
               <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 4px;">
-                👤 ${req.requestedBy} · ${timeAgo}
+                🕐 ${timeAgo}
               </div>
               ${req.data ? `
                 <details style="margin-top: 8px;">
-                  <summary style="cursor: pointer; font-size: 0.75rem; color: #93c5fd;">Ver detalles</summary>
+                  <summary style="cursor: pointer; font-size: 0.75rem; color: #93c5fd;">Ver detalles técnicos</summary>
                   <pre style="font-size: 0.65rem; color: rgba(255,255,255,0.6); background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; margin-top: 4px; overflow-x: auto; max-height: 150px;">${JSON.stringify(req.data, null, 2)}</pre>
                 </details>
               ` : ''}
@@ -60600,27 +60603,31 @@ window.approveRequest = async function(requestId) {
         success = result.success;
       }
     } else if (request.actionType === 'edit') {
-      // Editar el elemento
+      // 🆕 v6.087 - Detectar si es conteo o edición normal
       if (request.targetType === 'repuesto' && request.targetId && request.data) {
-        const result = await window.firebaseService.update('repuestos', request.targetId, request.data);
-        success = result.success;
+        // Si es conteo (tiene cantidadNueva y tipo='conteo')
+        if (request.data.tipo === 'conteo' && request.data.cantidadNueva !== undefined) {
+          const result = await window.firebaseService.update('repuestos', request.targetId, {
+            cantidad: request.data.cantidadNueva,
+            ultimoConteo: new Date().toISOString(),
+            ultimaModificacion: new Date().toISOString()
+          });
+          success = result.success;
+          if (success) {
+            console.log(`📊 Conteo aprobado: ${request.data.cantidadAnterior} → ${request.data.cantidadNueva} (diff: ${request.data.diferencia})`);
+            showToast(`📊 Conteo actualizado: ${request.data.cantidadAnterior} → ${request.data.cantidadNueva}`, 'success');
+          }
+        } else {
+          // Edición normal
+          const result = await window.firebaseService.update('repuestos', request.targetId, request.data);
+          success = result.success;
+        }
       }
     } else if (request.actionType === 'delete') {
       // Eliminar el elemento
       if (request.targetType === 'repuesto' && request.targetId) {
         const result = await window.firebaseService.delete('repuestos', request.targetId);
         success = result.success;
-      }
-    } else if (request.actionType === 'edit-count') {
-      // 🆕 v6.052 - Actualizar solo la cantidad
-      if (request.targetType === 'repuesto' && request.targetId && request.data) {
-        const result = await window.firebaseService.update('repuestos', request.targetId, {
-          cantidad: request.data.nuevaCantidad
-        });
-        success = result.success;
-        if (success) {
-          console.log(`📊 Cantidad actualizada: ${request.data.cantidadAnterior} → ${request.data.nuevaCantidad}`);
-        }
       }
     }
     
