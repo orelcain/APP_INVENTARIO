@@ -723,8 +723,9 @@ class CustomAuth {
     /**
      * Restaurar sesión desde sessionStorage o localStorage
      * 🆕 v6.069 - Priorizar localStorage para admins y verificar rol con firebaseService
+     * 🆕 v6.078 - Actualizar presencia en Firestore al restaurar sesión
      */
-    restoreSession() {
+    async restoreSession() {
         // 🆕 v6.069 - Primero intentar localStorage (usado por firebase-service para admins)
         let authData = JSON.parse(localStorage.getItem('customAuth') || '{}');
         
@@ -751,10 +752,29 @@ class CustomAuth {
             this.currentUser = {
                 username: authData.username,
                 displayName: authData.displayName,
-                role: authData.role
+                role: authData.role,
+                collection: authData.collection || 'usuarios',
+                docId: authData.docId
             };
             this.userRole = authData.role;
             this.isGuest = false;
+            
+            // 🆕 v6.078 - Actualizar presencia en Firestore al restaurar sesión custom
+            if (authData.collection && authData.docId && this.firebaseService?.db) {
+                try {
+                    const deviceInfo = this.getDeviceInfo();
+                    await this.firebaseService.db.collection(authData.collection).doc(authData.docId).update({
+                        'presence.status': 'online',
+                        'presence.lastSeen': firebase.firestore.FieldValue.serverTimestamp(),
+                        'presence.device': deviceInfo.type,
+                        'presence.browser': deviceInfo.browser,
+                        'presence.currentSection': this.getCurrentAppLocation()
+                    });
+                    console.log('✅ [v6.078] Presencia actualizada al restaurar sesión:', authData.username);
+                } catch (e) {
+                    console.warn('⚠️ [v6.078] Error actualizando presencia al restaurar:', e.message);
+                }
+            }
         } else if (authData.type === 'guest') {
             this.currentUser = { username: 'invitado', displayName: 'Invitado', role: 'lectura' };
             this.userRole = 'lectura';

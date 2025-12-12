@@ -125,11 +125,11 @@ class LoginUI {
         
         // Restaurar sesión en customAuth
         if (customAuthInstance) {
-            console.log('🔄 [v6.067] Intentando restoreSession...');
-            const session = customAuthInstance.restoreSession();
-            console.log('🔄 [v6.067] Resultado restoreSession:', session);
+            console.log('🔄 [v6.078] Intentando restoreSession (async)...');
+            const session = await customAuthInstance.restoreSession(); // 🆕 v6.078 - Ahora es async
+            console.log('🔄 [v6.078] Resultado restoreSession:', session);
             if (session && session.user) {
-                console.log('✅ [v6.067] Sesión restaurada:', session.user.username || session.user.email, '| Rol:', session.role);
+                console.log('✅ [v6.078] Sesión restaurada:', session.user.username || session.user.email, '| Rol:', session.role);
                 this.handleLoginSuccess(session);
                 return;
             }
