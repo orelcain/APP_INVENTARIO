@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v6.091 - Agregar badges de ESTADO al CASO 4 (fallback)
+ * v6.092 - Pinch-to-zoom real en modal de verificación de etiquetas
  */
 
-const CACHE_NAME = 'inventario-v6.091';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.091';
+const CACHE_NAME = 'inventario-v6.092';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.092';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

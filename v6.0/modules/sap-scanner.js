@@ -701,7 +701,7 @@ class SAPScanner {
                             <img id="sapSuggestionsImage" src="" alt="Imagen escaneada" />
                         </div>
                         <div class="sap-suggestions-zoom-hint">
-                            <span>👆 Pellizca o doble tap para zoom</span>
+                            <span>🤏 Pellizca con 2 dedos para zoom | ✌️ Doble tap para zoom rápido</span>
                         </div>
                     </div>
                     
@@ -782,15 +782,19 @@ class SAPScanner {
             .sap-suggestions-image-wrapper {
                 position: relative;
                 width: 100%;
-                height: 140px;
+                height: 180px;
                 overflow: hidden;
-                touch-action: pan-x pan-y pinch-zoom;
+                touch-action: none; /* Desactivar gestos del navegador */
                 cursor: zoom-in;
+                background: rgba(0,0,0,0.05);
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             
             .sap-suggestions-image-wrapper.zoomed {
                 cursor: grab;
-                height: 240px;
+                height: 300px; /* Más alto cuando está en zoom */
             }
             
             .sap-suggestions-image-wrapper.zoomed:active {
@@ -798,23 +802,23 @@ class SAPScanner {
             }
             
             .sap-suggestions-image-wrapper img {
-                width: 100%;
-                height: 100%;
+                max-width: 100%;
+                max-height: 100%;
                 object-fit: contain;
-                transition: transform 0.3s ease;
+                transition: none; /* Sin transición para zoom suave */
                 transform-origin: center center;
-            }
-            
-            .sap-suggestions-image-wrapper.zoomed img {
-                transform: scale(2);
+                user-select: none;
+                -webkit-user-select: none;
             }
             
             .sap-suggestions-zoom-hint {
                 text-align: center;
-                padding: 6px;
-                font-size: 0.7rem;
+                padding: 8px;
+                font-size: 0.68rem;
                 color: var(--text-secondary);
-                background: rgba(0,0,0,0.05);
+                background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(59, 130, 246, 0.08));
+                border-top: 1px solid rgba(139, 92, 246, 0.15);
+                line-height: 1.3;
             }
             
             /* Campo editable de código OCR */
@@ -1085,7 +1089,7 @@ class SAPScanner {
     }
     
     /**
-     * 🆕 NUEVO: Configura zoom táctil en la imagen
+     * 🆕 MEJORADO v6.092: Pinch-to-zoom + Pan táctil para móviles
      */
     setupImageZoom() {
         const wrapper = document.getElementById('sapSuggestionsImageWrapper');
@@ -1093,68 +1097,161 @@ class SAPScanner {
         
         if (!wrapper || !img) return;
         
-        let isZoomed = false;
-        let startX, startY, scrollLeft, scrollTop;
+        // Estado del zoom/pan
+        let scale = 1;
+        let translateX = 0;
+        let translateY = 0;
         
-        // Toggle zoom con tap/click
-        wrapper.addEventListener('click', (e) => {
-            if (e.target !== img) return;
+        // Para pinch-to-zoom
+        let initialDistance = 0;
+        let initialScale = 1;
+        
+        // Para pan (arrastrar)
+        let isPanning = false;
+        let lastTouchX = 0;
+        let lastTouchY = 0;
+        
+        // Aplicar transform
+        const applyTransform = () => {
+            // Limitar escala entre 1x y 4x
+            scale = Math.max(1, Math.min(4, scale));
             
-            isZoomed = !isZoomed;
-            wrapper.classList.toggle('zoomed', isZoomed);
+            // Si escala = 1, resetear posición
+            if (scale === 1) {
+                translateX = 0;
+                translateY = 0;
+                wrapper.classList.remove('zoomed');
+            } else {
+                wrapper.classList.add('zoomed');
+            }
             
-            if (!isZoomed) {
-                img.style.transform = '';
-                img.style.transformOrigin = 'center center';
+            img.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+        };
+        
+        // Calcular distancia entre dos toques
+        const getDistance = (touch1, touch2) => {
+            const dx = touch2.clientX - touch1.clientX;
+            const dy = touch2.clientY - touch1.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        };
+        
+        // PINCH-TO-ZOOM (gestos táctiles)
+        wrapper.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                // Dos dedos = pinch-to-zoom
+                e.preventDefault();
+                initialDistance = getDistance(e.touches[0], e.touches[1]);
+                initialScale = scale;
+            } else if (e.touches.length === 1 && scale > 1) {
+                // Un dedo + zoom activo = pan
+                isPanning = true;
+                lastTouchX = e.touches[0].clientX;
+                lastTouchY = e.touches[0].clientY;
+            }
+        }, { passive: false });
+        
+        wrapper.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialDistance > 0) {
+                // Pinch zoom
+                e.preventDefault();
+                const currentDistance = getDistance(e.touches[0], e.touches[1]);
+                const scaleChange = currentDistance / initialDistance;
+                scale = initialScale * scaleChange;
+                applyTransform();
+            } else if (e.touches.length === 1 && isPanning && scale > 1) {
+                // Pan (arrastrar)
+                e.preventDefault();
+                const deltaX = (e.touches[0].clientX - lastTouchX) / scale;
+                const deltaY = (e.touches[0].clientY - lastTouchY) / scale;
+                
+                translateX += deltaX;
+                translateY += deltaY;
+                
+                lastTouchX = e.touches[0].clientX;
+                lastTouchY = e.touches[0].clientY;
+                
+                applyTransform();
+            }
+        }, { passive: false });
+        
+        wrapper.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) {
+                initialDistance = 0;
+            }
+            if (e.touches.length === 0) {
+                isPanning = false;
             }
         });
         
-        // Doble tap para zoom
+        // DOBLE TAP para zoom rápido (fallback)
         let lastTap = 0;
         wrapper.addEventListener('touchend', (e) => {
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTap;
             
-            if (tapLength < 300 && tapLength > 0) {
-                isZoomed = !isZoomed;
-                wrapper.classList.toggle('zoomed', isZoomed);
+            if (tapLength < 300 && tapLength > 0 && e.touches.length === 0) {
+                // Doble tap detectado
+                if (scale === 1) {
+                    scale = 2.5;
+                    translateX = 0;
+                    translateY = 0;
+                } else {
+                    scale = 1;
+                    translateX = 0;
+                    translateY = 0;
+                }
+                applyTransform();
                 e.preventDefault();
             }
             lastTap = currentTime;
         });
         
-        // Arrastrar imagen cuando está en zoom
+        // MOUSE (para desktop)
+        let isMouseDragging = false;
+        let mouseStartX = 0;
+        let mouseStartY = 0;
+        
         wrapper.addEventListener('mousedown', (e) => {
-            if (!isZoomed) return;
-            wrapper.style.cursor = 'grabbing';
-            startX = e.pageX;
-            startY = e.pageY;
+            if (scale > 1) {
+                isMouseDragging = true;
+                mouseStartX = e.clientX;
+                mouseStartY = e.clientY;
+                wrapper.style.cursor = 'grabbing';
+            }
         });
         
         wrapper.addEventListener('mousemove', (e) => {
-            if (!isZoomed || !startX) return;
-            
-            const deltaX = (e.pageX - startX) * 0.5;
-            const deltaY = (e.pageY - startY) * 0.5;
-            
-            const currentTransform = img.style.transform || 'scale(2)';
-            const translateMatch = currentTransform.match(/translate\(([^,]+),\s*([^)]+)\)/);
-            
-            let currentX = 0, currentY = 0;
-            if (translateMatch) {
-                currentX = parseFloat(translateMatch[1]) || 0;
-                currentY = parseFloat(translateMatch[2]) || 0;
+            if (isMouseDragging && scale > 1) {
+                const deltaX = (e.clientX - mouseStartX) / scale;
+                const deltaY = (e.clientY - mouseStartY) / scale;
+                
+                translateX += deltaX;
+                translateY += deltaY;
+                
+                mouseStartX = e.clientX;
+                mouseStartY = e.clientY;
+                
+                applyTransform();
             }
-            
-            img.style.transform = `scale(2) translate(${currentX + deltaX}px, ${currentY + deltaY}px)`;
-            
-            startX = e.pageX;
-            startY = e.pageY;
         });
         
         wrapper.addEventListener('mouseup', () => {
-            startX = startY = null;
-            wrapper.style.cursor = isZoomed ? 'grab' : 'zoom-in';
+            isMouseDragging = false;
+            wrapper.style.cursor = scale > 1 ? 'grab' : 'zoom-in';
+        });
+        
+        // Click para toggle zoom (desktop)
+        wrapper.addEventListener('click', (e) => {
+            if (e.target === img && !isMouseDragging) {
+                if (scale === 1) {
+                    scale = 2;
+                } else {
+                    scale = 1;
+                }
+                translateX = 0;
+                translateY = 0;
+                applyTransform();
+            }
         });
     }
     
