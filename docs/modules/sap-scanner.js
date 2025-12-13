@@ -1089,13 +1089,26 @@ class SAPScanner {
     }
     
     /**
-     * 🆕 MEJORADO v6.092: Pinch-to-zoom + Pan táctil para móviles
+     * 🆕 MEJORADO v6.093: Pinch-to-zoom DENTRO del contenedor (sin abrir modal fullscreen)
      */
     setupImageZoom() {
         const wrapper = document.getElementById('sapSuggestionsImageWrapper');
         const img = document.getElementById('sapSuggestionsImage');
         
         if (!wrapper || !img) return;
+        
+        // 🔒 PREVENIR que el visor fullscreen global intercepte estos clicks
+        const preventFullscreenViewer = (e) => {
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+        };
+        
+        wrapper.addEventListener('click', preventFullscreenViewer, true);
+        wrapper.addEventListener('touchstart', preventFullscreenViewer, true);
+        wrapper.addEventListener('touchend', preventFullscreenViewer, true);
+        img.addEventListener('click', preventFullscreenViewer, true);
+        img.addEventListener('touchstart', preventFullscreenViewer, true);
+        img.addEventListener('touchend', preventFullscreenViewer, true);
         
         // Estado del zoom/pan
         let scale = 1;

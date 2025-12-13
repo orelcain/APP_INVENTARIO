@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v6.092 - Pinch-to-zoom real en modal de verificación de etiquetas
+ * v6.093 - FIX: Zoom DENTRO del modal sin abrir visor fullscreen
  */
 
-const CACHE_NAME = 'inventario-v6.092';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.092';
+const CACHE_NAME = 'inventario-v6.093';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.093';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
