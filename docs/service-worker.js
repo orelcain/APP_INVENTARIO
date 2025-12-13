@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v6.097 - FIX CRÍTICO Firebase: Métodos saveRepuestoToFirestore, updateRepuestoInFirestore, loadRepuestos implementados
+ * v6.098 - FIX definitivo sincronización: Orden correcto (memoria→Firestore→cache) + delay propagación + protección anti-pérdida
  */
 
-const CACHE_NAME = 'inventario-v6.097';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.097';
+const CACHE_NAME = 'inventario-v6.098';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.098';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
