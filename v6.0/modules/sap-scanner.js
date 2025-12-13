@@ -698,7 +698,8 @@ class SAPScanner {
                     <!-- Imagen escaneada con zoom -->
                     <div class="sap-suggestions-image-container">
                         <div class="sap-suggestions-image-wrapper" id="sapSuggestionsImageWrapper">
-                            <img id="sapSuggestionsImage" src="" alt="Imagen escaneada" />
+                            <img id="sapSuggestionsImage" src="" alt="Imagen escaneada" draggable="false" 
+                                 style="pointer-events: none; user-select: none; -webkit-user-select: none;" />
                         </div>
                         <div class="sap-suggestions-zoom-hint">
                             <span>🤏 Pellizca con 2 dedos para zoom | ✌️ Doble tap para zoom rápido</span>
@@ -1089,7 +1090,7 @@ class SAPScanner {
     }
     
     /**
-     * 🆕 MEJORADO v6.093: Pinch-to-zoom DENTRO del contenedor (sin abrir modal fullscreen)
+     * 🆕 MEJORADO v6.094: Pinch-to-zoom DENTRO del contenedor (prevenir visor fullscreen)
      */
     setupImageZoom() {
         const wrapper = document.getElementById('sapSuggestionsImageWrapper');
@@ -1097,18 +1098,22 @@ class SAPScanner {
         
         if (!wrapper || !img) return;
         
-        // 🔒 PREVENIR que el visor fullscreen global intercepte estos clicks
-        const preventFullscreenViewer = (e) => {
+        // 🔒 FASE 1: PREVENIR completamente que cualquier listener global capture estos eventos
+        // Usamos capture phase (true) para interceptar ANTES que otros listeners
+        const preventGlobalListeners = (e) => {
             e.stopPropagation();
             e.stopImmediatePropagation();
+            e.preventDefault();
         };
         
-        wrapper.addEventListener('click', preventFullscreenViewer, true);
-        wrapper.addEventListener('touchstart', preventFullscreenViewer, true);
-        wrapper.addEventListener('touchend', preventFullscreenViewer, true);
-        img.addEventListener('click', preventFullscreenViewer, true);
-        img.addEventListener('touchstart', preventFullscreenViewer, true);
-        img.addEventListener('touchend', preventFullscreenViewer, true);
+        // Bloquear TODOS los eventos en la imagen para que solo el wrapper los maneje
+        ['click', 'touchstart', 'touchmove', 'touchend', 'mousedown', 'mouseup', 'mousemove'].forEach(eventType => {
+            img.addEventListener(eventType, preventGlobalListeners, { capture: true, passive: false });
+            wrapper.addEventListener(eventType, (e) => {
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+            }, { capture: true, passive: false });
+        });
         
         // Estado del zoom/pan
         let scale = 1;
@@ -2423,6 +2428,7 @@ class SAPScanner {
         // 🆕 NUEVO: Si no hay match exacto pero hay códigos similares, mostrar sugerencias
         if (!repuestoExistente && similarCodes.length > 0) {
             console.log('📸 [DEBUG] No hay match exacto pero hay sugerencias -> showSuggestionsModal()');
+            this.stopCamera(); // 🔥 DETENER CÁMARA antes de abrir modal
             this.showSuggestionsModal();
             return;
         }
