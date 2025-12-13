@@ -695,11 +695,16 @@ class SAPScanner {
                 </div>
                 
                 <div class="sap-suggestions-body">
-                    <!-- Imagen escaneada con zoom -->
+                    <!-- Imagen escaneada con zoom INTERNO (no abrir visor fullscreen) -->
                     <div class="sap-suggestions-image-container">
                         <div class="sap-suggestions-image-wrapper" id="sapSuggestionsImageWrapper">
-                            <img id="sapSuggestionsImage" src="" alt="Imagen escaneada" draggable="false" 
-                                 style="pointer-events: none; user-select: none; -webkit-user-select: none;" />
+                            <img id="sapSuggestionsImage" 
+                                 src="" 
+                                 alt="Imagen escaneada" 
+                                 draggable="false"
+                                 data-no-fullscreen-viewer="true"
+                                 data-sap-scanner-zoom="true"
+                                 style="pointer-events: auto; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;" />
                         </div>
                         <div class="sap-suggestions-zoom-hint">
                             <span>🤏 Pellizca con 2 dedos para zoom | ✌️ Doble tap para zoom rápido</span>
@@ -1090,7 +1095,7 @@ class SAPScanner {
     }
     
     /**
-     * 🆕 MEJORADO v6.094: Pinch-to-zoom DENTRO del contenedor (prevenir visor fullscreen)
+     * 🆕 v6.095: Zoom SOLO dentro del contenedor (BLOQUEAR completamente visor fullscreen)
      */
     setupImageZoom() {
         const wrapper = document.getElementById('sapSuggestionsImageWrapper');
@@ -1098,21 +1103,19 @@ class SAPScanner {
         
         if (!wrapper || !img) return;
         
-        // 🔒 FASE 1: PREVENIR completamente que cualquier listener global capture estos eventos
-        // Usamos capture phase (true) para interceptar ANTES que otros listeners
-        const preventGlobalListeners = (e) => {
+        console.log('📸 setupImageZoom: Configurando zoom interno para modal SAP');
+        
+        // 🔒 BLOQUEAR TODOS LOS EVENTOS en la imagen para que NO lleguen a listeners globales
+        const blockAllEvents = (e) => {
             e.stopPropagation();
             e.stopImmediatePropagation();
             e.preventDefault();
+            return false;
         };
         
-        // Bloquear TODOS los eventos en la imagen para que solo el wrapper los maneje
-        ['click', 'touchstart', 'touchmove', 'touchend', 'mousedown', 'mouseup', 'mousemove'].forEach(eventType => {
-            img.addEventListener(eventType, preventGlobalListeners, { capture: true, passive: false });
-            wrapper.addEventListener(eventType, (e) => {
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-            }, { capture: true, passive: false });
+        // Bloquear eventos que podrían activar el visor fullscreen
+        ['click', 'dblclick', 'contextmenu'].forEach(eventType => {
+            img.addEventListener(eventType, blockAllEvents, { capture: true, passive: false });
         });
         
         // Estado del zoom/pan
@@ -1153,8 +1156,9 @@ class SAPScanner {
             return Math.sqrt(dx * dx + dy * dy);
         };
         
-        // PINCH-TO-ZOOM (gestos táctiles)
+        // PINCH-TO-ZOOM (gestos táctiles) - BLOQUEAR propagación
         wrapper.addEventListener('touchstart', (e) => {
+            e.stopPropagation(); // IMPORTANTE: Evitar que llegue a listeners globales
             if (e.touches.length === 2) {
                 // Dos dedos = pinch-to-zoom
                 e.preventDefault();
@@ -1166,9 +1170,10 @@ class SAPScanner {
                 lastTouchX = e.touches[0].clientX;
                 lastTouchY = e.touches[0].clientY;
             }
-        }, { passive: false });
+        }, { passive: false, capture: true });
         
         wrapper.addEventListener('touchmove', (e) => {
+            e.stopPropagation(); // IMPORTANTE: Evitar que llegue a listeners globales
             if (e.touches.length === 2 && initialDistance > 0) {
                 // Pinch zoom
                 e.preventDefault();
@@ -1190,9 +1195,10 @@ class SAPScanner {
                 
                 applyTransform();
             }
-        }, { passive: false });
+        }, { passive: false, capture: true });
         
         wrapper.addEventListener('touchend', (e) => {
+            e.stopPropagation(); // IMPORTANTE: Evitar que llegue a listeners globales
             if (e.touches.length < 2) {
                 initialDistance = 0;
             }
@@ -1258,9 +1264,12 @@ class SAPScanner {
             wrapper.style.cursor = scale > 1 ? 'grab' : 'zoom-in';
         });
         
-        // Click para toggle zoom (desktop)
+        // Click para toggle zoom (desktop) - BLOQUEAR propagación
         wrapper.addEventListener('click', (e) => {
-            if (e.target === img && !isMouseDragging) {
+            e.stopPropagation(); // IMPORTANTE: Evitar que llegue a listeners globales
+            e.preventDefault();
+            
+            if (!isMouseDragging) {
                 if (scale === 1) {
                     scale = 2;
                 } else {
@@ -1270,7 +1279,8 @@ class SAPScanner {
                 translateY = 0;
                 applyTransform();
             }
-        });
+            return false; // Extra: prevenir cualquier propagación
+        }, { capture: true });
     }
     
     /**
@@ -1793,6 +1803,10 @@ class SAPScanner {
      */
     async processImage(imageData) {
         console.log('📸 [DEBUG] processImage() INICIANDO - v1.5 mejorado');
+        
+        // 🔥 CRÍTICO: Detener cámara INMEDIATAMENTE al comenzar procesamiento
+        this.stopCamera();
+        console.log('📸 [DEBUG] Cámara detenida al iniciar procesamiento');
         
         if (this.isProcessing) {
             console.log('📸 [DEBUG] Ya está procesando, saliendo');

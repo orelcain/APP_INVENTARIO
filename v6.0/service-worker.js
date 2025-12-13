@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v6.094 - FIX CRÍTICO: Detener cámara + Prevenir visor fullscreen con capture phase
+ * v6.095 - FIX iOS/Safari: stopPropagation en TODOS eventos + Detener cámara en processImage
  */
 
-const CACHE_NAME = 'inventario-v6.094';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.094';
+const CACHE_NAME = 'inventario-v6.095';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.095';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

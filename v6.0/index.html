@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.094</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.095</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.094</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.095</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -61018,7 +61018,7 @@ window.forceGlobalUpdate = async function() {
     await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
       timestamp: now, // 🆕 v6.084 - Date() en lugar de serverTimestamp
       triggeredBy: window.firebaseService.currentUser?.email || 'admin',
-      version: 'v6.094'
+      version: 'v6.095'
     });
     
     console.log(`✅ [forceGlobalUpdate] Comando escrito en Firestore`);
