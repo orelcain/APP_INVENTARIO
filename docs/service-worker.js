@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v6.096 - FIX definitivo zoom: Exclusión en ImageFullscreenViewer.open() + bloqueo de eventos + logs debug
+ * v6.097 - FIX CRÍTICO Firebase: Métodos saveRepuestoToFirestore, updateRepuestoInFirestore, loadRepuestos implementados
  */
 
-const CACHE_NAME = 'inventario-v6.096';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.096';
+const CACHE_NAME = 'inventario-v6.097';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.097';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

@@ -17955,7 +17955,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.096</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.097</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -18188,7 +18188,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.096</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.097</span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -39754,6 +39754,45 @@ class InventarioCompleto {
     
     this.loadMapData();
   }
+  
+  // 🔄 RECARGAR repuestos desde Firebase (usado después de crear/editar)
+  async loadRepuestos() {
+    console.log('🔄 [FIREBASE] Recargando repuestos desde Firestore...');
+    
+    if (!window.firebaseStorageAdapter || !window.firebaseService?.isAuthenticated()) {
+      console.warn('⚠️ Firebase no disponible, usando datos locales');
+      return;
+    }
+    
+    try {
+      const repuestosFirebase = await window.firebaseStorageAdapter.cargarRepuestos();
+      
+      if (repuestosFirebase && repuestosFirebase.length > 0) {
+        console.log(`✅ ${repuestosFirebase.length} repuestos recargados desde Firestore`);
+        
+        // Actualizar memoria
+        this.repuestos = repuestosFirebase.map((item, index) => {
+          if (!item.id || item.id === 'undefined' || item.id === 'null') {
+            item.id = `repuesto-${Date.now()}-${index}`;
+          } else {
+            item.id = String(item.id);
+          }
+          if (!item.multimedia || !Array.isArray(item.multimedia)) {
+            item.multimedia = [];
+          }
+          return item;
+        });
+        
+        // Actualizar cache local
+        localStorage.setItem('inventarioData', JSON.stringify(this.repuestos));
+        console.log('💾 Cache local actualizado');
+      } else {
+        console.warn('⚠️ No se obtuvieron repuestos de Firestore');
+      }
+    } catch (error) {
+      console.error('❌ Error recargando repuestos:', error);
+    }
+  }
 
   loadMapData() {
     const savedMap = localStorage.getItem('mapData');
@@ -42677,7 +42716,7 @@ class InventarioCompleto {
       
       this.closeMobileModal();
       await this.loadRepuestos();
-      this.renderRepuestos();
+      await this.render(); // Renderizar UI completa
     } catch (error) {
       console.error('Error guardando:', error);
       this.showToast('❌ Error al guardar: ' + error.message, 'error');
@@ -42701,7 +42740,69 @@ class InventarioCompleto {
     console.log('📱 [MOBILE MODAL] Cerrado');
   }
   
-  // 📱 UBICACIONES - Cargar áreas disponibles
+  // � FIREBASE - Guardar nuevo repuesto en Firestore
+  async saveRepuestoToFirestore(data) {
+    console.log('🔥 [FIREBASE] Guardando nuevo repuesto:', data.nombre);
+    
+    if (!window.firebaseStorageAdapter) {
+      console.warn('⚠️ firebaseStorageAdapter no disponible, guardando solo localmente');
+      // Guardar en memoria local
+      this.repuestos.unshift(data);
+      await this.saveData();
+      return;
+    }
+    
+    try {
+      // Guardar en Firestore usando batch write
+      await window.firebaseStorageAdapter.guardarRepuestos([data]);
+      console.log('✅ [FIREBASE] Repuesto guardado en Firestore:', data.id);
+      
+      // También agregar a memoria local
+      this.repuestos.unshift(data);
+      
+      // Guardar en localStorage como cache
+      localStorage.setItem('inventarioData', JSON.stringify(this.repuestos));
+    } catch (error) {
+      console.error('❌ [FIREBASE] Error guardando repuesto:', error);
+      throw error;
+    }
+  }
+  
+  // 🔥 FIREBASE - Actualizar repuesto existente en Firestore
+  async updateRepuestoInFirestore(id, data) {
+    console.log('🔥 [FIREBASE] Actualizando repuesto:', id, data.nombre);
+    
+    if (!window.firebaseStorageAdapter) {
+      console.warn('⚠️ firebaseStorageAdapter no disponible, actualizando solo localmente');
+      // Actualizar en memoria local
+      const index = this.repuestos.findIndex(r => r.id === id);
+      if (index !== -1) {
+        this.repuestos[index] = { ...this.repuestos[index], ...data };
+        await this.saveData();
+      }
+      return;
+    }
+    
+    try {
+      // Actualizar en Firestore
+      await window.firebaseStorageAdapter.actualizarRepuesto(id, data);
+      console.log('✅ [FIREBASE] Repuesto actualizado en Firestore:', id);
+      
+      // También actualizar en memoria local
+      const index = this.repuestos.findIndex(r => r.id === id);
+      if (index !== -1) {
+        this.repuestos[index] = { ...this.repuestos[index], ...data };
+      }
+      
+      // Guardar en localStorage como cache
+      localStorage.setItem('inventarioData', JSON.stringify(this.repuestos));
+    } catch (error) {
+      console.error('❌ [FIREBASE] Error actualizando repuesto:', error);
+      throw error;
+    }
+  }
+  
+  // �📱 UBICACIONES - Cargar áreas disponibles
   loadMobileAreas() {
     const select = document.getElementById('mobile-area-select');
     if (!select) return;
@@ -61018,7 +61119,7 @@ window.forceGlobalUpdate = async function() {
     await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
       timestamp: now, // 🆕 v6.084 - Date() en lugar de serverTimestamp
       triggeredBy: window.firebaseService.currentUser?.email || 'admin',
-      version: 'v6.096'
+      version: 'v6.097'
     });
     
     console.log(`✅ [forceGlobalUpdate] Comando escrito en Firestore`);
