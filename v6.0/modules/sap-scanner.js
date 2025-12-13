@@ -1105,17 +1105,27 @@ class SAPScanner {
         
         console.log('📸 setupImageZoom: Configurando zoom interno para modal SAP');
         
-        // 🔒 BLOQUEAR TODOS LOS EVENTOS en la imagen para que NO lleguen a listeners globales
+        // 🔒 ASEGURAR que el data attribute esté presente
+        img.setAttribute('data-no-fullscreen-viewer', 'true');
+        img.setAttribute('data-sap-scanner-zoom', 'true');
+        
+        // 🔒 BLOQUEAR TODOS LOS EVENTOS en IMAGEN y WRAPPER para que NO lleguen a listeners globales
         const blockAllEvents = (e) => {
+            console.log('🚫 Bloqueando evento:', e.type, 'en', e.target.id);
             e.stopPropagation();
             e.stopImmediatePropagation();
             e.preventDefault();
             return false;
         };
         
-        // Bloquear eventos que podrían activar el visor fullscreen
-        ['click', 'dblclick', 'contextmenu'].forEach(eventType => {
+        // Bloquear eventos en IMAGEN
+        ['click', 'dblclick', 'contextmenu', 'touchend'].forEach(eventType => {
             img.addEventListener(eventType, blockAllEvents, { capture: true, passive: false });
+        });
+        
+        // Bloquear eventos en WRAPPER también
+        ['click', 'dblclick', 'contextmenu', 'touchend'].forEach(eventType => {
+            wrapper.addEventListener(eventType, blockAllEvents, { capture: true, passive: false });
         });
         
         // Estado del zoom/pan
