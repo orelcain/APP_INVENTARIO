@@ -44620,11 +44620,18 @@ class InventarioCompleto {
     
     if (ubicacionesValidas.length === 0) {
       //  RE-HABILITAR BOTN SI HAY ERROR
-      btnGuardar.disabled = false;
-      btnGuardar.style.opacity = '1';
-      btnGuardar.style.cursor = 'pointer';
-      btnText.style.display = 'inline';
-      btnLoading.style.display = 'none';
+      if (btnGuardar) {
+        btnGuardar.disabled = false;
+        btnGuardar.style.opacity = '1';
+        btnGuardar.style.cursor = 'pointer';
+      }
+      if (btnText) btnText.style.display = 'inline';
+      if (btnLoading) btnLoading.style.display = 'none';
+      
+      // Desbloquear todos los botones de guardado
+      this.toggleSaveButtons(false);
+      this.showSavingOverlay(false);
+      this.isSavingRepuesto = false;
       
       this.showToast(' Debes especificar al menos un rea General', 'error');
       return;
@@ -44938,12 +44945,14 @@ class InventarioCompleto {
       this.showSavingOverlay(false);
       this.toggleSaveButtons(false);
       
-      //  RE-HABILITAR BOTN EN CASO DE ERROR
-      btnGuardar.disabled = false;
-      btnGuardar.style.opacity = '1';
-      btnGuardar.style.cursor = 'pointer';
-      btnText.style.display = 'inline';
-      btnLoading.style.display = 'none';
+      //  RE-HABILITAR BOTN EN CASO DE ERROR (si existe)
+      if (btnGuardar) {
+        btnGuardar.disabled = false;
+        btnGuardar.style.opacity = '1';
+        btnGuardar.style.cursor = 'pointer';
+      }
+      if (btnText) btnText.style.display = 'inline';
+      if (btnLoading) btnLoading.style.display = 'none';
     }
   }
 
