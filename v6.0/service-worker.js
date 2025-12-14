@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v6.100 - Enhanced Firebase sync diagnostics and error handling
+ * v6.102 - Fix árbol móvil clickeable + creación multi-nivel jerarquía
  */
 
-const CACHE_NAME = 'inventario-v6.100';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.100';
+const CACHE_NAME = 'inventario-v6.102';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.102';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
