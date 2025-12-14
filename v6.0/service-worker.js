@@ -6,11 +6,11 @@
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
  * 2. window.APP_VERSION en index.html (línea ~20287)
  * 
- * v6.102 - Fix árbol móvil clickeable + creación multi-nivel jerarquía
+ * v6.103 - Fix window.app disponible inmediatamente para botones onclick
  */
 
-const CACHE_NAME = 'inventario-v6.102';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.102';
+const CACHE_NAME = 'inventario-v6.103';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.103';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
