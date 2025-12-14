@@ -6,11 +6,11 @@
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
  * 2. window.APP_VERSION en index.html (línea ~20287)
  * 
- * v6.115 - Feature: Consola de debug PWA integrada con logs en tiempo real
+ * v6.116 - Mejoras: Consola de debug con búsqueda, stats y análisis de patrones
  */
 
-const CACHE_NAME = 'inventario-v6.115';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.115';
+const CACHE_NAME = 'inventario-v6.116';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.116';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
