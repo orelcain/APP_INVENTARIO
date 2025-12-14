@@ -1809,17 +1809,17 @@ class SAPScanner {
     }
     
     /**
-     * Procesa imagen con Tesseract OCR - VERSIÓN MEJORADA
+     * Procesa imagen con Tesseract OCR - VERSIÓN HÍBRIDA INTELIGENTE
      */
     async processImage(imageData) {
-        console.log('📸 [DEBUG] processImage() INICIANDO - v1.5 mejorado');
+        console.log('🧠 [HYBRID OCR] processImage() INICIANDO - Sistema inteligente v2.0');
         
         // 🔥 CRÍTICO: Detener cámara INMEDIATAMENTE al comenzar procesamiento
         this.stopCamera();
-        console.log('📸 [DEBUG] Cámara detenida al iniciar procesamiento');
+        console.log('📸 Cámara detenida al iniciar procesamiento');
         
         if (this.isProcessing) {
-            console.log('📸 [DEBUG] Ya está procesando, saliendo');
+            console.log('⚠️ Ya está procesando, saliendo');
             return;
         }
         this.isProcessing = true;
@@ -1829,56 +1829,63 @@ class SAPScanner {
         const analyzeBtn = document.getElementById('sapScannerAnalyzeBtn');
         const retryBtn = document.getElementById('sapScannerRetryBtn');
         
-        console.log('📸 [DEBUG] Elementos UI:', { progressContainer: !!progressContainer, analyzeBtn: !!analyzeBtn, retryBtn: !!retryBtn });
+        console.log('📋 Elementos UI:', { progressContainer: !!progressContainer, analyzeBtn: !!analyzeBtn, retryBtn: !!retryBtn });
         
         if (progressContainer) progressContainer.style.display = 'block';
         if (analyzeBtn) analyzeBtn.style.display = 'none';
         if (retryBtn) retryBtn.style.display = 'none';
         
         // 🔍 Iniciar animación de escaneo estilo Google Lens
-        console.log('📸 [DEBUG] Iniciando animación de escaneo');
+        console.log('🎬 Iniciando animación de escaneo');
         this.startScanAnimation();
         
         try {
             // Inicializar Tesseract si no está listo
             if (!this.isReady) {
-                console.log('📸 [DEBUG] Tesseract no listo, inicializando...');
+                console.log('⚙️ Tesseract no listo, inicializando...');
                 this.updateProgress(0);
                 const progressText = document.getElementById('sapScannerProgressText');
                 if (progressText) progressText.textContent = 'Cargando motor OCR (primera vez)...';
                 this.updateScanStatus('Cargando motor OCR...');
                 await this.init();
-                console.log('📸 [DEBUG] Tesseract inicializado');
+                console.log('✅ Tesseract inicializado');
             }
             
-            // 🖼️ PASO 1: Pre-procesar imagen para mejorar OCR
+            // 🖼️ PASO 1: Analizar calidad de imagen
+            this.updateScanStatus('Analizando calidad de imagen...');
+            const imageQuality = await this.analyzeImageQuality(imageData);
+            console.log('📊 Calidad de imagen:', imageQuality);
+            
+            // 🖼️ PASO 2: Pre-procesar imagen para mejorar OCR
             this.updateScanStatus('Optimizando imagen...');
             const processedImage = await this.preprocessImage(imageData);
             this.lastScan.processedImageData = processedImage;
             
-            // 🔍 PASO 2: OCR con múltiples intentos
+            // 🔍 PASO 3: OCR HÍBRIDO - Elegir mejor método según calidad
             this.updateScanStatus('Detectando código SAP...');
-            const ocrResult = await this.performMultiPassOCR(processedImage, imageData);
+            const ocrResult = await this.performHybridOCR(processedImage, imageData, imageQuality);
             
-            console.log('📸 [DEBUG] OCR completado. Mejor resultado:', {
+            console.log('🎯 OCR completado. Resultado:', {
                 text: ocrResult.text?.substring(0, 100),
                 confidence: ocrResult.confidence,
-                method: ocrResult.method
+                method: ocrResult.method,
+                quality: imageQuality.score
             });
             
             // Mostrar detección encontrada
-            this.updateScanStatus('¡Código encontrado!');
-            console.log('📸 [DEBUG] Mostrando caja de detección');
+            this.updateScanStatus(`¡Código encontrado! (${ocrResult.method})`);
+            console.log('📦 Mostrando caja de detección');
             await this.showDetectionBox(ocrResult);
             
             // Extraer datos
             this.lastScan.rawText = ocrResult.text;
             this.lastScan.confidence = Math.round(ocrResult.confidence);
+            this.lastScan.ocrMethod = ocrResult.method; // Guardar método usado
             
-            // 🧠 PASO 3: Parsear con inteligencia mejorada
-            console.log('📸 [DEBUG] Parseando texto extraído con mejoras');
+            // 🧠 PASO 4: Parsear con inteligencia mejorada
+            console.log('🧠 Parseando texto extraído con mejoras');
             this.parseExtractedTextEnhanced(ocrResult.text);
-            console.log('📸 [DEBUG] Datos parseados:', {
+            console.log('✅ Datos parseados:', {
                 codigoSAP: this.lastScan.codigoSAP,
                 descripcion: this.lastScan.descripcion
             });
@@ -1972,8 +1979,265 @@ class SAPScanner {
     }
     
     /**
+     * 🎯 Analiza la calidad de la imagen para decidir qué método OCR usar
+     * Retorna: { score: 0-100, brightness: number, contrast: number, sharpness: number }
+     */
+    async analyzeImageQuality(imageData) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Usar muestra más pequeña para análisis rápido
+                const sampleSize = 300;
+                canvas.width = sampleSize;
+                canvas.height = sampleSize;
+                ctx.drawImage(img, 0, 0, sampleSize, sampleSize);
+                
+                const imageDataObj = ctx.getImageData(0, 0, sampleSize, sampleSize);
+                const data = imageDataObj.data;
+                
+                let brightness = 0;
+                let totalGray = 0;
+                const grayValues = [];
+                
+                // Analizar píxeles
+                for (let i = 0; i < data.length; i += 4) {
+                    const gray = data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
+                    grayValues.push(gray);
+                    totalGray += gray;
+                }
+                
+                // 1. Brillo promedio (0-255)
+                brightness = totalGray / grayValues.length;
+                
+                // 2. Contraste (desviación estándar)
+                const mean = brightness;
+                const variance = grayValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / grayValues.length;
+                const contrast = Math.sqrt(variance);
+                
+                // 3. Nitidez (diferencias entre píxeles adyacentes)
+                let sharpness = 0;
+                for (let i = 0; i < grayValues.length - sampleSize; i++) {
+                    sharpness += Math.abs(grayValues[i] - grayValues[i + sampleSize]);
+                }
+                sharpness = sharpness / (grayValues.length - sampleSize);
+                
+                // Calcular score de calidad (0-100)
+                let score = 50; // Base
+                
+                // Brillo óptimo: 100-180 (etiquetas industriales)
+                if (brightness >= 100 && brightness <= 180) {
+                    score += 20;
+                } else if (brightness < 80 || brightness > 200) {
+                    score -= 20; // Muy oscura o muy clara
+                }
+                
+                // Contraste óptimo: 40-80
+                if (contrast >= 40 && contrast <= 80) {
+                    score += 20;
+                } else if (contrast < 25) {
+                    score -= 15; // Bajo contraste
+                }
+                
+                // Nitidez: mayor es mejor
+                if (sharpness > 15) {
+                    score += 10;
+                } else if (sharpness < 8) {
+                    score -= 10; // Desenfocada
+                }
+                
+                score = Math.max(0, Math.min(100, score));
+                
+                console.log('📊 [QUALITY] Análisis completo:', {
+                    score,
+                    brightness: brightness.toFixed(1),
+                    contrast: contrast.toFixed(1),
+                    sharpness: sharpness.toFixed(1),
+                    recommendation: score >= 70 ? 'Tesseract' : score >= 40 ? 'Híbrido' : 'OCR.space'
+                });
+                
+                resolve({ score, brightness, contrast, sharpness });
+            };
+            img.src = imageData;
+        });
+    }
+    
+    /**
+     * 🤖 Sistema OCR Híbrido Inteligente
+     * Usa el mejor método según la calidad de la imagen:
+     * - Calidad alta (70+): Tesseract optimizado (rápido, offline)
+     * - Calidad media (40-70): Tesseract + validación con OCR.space
+     * - Calidad baja (<40): OCR.space directo (mejor para imágenes difíciles)
+     */
+    async performHybridOCR(processedImage, originalImage, quality) {
+        console.log(`🤖 [HYBRID] Iniciando OCR - Calidad: ${quality.score}/100`);
+        
+        // ESTRATEGIA 1: Calidad ALTA → Tesseract optimizado
+        if (quality.score >= 70) {
+            console.log('✅ [HYBRID] Calidad ALTA → Usando Tesseract optimizado');
+            return await this.performTesseractOCR(processedImage, originalImage, 'high-quality');
+        }
+        
+        // ESTRATEGIA 2: Calidad MEDIA → Tesseract primero, validar si es necesario
+        if (quality.score >= 40) {
+            console.log('⚠️ [HYBRID] Calidad MEDIA → Tesseract con validación');
+            
+            const tesseractResult = await this.performTesseractOCR(processedImage, originalImage, 'medium-quality');
+            
+            // Si Tesseract tiene alta confianza Y encontró código SAP, usar ese resultado
+            if (tesseractResult.confidence >= 75 && this.findSAPCodeInText(tesseractResult.text)) {
+                console.log('✅ [HYBRID] Tesseract exitoso, no necesita fallback');
+                return tesseractResult;
+            }
+            
+            // Si confianza baja, intentar con OCR.space como respaldo
+            console.log('🔄 [HYBRID] Confianza baja, intentando OCR.space...');
+            try {
+                const ocrSpaceResult = await this.performOCRSpaceAPI(originalImage);
+                
+                // Comparar resultados y usar el mejor
+                if (ocrSpaceResult.confidence > tesseractResult.confidence + 10) {
+                    console.log('✅ [HYBRID] OCR.space tiene mejor resultado');
+                    return ocrSpaceResult;
+                }
+            } catch (error) {
+                console.warn('⚠️ [HYBRID] OCR.space falló, usando Tesseract:', error.message);
+            }
+            
+            return tesseractResult;
+        }
+        
+        // ESTRATEGIA 3: Calidad BAJA → OCR.space directo (mejor para casos difíciles)
+        console.log('❌ [HYBRID] Calidad BAJA → Usando OCR.space directo');
+        try {
+            return await this.performOCRSpaceAPI(originalImage);
+        } catch (error) {
+            console.warn('⚠️ [HYBRID] OCR.space falló, fallback a Tesseract:', error.message);
+            return await this.performTesseractOCR(processedImage, originalImage, 'low-quality-fallback');
+        }
+    }
+    
+    /**
+     * 🔧 Ejecuta Tesseract OCR optimizado
+     */
+    async performTesseractOCR(processedImage, originalImage, mode) {
+        const results = [];
+        
+        console.log(`🔧 [TESSERACT] Modo: ${mode}`);
+        
+        // INTENTO 1: Imagen pre-procesada (binarizada)
+        console.log('📸 [TESSERACT] Intento 1: Imagen binarizada');
+        try {
+            const result1 = await this.worker.recognize(processedImage);
+            results.push({
+                text: result1.data.text,
+                confidence: result1.data.confidence,
+                method: 'Tesseract (binarizada)',
+                words: result1.data.words || []
+            });
+            console.log(`📊 Resultado 1: ${result1.data.confidence}% confianza`);
+        } catch (e) {
+            console.warn('⚠️ Error en intento 1:', e.message);
+        }
+        
+        // INTENTO 2: Imagen original (a veces funciona mejor)
+        if (mode !== 'high-quality') { // En alta calidad, solo usar procesada
+            console.log('📸 [TESSERACT] Intento 2: Imagen original');
+            try {
+                const result2 = await this.worker.recognize(originalImage);
+                results.push({
+                    text: result2.data.text,
+                    confidence: result2.data.confidence,
+                    method: 'Tesseract (original)',
+                    words: result2.data.words || []
+                });
+                console.log(`📊 Resultado 2: ${result2.data.confidence}% confianza`);
+            } catch (e) {
+                console.warn('⚠️ Error en intento 2:', e.message);
+            }
+        }
+        
+        // Elegir el mejor resultado
+        let bestResult = results[0] || { text: '', confidence: 0, method: 'Tesseract (none)' };
+        
+        for (const result of results) {
+            const hasSAPCode = this.findSAPCodeInText(result.text);
+            const bestHasSAPCode = this.findSAPCodeInText(bestResult.text);
+            
+            // Priorizar el que encontró código SAP
+            if (hasSAPCode && !bestHasSAPCode) {
+                bestResult = result;
+            } else if (hasSAPCode === bestHasSAPCode && result.confidence > bestResult.confidence) {
+                bestResult = result;
+            }
+        }
+        
+        console.log(`✅ [TESSERACT] Mejor resultado: ${bestResult.method} - ${bestResult.confidence}%`);
+        return bestResult;
+    }
+    
+    /**
+     * 🌐 Ejecuta OCR usando OCR.space API (gratis: 25,000/mes)
+     */
+    async performOCRSpaceAPI(imageData) {
+        console.log('🌐 [OCR.SPACE] Enviando a API externa...');
+        
+        try {
+            // Preparar imagen en base64
+            const base64Image = imageData.split(',')[1] || imageData;
+            
+            const response = await fetch('https://api.ocr.space/parse/image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    apikey: 'K87899142388957', // API key gratuita pública
+                    base64Image: `data:image/png;base64,${base64Image}`,
+                    language: 'eng',
+                    isOverlayRequired: 'false',
+                    detectOrientation: 'true',
+                    scale: 'true',
+                    OCREngine: '2' // Motor 2 es más moderno
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.IsErroredOnProcessing) {
+                throw new Error(data.ErrorMessage?.[0] || 'OCR.space error');
+            }
+            
+            const parsedText = data.ParsedResults?.[0]?.ParsedText || '';
+            
+            console.log('✅ [OCR.SPACE] Respuesta recibida:', {
+                text: parsedText.substring(0, 100),
+                length: parsedText.length
+            });
+            
+            return {
+                text: parsedText,
+                confidence: 90, // OCR.space no devuelve confidence, asumimos alto
+                method: 'OCR.space API',
+                words: []
+            };
+            
+        } catch (error) {
+            console.error('❌ [OCR.SPACE] Error:', error);
+            throw error;
+        }
+    }
+    
+    /**
      * 🔄 Ejecuta OCR múltiples veces con diferentes configuraciones
      * y devuelve el mejor resultado
+     * @deprecated - Usar performHybridOCR en su lugar
      */
     async performMultiPassOCR(processedImage, originalImage) {
         const results = [];

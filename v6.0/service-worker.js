@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v6.098 - FIX definitivo sincronización: Orden correcto (memoria→Firestore→cache) + delay propagación + protección anti-pérdida
+ * v6.099 - Sistema OCR Híbrido Inteligente: Analiza calidad + Tesseract optimizado + OCR.space fallback
  */
 
-const CACHE_NAME = 'inventario-v6.098';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.098';
+const CACHE_NAME = 'inventario-v6.099';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.099';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
