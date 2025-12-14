@@ -18285,7 +18285,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             Salir
           </button>
         </div>
-        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;">v6.100</span>
+        <span class="version-badge" id="versionBadgeDesktop" style="margin-left: 8px;"></span>
       </div>
       
       <!-- GRUPO 4: BÚSQUEDA -->
@@ -73964,10 +73964,17 @@ console.log('🏠 Mobile Home Dashboard inicializado');
 <script>
   // 🏷️ Mostrar versión en badge (dinámico)
   document.addEventListener('DOMContentLoaded', () => {
-    const versionBadge = document.getElementById('versionBadgeMobile');
-    if (versionBadge) {
-      versionBadge.textContent = window.APP_VERSION;
-      console.log(`🏷️ Badge actualizado a ${window.APP_VERSION}`);
+    const versionBadgeMobile = document.getElementById('versionBadgeMobile');
+    const versionBadgeDesktop = document.getElementById('versionBadgeDesktop');
+    
+    if (versionBadgeMobile) {
+      versionBadgeMobile.textContent = window.APP_VERSION;
+      console.log(`🏷️ Badge móvil actualizado a ${window.APP_VERSION}`);
+    }
+    
+    if (versionBadgeDesktop) {
+      versionBadgeDesktop.textContent = window.APP_VERSION;
+      console.log(`🏷️ Badge desktop actualizado a ${window.APP_VERSION}`);
     }
   });
 

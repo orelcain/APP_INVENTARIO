@@ -6,11 +6,11 @@
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
  * 2. window.APP_VERSION en index.html (línea ~20287)
  * 
- * v6.111 - Debug: Logs de permisos en openModal
+ * v6.112 - Fix: Badge de versión desktop dinámico
  */
 
-const CACHE_NAME = 'inventario-v6.111';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.111';
+const CACHE_NAME = 'inventario-v6.112';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.112';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
