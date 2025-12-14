@@ -6,11 +6,11 @@
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
  * 2. window.APP_VERSION en index.html (línea ~20287)
  * 
- * v6.117 - CRITICAL FIX: Actualización automática forzada con skipWaiting y recarga instantánea
+ * v6.118 - CRITICAL FIX: Syntax error que impedía actualización automática
  */
 
-const CACHE_NAME = 'inventario-v6.117';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.117';
+const CACHE_NAME = 'inventario-v6.118';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.118';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
