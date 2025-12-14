@@ -18218,6 +18218,22 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
   <!-- TAB INVENTARIO -->
   <div id="inventario" class="tab-content active">
+    <!-- 🔍 BUSCADOR MÓVIL - Solo visible en móvil -->
+    <div class="mobile-search-bar" style="display: none;">
+      <div class="mobile-search-container">
+        <span class="mobile-search-icon">🔍</span>
+        <input 
+          type="text" 
+          id="mobileSearchInput" 
+          class="mobile-search-input" 
+          placeholder="Buscar repuesto..." 
+          autocomplete="off"
+          oninput="window.app.handleMobileSearch(this.value)"
+        />
+        <button class="mobile-search-clear" onclick="window.app.clearMobileSearch()" style="display:none;">✕</button>
+      </div>
+    </div>
+
     <div class="toolbar">
       <!-- GRUPO 1: ACCIONES PRINCIPALES -->
       <div class="toolbar-group">
@@ -20285,8 +20301,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.106';
-window.CACHE_VERSION = 'inventario-v6.106';
+window.APP_VERSION = 'v6.107';
+window.CACHE_VERSION = 'inventario-v6.107';
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -36781,7 +36797,7 @@ class InventarioCompleto {
             <span class="repuesto-codigo">${this.escapeHtml(r.codigoInterno || 'Sin código')}</span>
           </div>
           <div class="repuesto-actions">
-            <button onclick="window.app.openModal('edit', '${r.id}')" class="btn-repuesto-edit" title="Editar">✏️</button>
+            <button onclick="window.editRepuesto('${r.id}')" class="btn-repuesto-edit" title="Editar">✏️</button>
             ${tieneInstancia ? `<button onclick="window.app.eliminarInstancia('${r.id}')" class="btn-repuesto-delete" title="Eliminar instancia">🗑️</button>` : ''}
           </div>
         </div>
@@ -38141,7 +38157,7 @@ class InventarioCompleto {
         
         html += `
           <div style="background: var(--bg-primary); border: 2px solid var(--border); border-radius: 12px; overflow: hidden; transition: all 0.2s; cursor: pointer; position: relative;" 
-               onclick="window.app.openModal('edit', '${repuesto.id}')"
+               onclick="window.editRepuesto('${repuesto.id}')"
                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'"
                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
             
@@ -40875,6 +40891,39 @@ class InventarioCompleto {
     this.renderInventario();
   }
 
+  // 🔍 Búsqueda móvil en inventario
+  handleMobileSearch(value) {
+    // Sincronizar con el input principal de búsqueda
+    const mainSearchInput = document.getElementById('searchInput');
+    if (mainSearchInput) {
+      mainSearchInput.value = value;
+    }
+    
+    // Mostrar/ocultar botón de limpiar
+    const clearBtn = document.querySelector('.mobile-search-clear');
+    if (clearBtn) {
+      clearBtn.style.display = value.trim() ? 'block' : 'none';
+    }
+    
+    // Aplicar filtros
+    this.currentPage = 1;
+    this.renderInventario();
+  }
+
+  clearMobileSearch() {
+    const mobileInput = document.getElementById('mobileSearchInput');
+    const mainInput = document.getElementById('searchInput');
+    const clearBtn = document.querySelector('.mobile-search-clear');
+    
+    if (mobileInput) mobileInput.value = '';
+    if (mainInput) mainInput.value = '';
+    if (clearBtn) clearBtn.style.display = 'none';
+    
+    // Aplicar filtros
+    this.currentPage = 1;
+    this.renderInventario();
+  }
+
   getFilteredRepuestos() {
     const search = document.getElementById('searchInput')?.value.toLowerCase() || '';
     const filterArea = document.getElementById('filterArea')?.value || '';
@@ -41874,7 +41923,7 @@ class InventarioCompleto {
               <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
                 <!-- 🆕 v6.087 - Botón CONTAR: Visible para todos (admin, usuario, lectura) -->
                 <button 
-                  onclick="window.app.abrirModalConteoIndividual('${r.id}')"
+                  onclick="window.contarRepuesto('${r.id}')"
                   style="
                     background: linear-gradient(135deg, #527853, #3d5a3e);
                     color: white;
@@ -41895,7 +41944,7 @@ class InventarioCompleto {
                 <!-- 🆕 v6.087 - Botón EDITAR: Visible solo para admin y usuario -->
                 ${this.canEdit ? `
                 <button 
-                  onclick="window.app.openModal('edit', '${r.id}')"
+                  onclick="window.editRepuesto('${r.id}')"
                   style="
                     background: linear-gradient(135deg, #004d73, #003B5C);
                     color: white;
@@ -41934,7 +41983,7 @@ class InventarioCompleto {
                 <!-- 🆕 v6.087 - Botón ELIMINAR: Visible solo para admin y usuario -->
                 ${this.canDelete ? `
                 <button 
-                  onclick="window.app.deleteRepuesto('${r.id}')"
+                  onclick="window.deleteRepuesto('${r.id}')"
                   style="
                     background: linear-gradient(135deg, #8B5A5A, #6B4444);
                     color: white;
@@ -55069,11 +55118,11 @@ class InventarioCompleto {
                   ` : ''}
                 </div>
                 <div style="margin-top: 8px;">
-                  <button onclick="window.app.verRepuestoEnJerarquia('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                  <button onclick="window.verEnJerarquia('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
                           style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer;">
                     🌳 Ver en Jerarquía
                   </button>
-                  <button onclick="window.app.openModal('edit', '${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                  <button onclick="window.editRepuesto('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
                           style="padding: 8px 16px; background: #8b5cf6; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; margin-left: 8px;">
                     ✏️ Editar
                   </button>
@@ -55083,7 +55132,7 @@ class InventarioCompleto {
                   <div style="font-size: 13px; color: #991b1b; margin-bottom: 8px;">
                     Este repuesto no tiene ubicación en la jerarquía asignada.
                   </div>
-                  <button onclick="window.app.openModal('edit', '${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
+                  <button onclick="window.editRepuesto('${r.id}'); document.getElementById('estadoRepuestoModal').remove();"
                           style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; cursor: pointer;">
                     ➕ Asignar Jerarquía
                   </button>
@@ -55390,13 +55439,13 @@ class InventarioCompleto {
         </div>
         
         <div style="display: flex; gap: 8px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
-          <button onclick="window.app.verRepuestoEnJerarquia('${repuesto.id}'); document.getElementById('duplicadosModal').remove();"
+          <button onclick="window.verEnJerarquia('${repuesto.id}'); document.getElementById('duplicadosModal').remove();"
                   style="flex: 1; padding: 8px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s;"
                   onmouseover="this.style.background='#2563eb';"
                   onmouseout="this.style.background='#3b82f6';">
             🌳 Ver en Jerarquía
           </button>
-          <button onclick="window.app.openModal('edit', '${repuesto.id}'); document.getElementById('duplicadosModal').remove();"
+          <button onclick="window.editRepuesto('${repuesto.id}'); document.getElementById('duplicadosModal').remove();"
                   style="flex: 1; padding: 8px 12px; background: #8b5cf6; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s;"
                   onmouseover="this.style.background='#7c3aed';"
                   onmouseout="this.style.background='#8b5cf6';">
@@ -55651,11 +55700,11 @@ class InventarioCompleto {
       // 🆕 v6.088 - Botones condicionados por ROL + ESTADO
       html += `
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-          <button onclick="window.app.verRepuestoEnJerarquia('${repuesto.id}')" style="${btnVer}" title="${tipVer}">
+          <button onclick="window.verEnJerarquia('${repuesto.id}')" style="${btnVer}" title="${tipVer}">
             Jerarquía
           </button>
           ${this.canEdit ? `
-          <button onclick="window.app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
+          <button onclick="window.editRepuesto('${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
             Editar
           </button>
           ` : `
@@ -55663,11 +55712,11 @@ class InventarioCompleto {
             🔒 Editar
           </button>
           `}
-          <button onclick="window.app.abrirModalConteoIndividual('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
+          <button onclick="window.contarRepuesto('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
             Contar
           </button>
           ${this.canDelete ? `
-          <button onclick="window.app.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
+          <button onclick="window.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
             Eliminar
           </button>
           ` : `
@@ -55700,10 +55749,10 @@ class InventarioCompleto {
         
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
           ${this.canEdit ? `
-          <button onclick="window.app.asignarJerarquiaYMostrar('${repuesto.id}')" style="${btnAsignar} flex: 2; min-width: 100px;" title="${tipAsignar}">
+          <button onclick="window.asignarUbicacion('${repuesto.id}')" style="${btnAsignar} flex: 2; min-width: 100px;" title="${tipAsignar}">
             + Ubicación
           </button>
-          <button onclick="window.app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
+          <button onclick="window.editRepuesto('${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
             Editar
           </button>
           ` : `
@@ -55714,11 +55763,11 @@ class InventarioCompleto {
             🔒 Editar
           </button>
           `}
-          <button onclick="window.app.abrirModalConteoIndividual('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
+          <button onclick="window.contarRepuesto('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
             Contar
           </button>
           ${this.canDelete ? `
-          <button onclick="window.app.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
+          <button onclick="window.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
             Eliminar
           </button>
           ` : `
@@ -55788,7 +55837,7 @@ class InventarioCompleto {
       
       // Siempre mostrar Ver Jerarquía (todos los roles)
       html += `
-        <button onclick="window.app.verRepuestoEnJerarquia('${repuesto.id}')" style="${btnVer}" title="${tipVer}">
+        <button onclick="window.verEnJerarquia('${repuesto.id}')" style="${btnVer}" title="${tipVer}">
           Jerarquía
         </button>
       `;
@@ -55813,7 +55862,7 @@ class InventarioCompleto {
       // Editar (solo si canEdit)
       if (this.canEdit) {
         html += `
-          <button onclick="window.app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
+          <button onclick="window.editRepuesto('${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
             Editar
           </button>
         `;
@@ -55827,7 +55876,7 @@ class InventarioCompleto {
       
       // Contar (todos los roles)
       html += `
-        <button onclick="window.app.abrirModalConteoIndividual('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
+        <button onclick="window.contarRepuesto('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
           Contar
         </button>
       `;
@@ -55835,7 +55884,7 @@ class InventarioCompleto {
       // Eliminar (solo si canDelete)
       if (this.canDelete) {
         html += `
-          <button onclick="window.app.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
+          <button onclick="window.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
             Eliminar
           </button>
         `;
@@ -55903,7 +55952,7 @@ class InventarioCompleto {
       // Siempre mostrar Ver Jerarquía (si tiene jerarquía)
       if (estado.tieneJerarquia) {
         html += `
-          <button onclick="window.app.verRepuestoEnJerarquia('${repuesto.id}')" style="${btnVer}" title="${tipVer}">
+          <button onclick="window.verEnJerarquia('${repuesto.id}')" style="${btnVer}" title="${tipVer}">
             Jerarquía
           </button>
         `;
@@ -55929,7 +55978,7 @@ class InventarioCompleto {
       // Botón Editar (condicional)
       if (this.canEdit) {
         html += `
-          <button onclick="window.app.openModal('edit', '${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
+          <button onclick="window.editRepuesto('${repuesto.id}')" style="${btnEditar}" title="${tipEditar}">
             Editar
           </button>
         `;
@@ -55943,7 +55992,7 @@ class InventarioCompleto {
       
       // Botón Contar (todos)
       html += `
-        <button onclick="window.app.abrirModalConteoIndividual('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
+        <button onclick="window.contarRepuesto('${repuesto.id}')" style="${btnContar}" title="${tipContar}">
           Contar
         </button>
       `;
@@ -55951,7 +56000,7 @@ class InventarioCompleto {
       // Botón Eliminar (condicional)
       if (this.canDelete) {
         html += `
-          <button onclick="window.app.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
+          <button onclick="window.deleteRepuesto('${repuesto.id}')" style="${btnEliminar}" title="${tipEliminar}">
             Eliminar
           </button>
         `;
@@ -56034,7 +56083,7 @@ class InventarioCompleto {
     // 1. Botón Ver en Jerarquía (solo si tiene jerarquía)
     if (estado.tieneJerarquia) {
       html += `
-        <button onclick="window.app.verRepuestoEnJerarquia('${repuesto.id}')" style="
+        <button onclick="window.verEnJerarquia('${repuesto.id}')" style="
           flex: 1;
           min-width: 110px;
           background: rgba(34, 197, 94, 0.15);
@@ -68941,6 +68990,67 @@ function clearJerarquiaSearch() {
 }
 
 // ========================================
+// WRAPPERS GLOBALES PARA PWA MÓVIL
+// ========================================
+// Estos wrappers aseguran que las funciones estén disponibles
+// en el scope global cuando se ejecutan desde onclick en PWA móvil
+
+window.editRepuesto = function(id) {
+  console.log('🔧 editRepuesto llamado con id:', id);
+  if (window.app && typeof window.app.openModal === 'function') {
+    window.app.openModal('edit', id);
+  } else {
+    console.error('❌ window.app.openModal no está disponible');
+    alert('Error: La aplicación no está lista. Recarga la página.');
+  }
+};
+
+window.deleteRepuesto = function(id) {
+  console.log('🗑️ deleteRepuesto llamado con id:', id);
+  if (window.app && typeof window.app.deleteRepuesto === 'function') {
+    window.app.deleteRepuesto(id);
+  } else {
+    console.error('❌ window.app.deleteRepuesto no está disponible');
+  }
+};
+
+window.contarRepuesto = function(id) {
+  console.log('📊 contarRepuesto llamado con id:', id);
+  if (window.app && typeof window.app.abrirModalConteoIndividual === 'function') {
+    window.app.abrirModalConteoIndividual(id);
+  } else {
+    console.error('❌ window.app.abrirModalConteoIndividual no está disponible');
+  }
+};
+
+window.verEnJerarquia = function(id) {
+  console.log('🌳 verEnJerarquia llamado con id:', id);
+  if (window.app && typeof window.app.verRepuestoEnJerarquia === 'function') {
+    window.app.verRepuestoEnJerarquia(id);
+  } else {
+    console.error('❌ window.app.verRepuestoEnJerarquia no está disponible');
+  }
+};
+
+window.asignarUbicacion = function(id) {
+  console.log('📍 asignarUbicacion llamado con id:', id);
+  if (window.app && typeof window.app.asignarJerarquiaYMostrar === 'function') {
+    window.app.asignarJerarquiaYMostrar(id);
+  } else {
+    console.error('❌ window.app.asignarJerarquiaYMostrar no está disponible');
+  }
+};
+
+window.abrirImagenes = function(id) {
+  console.log('🖼️ abrirImagenes llamado con id:', id);
+  if (window.app && typeof window.app.openRepuestoImages === 'function') {
+    window.app.openRepuestoImages(id);
+  } else {
+    console.error('❌ window.app.openRepuestoImages no está disponible');
+  }
+};
+
+// ========================================
 // DEBUGGING DE PERSISTENCIA
 // ========================================
 function debugPersistencia() {
@@ -70825,6 +70935,19 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
     display: none !important;
   }
   
+  /* Mostrar buscador móvil */
+  #inventario .mobile-search-bar {
+    display: block !important;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-secondary);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
   /* Ajustar contenedor principal de inventario en móvil */
   #inventario .main-content {
     padding-top: 10px !important;
@@ -71132,6 +71255,67 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 .home-quick-search {
   padding: 0 16px 8px;
   position: relative;
+}
+
+/* 🔍 BÚSQUEDA MÓVIL EN INVENTARIO */
+.mobile-search-bar {
+  display: none; /* Visible solo en móvil mediante @media */
+}
+
+.mobile-search-container {
+  display: flex;
+  align-items: center;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 14px;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.mobile-search-container:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(74, 144, 102, 0.15);
+}
+
+.mobile-search-icon {
+  font-size: 18px;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.mobile-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  color: var(--text-primary);
+  outline: none;
+  min-width: 0;
+}
+
+.mobile-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.mobile-search-clear {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  min-width: 30px;
+  min-height: 30px;
+}
+
+.mobile-search-clear:hover,
+.mobile-search-clear:active {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .quick-search-container {

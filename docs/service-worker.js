@@ -6,11 +6,11 @@
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
  * 2. window.APP_VERSION en index.html (línea ~20287)
  * 
- * v6.106 - Fix: Todos los onclick usan window.app explícitamente
+ * v6.107 - Fix: Botones móviles con wrappers globales + Buscador inventario móvil
  */
 
-const CACHE_NAME = 'inventario-v6.106';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.106';
+const CACHE_NAME = 'inventario-v6.107';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.107';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
