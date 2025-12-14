@@ -6,11 +6,11 @@
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
  * 2. window.APP_VERSION en index.html (línea ~20287)
  * 
- * v6.108 - Fix: Onclick inline directo en botones móviles con logs debug
+ * v6.109 - Fix: Botón editar con wrapper openModalEdit + Footer móvil removido
  */
 
-const CACHE_NAME = 'inventario-v6.108';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.108';
+const CACHE_NAME = 'inventario-v6.109';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.109';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

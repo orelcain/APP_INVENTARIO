@@ -20301,8 +20301,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.108';
-window.CACHE_VERSION = 'inventario-v6.108';
+window.APP_VERSION = 'v6.109';
+window.CACHE_VERSION = 'inventario-v6.109';
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -41944,7 +41944,7 @@ class InventarioCompleto {
                 <!-- 🆕 v6.087 - Botón EDITAR: Visible solo para admin y usuario -->
                 ${this.canEdit ? `
                 <button 
-                  onclick="console.log('🔧 Click EDITAR detectado, ID: ${r.id}'); if(window.app && window.app.openModal){window.app.openModal('edit','${r.id}')}else{alert('Error: app no disponible')}"
+                  onclick="console.log('🔧 EDITAR pulsado'); window.openModalEdit('${r.id}')"
                   style="
                     background: linear-gradient(135deg, #004d73, #003B5C);
                     color: white;
@@ -69005,6 +69005,16 @@ window.editRepuesto = function(id) {
   }
 };
 
+// WRAPPER DIRECTO PARA EVITAR PROBLEMAS DE QUOTES
+window.openModalEdit = function(id) {
+  console.log('✏️ openModalEdit llamado, ID:', id);
+  if (window.app) {
+    window.app.openModal('edit', id);
+  } else {
+    alert('App no disponible');
+  }
+};
+
 window.deleteRepuesto = function(id) {
   console.log('🗑️ deleteRepuesto llamado con id:', id);
   if (window.app && typeof window.app.deleteRepuesto === 'function') {
@@ -70795,16 +70805,16 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 <!-- ================================================================== -->
 <!-- 📱 PWA: NAVEGACIÓN INFERIOR MÓVIL                                  -->
 <!-- ================================================================== -->
-<nav id="mobileBottomNav" class="mobile-bottom-nav">
-  <!-- Los botones se generan dinámicamente según el contexto -->
+<nav id="mobileBottomNav" class="mobile-bottom-nav" style="display: none !important;">
+  <!-- Footer deshabilitado - no es necesario en PWA -->
 </nav>
 
 <style>
 /* ================================================================== */
-/* 📱 PWA: NAVEGACIÓN INFERIOR MÓVIL                                  */
+/* 📱 PWA: NAVEGACIÓN INFERIOR MÓVIL - DESHABILITADO                  */
 /* ================================================================== */
 .mobile-bottom-nav {
-  display: none;
+  display: none !important; /* Footer oculto permanentemente */
   position: fixed;
   bottom: 0;
   left: 0;
