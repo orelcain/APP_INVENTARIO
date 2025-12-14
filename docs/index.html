@@ -20301,8 +20301,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.109';
-window.CACHE_VERSION = 'inventario-v6.109';
+window.APP_VERSION = 'v6.110';
+window.CACHE_VERSION = 'inventario-v6.110';
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -42366,20 +42366,25 @@ class InventarioCompleto {
   }
 
   async openModal(mode, id = null) {
-    console.log(`\n ========== ABRIENDO MODAL ==========`);
+    console.log(`\n🔓 ========== ABRIENDO MODAL ==========`);
     console.log(`Modo: ${mode}`);
     console.log(`ID recibido: ${id} (tipo: ${typeof id})`);
     console.log(`Total repuestos en memoria: ${this.repuestos.length}`);
+    console.log(`🔐 PERMISOS - canEdit: ${this.canEdit}, canCreate: ${this.canCreate}, userRole: ${this.userRole}`);
     
     // 🔐 VERIFICAR PERMISOS
     if (mode === 'edit' && !this.canEdit) {
+      console.error(`❌ BLOQUEADO - No tiene permisos para editar (canEdit=${this.canEdit})`);
       this.mostrarToast('⛔ No tienes permisos para editar', 'warning');
       return;
     }
     if (mode === 'new' && !this.canCreate) {
+      console.error(`❌ BLOQUEADO - No tiene permisos para crear (canCreate=${this.canCreate})`);
       this.mostrarToast('⛔ No tienes permisos para crear nuevos registros', 'warning');
       return;
     }
+    
+    console.log(`✅ Permisos OK - Continuando apertura del modal...`);
     
     // 📱🔥 RE-VERIFICAR MULTIMEDIA EN MÓVIL: Mostrar sección si Firebase está autenticado
     const multimediaSection = document.querySelector('.multimedia-section');
