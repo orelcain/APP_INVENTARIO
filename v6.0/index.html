@@ -42752,37 +42752,60 @@ class InventarioCompleto {
   
   // � FIREBASE - Guardar nuevo repuesto en Firestore
   async saveRepuestoToFirestore(data) {
-    console.log('🔥 [FIREBASE] Guardando nuevo repuesto:', data.nombre);
+    console.log('🔥 [FIREBASE] saveRepuestoToFirestore() INICIANDO');
+    console.log('🔥 [FIREBASE] Repuesto a guardar:', {
+      id: data.id,
+      nombre: data.nombre,
+      hasUbicaciones: !!data.ubicaciones,
+      hasMultimedia: !!data.multimedia
+    });
     
     if (!window.firebaseStorageAdapter) {
-      console.warn('⚠️ firebaseStorageAdapter no disponible, guardando solo localmente');
-      // Guardar en memoria local
+      console.error('❌ [FIREBASE] firebaseStorageAdapter NO DISPONIBLE');
+      console.warn('⚠️ Guardando solo localmente (sin sync)');
       this.repuestos.unshift(data);
       await this.saveData();
       return;
     }
     
+    if (!window.firebaseService?.isAuthenticated()) {
+      console.error('❌ [FIREBASE] Usuario NO AUTENTICADO');
+      this.showToast('⚠️ No autenticado - guardado solo local', 'warning');
+      this.repuestos.unshift(data);
+      await this.saveData();
+      return;
+    }
+    
+    console.log('✅ [FIREBASE] Checks OK - firebaseStorageAdapter y auth disponibles');
+    
     try {
       // PRIMERO: Agregar a memoria local INMEDIATAMENTE
       this.repuestos.unshift(data);
-      console.log(`📦 Repuesto agregado a memoria: ${this.repuestos.length} total`);
+      console.log(`📦 [FIREBASE] Repuesto agregado a memoria: ${this.repuestos.length} total`);
       
       // SEGUNDO: Guardar en Firestore usando batch write
-      console.log('🔥 Iniciando guardado en Firestore...');
-      await window.firebaseStorageAdapter.guardarRepuestos([data]);
-      console.log('✅ [FIREBASE] Repuesto guardado en Firestore:', data.id);
+      console.log('🔥 [FIREBASE] Iniciando guardado en Firestore...');
+      const result = await window.firebaseStorageAdapter.guardarRepuestos([data]);
+      
+      if (!result) {
+        throw new Error('guardarRepuestos() retornó false - revisar logs de Firestore');
+      }
+      
+      console.log('✅ [FIREBASE] Repuesto guardado en Firestore exitosamente:', data.id);
       
       // TERCERO: Esperar un momento para asegurar propagación en Firestore
+      console.log('⏱️ [FIREBASE] Esperando 500ms para propagación...');
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // CUARTO: Actualizar cache localStorage con el array actual
       localStorage.setItem('inventarioData', JSON.stringify(this.repuestos));
-      console.log('💾 Cache local actualizado');
+      console.log('💾 [FIREBASE] Cache local actualizado');
       
     } catch (error) {
-      console.error('❌ [FIREBASE] Error guardando repuesto:', error);
-      // Si falla Firestore, al menos ya está en memoria
-      this.showToast('⚠️ Guardado en memoria, error sync Firebase', 'warning');
+      console.error('❌ [FIREBASE] ERROR CRÍTICO guardando repuesto:', error);
+      console.error('❌ [FIREBASE] Error message:', error.message);
+      console.error('❌ [FIREBASE] Error stack:', error.stack);
+      this.showToast('⚠️ Error sync Firebase: ' + error.message, 'error');
     }
   }
   
@@ -66074,7 +66097,7 @@ DOCUMENTACION/GUIA_RAPIDA.md
       const toastId = app.showToast(' Creando paquete portable completo... Esto puede tardar', 'info', 10000);
       
       const zip = new JSZip();
-      const version = '5.3.4'; //  FIX: Versin correcta
+      const version = '6.100'; // v6.100 - Enhanced Firebase sync diagnostics
       const fecha = new Date();
       
       // Formato de fecha y hora ms claro: YYYY-MM-DD_HH-MM-SS

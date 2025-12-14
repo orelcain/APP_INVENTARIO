@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnóstico Firebase - Repuestos</title>
+  <style>
+    body { font-family: monospace; padding: 20px; }
+    .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+    .ok { color: green; }
+    .error { color: red; }
+    .warning { color: orange; }
+    button { padding: 10px 20px; margin: 5px; }
+    pre { background: #f5f5f5; padding: 10px; overflow: auto; max-height: 400px; }
+  </style>
+</head>
+<body>
+  <h1>🔥 Diagnóstico Firebase - Sistema de Repuestos</h1>
+  
+  <div class="section">
+    <h2>1. Verificación de Firebase</h2>
+    <button onclick="checkFirebase()">Verificar Firebase</button>
+    <pre id="firebaseStatus"></pre>
+  </div>
+  
+  <div class="section">
+    <h2>2. Verificación de Autenticación</h2>
+    <button onclick="checkAuth()">Verificar Auth</button>
+    <pre id="authStatus"></pre>
+  </div>
+  
+  <div class="section">
+    <h2>3. Contar Repuestos en Firestore</h2>
+    <button onclick="countFirestore()">Contar en Firestore</button>
+    <pre id="firestoreCount"></pre>
+  </div>
+  
+  <div class="section">
+    <h2>4. Contar Repuestos en LocalStorage</h2>
+    <button onclick="countLocalStorage()">Contar en LocalStorage</button>
+    <pre id="localStorageCount"></pre>
+  </div>
+  
+  <div class="section">
+    <h2>5. Crear Repuesto de Prueba</h2>
+    <button onclick="createTestRepuesto()">Crear Repuesto TEST</button>
+    <pre id="testResult"></pre>
+  </div>
+  
+  <div class="section">
+    <h2>6. Verificar Permisos Firestore</h2>
+    <button onclick="checkPermissions()">Verificar Permisos</button>
+    <pre id="permissionsStatus"></pre>
+  </div>
+  
+  <div class="section">
+    <h2>7. Exportar Logs Completos</h2>
+    <button onclick="exportLogs()">Exportar Logs</button>
+    <pre id="logsExport"></pre>
+  </div>
+
+  <script>
+    function log(elementId, message, type = 'info') {
+      const el = document.getElementById(elementId);
+      const timestamp = new Date().toISOString();
+      const className = type === 'ok' ? 'ok' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : '';
+      el.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+    }
+
+    async function checkFirebase() {
+      const el = document.getElementById('firebaseStatus');
+      el.innerHTML = '';
+      
+      try {
+        log('firebaseStatus', '🔍 Verificando Firebase...');
+        
+        if (!window.firebase) {
+          log('firebaseStatus', '❌ window.firebase NO está definido', 'error');
+          return;
+        }
+        log('firebaseStatus', '✅ window.firebase existe', 'ok');
+        
+        if (!window.FirebaseApp) {
+          log('firebaseStatus', '❌ window.FirebaseApp NO está definido', 'error');
+          return;
+        }
+        log('firebaseStatus', '✅ window.FirebaseApp existe', 'ok');
+        
+        if (!window.FirebaseApp.db) {
+          log('firebaseStatus', '❌ window.FirebaseApp.db NO está definido', 'error');
+          return;
+        }
+        log('firebaseStatus', '✅ window.FirebaseApp.db existe (Firestore)', 'ok');
+        
+        if (!window.FirebaseApp.COLLECTIONS) {
+          log('firebaseStatus', '❌ window.FirebaseApp.COLLECTIONS NO está definido', 'error');
+          return;
+        }
+        log('firebaseStatus', '✅ COLLECTIONS existe', 'ok');
+        log('firebaseStatus', `   REPUESTOS: ${window.FirebaseApp.COLLECTIONS.REPUESTOS}`, 'ok');
+        
+        if (!window.firebaseStorageAdapter) {
+          log('firebaseStatus', '❌ window.firebaseStorageAdapter NO está definido', 'error');
+          return;
+        }
+        log('firebaseStatus', '✅ firebaseStorageAdapter existe', 'ok');
+        
+        if (!window.firebaseService) {
+          log('firebaseStatus', '❌ window.firebaseService NO está definido', 'error');
+          return;
+        }
+        log('firebaseStatus', '✅ firebaseService existe', 'ok');
+        
+        log('firebaseStatus', '\n✅ TODOS LOS CHECKS PASARON', 'ok');
+        
+      } catch (error) {
+        log('firebaseStatus', `❌ ERROR: ${error.message}`, 'error');
+        log('firebaseStatus', error.stack, 'error');
+      }
+    }
+
+    async function checkAuth() {
+      const el = document.getElementById('authStatus');
+      el.innerHTML = '';
+      
+      try {
+        log('authStatus', '🔍 Verificando autenticación...');
+        
+        if (!window.firebaseService) {
+          log('authStatus', '❌ firebaseService no disponible', 'error');
+          return;
+        }
+        
+        const isAuth = window.firebaseService.isAuthenticated();
+        if (!isAuth) {
+          log('authStatus', '❌ Usuario NO AUTENTICADO', 'error');
+          return;
+        }
+        log('authStatus', '✅ Usuario autenticado', 'ok');
+        
+        const user = window.firebaseService.getCurrentUser();
+        if (!user) {
+          log('authStatus', '⚠️ getCurrentUser() retornó null', 'warning');
+          return;
+        }
+        
+        log('authStatus', `✅ User ID: ${user.uid}`, 'ok');
+        log('authStatus', `✅ Email: ${user.email}`, 'ok');
+        log('authStatus', `✅ Display Name: ${user.displayName || 'N/A'}`, 'ok');
+        
+      } catch (error) {
+        log('authStatus', `❌ ERROR: ${error.message}`, 'error');
+      }
+    }
+
+    async function countFirestore() {
+      const el = document.getElementById('firestoreCount');
+      el.innerHTML = '';
+      
+      try {
+        log('firestoreCount', '🔍 Contando repuestos en Firestore...');
+        
+        if (!window.firebaseStorageAdapter) {
+          log('firestoreCount', '❌ firebaseStorageAdapter no disponible', 'error');
+          return;
+        }
+        
+        const repuestos = await window.firebaseStorageAdapter.cargarRepuestos();
+        
+        if (!repuestos) {
+          log('firestoreCount', '⚠️ cargarRepuestos() retornó null/undefined', 'warning');
+          return;
+        }
+        
+        log('firestoreCount', `✅ Total en Firestore: ${repuestos.length}`, 'ok');
+        
+        if (repuestos.length > 0) {
+          log('firestoreCount', `\n📋 Últimos 5 repuestos:`, 'ok');
+          repuestos.slice(0, 5).forEach((r, i) => {
+            log('firestoreCount', `  ${i+1}. ID: ${r.id} | Nombre: ${r.nombre}`, 'ok');
+          });
+        }
+        
+      } catch (error) {
+        log('firestoreCount', `❌ ERROR: ${error.message}`, 'error');
+        log('firestoreCount', error.stack, 'error');
+      }
+    }
+
+    async function countLocalStorage() {
+      const el = document.getElementById('localStorageCount');
+      el.innerHTML = '';
+      
+      try {
+        log('localStorageCount', '🔍 Contando repuestos en LocalStorage...');
+        
+        const data = localStorage.getItem('inventarioData');
+        if (!data) {
+          log('localStorageCount', '⚠️ No hay datos en localStorage', 'warning');
+          return;
+        }
+        
+        const repuestos = JSON.parse(data);
+        log('localStorageCount', `✅ Total en LocalStorage: ${repuestos.length}`, 'ok');
+        
+        if (repuestos.length > 0) {
+          log('localStorageCount', `\n📋 Últimos 5 repuestos:`, 'ok');
+          repuestos.slice(0, 5).forEach((r, i) => {
+            log('localStorageCount', `  ${i+1}. ID: ${r.id} | Nombre: ${r.nombre}`, 'ok');
+          });
+        }
+        
+      } catch (error) {
+        log('localStorageCount', `❌ ERROR: ${error.message}`, 'error');
+      }
+    }
+
+    async function createTestRepuesto() {
+      const el = document.getElementById('testResult');
+      el.innerHTML = '';
+      
+      try {
+        log('testResult', '🔥 Creando repuesto de prueba...');
+        
+        // Crear datos de prueba
+        const testData = {
+          id: crypto.randomUUID(),
+          nombre: `TEST_DIAGNOSTICO_${Date.now()}`,
+          SAP: 'TEST001',
+          stock: 1,
+          stockMinimo: 0,
+          ubicaciones: [],
+          multimedia: [],
+          createdAt: new Date().toISOString()
+        };
+        
+        log('testResult', `📦 Repuesto creado: ${testData.id}`, 'ok');
+        
+        // Intentar guardar en Firestore
+        if (!window.firebaseStorageAdapter) {
+          log('testResult', '❌ firebaseStorageAdapter no disponible', 'error');
+          return;
+        }
+        
+        if (!window.firebaseService?.isAuthenticated()) {
+          log('testResult', '❌ Usuario no autenticado', 'error');
+          return;
+        }
+        
+        log('testResult', '🔥 Guardando en Firestore...', 'ok');
+        const result = await window.firebaseStorageAdapter.guardarRepuestos([testData]);
+        
+        if (!result) {
+          log('testResult', '❌ guardarRepuestos() retornó false', 'error');
+          log('testResult', '⚠️ REVISAR LOGS DE CONSOLA para detalles', 'warning');
+          return;
+        }
+        
+        log('testResult', '✅ Guardado en Firestore exitosamente', 'ok');
+        
+        // Esperar propagación
+        log('testResult', '⏱️ Esperando 1 segundo...', 'ok');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Verificar que se guardó
+        log('testResult', '🔍 Verificando en Firestore...', 'ok');
+        const repuestos = await window.firebaseStorageAdapter.cargarRepuestos();
+        
+        const found = repuestos.find(r => r.id === testData.id);
+        if (found) {
+          log('testResult', '✅ REPUESTO ENCONTRADO EN FIRESTORE!', 'ok');
+          log('testResult', JSON.stringify(found, null, 2), 'ok');
+        } else {
+          log('testResult', '❌ REPUESTO NO ENCONTRADO EN FIRESTORE', 'error');
+          log('testResult', '⚠️ Esto indica que batch.commit() está fallando silenciosamente', 'warning');
+        }
+        
+      } catch (error) {
+        log('testResult', `❌ ERROR: ${error.message}`, 'error');
+        log('testResult', error.stack, 'error');
+      }
+    }
+
+    async function checkPermissions() {
+      const el = document.getElementById('permissionsStatus');
+      el.innerHTML = '';
+      
+      try {
+        log('permissionsStatus', '🔍 Verificando permisos de Firestore...');
+        
+        if (!window.FirebaseApp?.db) {
+          log('permissionsStatus', '❌ Firestore DB no disponible', 'error');
+          return;
+        }
+        
+        const collectionName = window.FirebaseApp.COLLECTIONS?.REPUESTOS || 'repuestos';
+        log('permissionsStatus', `📝 Colección: ${collectionName}`, 'ok');
+        
+        // Intentar leer
+        log('permissionsStatus', '🔍 Intentando READ...', 'ok');
+        try {
+          const snapshot = await window.FirebaseApp.db.collection(collectionName).limit(1).get();
+          log('permissionsStatus', `✅ READ OK (${snapshot.size} docs)`, 'ok');
+        } catch (readError) {
+          log('permissionsStatus', `❌ READ FAILED: ${readError.message}`, 'error');
+        }
+        
+        // Intentar escribir un documento de prueba
+        log('permissionsStatus', '🔍 Intentando WRITE...', 'ok');
+        const testDocId = `test_${Date.now()}`;
+        try {
+          await window.FirebaseApp.db.collection(collectionName).doc(testDocId).set({
+            test: true,
+            timestamp: new Date().toISOString()
+          });
+          log('permissionsStatus', '✅ WRITE OK', 'ok');
+          
+          // Limpiar
+          await window.FirebaseApp.db.collection(collectionName).doc(testDocId).delete();
+          log('permissionsStatus', '✅ DELETE OK (cleanup)', 'ok');
+          
+        } catch (writeError) {
+          log('permissionsStatus', `❌ WRITE FAILED: ${writeError.message}`, 'error');
+          log('permissionsStatus', '⚠️ Esto indica problema de permisos en Firestore', 'warning');
+          log('permissionsStatus', '⚠️ Revisar firestore.rules', 'warning');
+        }
+        
+      } catch (error) {
+        log('permissionsStatus', `❌ ERROR: ${error.message}`, 'error');
+        log('permissionsStatus', error.stack, 'error');
+      }
+    }
+
+    function exportLogs() {
+      const el = document.getElementById('logsExport');
+      el.innerHTML = '';
+      
+      try {
+        log('logsExport', '📋 Exportando logs...');
+        
+        const sections = [
+          'firebaseStatus',
+          'authStatus',
+          'firestoreCount',
+          'localStorageCount',
+          'testResult',
+          'permissionsStatus'
+        ];
+        
+        let fullLog = '=== DIAGNÓSTICO FIREBASE REPUESTOS ===\n';
+        fullLog += `Timestamp: ${new Date().toISOString()}\n\n`;
+        
+        sections.forEach(sectionId => {
+          const sectionEl = document.getElementById(sectionId);
+          if (sectionEl && sectionEl.textContent.trim()) {
+            fullLog += `\n=== ${sectionId.toUpperCase()} ===\n`;
+            fullLog += sectionEl.textContent + '\n';
+          }
+        });
+        
+        log('logsExport', '✅ Logs exportados', 'ok');
+        log('logsExport', '\n' + fullLog, 'ok');
+        
+        // Copiar al clipboard
+        navigator.clipboard.writeText(fullLog).then(() => {
+          log('logsExport', '✅ Logs copiados al portapapeles', 'ok');
+        }).catch(() => {
+          log('logsExport', '⚠️ No se pudo copiar al portapapeles', 'warning');
+        });
+        
+      } catch (error) {
+        log('logsExport', `❌ ERROR: ${error.message}`, 'error');
+      }
+    }
+  </script>
+</body>
+</html>
