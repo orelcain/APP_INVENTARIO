@@ -18869,6 +18869,21 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
                   </div>
                 </div>
               </div>
+              
+              <!-- 🆕 v6.100 - Limpiar caché y forzar actualización -->
+              <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                  <div>
+                    <div style="font-weight: 500; color: rgba(255,255,255,0.9); font-size: 0.9rem;">🧹 Limpiar Caché PWA</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 2px;">
+                      Borra caché y Service Worker para forzar actualización
+                    </div>
+                  </div>
+                  <button onclick="clearCacheAndReload()" style="padding: 10px 16px; border-radius: 8px; border: none; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-weight: 600; cursor: pointer; font-size: 0.85rem; white-space: nowrap;">
+                    🧹 Limpiar
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           
@@ -42752,37 +42767,60 @@ class InventarioCompleto {
   
   // � FIREBASE - Guardar nuevo repuesto en Firestore
   async saveRepuestoToFirestore(data) {
-    console.log('🔥 [FIREBASE] Guardando nuevo repuesto:', data.nombre);
+    console.log('🔥 [FIREBASE] saveRepuestoToFirestore() INICIANDO');
+    console.log('🔥 [FIREBASE] Repuesto a guardar:', {
+      id: data.id,
+      nombre: data.nombre,
+      hasUbicaciones: !!data.ubicaciones,
+      hasMultimedia: !!data.multimedia
+    });
     
     if (!window.firebaseStorageAdapter) {
-      console.warn('⚠️ firebaseStorageAdapter no disponible, guardando solo localmente');
-      // Guardar en memoria local
+      console.error('❌ [FIREBASE] firebaseStorageAdapter NO DISPONIBLE');
+      console.warn('⚠️ Guardando solo localmente (sin sync)');
       this.repuestos.unshift(data);
       await this.saveData();
       return;
     }
     
+    if (!window.firebaseService?.isAuthenticated()) {
+      console.error('❌ [FIREBASE] Usuario NO AUTENTICADO');
+      this.showToast('⚠️ No autenticado - guardado solo local', 'warning');
+      this.repuestos.unshift(data);
+      await this.saveData();
+      return;
+    }
+    
+    console.log('✅ [FIREBASE] Checks OK - firebaseStorageAdapter y auth disponibles');
+    
     try {
       // PRIMERO: Agregar a memoria local INMEDIATAMENTE
       this.repuestos.unshift(data);
-      console.log(`📦 Repuesto agregado a memoria: ${this.repuestos.length} total`);
+      console.log(`📦 [FIREBASE] Repuesto agregado a memoria: ${this.repuestos.length} total`);
       
       // SEGUNDO: Guardar en Firestore usando batch write
-      console.log('🔥 Iniciando guardado en Firestore...');
-      await window.firebaseStorageAdapter.guardarRepuestos([data]);
-      console.log('✅ [FIREBASE] Repuesto guardado en Firestore:', data.id);
+      console.log('🔥 [FIREBASE] Iniciando guardado en Firestore...');
+      const result = await window.firebaseStorageAdapter.guardarRepuestos([data]);
+      
+      if (!result) {
+        throw new Error('guardarRepuestos() retornó false - revisar logs de Firestore');
+      }
+      
+      console.log('✅ [FIREBASE] Repuesto guardado en Firestore exitosamente:', data.id);
       
       // TERCERO: Esperar un momento para asegurar propagación en Firestore
+      console.log('⏱️ [FIREBASE] Esperando 500ms para propagación...');
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // CUARTO: Actualizar cache localStorage con el array actual
       localStorage.setItem('inventarioData', JSON.stringify(this.repuestos));
-      console.log('💾 Cache local actualizado');
+      console.log('💾 [FIREBASE] Cache local actualizado');
       
     } catch (error) {
-      console.error('❌ [FIREBASE] Error guardando repuesto:', error);
-      // Si falla Firestore, al menos ya está en memoria
-      this.showToast('⚠️ Guardado en memoria, error sync Firebase', 'warning');
+      console.error('❌ [FIREBASE] ERROR CRÍTICO guardando repuesto:', error);
+      console.error('❌ [FIREBASE] Error message:', error.message);
+      console.error('❌ [FIREBASE] Error stack:', error.stack);
+      this.showToast('⚠️ Error sync Firebase: ' + error.message, 'error');
     }
   }
   
@@ -61137,7 +61175,7 @@ window.forceGlobalUpdate = async function() {
     await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
       timestamp: now, // 🆕 v6.084 - Date() en lugar de serverTimestamp
       triggeredBy: window.firebaseService.currentUser?.email || 'admin',
-      version: 'v6.100'
+      version: 'v6.099'
     });
     
     console.log(`✅ [forceGlobalUpdate] Comando escrito en Firestore`);
@@ -61177,6 +61215,9 @@ window.setTrackingInterval = function(seconds) {
   const intervalSec = parseInt(seconds);
   const statusEl = document.getElementById('trackingStatus');
   
+  // 🆕 v6.100 - Guardar en localStorage para persistencia
+  localStorage.setItem('trackingInterval', seconds);
+  
   // Limpiar intervalo anterior
   if (window.trackingIntervalId) {
     clearInterval(window.trackingIntervalId);
@@ -61197,6 +61238,47 @@ window.setTrackingInterval = function(seconds) {
   
   if (statusEl) statusEl.textContent = '📡✅';
   showToast(`📡 Tracking activo: actualización cada ${intervalSec} segundos`, 'success');
+};
+
+// 🆕 v6.100 - Limpiar caché y forzar actualización
+window.clearCacheAndReload = async function() {
+  if (!confirm('🧹 Esto borrará el caché y forzará la actualización.\n\n¿Continuar?')) {
+    return;
+  }
+  
+  try {
+    console.log('🧹 [CACHE] Limpiando caché y Service Worker...');
+    
+    // 1. Unregister all service workers
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (let registration of registrations) {
+        console.log('🧹 [SW] Eliminando Service Worker:', registration.scope);
+        await registration.unregister();
+      }
+    }
+    
+    // 2. Clear all caches
+    if ('caches' in window) {
+      const cacheNames = await caches.keys();
+      for (let cacheName of cacheNames) {
+        console.log('🧹 [CACHE] Borrando caché:', cacheName);
+        await caches.delete(cacheName);
+      }
+    }
+    
+    // 3. Show loading
+    showToast('🧹 Caché limpiado. Recargando...', 'success', 2000);
+    
+    // 4. Wait and reload
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 1000);
+    
+  } catch (error) {
+    console.error('❌ Error limpiando caché:', error);
+    showToast('⚠️ Error: ' + error.message, 'error');
+  }
 };
 
 // 🆕 v6.053 - Escuchar comandos del sistema (para usuarios)
@@ -61335,8 +61417,18 @@ window.initAdminPanel = function() {
       })
       .catch(console.warn);
     
-    // Iniciar tracking por defecto (10 segundos)
-    setTrackingInterval(10);
+    // 🆕 v6.100 - Restaurar intervalo de tracking desde localStorage
+    const savedInterval = localStorage.getItem('trackingInterval');
+    const intervalToUse = savedInterval ? parseInt(savedInterval) : 10;
+    
+    // Actualizar el select con el valor guardado
+    const trackingSelect = document.getElementById('trackingInterval');
+    if (trackingSelect) {
+      trackingSelect.value = intervalToUse.toString();
+    }
+    
+    // Iniciar tracking con el valor guardado
+    setTrackingInterval(intervalToUse);
   }
   
   // Todos los usuarios escuchan comandos del sistema
@@ -66074,7 +66166,7 @@ DOCUMENTACION/GUIA_RAPIDA.md
       const toastId = app.showToast(' Creando paquete portable completo... Esto puede tardar', 'info', 10000);
       
       const zip = new JSZip();
-      const version = '5.3.4'; //  FIX: Versin correcta
+      const version = '6.100'; // v6.100 - Enhanced Firebase sync diagnostics
       const fecha = new Date();
       
       // Formato de fecha y hora ms claro: YYYY-MM-DD_HH-MM-SS
