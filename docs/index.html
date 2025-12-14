@@ -20285,8 +20285,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.104';
-window.CACHE_VERSION = 'inventario-v6.104';
+window.APP_VERSION = 'v6.105';
+window.CACHE_VERSION = 'inventario-v6.105';
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -61066,11 +61066,12 @@ const okrModule = {
   }
 };
 
-const app = new InventarioCompleto();
-
-// ⚡ Hacer app accesible globalmente INMEDIATAMENTE para onclick handlers
-window.app = app;
+// ⚡ Crear app directamente en window para asegurar disponibilidad global
+window.app = new InventarioCompleto();
 console.log('✅ window.app disponible globalmente');
+
+// Alias local para compatibilidad con código existente
+const app = window.app;
 
 // 🔧 FUNCIONES DE DIAGNÓSTICO FIREBASE (ejecutar desde consola del navegador)
 window.debugFirebase = {
