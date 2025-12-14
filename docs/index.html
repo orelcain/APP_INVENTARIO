@@ -18036,7 +18036,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.101</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile"></span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -20282,6 +20282,13 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
 <!-- Inicializar sistema de eventos ANTES de cargar módulos -->
 <script>
+// ========================================================================
+//  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
+// ========================================================================
+window.APP_VERSION = 'v6.102';
+window.CACHE_VERSION = 'inventario-v6.102';
+console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
+
 // ========================================================================
 //  SISTEMA DE EVENTOS GLOBAL
 // ========================================================================
@@ -59553,7 +59560,7 @@ class InventarioCompleto {
 }
 
 console.log('=== INVENTARIO PRO - INICIANDO ===');
-console.log('Version: v6.102');
+// Versión ya se muestra en el log de inicio global
 
 const okrModule = {
   state: {
@@ -61815,7 +61822,7 @@ window.forceGlobalUpdate = async function() {
     await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
       timestamp: now, // 🆕 v6.084 - Date() en lugar de serverTimestamp
       triggeredBy: window.firebaseService.currentUser?.email || 'admin',
-      version: 'v6.102'
+      version: window.APP_VERSION
     });
     
     console.log(`✅ [forceGlobalUpdate] Comando escrito en Firestore`);
@@ -73751,8 +73758,17 @@ console.log('📸 Escaneo contextual desde jerarquía inicializado');
 console.log('🏠 Mobile Home Dashboard inicializado');
 </script>
 
-<!-- PWA Service Worker Registration -->
+<!-- PWA Service Worker Registration + Auto-Update -->
 <script>
+  // 🏷️ Mostrar versión en badge (dinámico)
+  document.addEventListener('DOMContentLoaded', () => {
+    const versionBadge = document.getElementById('versionBadgeMobile');
+    if (versionBadge) {
+      versionBadge.textContent = window.APP_VERSION;
+      console.log(`🏷️ Badge actualizado a ${window.APP_VERSION}`);
+    }
+  });
+
   // Registrar Service Worker para PWA
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
@@ -73760,31 +73776,124 @@ console.log('🏠 Mobile Home Dashboard inicializado');
         const registration = await navigator.serviceWorker.register('service-worker.js');
         console.log('✅ PWA: Service Worker registrado correctamente');
         
-        // Verificar actualizaciones
+        // 🔄 Forzar verificación de actualizaciones cada 60 segundos
+        setInterval(() => {
+          registration.update().catch(err => {
+            console.warn('⚠️ Error verificando actualizaciones:', err);
+          });
+        }, 60000);
+        
+        // Verificar actualizaciones inmediatamente
+        registration.update();
+        
+        // Detectar nueva versión disponible
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           console.log('🔄 PWA: Nueva versión detectada, instalando...');
           
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // 🆕 v6.053 - Verificar si auto-update está activado
-              if (window.autoUpdateEnabled) {
-                console.log('⚡ Auto-update activado - Recargando automáticamente...');
-                showToast?.('⚡ Nueva versión detectada. Actualizando automáticamente...', 'info');
-                setTimeout(() => {
-                  newWorker.postMessage({ type: 'SKIP_WAITING' });
-                  window.location.reload(true);
-                }, 2000);
-              } else {
-                // Preguntar al usuario
-                if (confirm('🆕 Nueva versión disponible. ¿Actualizar ahora?')) {
-                  newWorker.postMessage({ type: 'SKIP_WAITING' });
-                  window.location.reload(true);
+              console.log('✅ Nueva versión instalada');
+              
+              // Mostrar notificación persistente con botón de actualizar
+              const updateBanner = document.createElement('div');
+              updateBanner.id = 'updateBanner';
+              updateBanner.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 16px;
+                text-align: center;
+                z-index: 99999;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                animation: slideDown 0.3s ease-out;
+              `;
+              
+              updateBanner.innerHTML = `
+                <div style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">
+                  🎉 Nueva versión ${window.APP_VERSION} disponible
+                </div>
+                <div style="font-size: 14px; margin-bottom: 12px; opacity: 0.95;">
+                  Haz clic en actualizar para obtener las últimas mejoras
+                </div>
+                <button onclick="window.updateApp()" style="
+                  background: white;
+                  color: #667eea;
+                  border: none;
+                  padding: 12px 32px;
+                  border-radius: 24px;
+                  font-size: 16px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                  transition: transform 0.2s;
+                  margin-right: 12px;
+                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                  ⚡ Actualizar Ahora
+                </button>
+                <button onclick="this.parentElement.remove()" style="
+                  background: transparent;
+                  color: white;
+                  border: 2px solid rgba(255,255,255,0.5);
+                  padding: 10px 24px;
+                  border-radius: 24px;
+                  font-size: 14px;
+                  cursor: pointer;
+                ">
+                  Más tarde
+                </button>
+              `;
+              
+              // Agregar animación
+              const style = document.createElement('style');
+              style.textContent = `
+                @keyframes slideDown {
+                  from { transform: translateY(-100%); }
+                  to { transform: translateY(0); }
                 }
+              `;
+              document.head.appendChild(style);
+              document.body.appendChild(updateBanner);
+              
+              // Función global para actualizar
+              window.updateApp = () => {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                updateBanner.innerHTML = '<div style="font-size: 16px;">⏳ Actualizando...</div>';
+                setTimeout(() => window.location.reload(true), 500);
+              };
+              
+              // Si auto-update está habilitado, actualizar automáticamente después de 5 segundos
+              if (window.autoUpdateEnabled) {
+                let countdown = 5;
+                const countdownInterval = setInterval(() => {
+                  updateBanner.querySelector('div').innerHTML = `
+                    <div style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">
+                      🎉 Nueva versión ${window.APP_VERSION} disponible
+                    </div>
+                    <div style="font-size: 14px; margin-bottom: 12px; opacity: 0.95;">
+                      Actualizando automáticamente en ${countdown}s...
+                    </div>
+                  `;
+                  countdown--;
+                  if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    window.updateApp();
+                  }
+                }, 1000);
               }
             }
           });
         });
+        
+        // Detectar cuando el nuevo SW toma control
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          console.log('🔄 Service Worker actualizado - Recargando...');
+        });
+        
       } catch (error) {
         console.warn('⚠️ PWA: Error al registrar Service Worker:', error);
       }

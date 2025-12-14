@@ -2,6 +2,10 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
+ * ⚠️ IMPORTANTE: Al actualizar la versión, cambiar:
+ * 1. CACHE_NAME y DYNAMIC_CACHE abajo
+ * 2. window.APP_VERSION en index.html (línea ~20287)
+ * 
  * v6.102 - Fix árbol móvil clickeable + creación multi-nivel jerarquía
  */
 
