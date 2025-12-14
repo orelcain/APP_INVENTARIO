@@ -74754,17 +74754,51 @@ console.log('🏠 Mobile Home Dashboard inicializado');
 <!-- PWA Service Worker Registration + Auto-Update -->
 <script>
   // 🏷️ Mostrar versión en badge (dinámico)
-  document.addEventListener('DOMContentLoaded', () => {
+  <document.addEventListener('DOMContentLoaded', () => {
     const versionBadgeMobile = document.getElementById('versionBadgeMobile');
     const versionBadgeDesktop = document.getElementById('versionBadgeDesktop');
     
     if (versionBadgeMobile) {
       versionBadgeMobile.textContent = window.APP_VERSION;
+      versionBadgeMobile.title = `Versión actual: ${window.APP_VERSION} - Click para forzar actualización`;
+      versionBadgeMobile.style.cursor = 'pointer';
+      versionBadgeMobile.onclick = () => {
+        if (confirm(`¿Forzar verificación de actualizaciones?\nVersión actual: ${window.APP_VERSION}`)) {
+          console.log('⚡ FORZANDO VERIFICACIÓN MANUAL...');
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistration().then(reg => {
+              if (reg) {
+                reg.update().then(() => {
+                  console.log('✅ Verificación completada');
+                  setTimeout(() => window.location.reload(true), 1000);
+                });
+              }
+            });
+          }
+        }
+      };
       console.log(`🏷️ Badge móvil actualizado a ${window.APP_VERSION}`);
     }
     
     if (versionBadgeDesktop) {
       versionBadgeDesktop.textContent = window.APP_VERSION;
+      versionBadgeDesktop.title = `Versión actual: ${window.APP_VERSION} - Click para forzar actualización`;
+      versionBadgeDesktop.style.cursor = 'pointer';
+      versionBadgeDesktop.onclick = () => {
+        if (confirm(`¿Forzar verificación de actualizaciones?\nVersión actual: ${window.APP_VERSION}`)) {
+          console.log('⚡ FORZANDO VERIFICACIÓN MANUAL...');
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistration().then(reg => {
+              if (reg) {
+                reg.update().then(() => {
+                  console.log('✅ Verificación completada');
+                  setTimeout(() => window.location.reload(true), 1000);
+                });
+              }
+            });
+          }
+        }
+      };
       console.log(`🏷️ Badge desktop actualizado a ${window.APP_VERSION}`);
     }
   });
@@ -74773,13 +74807,15 @@ console.log('🏠 Mobile Home Dashboard inicializado');
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
       try {
-        const registration = await navigator.serviceWorker.register('service-worker.js');
+        const registration = await navigator.serviceWorker.register('service-worker.js', {
+          updateViaCache: 'none' // ⚡ NO cachear el service worker
+        });
         console.log('✅ PWA: Service Worker registrado correctamente');
         console.log('📍 SW actual:', registration.active ? 'Activo' : 'No activo');
         console.log('📍 SW instalando:', registration.installing ? 'SÍ' : 'NO');
         console.log('📍 SW esperando:', registration.waiting ? 'SÍ' : 'NO');
         
-        // 🔄 Forzar verificación de actualizaciones cada 10 segundos (más agresivo)
+        // 🔄 Forzar verificación de actualizaciones cada 5 segundos (SUPER AGRESIVO)
         setInterval(() => {
           console.log('🔍 [AUTO] Verificando actualizaciones...');
           registration.update().then(() => {
@@ -74787,7 +74823,7 @@ console.log('🏠 Mobile Home Dashboard inicializado');
           }).catch(err => {
             console.warn('⚠️ Error verificando actualizaciones:', err);
           });
-        }, 10000);
+        }, 5000);
         
         // Verificar actualizaciones inmediatamente (3 veces para asegurar)
         console.log('🔍 [INICIO] Verificación inmediata #1...');
@@ -74922,9 +74958,28 @@ console.log('🏠 Mobile Home Dashboard inicializado');
           registration.dispatchEvent(event);
         }
         
+        // 📨 Escuchar mensajes del Service Worker
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data && event.data.type === 'NEW_VERSION') {
+            console.log('🎉 NUEVA VERSIÓN DETECTADA:', event.data.version);
+            console.log('🔄 Recargando página en 2 segundos...');
+            
+            // Mostrar toast
+            if (window.app && window.app.mostrarToast) {
+              window.app.mostrarToast(`🎉 Actualizando a ${window.APP_VERSION}...`, 'success');
+            }
+            
+            // Recargar automáticamente después de 2 segundos
+            setTimeout(() => {
+              window.location.reload(true);
+            }, 2000);
+          }
+        });
+        
         // Detectar cuando el nuevo SW toma control
         navigator.serviceWorker.addEventListener('controllerchange', () => {
           console.log('🔄 Service Worker actualizado - Recargando...');
+          window.location.reload(true);
         });
         
       } catch (error) {
