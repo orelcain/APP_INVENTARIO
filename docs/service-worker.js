@@ -2,11 +2,11 @@
  * Service Worker para PWA - Inventario de Repuestos
  * Maneja cache offline y actualizaciones en segundo plano
  * 
- * v6.099 - Sistema OCR Híbrido Inteligente: Analiza calidad + Tesseract optimizado + OCR.space fallback
+ * v6.100 - Enhanced Firebase sync diagnostics and error handling
  */
 
-const CACHE_NAME = 'inventario-v6.099';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.099';
+const CACHE_NAME = 'inventario-v6.100';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.100';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
