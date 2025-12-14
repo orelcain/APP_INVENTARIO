@@ -6,11 +6,11 @@
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
  * 2. window.APP_VERSION en index.html (línea ~20287)
  * 
- * v6.105 - Fix: window.app creado directamente en scope global para PWA
+ * v6.106 - Fix: Todos los onclick usan window.app explícitamente
  */
 
-const CACHE_NAME = 'inventario-v6.105';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.105';
+const CACHE_NAME = 'inventario-v6.106';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.106';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
