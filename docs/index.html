@@ -18036,7 +18036,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       <div class="home-brand">
         <span class="brand-icon">📦</span>
         <div class="brand-text">
-          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.100</span></h1>
+          <h1>Inventario <span class="version-badge" id="versionBadgeMobile">v6.101</span></h1>
           <span class="brand-subtitle">Sistema de Gestión</span>
         </div>
       </div>
@@ -19622,6 +19622,12 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
           
           <!-- Selector Visual de Jerarquía MÓVIL -->
           <div id="mobileUbicacionesTreeContainer" class="mobile-tree-selector" style="max-height: 350px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px; background: rgba(0,0,0,0.2);">
+            <!-- Botón crear área (se renderiza arriba del árbol) -->
+            <div style="padding: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); margin-bottom: 8px;">
+              <button type="button" onclick="app.agregarAreaDesdeMobile()" class="mobile-btn-add-area" style="width: 100%; padding: 12px; font-size: 14px; font-weight: 600; background: rgba(34, 197, 94, 0.15); border: 2px dashed rgba(34, 197, 94, 0.4); border-radius: 8px; color: #22c55e; cursor: pointer;">
+                ➕ Crear Nueva Área
+              </button>
+            </div>
             <!-- Árbol de jerarquía se renderizará aquí -->
             <div class="mobile-empty-state">Cargando jerarquía...</div>
           </div>
@@ -19640,7 +19646,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
           </div>
           <!-- Botón para agregar fotos -->
           <div class="mobile-foto-actions" style="margin-top: 12px;">
-            <input type="file" id="mobile-foto-input" accept="image/*" capture="environment" multiple style="display: none;" onchange="app.onMobileFotoSelected(event)">
+            <input type="file" id="mobile-foto-input" accept="image/*" multiple style="display: none;" onchange="app.onMobileFotoSelected(event)">
             <button type="button" class="mobile-btn-add-foto" onclick="document.getElementById('mobile-foto-input').click()">
               📷 Tomar / Seleccionar Foto
             </button>
@@ -42831,15 +42837,68 @@ class InventarioCompleto {
     }
     
     try {
+      // 📸 IMPORTANTE: Subir imágenes a Firebase Storage ANTES de guardar
+      let multimediaFinal = [];
+      
+      if (this.mobileFotos && this.mobileFotos.length > 0) {
+        console.log(`📸 [MOBILE] Procesando ${this.mobileFotos.length} imágenes...`);
+        
+        const id = this.currentEditingId || crypto.randomUUID();
+        
+        for (let i = 0; i < this.mobileFotos.length; i++) {
+          const foto = this.mobileFotos[i];
+          
+          // Si es nueva (tiene dataUrl), subirla a Firebase
+          if (foto.isNew && foto.dataUrl && window.firebaseImageStorage) {
+            try {
+              console.log(`☁️ [MOBILE] Subiendo imagen ${i+1}/${this.mobileFotos.length}...`);
+              
+              // Convertir dataUrl a Blob
+              const response = await fetch(foto.dataUrl);
+              const blob = await response.blob();
+              const file = new File([blob], foto.name, { type: blob.type });
+              
+              // Subir a Firebase Storage
+              const uploadResult = await window.firebaseImageStorage.uploadImage(file, id, i + 1);
+              
+              if (uploadResult && uploadResult.url) {
+                multimediaFinal.push({
+                  type: 'image',
+                  url: uploadResult.url,
+                  path: uploadResult.path,
+                  name: foto.name,
+                  size: blob.size,
+                  isFirebaseStorage: true
+                });
+                console.log(`✅ [MOBILE] Imagen ${i+1} subida exitosamente`);
+              }
+            } catch (uploadError) {
+              console.error(`❌ [MOBILE] Error subiendo imagen ${i+1}:`, uploadError);
+              this.showToast(`⚠️ Error subiendo imagen ${i+1}`, 'warning');
+            }
+          } else if (foto.url) {
+            // Si ya tiene URL (edición), mantenerla
+            multimediaFinal.push(foto);
+          }
+        }
+        
+        console.log(`✅ [MOBILE] ${multimediaFinal.length} imágenes procesadas`);
+      }
+      
+      // Actualizar multimedia en data
+      data.multimedia = multimediaFinal;
+      
       if (this.currentEditingId) {
         // Actualizar existente
         await this.updateRepuestoInFirestore(this.currentEditingId, data);
         this.showToast('✅ Repuesto actualizado', 'success');
       } else {
         // Crear nuevo
-        const id = crypto.randomUUID();
-        data.id = id;
+        if (!data.id) {
+          data.id = crypto.randomUUID();
+        }
         data.createdAt = new Date().toISOString();
+        data.ultimaModificacion = new Date().toISOString();
         await this.saveRepuestoToFirestore(data);
         this.showToast('✅ Repuesto creado', 'success');
       }
@@ -43062,9 +43121,9 @@ class InventarioCompleto {
     return html;
   }
   
-  // 🌳 Construir nodo de área (recursivo simplificado)
+  // 🌳 Construir nodo de área (recursivo COMPLETO - todos los niveles)
   buildMobileAreaNode(area, selectedPath, isParentSelected) {
-    const hasChildren = area.subAreas && area.subAreas.length > 0;
+    const hasSubAreas = area.subAreas && area.subAreas.length > 0;
     const isThisSelected = selectedPath.areaGeneral === area.nombre;
     const shouldExpand = isParentSelected || isThisSelected;
     
@@ -43075,36 +43134,20 @@ class InventarioCompleto {
     
     let html = `
       <div class="mobile-tree-node">
-        <div class="mobile-tree-node-content ${isThisSelected ? 'is-selected' : ''}" 
+        <div class="mobile-tree-node-content ${isThisSelected && !selectedPath.subArea ? 'is-selected' : ''}" 
              data-mobile-node="area"
              data-node-path='${JSON.stringify(path)}'>
-          <span class="mobile-tree-node-toggle">${hasChildren ? (shouldExpand ? '▼' : '▶') : ''}</span>
+          <span class="mobile-tree-node-toggle">${hasSubAreas ? (shouldExpand ? '▼' : '▶') : ''}</span>
           <span class="mobile-tree-node-icon">📍</span>
           <span class="mobile-tree-node-name">${this.escapeHtml(area.nombre)}</span>
         </div>
     `;
     
-    if (hasChildren) {
+    // Renderizar sub-áreas recursivamente
+    if (hasSubAreas) {
       html += `<div class="mobile-tree-node-children" style="display: ${shouldExpand ? 'block' : 'none'}">`;
       area.subAreas.forEach(subArea => {
-        const subPath = {
-          id: area.id || Date.now(),
-          areaGeneral: area.nombre,
-          subArea: subArea.nombre
-        };
-        const isSubSelected = isThisSelected && selectedPath.subArea === subArea.nombre;
-        
-        html += `
-          <div class="mobile-tree-node">
-            <div class="mobile-tree-node-content ${isSubSelected ? 'is-selected' : ''}"
-                 data-mobile-node="subarea"
-                 data-node-path='${JSON.stringify(subPath)}'>
-              <span class="mobile-tree-node-toggle"></span>
-              <span class="mobile-tree-node-icon">📂</span>
-              <span class="mobile-tree-node-name">${this.escapeHtml(subArea.nombre)}</span>
-            </div>
-          </div>
-        `;
+        html += this.buildMobileSubAreaNode(subArea, area.nombre, selectedPath);
       });
       html += `</div>`;
     }
@@ -43113,14 +43156,167 @@ class InventarioCompleto {
     return html;
   }
   
+  // 🌳 Construir nodo de sub-área (con sistemas)
+  buildMobileSubAreaNode(subArea, areaGeneral, selectedPath) {
+    const hasSistemas = subArea.sistemas && subArea.sistemas.length > 0;
+    const isThisSelected = selectedPath.areaGeneral === areaGeneral && selectedPath.subArea === subArea.nombre;
+    const shouldExpand = isThisSelected;
+    
+    const path = {
+      areaGeneral: areaGeneral,
+      subArea: subArea.nombre
+    };
+    
+    let html = `
+      <div class="mobile-tree-node">
+        <div class="mobile-tree-node-content ${isThisSelected && !selectedPath.sistemaEquipo ? 'is-selected' : ''}"
+             data-mobile-node="subarea"
+             data-node-path='${JSON.stringify(path)}'>
+          <span class="mobile-tree-node-toggle">${hasSistemas ? (shouldExpand ? '▼' : '▶') : ''}</span>
+          <span class="mobile-tree-node-icon">📂</span>
+          <span class="mobile-tree-node-name">${this.escapeHtml(subArea.nombre)}</span>
+        </div>
+    `;
+    
+    // Renderizar sistemas recursivamente
+    if (hasSistemas) {
+      html += `<div class="mobile-tree-node-children" style="display: ${shouldExpand ? 'block' : 'none'}">`;
+      subArea.sistemas.forEach(sistema => {
+        html += this.buildMobileSistemaNode(sistema, areaGeneral, subArea.nombre, selectedPath);
+      });
+      html += `</div>`;
+    }
+    
+    html += `</div>`;
+    return html;
+  }
+  
+  // 🌳 Construir nodo de sistema/equipo (con subsistemas)
+  buildMobileSistemaNode(sistema, areaGeneral, subArea, selectedPath) {
+    const hasSubSistemas = sistema.subSistemas && sistema.subSistemas.length > 0;
+    const isThisSelected = selectedPath.areaGeneral === areaGeneral && 
+                           selectedPath.subArea === subArea && 
+                           selectedPath.sistemaEquipo === sistema.nombre;
+    const shouldExpand = isThisSelected;
+    
+    const path = {
+      areaGeneral: areaGeneral,
+      subArea: subArea,
+      sistemaEquipo: sistema.nombre
+    };
+    
+    let html = `
+      <div class="mobile-tree-node">
+        <div class="mobile-tree-node-content ${isThisSelected && !selectedPath.subSistema ? 'is-selected' : ''}"
+             data-mobile-node="sistema"
+             data-node-path='${JSON.stringify(path)}'>
+          <span class="mobile-tree-node-toggle">${hasSubSistemas ? (shouldExpand ? '▼' : '▶') : ''}</span>
+          <span class="mobile-tree-node-icon">⚙️</span>
+          <span class="mobile-tree-node-name">${this.escapeHtml(sistema.nombre)}</span>
+        </div>
+    `;
+    
+    // Renderizar subsistemas recursivamente
+    if (hasSubSistemas) {
+      html += `<div class="mobile-tree-node-children" style="display: ${shouldExpand ? 'block' : 'none'}">`;
+      sistema.subSistemas.forEach(subSistema => {
+        html += this.buildMobileSubSistemaNode(subSistema, areaGeneral, subArea, sistema.nombre, selectedPath);
+      });
+      html += `</div>`;
+    }
+    
+    html += `</div>`;
+    return html;
+  }
+  
+  // 🌳 Construir nodo de subsistema (con secciones)
+  buildMobileSubSistemaNode(subSistema, areaGeneral, subArea, sistemaEquipo, selectedPath) {
+    const hasSecciones = subSistema.secciones && subSistema.secciones.length > 0;
+    const isThisSelected = selectedPath.areaGeneral === areaGeneral && 
+                           selectedPath.subArea === subArea && 
+                           selectedPath.sistemaEquipo === sistemaEquipo &&
+                           selectedPath.subSistema === subSistema.nombre;
+    const shouldExpand = isThisSelected;
+    
+    const path = {
+      areaGeneral: areaGeneral,
+      subArea: subArea,
+      sistemaEquipo: sistemaEquipo,
+      subSistema: subSistema.nombre
+    };
+    
+    let html = `
+      <div class="mobile-tree-node">
+        <div class="mobile-tree-node-content ${isThisSelected && !selectedPath.seccion ? 'is-selected' : ''}"
+             data-mobile-node="subsistema"
+             data-node-path='${JSON.stringify(path)}'>
+          <span class="mobile-tree-node-toggle">${hasSecciones ? (shouldExpand ? '▼' : '▶') : ''}</span>
+          <span class="mobile-tree-node-icon">🔧</span>
+          <span class="mobile-tree-node-name">${this.escapeHtml(subSistema.nombre)}</span>
+        </div>
+    `;
+    
+    // Renderizar secciones recursivamente
+    if (hasSecciones) {
+      html += `<div class="mobile-tree-node-children" style="display: ${shouldExpand ? 'block' : 'none'}">`;
+      subSistema.secciones.forEach(seccion => {
+        html += this.buildMobileSeccionNode(seccion, areaGeneral, subArea, sistemaEquipo, subSistema.nombre, selectedPath);
+      });
+      html += `</div>`;
+    }
+    
+    html += `</div>`;
+    return html;
+  }
+  
+  // 🌳 Construir nodo de sección (nivel final)
+  buildMobileSeccionNode(seccion, areaGeneral, subArea, sistemaEquipo, subSistema, selectedPath) {
+    const isThisSelected = selectedPath.areaGeneral === areaGeneral && 
+                           selectedPath.subArea === subArea && 
+                           selectedPath.sistemaEquipo === sistemaEquipo &&
+                           selectedPath.subSistema === subSistema &&
+                           selectedPath.seccion === seccion.nombre;
+    
+    const path = {
+      areaGeneral: areaGeneral,
+      subArea: subArea,
+      sistemaEquipo: sistemaEquipo,
+      subSistema: subSistema,
+      seccion: seccion.nombre
+    };
+    
+    let html = `
+      <div class="mobile-tree-node">
+        <div class="mobile-tree-node-content ${isThisSelected ? 'is-selected' : ''}"
+             data-mobile-node="seccion"
+             data-node-path='${JSON.stringify(path)}'>
+          <span class="mobile-tree-node-toggle"></span>
+          <span class="mobile-tree-node-icon">📌</span>
+          <span class="mobile-tree-node-name">${this.escapeHtml(seccion.nombre)}</span>
+        </div>
+      </div>
+    `;
+    
+    return html;
+  }
+  
   // 📱 Handler cuando se hace click en un nodo del árbol móvil
   onMobileNodeClick(nodePath) {
     console.log('📱 [MOBILE] Nodo seleccionado:', nodePath);
     
-    // Si ya existe la ubicación, no agregar duplicados
+    // Validar que al menos tenga área general
+    if (!nodePath.areaGeneral) {
+      this.showToast('⚠️ Selecciona un nodo válido', 'warning');
+      return;
+    }
+    
+    // Si ya existe la ubicación exacta, no agregar duplicados
     const exists = this.ubicacionesActuales.some(u => 
       u.areaGeneral === nodePath.areaGeneral &&
-      u.subArea === (nodePath.subArea || '')
+      (u.subArea || '') === (nodePath.subArea || '') &&
+      (u.sistemaEquipo || '') === (nodePath.sistemaEquipo || '') &&
+      (u.subSistema || '') === (nodePath.subSistema || '') &&
+      (u.seccion || '') === (nodePath.seccion || '')
     );
     
     if (exists) {
@@ -43128,7 +43324,7 @@ class InventarioCompleto {
       return;
     }
     
-    // Agregar ubicación a ubicacionesActuales
+    // Agregar ubicación a ubicacionesActuales (con TODOS los niveles)
     this.ubicacionesActuales.push({
       areaGeneral: nodePath.areaGeneral || '',
       subArea: nodePath.subArea || '',
@@ -43217,6 +43413,63 @@ class InventarioCompleto {
     `).join('');
     
     if (count) count.textContent = this.mobileFotos.length;
+  }
+  
+  // 📱 JERARQUÍA - Agregar nueva área desde móvil
+  agregarAreaDesdeMobile() {
+    const nombreArea = prompt('📍 Nombre de la nueva área:', '');
+    
+    if (!nombreArea || !nombreArea.trim()) {
+      return;
+    }
+    
+    const areaNombre = nombreArea.trim();
+    
+    // Validar que no exista
+    if (this.jerarquiaAnidada && this.jerarquiaAnidada.areas) {
+      const existe = this.jerarquiaAnidada.areas.some(a => 
+        a.nombre.toLowerCase() === areaNombre.toLowerCase()
+      );
+      
+      if (existe) {
+        this.showToast('⚠️ Esa área ya existe', 'warning');
+        return;
+      }
+    }
+    
+    // Inicializar jerarquía si no existe
+    if (!this.jerarquiaAnidada) {
+      this.jerarquiaAnidada = {
+        empresa: { nombre: this.plantaBase || 'Empresa', id: 'EMP-01' },
+        areas: []
+      };
+    }
+    
+    // Agregar nueva área
+    const nuevaArea = {
+      id: `AREA-${Date.now()}`,
+      nombre: areaNombre,
+      subAreas: []
+    };
+    
+    this.jerarquiaAnidada.areas.push(nuevaArea);
+    
+    // Guardar en localStorage
+    localStorage.setItem('jerarquiaAnidada', JSON.stringify(this.jerarquiaAnidada));
+    
+    // También actualizar opcionesJerarquia para compatibilidad
+    if (!this.opcionesJerarquia.areaGeneral) {
+      this.opcionesJerarquia.areaGeneral = [];
+    }
+    this.opcionesJerarquia.areaGeneral.push(areaNombre);
+    localStorage.setItem('opcionesJerarquia', JSON.stringify(this.opcionesJerarquia));
+    
+    // Renderizar árbol actualizado
+    this.renderMobileJerarquiaTree();
+    
+    this.showToast(`✅ Área "${areaNombre}" creada`, 'success');
+    
+    console.log('📱 [MOBILE] Nueva área creada:', areaNombre);
   }
 
   closeModal() {
@@ -59088,7 +59341,7 @@ class InventarioCompleto {
 }
 
 console.log('=== INVENTARIO PRO - INICIANDO ===');
-console.log('Version: v6.100');
+console.log('Version: v6.101');
 
 const okrModule = {
   state: {
@@ -61350,7 +61603,7 @@ window.forceGlobalUpdate = async function() {
     await window.firebaseService.db.collection('systemCommands').doc('forceUpdate').set({
       timestamp: now, // 🆕 v6.084 - Date() en lugar de serverTimestamp
       triggeredBy: window.firebaseService.currentUser?.email || 'admin',
-      version: 'v6.099'
+      version: 'v6.101'
     });
     
     console.log(`✅ [forceGlobalUpdate] Comando escrito en Firestore`);
