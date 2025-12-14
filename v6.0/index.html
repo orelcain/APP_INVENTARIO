@@ -18869,6 +18869,21 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
                   </div>
                 </div>
               </div>
+              
+              <!-- 🆕 v6.100 - Limpiar caché y forzar actualización -->
+              <div style="background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                  <div>
+                    <div style="font-weight: 500; color: rgba(255,255,255,0.9); font-size: 0.9rem;">🧹 Limpiar Caché PWA</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 2px;">
+                      Borra caché y Service Worker para forzar actualización
+                    </div>
+                  </div>
+                  <button onclick="clearCacheAndReload()" style="padding: 10px 16px; border-radius: 8px; border: none; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-weight: 600; cursor: pointer; font-size: 0.85rem; white-space: nowrap;">
+                    🧹 Limpiar
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           
@@ -61200,6 +61215,9 @@ window.setTrackingInterval = function(seconds) {
   const intervalSec = parseInt(seconds);
   const statusEl = document.getElementById('trackingStatus');
   
+  // 🆕 v6.100 - Guardar en localStorage para persistencia
+  localStorage.setItem('trackingInterval', seconds);
+  
   // Limpiar intervalo anterior
   if (window.trackingIntervalId) {
     clearInterval(window.trackingIntervalId);
@@ -61220,6 +61238,47 @@ window.setTrackingInterval = function(seconds) {
   
   if (statusEl) statusEl.textContent = '📡✅';
   showToast(`📡 Tracking activo: actualización cada ${intervalSec} segundos`, 'success');
+};
+
+// 🆕 v6.100 - Limpiar caché y forzar actualización
+window.clearCacheAndReload = async function() {
+  if (!confirm('🧹 Esto borrará el caché y forzará la actualización.\n\n¿Continuar?')) {
+    return;
+  }
+  
+  try {
+    console.log('🧹 [CACHE] Limpiando caché y Service Worker...');
+    
+    // 1. Unregister all service workers
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (let registration of registrations) {
+        console.log('🧹 [SW] Eliminando Service Worker:', registration.scope);
+        await registration.unregister();
+      }
+    }
+    
+    // 2. Clear all caches
+    if ('caches' in window) {
+      const cacheNames = await caches.keys();
+      for (let cacheName of cacheNames) {
+        console.log('🧹 [CACHE] Borrando caché:', cacheName);
+        await caches.delete(cacheName);
+      }
+    }
+    
+    // 3. Show loading
+    showToast('🧹 Caché limpiado. Recargando...', 'success', 2000);
+    
+    // 4. Wait and reload
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 1000);
+    
+  } catch (error) {
+    console.error('❌ Error limpiando caché:', error);
+    showToast('⚠️ Error: ' + error.message, 'error');
+  }
 };
 
 // 🆕 v6.053 - Escuchar comandos del sistema (para usuarios)
@@ -61358,8 +61417,18 @@ window.initAdminPanel = function() {
       })
       .catch(console.warn);
     
-    // Iniciar tracking por defecto (10 segundos)
-    setTrackingInterval(10);
+    // 🆕 v6.100 - Restaurar intervalo de tracking desde localStorage
+    const savedInterval = localStorage.getItem('trackingInterval');
+    const intervalToUse = savedInterval ? parseInt(savedInterval) : 10;
+    
+    // Actualizar el select con el valor guardado
+    const trackingSelect = document.getElementById('trackingInterval');
+    if (trackingSelect) {
+      trackingSelect.value = intervalToUse.toString();
+    }
+    
+    // Iniciar tracking con el valor guardado
+    setTrackingInterval(intervalToUse);
   }
   
   // Todos los usuarios escuchan comandos del sistema
