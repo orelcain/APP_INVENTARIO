@@ -20301,8 +20301,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.113';
-window.CACHE_VERSION = 'inventario-v6.113';
+window.APP_VERSION = 'v6.114';
+window.CACHE_VERSION = 'inventario-v6.114';
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -74036,25 +74036,44 @@ console.log('🏠 Mobile Home Dashboard inicializado');
       try {
         const registration = await navigator.serviceWorker.register('service-worker.js');
         console.log('✅ PWA: Service Worker registrado correctamente');
+        console.log('📍 SW actual:', registration.active ? 'Activo' : 'No activo');
+        console.log('📍 SW instalando:', registration.installing ? 'SÍ' : 'NO');
+        console.log('📍 SW esperando:', registration.waiting ? 'SÍ' : 'NO');
         
-        // 🔄 Forzar verificación de actualizaciones cada 60 segundos
+        // 🔄 Forzar verificación de actualizaciones cada 10 segundos (más agresivo)
         setInterval(() => {
-          registration.update().catch(err => {
+          console.log('🔍 [AUTO] Verificando actualizaciones...');
+          registration.update().then(() => {
+            console.log('✅ [AUTO] Verificación completada');
+          }).catch(err => {
             console.warn('⚠️ Error verificando actualizaciones:', err);
           });
-        }, 60000);
+        }, 10000);
         
-        // Verificar actualizaciones inmediatamente
+        // Verificar actualizaciones inmediatamente (3 veces para asegurar)
+        console.log('🔍 [INICIO] Verificación inmediata #1...');
         registration.update();
+        setTimeout(() => {
+          console.log('🔍 [INICIO] Verificación inmediata #2...');
+          registration.update();
+        }, 2000);
+        setTimeout(() => {
+          console.log('🔍 [INICIO] Verificación inmediata #3...');
+          registration.update();
+        }, 5000);
         
         // Detectar nueva versión disponible
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
+          console.log('🎉🎉🎉 ===== NUEVA VERSIÓN DETECTADA ===== 🎉🎉🎉');
           console.log('🔄 PWA: Nueva versión detectada, instalando...');
+          console.log('📦 Versión actual en página:', window.APP_VERSION);
           
           newWorker.addEventListener('statechange', () => {
+            console.log('🔄 SW State cambió a:', newWorker.state);
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('✅ Nueva versión instalada');
+              console.log('✅✅✅ NUEVA VERSIÓN INSTALADA Y LISTA ✅✅✅');
+              console.log('🎯 Mostrando banner de actualización...');
               
               // Mostrar notificación persistente con botón de actualizar
               const updateBanner = document.createElement('div');
@@ -74064,14 +74083,15 @@ console.log('🏠 Mobile Home Dashboard inicializado');
                 top: 0;
                 left: 0;
                 right: 0;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
                 color: white;
-                padding: 16px;
+                padding: 20px;
                 text-align: center;
-                z-index: 99999;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 999999;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.5);
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-                animation: slideDown 0.3s ease-out;
+                animation: slideDown 0.5s ease-out, pulse 2s infinite;
+                border-bottom: 4px solid #fbbf24;
               `;
               
               updateBanner.innerHTML = `
@@ -74113,11 +74133,16 @@ console.log('🏠 Mobile Home Dashboard inicializado');
               const style = document.createElement('style');
               style.textContent = `
                 @keyframes slideDown {
-                  from { transform: translateY(-100%); }
-                  to { transform: translateY(0); }
+                  from { transform: translateY(-100%); opacity: 0; }
+                  to { transform: translateY(0); opacity: 1; }
+                }
+                @keyframes pulse {
+                  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+                  50% { box-shadow: 0 8px 32px rgba(251, 191, 36, 0.6); }
                 }
               `;
               document.head.appendChild(style);
+              console.log('🎨 Banner de actualización agregado al DOM');
               document.body.appendChild(updateBanner);
               
               // Función global para actualizar
@@ -74149,6 +74174,14 @@ console.log('🏠 Mobile Home Dashboard inicializado');
             }
           });
         });
+        
+        // 🔍 Verificar si ya hay un SW esperando (página recargada con actualización pendiente)
+        if (registration.waiting) {
+          console.log('⚠️ Ya hay un SW esperando - Mostrando banner inmediatamente');
+          // Simular evento updatefound para mostrar banner
+          const event = new Event('updatefound');
+          registration.dispatchEvent(event);
+        }
         
         // Detectar cuando el nuevo SW toma control
         navigator.serviceWorker.addEventListener('controllerchange', () => {

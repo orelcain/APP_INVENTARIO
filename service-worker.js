@@ -6,11 +6,11 @@
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
  * 2. window.APP_VERSION en index.html (línea ~20287)
  * 
- * v6.113 - Fix: Botón Editar móvil + Sistema de logs móviles
+ * v6.114 - Fix: Banner de actualización más agresivo (10s) + logs detallados
  */
 
-const CACHE_NAME = 'inventario-v6.113';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.113';
+const CACHE_NAME = 'inventario-v6.114';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.114';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
