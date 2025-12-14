@@ -41944,7 +41944,7 @@ class InventarioCompleto {
                 <!-- 🆕 v6.087 - Botón EDITAR: Visible solo para admin y usuario -->
                 ${this.canEdit ? `
                 <button 
-                  onclick="console.log('🔧 EDITAR pulsado'); window.openModalEdit('${r.id}')"
+                  onclick="(function(){console.log('🔧 EDITAR ID:${r.id}'); if(window.app){window.app.openModal('edit','${r.id}')}else{alert('App no disponible')}})();"
                   style="
                     background: linear-gradient(135deg, #004d73, #003B5C);
                     color: white;

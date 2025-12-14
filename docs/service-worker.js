@@ -6,11 +6,11 @@
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
  * 2. window.APP_VERSION en index.html (línea ~20287)
  * 
- * v6.109 - Fix: Botón editar con wrapper openModalEdit + Footer móvil removido
+ * v6.110 - Fix DEFINITIVO: Botón editar con IIFE inline
  */
 
-const CACHE_NAME = 'inventario-v6.109';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.109';
+const CACHE_NAME = 'inventario-v6.110';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.110';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
