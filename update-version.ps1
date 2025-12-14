@@ -1,75 +1,173 @@
-# Script para actualizar la versión de la aplicación
-# Uso: .\update-version.ps1 -NewVersion "v6.103"
+# ============================================================
+# Script para actualizar la version de la aplicacion
+# Uso: .\update-version.ps1 -NewVersion "v6.104"
+# ============================================================
 
 param(
     [Parameter(Mandatory=$true)]
     [string]$NewVersion
 )
 
-Write-Host "🔄 Actualizando a versión: $NewVersion" -ForegroundColor Cyan
+# Configuracion
+$ErrorActionPreference = "Stop"
+$indexFile = "v6.0\index.html"
+$serviceWorkerFile = "v6.0\service-worker.js"
+$docsIndexFile = "docs\index.html"
+$docsServiceWorkerFile = "docs\service-worker.js"
 
-# Validar formato de versión
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "  ACTUALIZADOR DE VERSION AUTOMATICO   " -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host ""
+
+# Validar formato de version
 if ($NewVersion -notmatch '^v\d+\.\d+$') {
-    Write-Host "❌ Error: La versión debe tener formato vX.XXX (ejemplo: v6.103)" -ForegroundColor Red
+    Write-Host "[ERROR] La version debe tener formato vX.XXX (ejemplo: v6.104)" -ForegroundColor Red
     exit 1
 }
 
-# Archivos a actualizar
-$indexFile = "v6.0\index.html"
-$serviceWorkerFile = "v6.0\service-worker.js"
-$docsServiceWorkerFile = "docs\service-worker.js"
+Write-Host "[INFO] Nueva version: $NewVersion" -ForegroundColor Yellow
+Write-Host ""
 
-Write-Host "`n📝 Actualizando archivos..." -ForegroundColor Yellow
-
-# 1. Actualizar index.html - window.APP_VERSION
-$indexContent = Get-Content $indexFile -Raw -Encoding UTF8
-$indexContent = $indexContent -replace "window\.APP_VERSION = 'v[\d\.]+';", "window.APP_VERSION = '$NewVersion';"
-$indexContent = $indexContent -replace "window\.CACHE_VERSION = 'inventario-v[\d\.]+';", "window.CACHE_VERSION = 'inventario-$NewVersion';"
-Set-Content $indexFile -Value $indexContent -Encoding UTF8 -NoNewline
-Write-Host "  ✅ index.html actualizado" -ForegroundColor Green
-
-# 2. Actualizar v6.0/service-worker.js
-$swContent = Get-Content $serviceWorkerFile -Raw -Encoding UTF8
-$swContent = $swContent -replace "const CACHE_NAME = 'inventario-v[\d\.]+';", "const CACHE_NAME = 'inventario-$NewVersion';"
-$swContent = $swContent -replace "const DYNAMIC_CACHE = 'inventario-dynamic-v[\d\.]+';", "const DYNAMIC_CACHE = 'inventario-dynamic-$NewVersion';"
-$swContent = $swContent -replace "\* v[\d\.]+ - ", "* $NewVersion - "
-Set-Content $serviceWorkerFile -Value $swContent -Encoding UTF8 -NoNewline
-Write-Host "  ✅ v6.0/service-worker.js actualizado" -ForegroundColor Green
-
-# 3. Sincronizar a docs/
-Write-Host "`n📋 Sincronizando a docs/..." -ForegroundColor Yellow
-Copy-Item $indexFile "docs\index.html" -Force
-Copy-Item $serviceWorkerFile $docsServiceWorkerFile -Force
-Write-Host "  ✅ Archivos sincronizados" -ForegroundColor Green
-
-# 4. Git commit y push (opcional)
-Write-Host "`n🔍 ¿Deseas hacer commit y push automáticamente? (S/N)" -ForegroundColor Cyan
-$response = Read-Host
-if ($response -eq 'S' -or $response -eq 's') {
-    Write-Host "`n📝 Ingresa el mensaje del commit (o presiona Enter para usar mensaje por defecto):" -ForegroundColor Yellow
-    $commitMsg = Read-Host
-    
-    if ([string]::IsNullOrWhiteSpace($commitMsg)) {
-        $commitMsg = "$NewVersion - Actualización de versión"
+# Verificar que los archivos existan
+$filesToCheck = @($indexFile, $serviceWorkerFile)
+foreach ($file in $filesToCheck) {
+    if (-not (Test-Path $file)) {
+        Write-Host "[ERROR] No se encontro el archivo: $file" -ForegroundColor Red
+        exit 1
     }
-    
-    Write-Host "`n🔄 Ejecutando git..." -ForegroundColor Cyan
-    git add v6.0\index.html v6.0\service-worker.js docs\index.html docs\service-worker.js
-    git commit -m $commitMsg
-    git push origin main
-    
-    Write-Host "`n✅ Cambios desplegados a GitHub Pages" -ForegroundColor Green
-    Write-Host "⏱️  Espera 2-3 minutos para que GitHub Pages actualice" -ForegroundColor Yellow
-} else {
-    Write-Host "`n⚠️  Recuerda hacer commit y push manualmente:" -ForegroundColor Yellow
-    Write-Host "   git add v6.0\index.html v6.0\service-worker.js docs\index.html docs\service-worker.js" -ForegroundColor Gray
-    Write-Host "   git commit -m `"$NewVersion - Tu mensaje`"" -ForegroundColor Gray
-    Write-Host "   git push origin main" -ForegroundColor Gray
 }
 
-Write-Host "`n🎉 ¡Actualización completa!" -ForegroundColor Green
-Write-Host "   Versión anterior → Versión nueva: $NewVersion" -ForegroundColor Cyan
-Write-Host "`n📱 En el móvil/PWA:" -ForegroundColor Yellow
-Write-Host "   1. La app detectará la nueva versión automáticamente en 60 segundos" -ForegroundColor White
-Write-Host "   2. Aparecerá un banner con botón 'Actualizar Ahora'" -ForegroundColor White
-Write-Host "   3. O puedes cerrar y volver a abrir la PWA" -ForegroundColor White
+Write-Host "[PASO 1/5] Actualizando index.html..." -ForegroundColor Cyan
+
+try {
+    $indexContent = Get-Content $indexFile -Raw -Encoding UTF8
+    
+    # Patron para window.APP_VERSION
+    $pattern1 = "window\.APP_VERSION = 'v[\d\.]+'"
+    $replace1 = "window.APP_VERSION = '$NewVersion'"
+    
+    # Patron para window.CACHE_VERSION
+    $pattern2 = "window\.CACHE_VERSION = 'inventario-v[\d\.]+'"
+    $replace2 = "window.CACHE_VERSION = 'inventario-$NewVersion'"
+    
+    $indexContent = $indexContent -replace $pattern1, $replace1
+    $indexContent = $indexContent -replace $pattern2, $replace2
+    
+    [System.IO.File]::WriteAllText($indexFile, $indexContent, [System.Text.Encoding]::UTF8)
+    Write-Host "  [OK] index.html actualizado" -ForegroundColor Green
+}
+catch {
+    Write-Host "  [ERROR] No se pudo actualizar index.html: $_" -ForegroundColor Red
+    exit 1
+}
+
+Write-Host ""
+Write-Host "[PASO 2/5] Actualizando service-worker.js..." -ForegroundColor Cyan
+
+try {
+    $swContent = Get-Content $serviceWorkerFile -Raw -Encoding UTF8
+    
+    # Patron para CACHE_NAME
+    $pattern3 = "const CACHE_NAME = 'inventario-v[\d\.]+'"
+    $replace3 = "const CACHE_NAME = 'inventario-$NewVersion'"
+    
+    # Patron para DYNAMIC_CACHE
+    $pattern4 = "const DYNAMIC_CACHE = 'inventario-dynamic-v[\d\.]+'"
+    $replace4 = "const DYNAMIC_CACHE = 'inventario-dynamic-$NewVersion'"
+    
+    # Patron para comentario de version
+    $pattern5 = " \* v[\d\.]+ - "
+    $replace5 = " * $NewVersion - "
+    
+    $swContent = $swContent -replace $pattern3, $replace3
+    $swContent = $swContent -replace $pattern4, $replace4
+    $swContent = $swContent -replace $pattern5, $replace5
+    
+    [System.IO.File]::WriteAllText($serviceWorkerFile, $swContent, [System.Text.Encoding]::UTF8)
+    Write-Host "  [OK] service-worker.js actualizado" -ForegroundColor Green
+}
+catch {
+    Write-Host "  [ERROR] No se pudo actualizar service-worker.js: $_" -ForegroundColor Red
+    exit 1
+}
+
+Write-Host ""
+Write-Host "[PASO 3/5] Sincronizando a docs/..." -ForegroundColor Cyan
+
+try {
+    Copy-Item $indexFile $docsIndexFile -Force
+    Copy-Item $serviceWorkerFile $docsServiceWorkerFile -Force
+    Write-Host "  [OK] Archivos sincronizados a docs/" -ForegroundColor Green
+}
+catch {
+    Write-Host "  [ERROR] No se pudo sincronizar: $_" -ForegroundColor Red
+    exit 1
+}
+
+Write-Host ""
+Write-Host "[PASO 4/5] Preparando commit..." -ForegroundColor Cyan
+
+# Verificar estado de git
+$gitStatus = git status --porcelain
+if ([string]::IsNullOrWhiteSpace($gitStatus)) {
+    Write-Host "  [AVISO] No hay cambios para commitear" -ForegroundColor Yellow
+    exit 0
+}
+
+Write-Host ""
+Write-Host "Cambios detectados:" -ForegroundColor Yellow
+git status --short
+Write-Host ""
+
+$commitAuto = Read-Host "Hacer commit y push automaticamente? (S/N)"
+
+if ($commitAuto -eq 'S' -or $commitAuto -eq 's') {
+    Write-Host ""
+    $commitMsg = Read-Host "Mensaje del commit (Enter para usar mensaje por defecto)"
+    
+    if ([string]::IsNullOrWhiteSpace($commitMsg)) {
+        $commitMsg = "$NewVersion - Actualizacion de version"
+    }
+    
+    Write-Host ""
+    Write-Host "[PASO 5/5] Ejecutando git..." -ForegroundColor Cyan
+    
+    try {
+        git add v6.0\index.html v6.0\service-worker.js docs\index.html docs\service-worker.js
+        git commit -m $commitMsg
+        git push origin main
+        
+        Write-Host ""
+        Write-Host "========================================" -ForegroundColor Green
+        Write-Host "  ACTUALIZACION COMPLETADA" -ForegroundColor Green
+        Write-Host "========================================" -ForegroundColor Green
+        Write-Host ""
+        Write-Host "Version: $NewVersion" -ForegroundColor Cyan
+        Write-Host "Desplegado en GitHub Pages" -ForegroundColor Green
+        Write-Host ""
+        Write-Host "[IMPORTANTE] Espera 2-3 minutos para que GitHub Pages actualice" -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "En la PWA movil:" -ForegroundColor Cyan
+        Write-Host "  1. Se detectara automaticamente en 60 segundos" -ForegroundColor White
+        Write-Host "  2. Aparecera banner con boton 'Actualizar Ahora'" -ForegroundColor White
+        Write-Host "  3. O cierra y vuelve a abrir la PWA" -ForegroundColor White
+        Write-Host ""
+    }
+    catch {
+        Write-Host ""
+        Write-Host "[ERROR] Fallo en git: $_" -ForegroundColor Red
+        exit 1
+    }
+}
+else {
+    Write-Host ""
+    Write-Host "[PASO 5/5] OMITIDO - Commit manual requerido" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "Comandos para ejecutar manualmente:" -ForegroundColor Cyan
+    Write-Host "  git add v6.0\index.html v6.0\service-worker.js docs\index.html docs\service-worker.js" -ForegroundColor Gray
+    Write-Host "  git commit -m `"$NewVersion - Tu mensaje`"" -ForegroundColor Gray
+    Write-Host "  git push origin main" -ForegroundColor Gray
+    Write-Host ""
+}

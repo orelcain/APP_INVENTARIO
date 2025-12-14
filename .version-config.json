@@ -1,0 +1,35 @@
+{
+  "currentVersion": "v6.103",
+  "files": {
+    "index": "v6.0/index.html",
+    "serviceWorker": "v6.0/service-worker.js",
+    "docsIndex": "docs/index.html",
+    "docsServiceWorker": "docs/service-worker.js"
+  },
+  "patterns": {
+    "appVersion": "window\\.APP_VERSION = 'v[\\d\\.]+'",
+    "cacheVersion": "window\\.CACHE_VERSION = 'inventario-v[\\d\\.]+'",
+    "swCacheName": "const CACHE_NAME = 'inventario-v[\\d\\.]+'",
+    "swDynamicCache": "const DYNAMIC_CACHE = 'inventario-dynamic-v[\\d\\.]+'",
+    "swComment": " \\* v[\\d\\.]+ - "
+  },
+  "changelog": [
+    {
+      "version": "v6.103",
+      "date": "2025-12-14",
+      "changes": [
+        "Fix: window.app disponible inmediatamente para botones onclick",
+        "Botón editar ahora funciona correctamente"
+      ]
+    },
+    {
+      "version": "v6.102",
+      "date": "2025-12-14",
+      "changes": [
+        "Fix árbol móvil clickeable + creación multi-nivel jerarquía",
+        "Sistema de auto-actualización con banner interactivo",
+        "Versión centralizada en window.APP_VERSION"
+      ]
+    }
+  ]
+}
