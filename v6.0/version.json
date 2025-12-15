@@ -1,6 +1,6 @@
 {
-  "version": "v6.135",
-  "build": 135,
-  "date": "2024-12-15T14:10:00Z",
-  "changes": "Búsqueda home: -30% adicional (-60% total desde v6.033), máximo nivel de compactación."
+  "version": "v6.136",
+  "build": 136,
+  "date": "2024-12-15T14:30:00Z",
+  "changes": "Tarjeta repuesto: Imagen +100px altura (320px), carousel horizontal con múltiples imágenes, dots y contador."
 }

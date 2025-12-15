@@ -18256,14 +18256,82 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Header con imagen */
+/* Header con imagen - v6.136 con carousel */
 .card-header-image {
   width: 100%;
-  height: 220px;
+  height: 320px;
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, #2c5f4f, #4a9066);
+}
+
+.card-image-carousel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.card-image-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.card-image-slide {
+  min-width: 100%;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: center;
   background-size: cover;
   background-position: center;
   position: relative;
-  flex-shrink: 0;
+}
+
+.card-image-nav {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+  background: rgba(0,0,0,0.5);
+  padding: 6px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.card-image-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.card-image-dot.active {
+  background: white;
+  width: 24px;
+  border-radius: 4px;
+}
+
+.card-image-counter {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  z-index: 10;
 }
 
 .no-image-placeholder {
@@ -21086,9 +21154,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.135';
-window.CACHE_VERSION = 'inventario-v6.135';
-window.APP_BUILD = 135; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.136';
+window.CACHE_VERSION = 'inventario-v6.136';
+window.APP_BUILD = 136; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -74647,7 +74715,7 @@ window.mobileHomeActions = {
     }, 300);
   },
   
-  // 🔍 v6.133 - Ver tarjeta completa del repuesto con imágenes (estilo PC adaptado a móvil)
+  // 🔍 v6.136 - Ver tarjeta completa con carousel de imágenes
   viewRepuestoCard: async function(id) {
     // Cerrar búsqueda
     this.clearQuickSearch();
@@ -74696,10 +74764,8 @@ window.mobileHomeActions = {
       stockClass = 'ok';
     }
     
-    // 🖼️ Obtener primera imagen del array multimedia
-    let imageURL = '';
-    let hasImage = false;
-    
+    // 🖼️ Cargar TODAS las imágenes
+    const imageURLs = [];
     if (repuesto.multimedia && repuesto.multimedia.length > 0 && window.app?.getImageUrl) {
       // Filtrar solo imágenes
       const imagenes = repuesto.multimedia.filter(m => {
@@ -74709,12 +74775,12 @@ window.mobileHomeActions = {
         return m.type === 'image' || (m.tipo && ['imagen', 'image', 'img', 'foto'].includes(m.tipo.toLowerCase()));
       });
       
-      if (imagenes.length > 0) {
+      // Cargar todas las URLs
+      for (const media of imagenes) {
         try {
-          const url = await window.app.getImageUrl(imagenes[0]);
-          if (url && !url.startsWith('data:image/png;base64,iVBORw0KG')) { // Excluir placeholder
-            imageURL = url;
-            hasImage = true;
+          const url = await window.app.getImageUrl(media);
+          if (url && !url.startsWith('data:image/png;base64,iVBORw0KG')) {
+            imageURLs.push(url);
           }
         } catch (error) {
           console.error('Error cargando imagen:', error);
@@ -74722,13 +74788,43 @@ window.mobileHomeActions = {
       }
     }
     
+    const hasImages = imageURLs.length > 0;
+    
+    // HTML del carousel de imágenes
+    let imageCarouselHTML = '';
+    if (hasImages) {
+      const slidesHTML = imageURLs.map((url, index) => 
+        `<div class="card-image-slide" style="background-image: url('${url}');"></div>`
+      ).join('');
+      
+      const dotsHTML = imageURLs.length > 1 
+        ? imageURLs.map((_, index) => 
+            `<div class="card-image-dot ${index === 0 ? 'active' : ''}" onclick="window.mobileHomeActions.scrollToImage(${index})"></div>`
+          ).join('')
+        : '';
+      
+      const counterHTML = imageURLs.length > 1 
+        ? `<div class="card-image-counter"><span id="currentImageIndex">1</span>/${imageURLs.length}</div>`
+        : '';
+      
+      imageCarouselHTML = `
+        <div class="card-image-carousel" id="imageCarousel" onscroll="window.mobileHomeActions.updateImageIndicators()">
+          ${slidesHTML}
+        </div>
+        ${counterHTML}
+        ${dotsHTML ? `<div class="card-image-nav">${dotsHTML}</div>` : ''}
+      `;
+    } else {
+      imageCarouselHTML = '<div class="no-image-placeholder">📦</div>';
+    }
+    
     // Crear modal
     const modalHTML = `
       <div class="modal-repuesto-card-mobile" id="modalRepuestoCard" onclick="if(event.target === this) window.mobileHomeActions.closeRepuestoCard()">
         <div class="repuesto-card-container">
-          <!-- Header con imagen -->
-          <div class="card-header-image" style="${hasImage ? `background-image: url('${imageURL}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #2c5f4f, #4a9066);'}">
-            ${!hasImage ? '<div class="no-image-placeholder">📦</div>' : ''}
+          <!-- Header con carousel de imágenes -->
+          <div class="card-header-image">
+            ${imageCarouselHTML}
             <button class="card-close-btn" onclick="window.mobileHomeActions.closeRepuestoCard()">✕</button>
           </div>
           
@@ -74845,6 +74941,40 @@ window.mobileHomeActions = {
       modal.classList.remove('show');
       setTimeout(() => modal.remove(), 300);
     }
+  },
+  
+  // v6.136 - Navegar a imagen específica en el carousel
+  scrollToImage: function(index) {
+    const carousel = document.getElementById('imageCarousel');
+    if (carousel) {
+      const slideWidth = carousel.offsetWidth;
+      carousel.scrollTo({
+        left: slideWidth * index,
+        behavior: 'smooth'
+      });
+    }
+  },
+  
+  // v6.136 - Actualizar indicadores al hacer scroll
+  updateImageIndicators: function() {
+    const carousel = document.getElementById('imageCarousel');
+    if (!carousel) return;
+    
+    const slideWidth = carousel.offsetWidth;
+    const scrollLeft = carousel.scrollLeft;
+    const currentIndex = Math.round(scrollLeft / slideWidth);
+    
+    // Actualizar counter
+    const counter = document.getElementById('currentImageIndex');
+    if (counter) {
+      counter.textContent = currentIndex + 1;
+    }
+    
+    // Actualizar dots
+    const dots = document.querySelectorAll('.card-image-dot');
+    dots.forEach((dot, index) => {
+      dot.classList.toggle('active', index === currentIndex);
+    });
   },
   
   // Icono según tipo de repuesto
