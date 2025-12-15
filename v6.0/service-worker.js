@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.128 - Optimización global PWA: header, buscador, cards, listas, nav -20%
+ * v6.129 - FASE 1-2: Búsqueda móvil + Modales optimizados -15%
  */
 
-const CACHE_NAME = 'inventario-v6.128';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.128';
+const CACHE_NAME = 'inventario-v6.129';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.129';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
