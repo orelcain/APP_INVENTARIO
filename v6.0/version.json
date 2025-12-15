@@ -1,6 +1,6 @@
 {
-  "version": "v6.133b",
-  "build": 133,
-  "date": "2024-12-15T13:30:00Z",
-  "changes": "Fix: Imágenes cargadas correctamente desde multimedia array usando getImageUrl()."
+  "version": "v6.134",
+  "build": 134,
+  "date": "2024-12-15T14:00:00Z",
+  "changes": "Búsqueda home: Resultados -30% adicional, ultra compactos."
 }

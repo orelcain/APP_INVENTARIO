@@ -17745,23 +17745,23 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 /* 📱 v6.033 - BÚSQUEDA RÁPIDA MEJORADA CON CONTEO                    */
 /* ================================================================== */
 
-/* Resultados de búsqueda mejorados */
+/* Resultados de búsqueda mejorados - v6.134 (-30% adicional) */
 .quick-search-results-v2 {
   background: var(--bg-secondary);
-  border-radius: 12px;
-  margin-top: 8px;
-  max-height: 70vh;
+  border-radius: 8px;
+  margin-top: 6px;
+  max-height: 65vh;
   overflow-y: auto;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.3);
   border: 1px solid var(--border-color);
 }
 
 .quick-result-item-v2 {
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 8px;
   border-bottom: 1px solid var(--border-color);
-  gap: 10px;
+  gap: 6px;
 }
 
 .quick-result-item-v2:last-child {
@@ -17774,20 +17774,20 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 .quick-result-name-v2 {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .quick-result-code-v2 {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-family: 'Consolas', 'Monaco', monospace;
   color: #cbd5e1;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 /* Resaltado de dígitos buscados en ROJO */
@@ -17800,20 +17800,20 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 .quick-result-area-v2 {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 /* Stock badge */
 .quick-result-stock-v2 {
   background: var(--bg-tertiary);
   color: var(--text-primary);
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 3px 6px;
+  border-radius: 5px;
   font-weight: 600;
-  font-size: 0.85rem;
-  min-width: 36px;
+  font-size: 0.7rem;
+  min-width: 28px;
   text-align: center;
 }
 
@@ -17830,20 +17830,20 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 /* Botones de acción rápida */
 .quick-action-buttons {
   display: flex;
-  gap: 6px;
-  margin-left: 8px;
+  gap: 4px;
+  margin-left: 6px;
 }
 
 .quick-action-btn {
-  padding: 6px 10px;
-  border-radius: 8px;
+  padding: 5px 8px;
+  border-radius: 6px;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  font-size: 0.75rem;
+  gap: 3px;
+  font-size: 0.65rem;
   font-weight: 600;
   transition: all 0.2s;
   white-space: nowrap;
@@ -17871,13 +17871,13 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
 /* Header de resultados */
 .quick-search-header {
-  padding: 10px 12px;
+  padding: 8px 10px;
   background: var(--bg-tertiary);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 12px 12px 0 0;
+  border-radius: 8px 8px 0 0;
 }
 
 .quick-search-header span {
@@ -21086,9 +21086,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.133b';
-window.CACHE_VERSION = 'inventario-v6.133b';
-window.APP_BUILD = 133; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.134';
+window.CACHE_VERSION = 'inventario-v6.134';
+window.APP_BUILD = 134; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
