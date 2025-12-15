@@ -74647,8 +74647,8 @@ window.mobileHomeActions = {
     }, 300);
   },
   
-  // 🔍 v6.132 - Ver tarjeta completa del repuesto (estilo PC adaptado a móvil)
-  viewRepuestoCard: function(id) {
+  // 🔍 v6.133 - Ver tarjeta completa del repuesto con imágenes (estilo PC adaptado a móvil)
+  viewRepuestoCard: async function(id) {
     // Cerrar búsqueda
     this.clearQuickSearch();
     
@@ -74696,16 +74696,38 @@ window.mobileHomeActions = {
       stockClass = 'ok';
     }
     
-    // Imagen
-    const imageURL = repuesto.imageURL || repuesto.imagen || '';
-    const hasImage = imageURL && imageURL.trim() !== '';
+    // 🖼️ Obtener primera imagen del array multimedia
+    let imageURL = '';
+    let hasImage = false;
+    
+    if (repuesto.multimedia && repuesto.multimedia.length > 0 && window.app?.getImageUrl) {
+      // Filtrar solo imágenes
+      const imagenes = repuesto.multimedia.filter(m => {
+        if (typeof m === 'string') {
+          return !m.endsWith('.pdf') && !m.endsWith('.doc') && !m.endsWith('.docx');
+        }
+        return m.type === 'image' || (m.tipo && ['imagen', 'image', 'img', 'foto'].includes(m.tipo.toLowerCase()));
+      });
+      
+      if (imagenes.length > 0) {
+        try {
+          const url = await window.app.getImageUrl(imagenes[0]);
+          if (url && !url.startsWith('data:image/png;base64,iVBORw0KG')) { // Excluir placeholder
+            imageURL = url;
+            hasImage = true;
+          }
+        } catch (error) {
+          console.error('Error cargando imagen:', error);
+        }
+      }
+    }
     
     // Crear modal
     const modalHTML = `
       <div class="modal-repuesto-card-mobile" id="modalRepuestoCard" onclick="if(event.target === this) window.mobileHomeActions.closeRepuestoCard()">
         <div class="repuesto-card-container">
           <!-- Header con imagen -->
-          <div class="card-header-image" style="background-image: url('${hasImage ? imageURL : ''}'); ${!hasImage ? 'background: linear-gradient(135deg, #2c5f4f, #4a9066);' : ''}">
+          <div class="card-header-image" style="${hasImage ? `background-image: url('${imageURL}'); background-size: cover; background-position: center;` : 'background: linear-gradient(135deg, #2c5f4f, #4a9066);'}">
             ${!hasImage ? '<div class="no-image-placeholder">📦</div>' : ''}
             <button class="card-close-btn" onclick="window.mobileHomeActions.closeRepuestoCard()">✕</button>
           </div>
