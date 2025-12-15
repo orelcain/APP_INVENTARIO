@@ -42829,6 +42829,18 @@ class InventarioCompleto {
     
     console.log(`✅ Permisos OK - Continuando apertura del modal...`);
     
+    // 📱 v6.120: DETECCIÓN MÓVIL AL INICIO - Evitar procesar modal PC innecesariamente
+    const esMobile = window.innerWidth < 768 || this.isMobile;
+    console.log(`📱 [MODAL CHECK] innerWidth=${window.innerWidth}, isMobile=${this.isMobile}, esMobile=${esMobile}`);
+    
+    if (esMobile) {
+      console.log('📱 Redirigiendo a modal móvil dedicado (early detection)...');
+      this.openMobileModal(mode, id);
+      return; // ⚡ Salir INMEDIATAMENTE - No procesar modal PC
+    }
+    
+    console.log('🖥️ Procesando modal PC...');
+    
     // 📱🔥 RE-VERIFICAR MULTIMEDIA EN MÓVIL: Mostrar sección si Firebase está autenticado
     const multimediaSection = document.querySelector('.multimedia-section');
     const mobileNoPhotosMsg = document.getElementById('mobile-no-photos-message');
@@ -43064,16 +43076,7 @@ class InventarioCompleto {
       this.refreshModalMultimediaBadge();
     }
     
-    // 📱 v6.031: MODAL MÓVIL DEDICADO - Re-detectar en cada apertura
-    const esMobile = window.innerWidth < 768 || this.isMobile;
-    console.log(`📱 [MODAL CHECK] innerWidth=${window.innerWidth}, isMobile=${this.isMobile}, esMobile=${esMobile}`);
-    
-    if (esMobile) {
-      console.log('📱 Redirigiendo a modal móvil dedicado...');
-      this.openMobileModal(mode, id);
-      return; // No continuar con el modal PC
-    }
-    
+    // �️ ABRIR MODAL PC (móvil ya se manejó al inicio)
     console.log('🖥️ Abriendo modal PC...');
     document.getElementById('modal').classList.add('active');
     

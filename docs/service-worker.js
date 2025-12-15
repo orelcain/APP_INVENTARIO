@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.120 - Sistema de pausa persistente para auto-verificaciones. Reducido spam de logs.
+ * v6.121 - Fix crítico: Modal móvil ahora se abre correctamente desde botón Editar
  */
 
-const CACHE_NAME = 'inventario-v6.120';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.120';
+const CACHE_NAME = 'inventario-v6.121';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.121';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

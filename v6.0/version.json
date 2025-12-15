@@ -1,6 +1,6 @@
 {
-  "version": "v6.120",
-  "build": 120,
-  "date": "2024-12-15T02:30:00Z",
-  "changes": "Sistema de pausa persistente para auto-verificaciones. Reducido spam de logs."
+  "version": "v6.121",
+  "build": 121,
+  "date": "2024-12-15T03:00:00Z",
+  "changes": "Fix crítico: Modal móvil ahora se abre correctamente desde botón Editar. Detección early para evitar procesamiento de modal PC."
 }
