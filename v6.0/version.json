@@ -1,6 +1,6 @@
 {
-  "version": "v6.129",
-  "build": 129,
-  "date": "2024-12-15T10:30:00Z",
-  "changes": "FASE 1-2: Búsqueda móvil + Modales optimizados. Botones add/save, inputs numéricos, árbol compacto."
+  "version": "v6.130",
+  "build": 130,
+  "date": "2024-12-15T11:00:00Z",
+  "changes": "Header renovado: 'Sistema de Gestión' + Cards inventario ultra compactas -15%. UX profesional."
 }

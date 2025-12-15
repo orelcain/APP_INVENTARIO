@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.129 - FASE 1-2: Búsqueda móvil + Modales optimizados -15%
+ * v6.130 - Header renovado + Cards ultra compactas. UX profesional
  */
 
-const CACHE_NAME = 'inventario-v6.129';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.129';
+const CACHE_NAME = 'inventario-v6.130';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.130';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
