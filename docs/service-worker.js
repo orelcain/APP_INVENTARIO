@@ -4,13 +4,14 @@
  * 
  * ⚠️ IMPORTANTE: Al actualizar la versión, cambiar:
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
- * 2. window.APP_VERSION en index.html (línea ~20287)
+ * 2. window.APP_VERSION en index.html
+ * 3. version.json (build number)
  * 
- * v6.112 - Fix: Badge de versión desktop dinámico
+ * v6.119 - Sistema de versionado definitivo con verificación remota
  */
 
-const CACHE_NAME = 'inventario-v6.112';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.112';
+const CACHE_NAME = 'inventario-v6.119';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.119';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
@@ -34,12 +35,13 @@ const NO_CACHE_URLS = [
   'firebasestorage.googleapis.com',
   'firebaseinstallations.googleapis.com',
   'identitytoolkit.googleapis.com',
-  'securetoken.googleapis.com'
+  'securetoken.googleapis.com',
+  'version.json'  // ⚠️ NUNCA cachear - usado para verificación de versión
 ];
 
 // Instalación del Service Worker
 self.addEventListener('install', (event) => {
-  console.log('🔧 [SW] Instalando Service Worker v6.012...');
+  console.log('🔧 [SW] Instalando Service Worker v6.119...');
   
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -48,9 +50,9 @@ self.addEventListener('install', (event) => {
         return cache.addAll(STATIC_ASSETS);
       })
       .then(() => {
-        console.log('✅ [SW] Instalación completada - esperando activación del usuario');
-        // NO usar skipWaiting() automáticamente
-        // El usuario decidirá cuándo actualizar mediante el banner
+        console.log('✅ [SW] Instalación completada - ACTIVANDO INMEDIATAMENTE');
+        // ⚡ FORZAR skipWaiting() automáticamente para actualizar SIN esperar al usuario
+        return self.skipWaiting();
       })
       .catch((error) => {
         console.error('❌ [SW] Error en instalación:', error);
@@ -86,7 +88,20 @@ self.addEventListener('activate', (event) => {
       })
       .then(() => {
         console.log('✅ [SW] Activación completada');
-        return self.clients.claim(); // Tomar control inmediato
+        // ⚡ Tomar control de TODAS las páginas inmediatamente
+        return self.clients.claim();
+      })
+      .then(() => {
+        console.log('⚡ [SW] Control tomado de todas las páginas');
+        // Notificar a todos los clientes que hay nueva versión
+        return self.clients.matchAll().then(clients => {
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'NEW_VERSION',
+              version: CACHE_NAME
+            });
+          });
+        });
       })
   );
 });
