@@ -18256,10 +18256,10 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Header con imagen - v6.136 con carousel */
+/* Header con imagen - v6.137 con fullscreen viewer */
 .card-header-image {
   width: 100%;
-  height: 320px;
+  height: 33vh;
   position: relative;
   flex-shrink: 0;
   overflow: hidden;
@@ -18289,6 +18289,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   background-size: cover;
   background-position: center;
   position: relative;
+  cursor: pointer;
 }
 
 .card-image-nav {
@@ -18332,6 +18333,58 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   font-weight: 600;
   backdrop-filter: blur(10px);
   z-index: 10;
+}
+
+/* Visor fullscreen de imagen */
+.image-fullscreen-viewer {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.image-fullscreen-viewer.show {
+  opacity: 1;
+}
+
+.image-fullscreen-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.image-fullscreen-img {
+  position: absolute;
+  max-width: none;
+  max-height: none;
+  transform-origin: center center;
+  transition: transform 0.1s ease-out;
+}
+
+.image-fullscreen-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.7);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
 }
 
 .no-image-placeholder {
@@ -21154,9 +21207,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.136';
-window.CACHE_VERSION = 'inventario-v6.136';
-window.APP_BUILD = 136; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.137';
+window.CACHE_VERSION = 'inventario-v6.137';
+window.APP_BUILD = 137; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -74715,4 +74768,1503 @@ window.mobileHomeActions = {
     }, 300);
   },
   
-  // 
+  // 🔍 v6.136 - Ver tarjeta completa con carousel de imágenes
+  viewRepuestoCard: async function(id) {
+    // Cerrar búsqueda
+    this.clearQuickSearch();
+    
+    const repuesto = window.app?.repuestos?.find(r => r.id === id);
+    if (!repuesto) {
+      alert('Repuesto no encontrado');
+      return;
+    }
+    
+    // Datos del repuesto
+    const nombre = repuesto.nombre || repuesto.descripcion || 'Sin nombre';
+    const codSAP = repuesto.codSAP || repuesto.codigo || repuesto.codigoSAP || '---';
+    const categoria = repuesto.categoria || repuesto.tipo || 'Sin categoría';
+    const cantidad = parseInt(repuesto.cantidad || repuesto.stock) || 0;
+    const minimo = parseInt(repuesto.minimo) || 0;
+    const enUso = parseInt(repuesto.enUso) || 0;
+    const primer = repuesto.primer || repuesto.ubicacionPrimer || '---';
+    const area = repuesto.area || repuesto.ubicacion || 'Sin ubicación';
+    
+    // Datos técnicos
+    const datosTecnicos = [];
+    if (repuesto.rodamiento) datosTecnicos.push(`Rodamiento ${repuesto.rodamiento}`);
+    if (repuesto.medida || repuesto.dimension) datosTecnicos.push(repuesto.medida || repuesto.dimension);
+    if (repuesto.marca) datosTecnicos.push(`Marca: ${repuesto.marca}`);
+    if (repuesto.modelo) datosTecnicos.push(`Modelo: ${repuesto.modelo}`);
+    if (repuesto.especificacion) datosTecnicos.push(repuesto.especificacion);
+    
+    // Jerarquía
+    const jerarquia = repuesto.jerarquia || [];
+    const jerarquiaHTML = jerarquia.length > 0 
+      ? jerarquia.map(j => `<span class="jerarquia-item">${j}</span>`).join(' → ')
+      : '<span style="color: var(--text-muted);">Sin jerarquía</span>';
+    
+    // Estado del stock
+    let stockStatus = '';
+    let stockClass = '';
+    if (cantidad === 0) {
+      stockStatus = '⚠️ Stock agotado. Requiere reposición urgente.';
+      stockClass = 'critical';
+    } else if (cantidad <= minimo && minimo > 0) {
+      stockStatus = '⚠️ Stock bajo. Considerar reposición.';
+      stockClass = 'low';
+    } else {
+      stockStatus = '✅ Stock disponible';
+      stockClass = 'ok';
+    }
+    
+    // 🖼️ Cargar TODAS las imágenes
+    const imageURLs = [];
+    if (repuesto.multimedia && repuesto.multimedia.length > 0 && window.app?.getImageUrl) {
+      // Filtrar solo imágenes
+      const imagenes = repuesto.multimedia.filter(m => {
+        if (typeof m === 'string') {
+          return !m.endsWith('.pdf') && !m.endsWith('.doc') && !m.endsWith('.docx');
+        }
+        return m.type === 'image' || (m.tipo && ['imagen', 'image', 'img', 'foto'].includes(m.tipo.toLowerCase()));
+      });
+      
+      // Cargar todas las URLs
+      for (const media of imagenes) {
+        try {
+          const url = await window.app.getImageUrl(media);
+          if (url && !url.startsWith('data:image/png;base64,iVBORw0KG')) {
+            imageURLs.push(url);
+          }
+        } catch (error) {
+          console.error('Error cargando imagen:', error);
+        }
+      }
+    }
+    
+    const hasImages = imageURLs.length > 0;
+    
+    // Guardar URLs para visor fullscreen
+    window.currentRepuestoImages = imageURLs;
+    
+    // HTML del carousel de imágenes
+    let imageCarouselHTML = '';
+    if (hasImages) {
+      const slidesHTML = imageURLs.map((url, index) => 
+        `<div class="card-image-slide" style="background-image: url('${url}');" onclick="window.mobileHomeActions.openImageFullscreen(${index})"></div>`
+      ).join('');
+      
+      const dotsHTML = imageURLs.length > 1 
+        ? imageURLs.map((_, index) => 
+            `<div class="card-image-dot ${index === 0 ? 'active' : ''}" onclick="window.mobileHomeActions.scrollToImage(${index})"></div>`
+          ).join('')
+        : '';
+      
+      const counterHTML = imageURLs.length > 1 
+        ? `<div class="card-image-counter"><span id="currentImageIndex">1</span>/${imageURLs.length}</div>`
+        : '';
+      
+      imageCarouselHTML = `
+        <div class="card-image-carousel" id="imageCarousel" onscroll="window.mobileHomeActions.updateImageIndicators()">
+          ${slidesHTML}
+        </div>
+        ${counterHTML}
+        ${dotsHTML ? `<div class="card-image-nav">${dotsHTML}</div>` : ''}
+      `;
+    } else {
+      imageCarouselHTML = '<div class="no-image-placeholder">📦</div>';
+    }
+    
+    // Crear modal
+    const modalHTML = `
+      <div class="modal-repuesto-card-mobile" id="modalRepuestoCard" onclick="if(event.target === this) window.mobileHomeActions.closeRepuestoCard()">
+        <div class="repuesto-card-container">
+          <!-- Header con carousel de imágenes -->
+          <div class="card-header-image">
+            ${imageCarouselHTML}
+            <button class="card-close-btn" onclick="window.mobileHomeActions.closeRepuestoCard()">✕</button>
+          </div>
+          
+          <!-- Contenido -->
+          <div class="card-content">
+            <!-- Título y código -->
+            <div class="card-title-section">
+              <h2 class="card-title">${nombre}</h2>
+              <div class="card-meta-row">
+                <span class="card-label">Cód. SAP:</span>
+                <span class="card-sap-code">${codSAP}</span>
+              </div>
+              <div class="card-meta-row">
+                <span class="card-label">Categoría:</span>
+                <span class="card-badge">${categoria}</span>
+              </div>
+            </div>
+            
+            <!-- Datos técnicos -->
+            ${datosTecnicos.length > 0 ? `
+            <div class="card-section">
+              <h3 class="card-section-title">📋 Datos técnicos</h3>
+              <ul class="card-tech-list">
+                ${datosTecnicos.map(dato => `<li>- ${dato}</li>`).join('')}
+              </ul>
+            </div>
+            ` : ''}
+            
+            <!-- Estado del stock -->
+            <div class="card-section">
+              <div class="card-stock-alert ${stockClass}">
+                ${stockStatus}
+              </div>
+            </div>
+            
+            <!-- Tabla de stock -->
+            <div class="card-section">
+              <h3 class="card-section-title">📊 Stock</h3>
+              <div class="card-stock-table">
+                <div class="stock-table-row">
+                  <div class="stock-table-cell header">EN USO</div>
+                  <div class="stock-table-cell header">MÍNIMO</div>
+                  <div class="stock-table-cell header">STOCK</div>
+                  <div class="stock-table-cell header">PRIMER</div>
+                </div>
+                <div class="stock-table-row values">
+                  <div class="stock-table-cell">${enUso}</div>
+                  <div class="stock-table-cell">${minimo}</div>
+                  <div class="stock-table-cell ${stockClass}">${cantidad}</div>
+                  <div class="stock-table-cell">${cantidad > 0 ? cantidad + ' und.' : '---'}</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Jerarquía -->
+            ${jerarquia.length > 0 ? `
+            <div class="card-section">
+              <h3 class="card-section-title">📍 Pendiente de verificación</h3>
+              <div class="card-jerarquia">
+                ${jerarquiaHTML}
+              </div>
+            </div>
+            ` : ''}
+            
+            <!-- Ubicación -->
+            <div class="card-section">
+              <div class="card-meta-row">
+                <span class="card-label">📍 Área/Planta:</span>
+                <span>${area}</span>
+              </div>
+              <div class="card-meta-row">
+                <span class="card-label">🎯 Primer:</span>
+                <span>${primer}</span>
+              </div>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="card-actions">
+              <button class="card-action-btn secondary" onclick="window.mobileHomeActions.closeRepuestoCard()">
+                🌳 Jerarquía
+              </button>
+              <button class="card-action-btn secondary" onclick="window.mobileHomeActions.closeRepuestoCard()">
+                📍 Ubicar
+              </button>
+              <button class="card-action-btn primary" onclick="window.mobileHomeActions.closeRepuestoCard(); window.mobileHomeActions.openRepuesto('${id}')">
+                ✏️ Editar
+              </button>
+              <button class="card-action-btn primary" onclick="window.mobileHomeActions.closeRepuestoCard(); window.mobileHomeActions.openQuickCount('${id}')">
+                🔢 Contar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Insertar modal en el DOM
+    const existingModal = document.getElementById('modalRepuestoCard');
+    if (existingModal) existingModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Mostrar modal con animación
+    setTimeout(() => {
+      const modal = document.getElementById('modalRepuestoCard');
+      if (modal) modal.classList.add('show');
+    }, 10);
+  },
+  
+  // Cerrar tarjeta de repuesto
+  closeRepuestoCard: function() {
+    const modal = document.getElementById('modalRepuestoCard');
+    if (modal) {
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 300);
+    }
+  },
+  
+  // v6.136 - Navegar a imagen específica en el carousel
+  scrollToImage: function(index) {
+    const carousel = document.getElementById('imageCarousel');
+    if (carousel) {
+      const slideWidth = carousel.offsetWidth;
+      carousel.scrollTo({
+        left: slideWidth * index,
+        behavior: 'smooth'
+      });
+    }
+  },
+  
+  // v6.136 - Actualizar indicadores al hacer scroll
+  updateImageIndicators: function() {
+    const carousel = document.getElementById('imageCarousel');
+    if (!carousel) return;
+    
+    const slideWidth = carousel.offsetWidth;
+    const scrollLeft = carousel.scrollLeft;
+    const currentIndex = Math.round(scrollLeft / slideWidth);
+    
+    // Actualizar counter
+    const counter = document.getElementById('currentImageIndex');
+    if (counter) {
+      counter.textContent = currentIndex + 1;
+    }
+    
+    // Actualizar dots
+    const dots = document.querySelectorAll('.card-image-dot');
+    dots.forEach((dot, index) => {
+      dot.classList.toggle('active', index === currentIndex);
+    });
+  },
+  
+  // v6.137 - Abrir imagen en pantalla completa con zoom
+  openImageFullscreen: function(index) {
+    const images = window.currentRepuestoImages || [];
+    if (images.length === 0) return;
+    
+    const imageUrl = images[index];
+    
+    const viewerHTML = `
+      <div class="image-fullscreen-viewer" id="imageFullscreenViewer" onclick="if(event.target === this) window.mobileHomeActions.closeImageFullscreen()">
+        <div class="image-fullscreen-container" id="imageContainer">
+          <img src="${imageUrl}" class="image-fullscreen-img" id="fullscreenImg" draggable="false">
+        </div>
+        <button class="image-fullscreen-close" onclick="window.mobileHomeActions.closeImageFullscreen()">✕</button>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', viewerHTML);
+    
+    // Mostrar con animación
+    setTimeout(() => {
+      const viewer = document.getElementById('imageFullscreenViewer');
+      if (viewer) viewer.classList.add('show');
+    }, 10);
+    
+    // Inicializar zoom con gestos
+    this.initImageZoom();
+  },
+  
+  // v6.137 - Cerrar visor fullscreen
+  closeImageFullscreen: function() {
+    const viewer = document.getElementById('imageFullscreenViewer');
+    if (viewer) {
+      viewer.classList.remove('show');
+      setTimeout(() => viewer.remove(), 300);
+    }
+  },
+  
+  // v6.137 - Inicializar zoom con pellizco y doble tap
+  initImageZoom: function() {
+    const img = document.getElementById('fullscreenImg');
+    const container = document.getElementById('imageContainer');
+    if (!img || !container) return;
+    
+    let scale = 1;
+    let lastScale = 1;
+    let posX = 0;
+    let posY = 0;
+    let lastPosX = 0;
+    let lastPosY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    
+    // Centrar imagen inicialmente
+    const centerImage = () => {
+      const containerRect = container.getBoundingClientRect();
+      const imgRect = img.getBoundingClientRect();
+      
+      if (scale === 1) {
+        // Centrar y ajustar al contenedor
+        const imgRatio = img.naturalWidth / img.naturalHeight;
+        const containerRatio = containerRect.width / containerRect.height;
+        
+        if (imgRatio > containerRatio) {
+          img.style.width = containerRect.width + 'px';
+          img.style.height = 'auto';
+        } else {
+          img.style.height = containerRect.height + 'px';
+          img.style.width = 'auto';
+        }
+        
+        img.style.left = '50%';
+        img.style.top = '50%';
+        img.style.transform = 'translate(-50%, -50%)';
+      }
+    };
+    
+    img.onload = centerImage;
+    if (img.complete) centerImage();
+    
+    // Doble tap para zoom
+    let lastTap = 0;
+    container.addEventListener('touchend', (e) => {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+      if (tapLength < 300 && tapLength > 0) {
+        if (scale === 1) {
+          scale = 2.5;
+          const rect = container.getBoundingClientRect();
+          const touch = e.changedTouches[0];
+          posX = (rect.width / 2 - touch.clientX) * 1.5;
+          posY = (rect.height / 2 - touch.clientY) * 1.5;
+        } else {
+          scale = 1;
+          posX = 0;
+          posY = 0;
+          centerImage();
+        }
+        updateTransform();
+      }
+      lastTap = currentTime;
+    });
+    
+    // Pellizco para zoom
+    let initialDistance = 0;
+    container.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        initialDistance = getDistance(e.touches[0], e.touches[1]);
+        lastScale = scale;
+      } else if (e.touches.length === 1 && scale > 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - posX;
+        startY = e.touches[0].clientY - posY;
+      }
+    });
+    
+    container.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      
+      if (e.touches.length === 2) {
+        // Zoom con pellizco
+        const currentDistance = getDistance(e.touches[0], e.touches[1]);
+        scale = lastScale * (currentDistance / initialDistance);
+        scale = Math.max(1, Math.min(scale, 5)); // Límite 1x a 5x
+        updateTransform();
+      } else if (isDragging && e.touches.length === 1) {
+        // Pan cuando está con zoom
+        posX = e.touches[0].clientX - startX;
+        posY = e.touches[0].clientY - startY;
+        updateTransform();
+      }
+    });
+    
+    container.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) {
+        lastScale = scale;
+      }
+      if (e.touches.length === 0) {
+        isDragging = false;
+        // Resetear si zoom es muy pequeño
+        if (scale < 1.1) {
+          scale = 1;
+          posX = 0;
+          posY = 0;
+          centerImage();
+          updateTransform();
+        }
+      }
+    });
+    
+    function updateTransform() {
+      if (scale === 1) {
+        img.style.transform = 'translate(-50%, -50%)';
+        img.style.left = '50%';
+        img.style.top = '50%';
+      } else {
+        img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+        img.style.left = '0';
+        img.style.top = '0';
+        img.style.transformOrigin = 'top left';
+      }
+    }
+    
+    function getDistance(touch1, touch2) {
+      const dx = touch1.clientX - touch2.clientX;
+      const dy = touch1.clientY - touch2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+  },
+  
+  // Icono según tipo de repuesto
+  getRepuestoIcon: function(tipo) {
+    const icons = {
+      'electrico': '⚡',
+      'mecanico': '⚙️',
+      'hidraulico': '💧',
+      'neumatico': '💨',
+      'electronico': '🔌',
+      'consumible': '📦',
+      'herramienta': '🔧'
+    };
+    return icons[(tipo || '').toLowerCase()] || '📦';
+  },
+  
+  // 📂 Filtrar por área
+  filterByArea: function(area) {
+    this.currentAreaFilter = area;
+    
+    // Actualizar chips activos
+    const chips = document.querySelectorAll('.area-chip');
+    chips.forEach(chip => {
+      const chipArea = chip.dataset.area || '';
+      chip.classList.toggle('active', chipArea === area);
+    });
+    
+    // Si hay búsqueda activa, re-ejecutar
+    const input = document.getElementById('mobileQuickSearch');
+    if (input && input.value.trim().length >= 2) {
+      this.performSearch(input.value);
+    }
+    
+    console.log('📂 Filtro de área:', area || 'Todos');
+  },
+  
+  // Generar chips de áreas dinámicamente
+  generateAreaChips: function() {
+    const container = document.getElementById('homeAreaChips');
+    if (!container) return;
+    
+    const repuestos = window.app?.repuestos || [];
+    
+    // Obtener áreas únicas
+    const areasMap = new Map();
+    repuestos.forEach(r => {
+      const area = r.area || r.ubicacion;
+      if (area && area.trim()) {
+        const key = area.toLowerCase().trim();
+        if (!areasMap.has(key)) {
+          areasMap.set(key, { name: area.trim(), count: 1 });
+        } else {
+          areasMap.get(key).count++;
+        }
+      }
+    });
+    
+    // Ordenar por cantidad de repuestos
+    const sortedAreas = Array.from(areasMap.values())
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 6); // Máximo 6 áreas + "Todos"
+    
+    // Iconos por área
+    const areaIcons = {
+      'taller': '🔧',
+      'almacen': '📦',
+      'almacén': '📦',
+      'produccion': '🏭',
+      'producción': '🏭',
+      'mantenimiento': '⚙️',
+      'oficina': '🏢',
+      'bodega': '📦',
+      'planta': '🏭',
+      'laboratorio': '🔬',
+      'default': '📍'
+    };
+    
+    // HTML para chips
+    let chipsHTML = `
+      <button class="area-chip active" data-area="" onclick="window.mobileHomeActions.filterByArea('')">
+        <span class="chip-icon">📦</span>
+        <span class="chip-label">Todos</span>
+      </button>
+    `;
+    
+    sortedAreas.forEach(area => {
+      const iconKey = Object.keys(areaIcons).find(k => area.name.toLowerCase().includes(k)) || 'default';
+      const icon = areaIcons[iconKey];
+      chipsHTML += `
+        <button class="area-chip" data-area="${area.name}" onclick="window.mobileHomeActions.filterByArea('${area.name}')">
+          <span class="chip-icon">${icon}</span>
+          <span class="chip-label">${area.name}</span>
+          <span class="chip-count">${area.count}</span>
+        </button>
+      `;
+    });
+    
+    container.innerHTML = chipsHTML;
+  },
+  
+  // Mostrar repuestos con stock bajo
+  showStockBajo: function() {
+    switchMobileTab('inventario');
+    setTimeout(() => {
+      const filterStock = document.getElementById('filterStock');
+      if (filterStock) {
+        filterStock.value = 'critico';
+        if (window.app && app.applyFilters) app.applyFilters();
+      }
+    }, 300);
+  }
+};
+
+// Actualizar datos del Mobile Home - NUEVO DISEÑO PROFESIONAL
+window.updateMobileHome = function() {
+  console.log('🏠 Actualizando Mobile Home...');
+  
+  try {
+    // Obtener datos del inventario - usar la misma fuente que inventario
+    const repuestos = window.app?.repuestos || [];
+    const jerarquia = window.app?.jerarquia?.areas || [];
+    
+    // 1. Stats - usar misma lógica que inventario
+    const totalRepuestos = repuestos.length;
+    const stockBajo = repuestos.filter(r => {
+      const cantidad = parseInt(r.cantidad || r.stock) || 0;
+      const minimo = parseInt(r.minimo) || 0;
+      return cantidad <= minimo && minimo > 0;
+    }).length;
+    
+    // 🆕 Detectar códigos SAP duplicados (ignorar PENDIENTE, vacíos, N/A, etc.)
+    const codigosSAP = {};
+    const duplicados = [];
+    const codigosIgnorar = ['pendiente', 'n/a', 'na', 'sin codigo', 'sin código', 'por definir', '-', ''];
+    
+    repuestos.forEach(r => {
+      if (r.codSAP) {
+        // Ignorar códigos temporales/pendientes
+        const codigoLower = r.codSAP.toLowerCase().trim();
+        if (codigosIgnorar.includes(codigoLower) || codigoLower.length < 3) {
+          return; // Saltar este repuesto
+        }
+        
+        if (codigosSAP[r.codSAP]) {
+          // Ya existe, es duplicado
+          if (!duplicados.find(d => d.codigo === r.codSAP)) {
+            duplicados.push({
+              codigo: r.codSAP,
+              repuestos: [codigosSAP[r.codSAP], r]
+            });
+          } else {
+            const dup = duplicados.find(d => d.codigo === r.codSAP);
+            dup.repuestos.push(r);
+          }
+        } else {
+          codigosSAP[r.codSAP] = r;
+        }
+      }
+    });
+    
+    // Contar mapas
+    let totalMapas = 0;
+    if (window.app?.mapas) {
+      totalMapas = Object.keys(window.app.mapas).length;
+    }
+    
+    // Actualizar Stats UI
+    const statTotal = document.getElementById('homeStatTotal');
+    const statStockBajo = document.getElementById('homeStatStockBajo');
+    const statMapas = document.getElementById('homeStatMapas');
+    
+    if (statTotal) statTotal.textContent = totalRepuestos;
+    if (statStockBajo) statStockBajo.textContent = stockBajo;
+    if (statMapas) statMapas.textContent = totalMapas;
+    
+    // 2. Zonas (primeras 5 áreas)
+    const zonesContainer = document.getElementById('homeZonesList');
+    if (zonesContainer && jerarquia.length > 0) {
+      const areasPreview = jerarquia.slice(0, 5);
+      zonesContainer.innerHTML = areasPreview.map(area => {
+        const childCount = (area.sistemas || area.children || []).length;
+        const icon = getAreaIcon(area.nombre);
+        return `
+          <div class="zone-item" onclick="window.navigateToJerarquia('${area.id || area.nombre}')">
+            <div class="zone-icon">${icon}</div>
+            <span class="zone-name">${area.nombre}</span>
+            <span class="zone-count">${childCount}</span>
+            <span class="zone-arrow">›</span>
+          </div>
+        `;
+      }).join('');
+    } else if (zonesContainer) {
+      zonesContainer.innerHTML = `
+        <div class="zone-item zone-loading">
+          <span class="zone-name">No hay ubicaciones configuradas</span>
+        </div>
+      `;
+    }
+    
+    // 3. Alertas
+    const alertsContainer = document.getElementById('homeAlertsList');
+    const alertsSection = document.getElementById('homeAlertsSection');
+    
+    if (alertsContainer) {
+      let alertsHTML = '';
+      const agotados = repuestos.filter(r => parseInt(r.cantidad || r.stock) === 0).length;
+      
+      // 🆕 Alerta de duplicados (crítico) - PRIMERO
+      if (duplicados.length > 0) {
+        alertsHTML += `
+          <div class="alert-card alert-critical" onclick="window.showDuplicadosModal()">
+            <div class="alert-icon-wrap">⚠️</div>
+            <div class="alert-content">
+              <div class="alert-title">Códigos Duplicados</div>
+              <div class="alert-desc">Revisar y corregir duplicados</div>
+            </div>
+            <span class="alert-badge">${duplicados.length}</span>
+          </div>
+        `;
+        // Guardar duplicados para el modal
+        window.duplicadosDetectados = duplicados;
+      }
+      
+      // Alerta de agotados (crítico)
+      if (agotados > 0) {
+        alertsHTML += `
+          <div class="alert-card alert-critical" onclick="switchMobileTab('inventario'); setTimeout(() => { document.getElementById('filterStock').value='agotado'; app.applyFilters(); }, 300);">
+            <div class="alert-icon-wrap">🚨</div>
+            <div class="alert-content">
+              <div class="alert-title">Repuestos Agotados</div>
+              <div class="alert-desc">Sin stock disponible</div>
+            </div>
+            <span class="alert-badge">${agotados}</span>
+          </div>
+        `;
+      }
+      
+      // Alerta de stock bajo (warning)
+      if (stockBajo > 0) {
+        alertsHTML += `
+          <div class="alert-card alert-warning" onclick="window.mobileHomeActions.showStockBajo()">
+            <div class="alert-icon-wrap">⚠️</div>
+            <div class="alert-content">
+              <div class="alert-title">Stock Bajo</div>
+              <div class="alert-desc">Repuestos por debajo del mínimo</div>
+            </div>
+            <span class="alert-badge">${stockBajo}</span>
+          </div>
+        `;
+      }
+      
+      if (alertsHTML) {
+        alertsContainer.innerHTML = alertsHTML;
+        if (alertsSection) alertsSection.style.display = 'block';
+      } else {
+        // Sin alertas - ocultar sección
+        if (alertsSection) alertsSection.style.display = 'none';
+      }
+    }
+    
+    // Log de duplicados si existen
+    if (duplicados.length > 0) {
+      console.warn('⚠️ Códigos SAP duplicados detectados:', duplicados);
+    }
+    // 4. Generar chips de áreas dinámicamente
+    if (window.mobileHomeActions?.generateAreaChips) {
+      window.mobileHomeActions.generateAreaChips();
+    }
+    
+    // Agregar clase al body para ocultar footer en Home
+    document.body.classList.add('mobile-home-view');
+    
+    console.log('🏠 Mobile Home actualizado:', { totalRepuestos, stockBajo, totalMapas });
+    
+  } catch (error) {
+    console.error('❌ Error actualizando Mobile Home:', error);
+  }
+};
+
+// 🆕 Modal para gestionar duplicados
+window.showDuplicadosModal = function() {
+  const duplicados = window.duplicadosDetectados || [];
+  if (duplicados.length === 0) {
+    app.showToast('No hay duplicados detectados', 'info');
+    return;
+  }
+  
+  // Crear modal
+  let modal = document.getElementById('duplicadosModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'duplicadosModal';
+    modal.className = 'sap-scanner-modal';
+    document.body.appendChild(modal);
+  }
+  
+  let content = `
+    <div class="sap-scanner-content" style="width: 94vw; max-width: 450px; max-height: 90vh; padding: 0; overflow: hidden;">
+      <div class="sap-scanner-header" style="padding: 16px; border-bottom: 1px solid var(--border-color);">
+        <h3 style="margin: 0;">⚠️ Códigos Duplicados (${duplicados.length})</h3>
+        <button type="button" class="sap-scanner-close" onclick="document.getElementById('duplicadosModal').classList.remove('active')">✕</button>
+      </div>
+      
+      <div style="padding: 12px; overflow-y: auto; max-height: calc(90vh - 60px);">
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 12px 0;">
+          Los siguientes códigos SAP están duplicados. Selecciona cuál mantener o edita para corregir.
+        </p>
+        
+        ${duplicados.map((dup, i) => `
+          <div style="background: var(--bg-secondary); border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 2px solid var(--border-color);">
+            <div style="font-family: monospace; font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 8px;">
+              📋 ${dup.codigo}
+            </div>
+            ${dup.repuestos.map((r, j) => `
+              <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--bg-primary); border-radius: 8px; margin-bottom: 6px;">
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; font-size: 0.9rem;">${r.nombre || 'Sin nombre'}</div>
+                  <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                    Stock: ${r.cantidad || 0} | ID: ${r.id}
+                  </div>
+                </div>
+                <button onclick="window.editDuplicado('${r.id}')" style="padding: 6px 10px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                  ✏️ Editar
+                </button>
+                <button onclick="window.deleteDuplicado('${r.id}', '${dup.codigo}')" style="padding: 6px 10px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                  🗑️
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  
+  modal.innerHTML = content;
+  modal.classList.add('active');
+};
+
+// Editar repuesto duplicado
+window.editDuplicado = function(id) {
+  document.getElementById('duplicadosModal')?.classList.remove('active');
+  if (window.app && window.app.openModal) {
+    window.app.openModal('edit', id);
+  }
+};
+
+// Eliminar repuesto duplicado
+window.deleteDuplicado = async function(id, codigo) {
+  if (!confirm(`¿Eliminar este repuesto con código ${codigo}?\\n\\nEsta acción no se puede deshacer.`)) {
+    return;
+  }
+  
+  try {
+    await window.app.deleteRepuesto(id);
+    app.showToast('Repuesto eliminado', 'success');
+    
+    // Actualizar home y modal
+    if (window.updateMobileHome) window.updateMobileHome();
+    
+    // Re-mostrar modal si aún hay duplicados
+    setTimeout(() => {
+      if (window.duplicadosDetectados && window.duplicadosDetectados.length > 0) {
+        window.showDuplicadosModal();
+      } else {
+        document.getElementById('duplicadosModal')?.classList.remove('active');
+      }
+    }, 300);
+  } catch (error) {
+    console.error('Error eliminando:', error);
+    app.showToast('Error al eliminar', 'error');
+  }
+};
+
+// Navegar a un área específica en jerarquía
+window.navigateToJerarquia = function(areaId) {
+  switchMobileTab('jerarquia');
+  setTimeout(() => {
+    // Buscar y expandir el área
+    const areaNode = document.querySelector(`[data-area-id="${areaId}"], [data-node-id="${areaId}"]`);
+    if (areaNode) {
+      areaNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      areaNode.classList.add('highlight-node');
+      setTimeout(() => areaNode.classList.remove('highlight-node'), 2000);
+    }
+  }, 400);
+};
+
+// Helper para iconos de áreas
+function getAreaIcon(nombre) {
+  const n = (nombre || '').toLowerCase();
+  if (n.includes('bodega') || n.includes('almacen')) return '🏪';
+  if (n.includes('taller')) return '🔧';
+  if (n.includes('oficina')) return '🏢';
+  if (n.includes('planta') || n.includes('produccion')) return '🏭';
+  if (n.includes('exterior') || n.includes('patio')) return '🌳';
+  if (n.includes('electr')) return '⚡';
+  if (n.includes('mecan')) return '⚙️';
+  if (n.includes('hidra')) return '💧';
+  return '📍';
+}
+
+// ================================================================== 
+// 📸 ESCANEO DESDE JERARQUÍA CON CONTEXTO
+// ==================================================================
+
+// Estado del contexto de escaneo
+window.scanContext = {
+  fromJerarquia: false,
+  selectedNode: null,
+  nodePath: null
+};
+
+// Escanear desde la vista de jerarquía
+window.scanFromJerarquia = function() {
+  console.log('📸 Escaneo desde Jerarquía iniciado');
+  
+  // Intentar obtener el nodo actualmente seleccionado/expandido
+  const selectedNode = document.querySelector('.jerarquia-node-content.is-selected, .palette-item.selected, .tree-item.selected');
+  
+  if (selectedNode) {
+    // Capturar contexto del nodo
+    const nodeName = selectedNode.querySelector('.jerarquia-node-name, .node-name')?.textContent?.trim();
+    const nodeId = selectedNode.closest('[data-node-id], [data-area-id]')?.dataset?.nodeId || 
+                   selectedNode.closest('[data-node-id], [data-area-id]')?.dataset?.areaId;
+    
+    // Construir el path del nodo
+    const path = buildNodePath(selectedNode);
+    
+    window.scanContext = {
+      fromJerarquia: true,
+      selectedNode: {
+        id: nodeId,
+        name: nodeName
+      },
+      nodePath: path
+    };
+    
+    console.log('📍 Contexto de escaneo:', window.scanContext);
+  } else {
+    // Sin nodo seleccionado, escaneo sin contexto
+    window.scanContext = {
+      fromJerarquia: true,
+      selectedNode: null,
+      nodePath: null
+    };
+    console.log('📸 Escaneo sin nodo seleccionado');
+  }
+  
+  // Abrir el scanner
+  if (window.sapScanner) {
+    window.sapScanner.openCaptureModal();
+  } else {
+    alert('Scanner no disponible');
+  }
+};
+
+// Construir path jerárquico de un nodo
+function buildNodePath(nodeElement) {
+  const path = [];
+  let current = nodeElement;
+  
+  while (current) {
+    const nameEl = current.querySelector('.jerarquia-node-name, .node-name');
+    if (nameEl) {
+      const name = nameEl.textContent?.trim();
+      if (name && !path.includes(name)) {
+        path.unshift(name);
+      }
+    }
+    // Subir al padre
+    current = current.parentElement?.closest('.jerarquia-tree-node, .tree-node, .palette-group');
+  }
+  
+  return path.length > 0 ? path.join(' > ') : null;
+}
+
+// Obtener el contexto actual para pre-llenar el formulario de repuesto
+window.getJerarquiaContext = function() {
+  if (window.scanContext.fromJerarquia && window.scanContext.selectedNode) {
+    return {
+      area: window.scanContext.selectedNode.name || '',
+      ubicacion: window.scanContext.nodePath || ''
+    };
+  }
+  return null;
+};
+
+// Limpiar contexto después de crear repuesto
+window.clearScanContext = function() {
+  window.scanContext = {
+    fromJerarquia: false,
+    selectedNode: null,
+    nodePath: null
+  };
+  console.log('📸 Contexto de escaneo limpiado');
+};
+
+console.log('📸 Escaneo contextual desde jerarquía inicializado');
+console.log('🏠 Mobile Home Dashboard inicializado');
+</script>
+
+<!-- ========================================================================
+     SISTEMA DE VERSIONADO DEFINITIVO v6.119
+     - Verificación remota sin cache
+     - Auto-actualización forzada
+     - Nuclear option para casos extremos
+     ======================================================================== -->
+<script>
+(function() {
+  'use strict';
+  
+  // ========================================================================
+  // CONFIGURACIÓN DEL SISTEMA DE VERSIONES
+  // ========================================================================
+  const VERSION_CONFIG = {
+    checkInterval: 30000,        // Verificar cada 30 segundos
+    versionUrl: './version.json', // Archivo de versión en servidor
+    forceUpdateOnMismatch: true, // Auto-actualizar sin preguntar
+    maxRetries: 3,               // Reintentos máximos
+    retryDelay: 5000             // Delay entre reintentos
+  };
+  
+  // ========================================================================
+  // FUNCIONES DE UTILIDAD
+  // ========================================================================
+  
+  // Obtener versión del servidor (SIN CACHE)
+  async function fetchServerVersion() {
+    try {
+      const timestamp = Date.now();
+      const response = await fetch(`${VERSION_CONFIG.versionUrl}?nocache=${timestamp}`, {
+        method: 'GET',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('📡 Versión del servidor:', data.version, '| Build:', data.build);
+      return data;
+    } catch (error) {
+      console.warn('⚠️ Error obteniendo versión del servidor:', error.message);
+      return null;
+    }
+  }
+  
+  // Comparar versiones (retorna true si servidor es más nueva)
+  function isNewerVersion(serverBuild, localBuild) {
+    return serverBuild > localBuild;
+  }
+  
+  // ========================================================================
+  // NUCLEAR UPDATE - Limpiar TODO y recargar
+  // ========================================================================
+  async function nuclearUpdate(reason) {
+    console.log('☢️ ========================================');
+    console.log('☢️ NUCLEAR UPDATE INICIADO');
+    console.log('☢️ Razón:', reason);
+    console.log('☢️ ========================================');
+    
+    // Mostrar indicador de actualización
+    const overlay = document.createElement('div');
+    overlay.id = 'nuclear-update-overlay';
+    overlay.innerHTML = `
+      <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999999;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      ">
+        <div style="font-size: 64px; margin-bottom: 20px; animation: spin 1s linear infinite;">⚙️</div>
+        <div style="font-size: 24px; font-weight: 700; margin-bottom: 10px;">Actualizando Aplicación</div>
+        <div style="font-size: 16px; opacity: 0.8; margin-bottom: 20px;">Por favor espera...</div>
+        <div style="width: 200px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden;">
+          <div style="width: 100%; height: 100%; background: white; animation: progress 2s ease-in-out infinite;"></div>
+        </div>
+      </div>
+      <style>
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes progress { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+      </style>
+    `;
+    document.body.appendChild(overlay);
+    
+    try {
+      // 1. Desregistrar TODOS los Service Workers
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        console.log(`🗑️ Desregistrando ${registrations.length} Service Workers...`);
+        for (const registration of registrations) {
+          await registration.unregister();
+          console.log('✅ SW desregistrado:', registration.scope);
+        }
+      }
+      
+      // 2. Limpiar TODOS los caches
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        console.log(`🗑️ Eliminando ${cacheNames.length} caches...`);
+        for (const cacheName of cacheNames) {
+          await caches.delete(cacheName);
+          console.log('✅ Cache eliminado:', cacheName);
+        }
+      }
+      
+      // 3. Limpiar localStorage relacionado con versiones
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.includes('version') || key.includes('cache') || key.includes('sw'))) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => {
+        localStorage.removeItem(key);
+        console.log('✅ localStorage eliminado:', key);
+      });
+      
+      console.log('☢️ Nuclear update completado - Recargando...');
+      
+      // 4. Recargar forzando bypass de cache
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      window.location.href = window.location.origin + window.location.pathname + '?forceUpdate=' + Date.now();
+      
+    } catch (error) {
+      console.error('❌ Error en nuclear update:', error);
+      // Recargar de todas formas
+      window.location.reload(true);
+    }
+  }
+  
+  // ========================================================================
+  // VERIFICACIÓN DE VERSIÓN
+  // ========================================================================
+  async function checkForUpdates() {
+    // Verificar si está pausado
+    if (localStorage.getItem('autoCheckPaused') === 'true') {
+      return; // No hacer nada si está pausado
+    }
+    
+    // Solo loguear si modo debug verbose está activo
+    if (localStorage.getItem('debugVerbose') === 'true') {
+      console.log('🔍 [VERSION] Verificando actualizaciones...');
+    }
+    
+    const serverVersion = await fetchServerVersion();
+    if (!serverVersion) {
+      console.log('⚠️ No se pudo obtener versión del servidor');
+      return false;
+    }
+    
+    const localBuild = window.APP_BUILD || 0;
+    const serverBuild = serverVersion.build || 0;
+    
+    console.log(`📊 Comparando: Local v${localBuild} vs Servidor v${serverBuild}`);
+    
+    if (isNewerVersion(serverBuild, localBuild)) {
+      console.log('🎉 ¡NUEVA VERSIÓN DISPONIBLE!');
+      console.log(`📦 ${window.APP_VERSION} → ${serverVersion.version}`);
+      
+      if (VERSION_CONFIG.forceUpdateOnMismatch) {
+        await nuclearUpdate(`Nueva versión: ${serverVersion.version}`);
+      } else {
+        showUpdateBanner(serverVersion);
+      }
+      return true;
+    } else {
+      console.log('✅ Aplicación actualizada');
+      return false;
+    }
+  }
+  
+  // ========================================================================
+  // BANNER DE ACTUALIZACIÓN (si no es auto-update)
+  // ========================================================================
+  function showUpdateBanner(serverVersion) {
+    // Remover banner existente si hay
+    const existing = document.getElementById('version-update-banner');
+    if (existing) existing.remove();
+    
+    const banner = document.createElement('div');
+    banner.id = 'version-update-banner';
+    banner.innerHTML = `
+      <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 16px 20px;
+        text-align: center;
+        z-index: 999999;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      ">
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">
+          🎉 Nueva versión ${serverVersion.version} disponible
+        </div>
+        <button id="btn-update-now" style="
+          background: white;
+          color: #059669;
+          border: none;
+          padding: 10px 24px;
+          border-radius: 20px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          margin-right: 10px;
+        ">⚡ Actualizar Ahora</button>
+        <button id="btn-update-later" style="
+          background: transparent;
+          color: white;
+          border: 2px solid rgba(255,255,255,0.5);
+          padding: 8px 20px;
+          border-radius: 20px;
+          font-size: 14px;
+          cursor: pointer;
+        ">Más tarde</button>
+      </div>
+    `;
+    document.body.appendChild(banner);
+    
+    document.getElementById('btn-update-now').onclick = () => nuclearUpdate('Usuario solicitó actualización');
+    document.getElementById('btn-update-later').onclick = () => banner.remove();
+  }
+  
+  // ========================================================================
+  // INICIALIZACIÓN
+  // ========================================================================
+  
+  // Exponer funciones globalmente para debug
+  window.versionSystem = {
+    check: checkForUpdates,
+    nuclear: () => nuclearUpdate('Manual'),
+    config: VERSION_CONFIG
+  };
+  
+  // 🎮 CONTROL DE PAUSA PARA AUTO-VERIFICACIONES
+  window.toggleAutoCheck = function() {
+    const isPaused = localStorage.getItem('autoCheckPaused') === 'true';
+    localStorage.setItem('autoCheckPaused', isPaused ? 'false' : 'true');
+    
+    if (isPaused) {
+      console.log('▶️ Auto-verificaciones REANUDADAS');
+    } else {
+      console.log('⏸️ Auto-verificaciones PAUSADAS');
+    }
+    
+    // Actualizar UI si el botón existe
+    const toggleBtn = document.getElementById('btnToggleAutoCheck');
+    if (toggleBtn) {
+      toggleBtn.textContent = isPaused ? '⏸️ Pausar Auto-Check' : '▶️ Reanudar Auto-Check';
+      toggleBtn.style.background = isPaused 
+        ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+        : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    }
+    
+    return !isPaused;
+  };
+  
+  // Estado inicial de auto-check
+  console.log('🎮 Auto-verificaciones:', localStorage.getItem('autoCheckPaused') === 'true' ? '⏸️ PAUSADAS' : '▶️ ACTIVAS');
+  
+  // Verificar inmediatamente al cargar
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('🔧 Sistema de versionado v6.119 inicializado');
+    console.log(`📦 Versión local: ${window.APP_VERSION} (Build ${window.APP_BUILD})`);
+    
+    // Inicializar estado del botón de pausa
+    const toggleBtn = document.getElementById('btnToggleAutoCheck');
+    const isPaused = localStorage.getItem('autoCheckPaused') === 'true';
+    if (toggleBtn) {
+      toggleBtn.textContent = isPaused ? '▶️ Reanudar Auto-Check' : '⏸️ Pausar Auto-Check';
+      toggleBtn.style.background = isPaused 
+        ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+        : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+    }
+    
+    // Primera verificación después de 3 segundos (dar tiempo a que cargue todo)
+    setTimeout(checkForUpdates, 3000);
+    
+    // Verificaciones periódicas
+    setInterval(checkForUpdates, VERSION_CONFIG.checkInterval);
+    
+    // Verificar cuando la página vuelve a ser visible
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        console.log('👁️ Página visible - verificando actualizaciones...');
+        setTimeout(checkForUpdates, 1000);
+      }
+    });
+  });
+  
+  console.log('✅ Sistema de versionado cargado');
+})();
+</script>
+
+<!-- PWA Service Worker Registration + Auto-Update -->
+<script>
+  // 🏷️ Mostrar versión en badge (dinámico) + Nuclear Update
+  document.addEventListener('DOMContentLoaded', () => {
+    const versionBadgeMobile = document.getElementById('versionBadgeMobile');
+    const versionBadgeDesktop = document.getElementById('versionBadgeDesktop');
+    
+    // Función para forzar actualización nuclear
+    const forceNuclearUpdate = () => {
+      if (confirm(`¿Forzar actualización completa?\n\nVersión actual: ${window.APP_VERSION}\n\nEsto limpiará todos los caches y recargará la aplicación.`)) {
+        if (window.versionSystem && window.versionSystem.nuclear) {
+          window.versionSystem.nuclear();
+        } else {
+          // Fallback si el sistema no está cargado
+          console.log('⚡ Forzando actualización manual...');
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+              registrations.forEach(reg => reg.unregister());
+            }).then(() => {
+              if ('caches' in window) {
+                return caches.keys().then(names => {
+                  return Promise.all(names.map(name => caches.delete(name)));
+                });
+              }
+            }).then(() => {
+              window.location.href = window.location.origin + window.location.pathname + '?forceUpdate=' + Date.now();
+            });
+          }
+        }
+      }
+    };
+    
+    if (versionBadgeMobile) {
+      versionBadgeMobile.textContent = window.APP_VERSION;
+      versionBadgeMobile.title = `${window.APP_VERSION} (Build ${window.APP_BUILD}) - Click para forzar actualización`;
+      versionBadgeMobile.style.cursor = 'pointer';
+      versionBadgeMobile.onclick = forceNuclearUpdate;
+      console.log(`🏷️ Badge móvil actualizado a ${window.APP_VERSION}`);
+    }
+    
+    if (versionBadgeDesktop) {
+      versionBadgeDesktop.textContent = window.APP_VERSION;
+      versionBadgeDesktop.title = `${window.APP_VERSION} (Build ${window.APP_BUILD}) - Click para forzar actualización`;
+      versionBadgeDesktop.style.cursor = 'pointer';
+      versionBadgeDesktop.onclick = forceNuclearUpdate;
+      console.log(`🏷️ Badge desktop actualizado a ${window.APP_VERSION}`);
+    }
+  });
+
+  // Registrar Service Worker para PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register('service-worker.js', {
+          updateViaCache: 'none' // ⚡ NO cachear el service worker
+        });
+        console.log('✅ PWA: Service Worker registrado correctamente');
+        console.log('📍 SW actual:', registration.active ? 'Activo' : 'No activo');
+        console.log('📍 SW instalando:', registration.installing ? 'SÍ' : 'NO');
+        console.log('📍 SW esperando:', registration.waiting ? 'SÍ' : 'NO');
+        
+        // 🔄 Verificación de actualizaciones con control de pausa
+        // La pausa es persistente usando localStorage
+        setInterval(() => {
+          // Verificar si está pausado
+          if (localStorage.getItem('autoCheckPaused') === 'true') {
+            return; // No hacer nada si está pausado
+          }
+          
+          // Solo loguear si modo debug verbose está activo
+          if (localStorage.getItem('debugVerbose') === 'true') {
+            console.log('🔍 [AUTO] Verificando actualizaciones...');
+          }
+          
+          registration.update().then(() => {
+            if (localStorage.getItem('debugVerbose') === 'true') {
+              console.log('✅ [AUTO] Verificación completada');
+            }
+          }).catch(err => {
+            console.warn('⚠️ Error verificando actualizaciones:', err);
+          });
+        }, 60000); // Reducido de 5s a 60s para evitar spam
+        
+        // Verificar actualizaciones inmediatamente (3 veces para asegurar)
+        console.log('🔍 [INICIO] Verificación inmediata #1...');
+        registration.update();
+        setTimeout(() => {
+          console.log('🔍 [INICIO] Verificación inmediata #2...');
+          registration.update();
+        }, 2000);
+        setTimeout(() => {
+          console.log('🔍 [INICIO] Verificación inmediata #3...');
+          registration.update();
+        }, 5000);
+        
+        // Detectar nueva versión disponible
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          console.log('🎉🎉🎉 ===== NUEVA VERSIÓN DETECTADA ===== 🎉🎉🎉');
+          console.log('🔄 PWA: Nueva versión detectada, instalando...');
+          console.log('📦 Versión actual en página:', window.APP_VERSION);
+          
+          newWorker.addEventListener('statechange', () => {
+            console.log('🔄 SW State cambió a:', newWorker.state);
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('✅✅✅ NUEVA VERSIÓN INSTALADA Y LISTA ✅✅✅');
+              console.log('🎯 Mostrando banner de actualización...');
+              
+              // Mostrar notificación persistente con botón de actualizar
+              const updateBanner = document.createElement('div');
+              updateBanner.id = 'updateBanner';
+              updateBanner.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: white;
+                padding: 20px;
+                text-align: center;
+                z-index: 999999;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                animation: slideDown 0.5s ease-out, pulse 2s infinite;
+                border-bottom: 4px solid #fbbf24;
+              `;
+              
+              updateBanner.innerHTML = `
+                <div style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">
+                  🎉 Nueva versión ${window.APP_VERSION} disponible
+                </div>
+                <div style="font-size: 14px; margin-bottom: 12px; opacity: 0.95;">
+                  Haz clic en actualizar para obtener las últimas mejoras
+                </div>
+                <button onclick="window.updateApp()" style="
+                  background: white;
+                  color: #667eea;
+                  border: none;
+                  padding: 12px 32px;
+                  border-radius: 24px;
+                  font-size: 16px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                  transition: transform 0.2s;
+                  margin-right: 12px;
+                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                  ⚡ Actualizar Ahora
+                </button>
+                <button onclick="this.parentElement.remove()" style="
+                  background: transparent;
+                  color: white;
+                  border: 2px solid rgba(255,255,255,0.5);
+                  padding: 10px 24px;
+                  border-radius: 24px;
+                  font-size: 14px;
+                  cursor: pointer;
+                ">
+                  Más tarde
+                </button>
+              `;
+              
+              // Agregar animación
+              const style = document.createElement('style');
+              style.textContent = `
+                @keyframes slideDown {
+                  from { transform: translateY(-100%); opacity: 0; }
+                  to { transform: translateY(0); opacity: 1; }
+                }
+                @keyframes pulse {
+                  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+                  50% { box-shadow: 0 8px 32px rgba(251, 191, 36, 0.6); }
+                }
+              `;
+              document.head.appendChild(style);
+              console.log('🎨 Banner de actualización agregado al DOM');
+              document.body.appendChild(updateBanner);
+              
+              // Función global para actualizar
+              window.updateApp = () => {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                updateBanner.innerHTML = '<div style="font-size: 16px;">⏳ Actualizando...</div>';
+                setTimeout(() => window.location.reload(true), 500);
+              };
+              
+              // Si auto-update está habilitado, actualizar automáticamente después de 5 segundos
+              if (window.autoUpdateEnabled) {
+                let countdown = 5;
+                const countdownInterval = setInterval(() => {
+                  updateBanner.querySelector('div').innerHTML = `
+                    <div style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">
+                      🎉 Nueva versión ${window.APP_VERSION} disponible
+                    </div>
+                    <div style="font-size: 14px; margin-bottom: 12px; opacity: 0.95;">
+                      Actualizando automáticamente en ${countdown}s...
+                    </div>
+                  `;
+                  countdown--;
+                  if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    window.updateApp();
+                  }
+                }, 1000);
+              }
+            }
+          });
+        });
+        
+        // 🔍 Verificar si ya hay un SW esperando (página recargada con actualización pendiente)
+        if (registration.waiting) {
+          console.log('⚠️ Ya hay un SW esperando - Mostrando banner inmediatamente');
+          // Simular evento updatefound para mostrar banner
+          const event = new Event('updatefound');
+          registration.dispatchEvent(event);
+        }
+        
+        // 📨 Escuchar mensajes del Service Worker
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data && event.data.type === 'NEW_VERSION') {
+            console.log('🎉 NUEVA VERSIÓN DETECTADA:', event.data.version);
+            console.log('🔄 Recargando página en 2 segundos...');
+            
+            // Mostrar toast
+            if (window.app && window.app.mostrarToast) {
+              window.app.mostrarToast(`🎉 Actualizando a ${window.APP_VERSION}...`, 'success');
+            }
+            
+            // Recargar automáticamente después de 2 segundos
+            setTimeout(() => {
+              window.location.reload(true);
+            }, 2000);
+          }
+        });
+        
+        // Detectar cuando el nuevo SW toma control
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          console.log('🔄 Service Worker actualizado - Recargando...');
+          window.location.reload(true);
+        });
+        
+      } catch (error) {
+        console.warn('⚠️ PWA: Error al registrar Service Worker:', error);
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
+
+
+

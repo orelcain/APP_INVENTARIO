@@ -18256,10 +18256,10 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Header con imagen - v6.136 con carousel */
+/* Header con imagen - v6.137 con fullscreen viewer */
 .card-header-image {
   width: 100%;
-  height: 320px;
+  height: 33vh;
   position: relative;
   flex-shrink: 0;
   overflow: hidden;
@@ -18289,6 +18289,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   background-size: cover;
   background-position: center;
   position: relative;
+  cursor: pointer;
 }
 
 .card-image-nav {
@@ -18332,6 +18333,58 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   font-weight: 600;
   backdrop-filter: blur(10px);
   z-index: 10;
+}
+
+/* Visor fullscreen de imagen */
+.image-fullscreen-viewer {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.image-fullscreen-viewer.show {
+  opacity: 1;
+}
+
+.image-fullscreen-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.image-fullscreen-img {
+  position: absolute;
+  max-width: none;
+  max-height: none;
+  transform-origin: center center;
+  transition: transform 0.1s ease-out;
+}
+
+.image-fullscreen-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.7);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
 }
 
 .no-image-placeholder {
@@ -21154,9 +21207,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.136';
-window.CACHE_VERSION = 'inventario-v6.136';
-window.APP_BUILD = 136; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.137';
+window.CACHE_VERSION = 'inventario-v6.137';
+window.APP_BUILD = 137; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -74790,11 +74843,14 @@ window.mobileHomeActions = {
     
     const hasImages = imageURLs.length > 0;
     
+    // Guardar URLs para visor fullscreen
+    window.currentRepuestoImages = imageURLs;
+    
     // HTML del carousel de imágenes
     let imageCarouselHTML = '';
     if (hasImages) {
       const slidesHTML = imageURLs.map((url, index) => 
-        `<div class="card-image-slide" style="background-image: url('${url}');"></div>`
+        `<div class="card-image-slide" style="background-image: url('${url}');" onclick="window.mobileHomeActions.openImageFullscreen(${index})"></div>`
       ).join('');
       
       const dotsHTML = imageURLs.length > 1 
@@ -74975,6 +75031,176 @@ window.mobileHomeActions = {
     dots.forEach((dot, index) => {
       dot.classList.toggle('active', index === currentIndex);
     });
+  },
+  
+  // v6.137 - Abrir imagen en pantalla completa con zoom
+  openImageFullscreen: function(index) {
+    const images = window.currentRepuestoImages || [];
+    if (images.length === 0) return;
+    
+    const imageUrl = images[index];
+    
+    const viewerHTML = `
+      <div class="image-fullscreen-viewer" id="imageFullscreenViewer" onclick="if(event.target === this) window.mobileHomeActions.closeImageFullscreen()">
+        <div class="image-fullscreen-container" id="imageContainer">
+          <img src="${imageUrl}" class="image-fullscreen-img" id="fullscreenImg" draggable="false">
+        </div>
+        <button class="image-fullscreen-close" onclick="window.mobileHomeActions.closeImageFullscreen()">✕</button>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', viewerHTML);
+    
+    // Mostrar con animación
+    setTimeout(() => {
+      const viewer = document.getElementById('imageFullscreenViewer');
+      if (viewer) viewer.classList.add('show');
+    }, 10);
+    
+    // Inicializar zoom con gestos
+    this.initImageZoom();
+  },
+  
+  // v6.137 - Cerrar visor fullscreen
+  closeImageFullscreen: function() {
+    const viewer = document.getElementById('imageFullscreenViewer');
+    if (viewer) {
+      viewer.classList.remove('show');
+      setTimeout(() => viewer.remove(), 300);
+    }
+  },
+  
+  // v6.137 - Inicializar zoom con pellizco y doble tap
+  initImageZoom: function() {
+    const img = document.getElementById('fullscreenImg');
+    const container = document.getElementById('imageContainer');
+    if (!img || !container) return;
+    
+    let scale = 1;
+    let lastScale = 1;
+    let posX = 0;
+    let posY = 0;
+    let lastPosX = 0;
+    let lastPosY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    
+    // Centrar imagen inicialmente
+    const centerImage = () => {
+      const containerRect = container.getBoundingClientRect();
+      const imgRect = img.getBoundingClientRect();
+      
+      if (scale === 1) {
+        // Centrar y ajustar al contenedor
+        const imgRatio = img.naturalWidth / img.naturalHeight;
+        const containerRatio = containerRect.width / containerRect.height;
+        
+        if (imgRatio > containerRatio) {
+          img.style.width = containerRect.width + 'px';
+          img.style.height = 'auto';
+        } else {
+          img.style.height = containerRect.height + 'px';
+          img.style.width = 'auto';
+        }
+        
+        img.style.left = '50%';
+        img.style.top = '50%';
+        img.style.transform = 'translate(-50%, -50%)';
+      }
+    };
+    
+    img.onload = centerImage;
+    if (img.complete) centerImage();
+    
+    // Doble tap para zoom
+    let lastTap = 0;
+    container.addEventListener('touchend', (e) => {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+      if (tapLength < 300 && tapLength > 0) {
+        if (scale === 1) {
+          scale = 2.5;
+          const rect = container.getBoundingClientRect();
+          const touch = e.changedTouches[0];
+          posX = (rect.width / 2 - touch.clientX) * 1.5;
+          posY = (rect.height / 2 - touch.clientY) * 1.5;
+        } else {
+          scale = 1;
+          posX = 0;
+          posY = 0;
+          centerImage();
+        }
+        updateTransform();
+      }
+      lastTap = currentTime;
+    });
+    
+    // Pellizco para zoom
+    let initialDistance = 0;
+    container.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        initialDistance = getDistance(e.touches[0], e.touches[1]);
+        lastScale = scale;
+      } else if (e.touches.length === 1 && scale > 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - posX;
+        startY = e.touches[0].clientY - posY;
+      }
+    });
+    
+    container.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      
+      if (e.touches.length === 2) {
+        // Zoom con pellizco
+        const currentDistance = getDistance(e.touches[0], e.touches[1]);
+        scale = lastScale * (currentDistance / initialDistance);
+        scale = Math.max(1, Math.min(scale, 5)); // Límite 1x a 5x
+        updateTransform();
+      } else if (isDragging && e.touches.length === 1) {
+        // Pan cuando está con zoom
+        posX = e.touches[0].clientX - startX;
+        posY = e.touches[0].clientY - startY;
+        updateTransform();
+      }
+    });
+    
+    container.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) {
+        lastScale = scale;
+      }
+      if (e.touches.length === 0) {
+        isDragging = false;
+        // Resetear si zoom es muy pequeño
+        if (scale < 1.1) {
+          scale = 1;
+          posX = 0;
+          posY = 0;
+          centerImage();
+          updateTransform();
+        }
+      }
+    });
+    
+    function updateTransform() {
+      if (scale === 1) {
+        img.style.transform = 'translate(-50%, -50%)';
+        img.style.left = '50%';
+        img.style.top = '50%';
+      } else {
+        img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+        img.style.left = '0';
+        img.style.top = '0';
+        img.style.transformOrigin = 'top left';
+      }
+    }
+    
+    function getDistance(touch1, touch2) {
+      const dx = touch1.clientX - touch2.clientX;
+      const dy = touch1.clientY - touch2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
   },
   
   // Icono según tipo de repuesto
