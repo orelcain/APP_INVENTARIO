@@ -4,13 +4,14 @@
  * 
  * ⚠️ IMPORTANTE: Al actualizar la versión, cambiar:
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
- * 2. window.APP_VERSION en index.html (línea ~20287)
+ * 2. window.APP_VERSION en index.html
+ * 3. version.json (build number)
  * 
- * v6.117 - CRITICAL FIX: Actualización automática forzada con skipWaiting y recarga instantánea
+ * v6.131 - Forms -15%, Wizard compacto, Toasts -20%, iPhone Pro optimizado
  */
 
-const CACHE_NAME = 'inventario-v6.117';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.117';
+const CACHE_NAME = 'inventario-v6.133b';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.133b';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
@@ -34,12 +35,13 @@ const NO_CACHE_URLS = [
   'firebasestorage.googleapis.com',
   'firebaseinstallations.googleapis.com',
   'identitytoolkit.googleapis.com',
-  'securetoken.googleapis.com'
+  'securetoken.googleapis.com',
+  'version.json'  // ⚠️ NUNCA cachear - usado para verificación de versión
 ];
 
 // Instalación del Service Worker
 self.addEventListener('install', (event) => {
-  console.log('🔧 [SW] Instalando Service Worker v6.117...');
+  console.log('🔧 [SW] Instalando Service Worker v6.119...');
   
   event.waitUntil(
     caches.open(CACHE_NAME)
