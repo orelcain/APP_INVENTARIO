@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.119 - Sistema de versionado definitivo con verificación remota
+ * v6.120 - Sistema de pausa persistente para auto-verificaciones. Reducido spam de logs.
  */
 
-const CACHE_NAME = 'inventario-v6.119';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.119';
+const CACHE_NAME = 'inventario-v6.120';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.120';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

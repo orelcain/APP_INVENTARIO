@@ -1,6 +1,6 @@
 {
-  "version": "v6.119",
-  "build": 119,
-  "date": "2024-12-14T19:00:00Z",
-  "changes": "Sistema de versionado definitivo con verificación remota"
+  "version": "v6.120",
+  "build": 120,
+  "date": "2024-12-15T02:30:00Z",
+  "changes": "Sistema de pausa persistente para auto-verificaciones. Reducido spam de logs."
 }

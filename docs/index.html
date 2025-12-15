@@ -18343,6 +18343,15 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     <button class="pwa-console-filter" data-type="error" onclick="window.pwaConsole.setFilter('error')">
       ❌ Error <span class="filter-count" id="filterCountError">0</span>
     </button>
+    <button 
+      id="btnToggleAutoCheck" 
+      class="pwa-console-filter" 
+      onclick="window.toggleAutoCheck()"
+      style="margin-left: auto; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);"
+      title="Pausar/reanudar verificaciones automáticas"
+    >
+      ⏸️ Pausar Auto-Check
+    </button>
   </div>
   
   <div class="pwa-console-output" id="pwaConsoleOutput">
@@ -20734,9 +20743,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.119';
-window.CACHE_VERSION = 'inventario-v6.119';
-window.APP_BUILD = 119; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.120';
+window.CACHE_VERSION = 'inventario-v6.120';
+window.APP_BUILD = 120; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -74918,7 +74927,15 @@ console.log('🏠 Mobile Home Dashboard inicializado');
   // VERIFICACIÓN DE VERSIÓN
   // ========================================================================
   async function checkForUpdates() {
-    console.log('🔍 [VERSION] Verificando actualizaciones...');
+    // Verificar si está pausado
+    if (localStorage.getItem('autoCheckPaused') === 'true') {
+      return; // No hacer nada si está pausado
+    }
+    
+    // Solo loguear si modo debug verbose está activo
+    if (localStorage.getItem('debugVerbose') === 'true') {
+      console.log('🔍 [VERSION] Verificando actualizaciones...');
+    }
     
     const serverVersion = await fetchServerVersion();
     if (!serverVersion) {
@@ -75013,10 +75030,46 @@ console.log('🏠 Mobile Home Dashboard inicializado');
     config: VERSION_CONFIG
   };
   
+  // 🎮 CONTROL DE PAUSA PARA AUTO-VERIFICACIONES
+  window.toggleAutoCheck = function() {
+    const isPaused = localStorage.getItem('autoCheckPaused') === 'true';
+    localStorage.setItem('autoCheckPaused', isPaused ? 'false' : 'true');
+    
+    if (isPaused) {
+      console.log('▶️ Auto-verificaciones REANUDADAS');
+    } else {
+      console.log('⏸️ Auto-verificaciones PAUSADAS');
+    }
+    
+    // Actualizar UI si el botón existe
+    const toggleBtn = document.getElementById('btnToggleAutoCheck');
+    if (toggleBtn) {
+      toggleBtn.textContent = isPaused ? '⏸️ Pausar Auto-Check' : '▶️ Reanudar Auto-Check';
+      toggleBtn.style.background = isPaused 
+        ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+        : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    }
+    
+    return !isPaused;
+  };
+  
+  // Estado inicial de auto-check
+  console.log('🎮 Auto-verificaciones:', localStorage.getItem('autoCheckPaused') === 'true' ? '⏸️ PAUSADAS' : '▶️ ACTIVAS');
+  
   // Verificar inmediatamente al cargar
   document.addEventListener('DOMContentLoaded', () => {
     console.log('🔧 Sistema de versionado v6.119 inicializado');
     console.log(`📦 Versión local: ${window.APP_VERSION} (Build ${window.APP_BUILD})`);
+    
+    // Inicializar estado del botón de pausa
+    const toggleBtn = document.getElementById('btnToggleAutoCheck');
+    const isPaused = localStorage.getItem('autoCheckPaused') === 'true';
+    if (toggleBtn) {
+      toggleBtn.textContent = isPaused ? '▶️ Reanudar Auto-Check' : '⏸️ Pausar Auto-Check';
+      toggleBtn.style.background = isPaused 
+        ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+        : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+    }
     
     // Primera verificación después de 3 segundos (dar tiempo a que cargue todo)
     setTimeout(checkForUpdates, 3000);
@@ -75098,15 +75151,27 @@ console.log('🏠 Mobile Home Dashboard inicializado');
         console.log('📍 SW instalando:', registration.installing ? 'SÍ' : 'NO');
         console.log('📍 SW esperando:', registration.waiting ? 'SÍ' : 'NO');
         
-        // 🔄 Forzar verificación de actualizaciones cada 5 segundos (SUPER AGRESIVO)
+        // 🔄 Verificación de actualizaciones con control de pausa
+        // La pausa es persistente usando localStorage
         setInterval(() => {
-          console.log('🔍 [AUTO] Verificando actualizaciones...');
+          // Verificar si está pausado
+          if (localStorage.getItem('autoCheckPaused') === 'true') {
+            return; // No hacer nada si está pausado
+          }
+          
+          // Solo loguear si modo debug verbose está activo
+          if (localStorage.getItem('debugVerbose') === 'true') {
+            console.log('🔍 [AUTO] Verificando actualizaciones...');
+          }
+          
           registration.update().then(() => {
-            console.log('✅ [AUTO] Verificación completada');
+            if (localStorage.getItem('debugVerbose') === 'true') {
+              console.log('✅ [AUTO] Verificación completada');
+            }
           }).catch(err => {
             console.warn('⚠️ Error verificando actualizaciones:', err);
           });
-        }, 5000);
+        }, 60000); // Reducido de 5s a 60s para evitar spam
         
         // Verificar actualizaciones inmediatamente (3 veces para asegurar)
         console.log('🔍 [INICIO] Verificación inmediata #1...');
