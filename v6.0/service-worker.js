@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.130 - Header renovado + Cards ultra compactas. UX profesional
+ * v6.131 - Forms -15%, Wizard compacto, Toasts -20%, iPhone Pro optimizado
  */
 
-const CACHE_NAME = 'inventario-v6.130';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.130';
+const CACHE_NAME = 'inventario-v6.131';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.131';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

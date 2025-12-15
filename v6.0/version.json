@@ -1,6 +1,6 @@
 {
-  "version": "v6.130",
-  "build": 130,
-  "date": "2024-12-15T11:00:00Z",
-  "changes": "Header renovado: 'Sistema de Gestión' + Cards inventario ultra compactas -15%. UX profesional."
+  "version": "v6.131",
+  "build": 131,
+  "date": "2024-12-15T11:30:00Z",
+  "changes": "Optimizaciones globales: Forms -15%, Wizard compacto, Toasts -20%, iPhone Pro optimizado."
 }

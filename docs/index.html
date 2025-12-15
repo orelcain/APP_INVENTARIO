@@ -4553,15 +4553,15 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       z-index: 3001;
     }
 
-    /* TOAST NOTIFICATIONS - VERSIN CORPORATIVA MEJORADA */
+    /* TOAST NOTIFICATIONS - VERSIÓN CORPORATIVA MEJORADA */
     .toast {
       position: fixed;
-      bottom: 20px;
-      left: 20px;
+      bottom: 16px;
+      left: 16px;
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       color: #334155;
-      padding: 18px 24px;
-      border-radius: 16px;
+      padding: 14px 18px;
+      border-radius: 12px;
       box-shadow: 
         0 20px 60px rgba(0,0,0,0.15),
         0 8px 32px rgba(0,0,0,0.1),
@@ -4570,16 +4570,16 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       animation: slideInLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 4000;
       font-weight: 600;
-      max-width: 420px;
-      min-width: 280px;
+      max-width: 360px;
+      min-width: 240px;
       word-wrap: break-word;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       backdrop-filter: blur(20px) saturate(180%);
       cursor: pointer;
       overflow: hidden;
-      font-size: 0.95rem;
-      line-height: 1.5;
+      font-size: 0.88rem;
+      line-height: 1.4;
     }
 
     /* Indicador de tipo con lnea lateral */
@@ -7076,15 +7076,15 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       }
       
       .wizard-step-indicator {
-        padding: 8px 12px;
+        padding: 7px 10px;
       }
       
       .form-section-header h3 {
-        font-size: 1.05rem;
+        font-size: 1rem;
       }
       
       .form-section-description {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
       }
     }
 
@@ -7095,28 +7095,28 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     @media (max-width: 430px) {
       /* Reducir padding global */
       .container {
-        padding: 10px 6px !important;
+        padding: 8px 5px !important;
       }
 
       /* Optimizar header */
       .logo h1 {
-        font-size: 1.25rem !important;
+        font-size: 1.2rem !important;
         margin-bottom: 2px !important;
       }
 
       .logo p {
-        font-size: 0.7rem !important;
+        font-size: 0.65rem !important;
       }
 
-      /* Botones del header ms compactos */
+      /* Botones del header más compactos */
       .header-actions {
-        gap: 6px !important;
+        gap: 5px !important;
       }
 
       .header-actions button,
       .header-actions .btn {
-        padding: 8px 10px !important;
-        font-size: 0.75rem !important;
+        padding: 7px 9px !important;
+        font-size: 0.7rem !important;
         min-width: auto !important;
         min-height: 38px !important;
       }
@@ -16414,29 +16414,29 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   }
 
   .form-section {
-    padding: 12px !important;
-    margin-bottom: 12px !important;
+    padding: 10px !important;
+    margin-bottom: 10px !important;
   }
 
   .form-section-header {
-    margin-bottom: 12px !important;
+    margin-bottom: 10px !important;
   }
 
   .form-section-title {
-    font-size: 1rem !important;
+    font-size: 0.95rem !important;
   }
 
   .form-section-description {
-    font-size: 0.75rem !important;
+    font-size: 0.7rem !important;
   }
 
   .form-group label {
-    font-size: 0.85rem !important;
-    margin-bottom: 4px !important;
+    font-size: 0.8rem !important;
+    margin-bottom: 3px !important;
   }
 
   .form-control {
-    padding: 10px 12px !important;
+    padding: 9px 11px !important;
     font-size: 16px !important; /* Evita zoom en iOS */
   }
 
@@ -16444,9 +16444,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   .multimedia-preview {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
-    gap: 8px !important;
-    max-height: 200px !important;
-    padding: 8px !important;
+    gap: 6px !important;
+    max-height: 180px !important;
+    padding: 6px !important;
   }
 
   .preview-item {
@@ -20773,9 +20773,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.130';
-window.CACHE_VERSION = 'inventario-v6.130';
-window.APP_BUILD = 130; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.131';
+window.CACHE_VERSION = 'inventario-v6.131';
+window.APP_BUILD = 131; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
