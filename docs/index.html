@@ -20775,9 +20775,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.126';
-window.CACHE_VERSION = 'inventario-v6.126';
-window.APP_BUILD = 126; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.127';
+window.CACHE_VERSION = 'inventario-v6.127';
+window.APP_BUILD = 127; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -72437,23 +72437,27 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   background: rgba(255,255,255,0.25);
 }
 
-/* Stats Section - Compacta */
+/* Stats Section - Ultra compacta + más alta */
 .home-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  padding: 12px;
+  gap: 6px;
+  padding: 10px;
 }
 
 .stat-card {
   background: var(--home-card);
   border: 1px solid var(--home-border);
-  border-radius: 10px;
-  padding: 12px 8px;
+  border-radius: 8px;
+  padding: 16px 6px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .stat-card:active {
@@ -72462,18 +72466,18 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .stat-card .stat-number {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--home-text);
-  line-height: 1.1;
-  margin-bottom: 3px;
+  line-height: 1;
+  margin-bottom: 4px;
 }
 
 .stat-card .stat-label {
-  font-size: 0.65rem;
+  font-size: 0.58rem;
   color: var(--home-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
   font-weight: 500;
 }
 
@@ -72496,21 +72500,21 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   color: var(--home-warning);
 }
 
-/* Main Action - Escanear - Compacto */
+/* Main Action - Escanear - Ultra compacto */
 .home-main-action {
-  padding: 0 12px;
-  margin-bottom: 12px;
+  padding: 0 10px;
+  margin-bottom: 10px;
 }
 
 .scan-main-btn {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
-  padding: 14px 16px;
+  padding: 11px 14px;
   background: linear-gradient(135deg, var(--home-accent) 0%, #4a7a9e 100%);
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
@@ -72522,10 +72526,10 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .scan-btn-icon {
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72540,17 +72544,17 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .scan-title {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: white;
 }
 
 .scan-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   color: rgba(255, 255, 255, 0.75);
 }
 
@@ -72560,24 +72564,24 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   font-weight: 300;
 }
 
-/* Secondary Actions - Compactas */
+/* Secondary Actions - Ultra compactas */
 .home-actions {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding: 0 12px;
-  margin-bottom: 16px;
+  gap: 6px;
+  padding: 0 10px;
+  margin-bottom: 12px;
 }
 
 .action-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 12px 6px;
+  gap: 5px;
+  padding: 10px 5px;
   background: var(--home-card);
   border: 1px solid var(--home-border);
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -72588,10 +72592,10 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .action-icon {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   background: var(--home-accent-soft);
-  border-radius: 8px;
+  border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72602,43 +72606,43 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .action-label {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   color: var(--home-text-muted);
   font-weight: 500;
   text-align: center;
 }
 
-/* Zones Section - Compacta */
+/* Zones Section - Ultra compacta */
 .home-zones {
-  padding: 0 12px;
-  margin-bottom: 14px;
+  padding: 0 10px;
+  margin-bottom: 12px;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .section-header h2 {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: var(--home-text);
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 }
 
 .see-all-btn {
   background: none;
   border: none;
   color: var(--home-accent);
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 500;
   cursor: pointer;
-  padding: 3px 6px;
-  border-radius: 5px;
+  padding: 2px 5px;
+  border-radius: 4px;
   transition: background 0.2s;
 }
 
@@ -72649,14 +72653,14 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 .zones-list {
   background: var(--home-card);
   border: 1px solid var(--home-border);
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
 }
 
 .zone-item {
   display: flex;
   align-items: center;
-  padding: 14px 16px;
+  padding: 11px 14px;
   border-bottom: 1px solid var(--home-border);
   cursor: pointer;
   transition: background 0.15s;
@@ -72671,31 +72675,31 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .zone-icon {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   background: var(--home-accent-soft);
-  border-radius: 8px;
+  border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 12px;
-  font-size: 1.1rem;
+  margin-right: 10px;
+  font-size: 1rem;
 }
 
 .zone-name {
   flex: 1;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   color: var(--home-text);
   font-weight: 500;
 }
 
 .zone-count {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   color: var(--home-text-muted);
   background: var(--home-border);
-  padding: 4px 10px;
-  border-radius: 20px;
-  margin-right: 8px;
+  padding: 3px 8px;
+  border-radius: 16px;
+  margin-right: 6px;
 }
 
 .zone-arrow {
@@ -72723,11 +72727,11 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 .alert-card {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 8px 10px;
   background: var(--home-card);
   border: 1px solid var(--home-border);
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -72745,13 +72749,13 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .alert-icon-wrap {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
@@ -72769,24 +72773,24 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .alert-title {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--home-text);
   margin-bottom: 2px;
 }
 
 .alert-desc {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--home-text-muted);
 }
 
 .alert-badge {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 600;
   color: var(--home-warning);
   background: var(--home-warning-soft);
-  padding: 3px 10px;
-  border-radius: 18px;
+  padding: 2px 8px;
+  border-radius: 14px;
 }
 
 .alert-critical .alert-badge {
