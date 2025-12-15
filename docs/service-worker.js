@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.123 - Modal móvil optimizado: árbol compacto, selección rápida, fotos en edición
+ * v6.124 - Zoom out global PWA: mayor densidad visual, más contenido en pantalla
  */
 
-const CACHE_NAME = 'inventario-v6.123';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.123';
+const CACHE_NAME = 'inventario-v6.124';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.124';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
