@@ -20743,9 +20743,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.120';
-window.CACHE_VERSION = 'inventario-v6.120';
-window.APP_BUILD = 120; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.121';
+window.CACHE_VERSION = 'inventario-v6.121';
+window.APP_BUILD = 121; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -43218,11 +43218,23 @@ class InventarioCompleto {
     if (fotosGrid) fotosGrid.innerHTML = '<div class="mobile-empty-state">Sin fotos</div>';
     if (fotosCount) fotosCount.textContent = '0';
     
+    // 🎯 MOSTRAR OVERLAY PRIMERO - Evitar que errores posteriores bloqueen la visibilidad
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    console.log('✅ [MOBILE MODAL] Overlay activado');
+    
     // Cargar datos si es edición
     if (mode === 'edit' && id) {
       const repuesto = this.repuestos.find(r => String(r.id) === String(id));
-      if (repuesto) {
-        console.log('📱 Cargando repuesto:', repuesto.nombre);
+      if (!repuesto) {
+        console.error(`❌ [MOBILE MODAL] Repuesto no encontrado con ID: ${id}`);
+        this.showToast('⚠️ Repuesto no encontrado', 'error');
+        return;
+      }
+      
+      console.log('📱 Cargando repuesto:', repuesto.nombre);
+      
+      try {
         
         // Identificación
         const setVal = (elId, val) => { 
@@ -43282,12 +43294,11 @@ class InventarioCompleto {
         } else {
           console.log('📱 [MULTIMEDIA] Repuesto sin multimedia');
         }
+      } catch (error) {
+        console.error('❌ [MOBILE MODAL] Error cargando datos del repuesto:', error);
+        this.showToast('⚠️ Error cargando datos', 'error');
       }
     }
-    
-    // Mostrar overlay
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
     
     // Scroll al inicio
     const body = document.getElementById('mobileModalBody');

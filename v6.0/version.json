@@ -1,6 +1,6 @@
 {
-  "version": "v6.121",
-  "build": 121,
-  "date": "2024-12-15T03:00:00Z",
-  "changes": "Fix crítico: Modal móvil ahora se abre correctamente desde botón Editar. Detección early para evitar procesamiento de modal PC."
+  "version": "v6.122",
+  "build": 122,
+  "date": "2024-12-15T03:15:00Z",
+  "changes": "Modal móvil: Overlay se muestra ANTES de cargar datos. Try-catch para errores. Logs de debugging mejorados."
 }

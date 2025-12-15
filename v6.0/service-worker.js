@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.121 - Fix crítico: Modal móvil ahora se abre correctamente desde botón Editar
+ * v6.122 - Modal móvil: Overlay se muestra inmediatamente. Try-catch para errores.
  */
 
-const CACHE_NAME = 'inventario-v6.121';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.121';
+const CACHE_NAME = 'inventario-v6.122';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.122';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
