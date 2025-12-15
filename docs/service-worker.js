@@ -10,8 +10,8 @@
  * v6.131 - Forms -15%, Wizard compacto, Toasts -20%, iPhone Pro optimizado
  */
 
-const CACHE_NAME = 'inventario-v6.134';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.134';
+const CACHE_NAME = 'inventario-v6.135';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.135';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

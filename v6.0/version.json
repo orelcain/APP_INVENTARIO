@@ -1,6 +1,6 @@
 {
-  "version": "v6.134",
-  "build": 134,
-  "date": "2024-12-15T14:00:00Z",
-  "changes": "Búsqueda home: Resultados -30% adicional, ultra compactos."
+  "version": "v6.135",
+  "build": 135,
+  "date": "2024-12-15T14:10:00Z",
+  "changes": "Búsqueda home: -30% adicional (-60% total desde v6.033), máximo nivel de compactación."
 }
