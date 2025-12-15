@@ -17134,7 +17134,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
 .image-fullscreen-viewer .viewer-image {
   max-width: 95%;
-  max-height: 80vh;
+  max-height: 85vh;
   object-fit: contain;
   transition: transform 0.15s ease-out; /* Más rápido para zoom fluido */
   cursor: zoom-in;
@@ -17142,6 +17142,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   -webkit-user-drag: none;
   will-change: transform; /* Optimización GPU */
   transform-origin: center center;
+  margin-top: -8vh; /* Subir imagen 15% más arriba */
 }
 
 .image-fullscreen-viewer .viewer-image.zoomed {
@@ -21207,9 +21208,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.139';
-window.CACHE_VERSION = 'inventario-v6.139';
-window.APP_BUILD = 139; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.140';
+window.CACHE_VERSION = 'inventario-v6.140';
+window.APP_BUILD = 140; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
