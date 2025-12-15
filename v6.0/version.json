@@ -1,6 +1,6 @@
 {
-  "version": "v6.132",
-  "build": 132,
-  "date": "2024-12-15T12:45:00Z",
-  "changes": "Búsqueda optimizada: Resultados -30% zoom out, click para ver tarjeta del repuesto."
+  "version": "v6.133",
+  "build": 133,
+  "date": "2024-12-15T13:15:00Z",
+  "changes": "Tarjeta completa de repuesto móvil: Imágenes, datos técnicos, stock, jerarquía, estilo PC adaptado."
 }

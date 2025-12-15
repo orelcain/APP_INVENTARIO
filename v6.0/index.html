@@ -18222,7 +18222,320 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 /* ================================================================== */
-/* 📱 MINIATURA DE IMAGEN CON FONDO DE RESPALDO                       */
+/* � v6.132 - TARJETA DE REPUESTO COMPLETA MÓVIL                     */
+/* ================================================================== */
+.modal-repuesto-card-mobile {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 99999;
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-repuesto-card-mobile.show {
+  opacity: 1;
+}
+
+.modal-repuesto-card-mobile.show .repuesto-card-container {
+  transform: translateY(0);
+}
+
+.repuesto-card-container {
+  background: var(--bg-secondary);
+  width: 100%;
+  max-height: 92vh;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Header con imagen */
+.card-header-image {
+  width: 100%;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.no-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  color: rgba(255,255,255,0.3);
+}
+
+.card-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+/* Contenido scrolleable */
+.card-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  padding-bottom: 20px;
+}
+
+/* Título */
+.card-title-section {
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.card-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.card-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.card-sap-code {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--bg-tertiary);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.card-badge {
+  background: linear-gradient(135deg, #4a9066, #3d7a56);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Secciones */
+.card-section {
+  background: var(--bg-primary);
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.card-section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Datos técnicos */
+.card-tech-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card-tech-list li {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 4px 0;
+  line-height: 1.4;
+}
+
+/* Alerta de stock */
+.card-stock-alert {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.card-stock-alert.ok {
+  background: rgba(74, 144, 102, 0.15);
+  color: #4a9066;
+  border: 1px solid rgba(74, 144, 102, 0.3);
+}
+
+.card-stock-alert.low {
+  background: rgba(212, 151, 108, 0.15);
+  color: #d4976c;
+  border: 1px solid rgba(212, 151, 108, 0.3);
+}
+
+.card-stock-alert.critical {
+  background: rgba(199, 107, 107, 0.15);
+  color: #c76b6b;
+  border: 1px solid rgba(199, 107, 107, 0.3);
+}
+
+/* Tabla de stock */
+.card-stock-table {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.stock-table-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.stock-table-cell {
+  padding: 10px 6px;
+  text-align: center;
+  font-size: 0.85rem;
+  border-right: 1px solid var(--border-color);
+}
+
+.stock-table-cell:last-child {
+  border-right: none;
+}
+
+.stock-table-cell.header {
+  background: var(--bg-tertiary);
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 4px;
+}
+
+.stock-table-row.values .stock-table-cell {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.stock-table-row.values .stock-table-cell.ok {
+  color: #4a9066;
+}
+
+.stock-table-row.values .stock-table-cell.low {
+  color: #d4976c;
+}
+
+.stock-table-row.values .stock-table-cell.critical {
+  color: #c76b6b;
+}
+
+/* Jerarquía */
+.card-jerarquia {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding: 8px 0;
+}
+
+.jerarquia-item {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Botones de acción */
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.card-action-btn {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.card-action-btn:active {
+  transform: scale(0.97);
+}
+
+.card-action-btn.primary {
+  background: linear-gradient(135deg, #4a9066, #3d7a56);
+  color: white;
+}
+
+.card-action-btn.secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+/* Responsive ajustes */
+@media (max-width: 380px) {
+  .card-header-image {
+    height: 180px;
+  }
+  
+  .card-title {
+    font-size: 1.15rem;
+  }
+  
+  .card-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .stock-table-cell {
+    font-size: 0.75rem;
+    padding: 8px 4px;
+  }
+  
+  .stock-table-cell.header {
+    font-size: 0.7rem;
+    padding: 6px 2px;
+  }
+}
+
+/* ================================================================== */
+/* �📱 MINIATURA DE IMAGEN CON FONDO DE RESPALDO                       */
 /* ================================================================== */
 .mobile-thumbnail {
   position: relative;
@@ -74334,17 +74647,182 @@ window.mobileHomeActions = {
     }, 300);
   },
   
-  // 🔍 v6.132 - Ver tarjeta del repuesto al hacer click en resultado de búsqueda
+  // 🔍 v6.132 - Ver tarjeta completa del repuesto (estilo PC adaptado a móvil)
   viewRepuestoCard: function(id) {
     // Cerrar búsqueda
     this.clearQuickSearch();
     
-    // Abrir modal de visualización
+    const repuesto = window.app?.repuestos?.find(r => r.id === id);
+    if (!repuesto) {
+      alert('Repuesto no encontrado');
+      return;
+    }
+    
+    // Datos del repuesto
+    const nombre = repuesto.nombre || repuesto.descripcion || 'Sin nombre';
+    const codSAP = repuesto.codSAP || repuesto.codigo || repuesto.codigoSAP || '---';
+    const categoria = repuesto.categoria || repuesto.tipo || 'Sin categoría';
+    const cantidad = parseInt(repuesto.cantidad || repuesto.stock) || 0;
+    const minimo = parseInt(repuesto.minimo) || 0;
+    const enUso = parseInt(repuesto.enUso) || 0;
+    const primer = repuesto.primer || repuesto.ubicacionPrimer || '---';
+    const area = repuesto.area || repuesto.ubicacion || 'Sin ubicación';
+    
+    // Datos técnicos
+    const datosTecnicos = [];
+    if (repuesto.rodamiento) datosTecnicos.push(`Rodamiento ${repuesto.rodamiento}`);
+    if (repuesto.medida || repuesto.dimension) datosTecnicos.push(repuesto.medida || repuesto.dimension);
+    if (repuesto.marca) datosTecnicos.push(`Marca: ${repuesto.marca}`);
+    if (repuesto.modelo) datosTecnicos.push(`Modelo: ${repuesto.modelo}`);
+    if (repuesto.especificacion) datosTecnicos.push(repuesto.especificacion);
+    
+    // Jerarquía
+    const jerarquia = repuesto.jerarquia || [];
+    const jerarquiaHTML = jerarquia.length > 0 
+      ? jerarquia.map(j => `<span class="jerarquia-item">${j}</span>`).join(' → ')
+      : '<span style="color: var(--text-muted);">Sin jerarquía</span>';
+    
+    // Estado del stock
+    let stockStatus = '';
+    let stockClass = '';
+    if (cantidad === 0) {
+      stockStatus = '⚠️ Stock agotado. Requiere reposición urgente.';
+      stockClass = 'critical';
+    } else if (cantidad <= minimo && minimo > 0) {
+      stockStatus = '⚠️ Stock bajo. Considerar reposición.';
+      stockClass = 'low';
+    } else {
+      stockStatus = '✅ Stock disponible';
+      stockClass = 'ok';
+    }
+    
+    // Imagen
+    const imageURL = repuesto.imageURL || repuesto.imagen || '';
+    const hasImage = imageURL && imageURL.trim() !== '';
+    
+    // Crear modal
+    const modalHTML = `
+      <div class="modal-repuesto-card-mobile" id="modalRepuestoCard" onclick="if(event.target === this) window.mobileHomeActions.closeRepuestoCard()">
+        <div class="repuesto-card-container">
+          <!-- Header con imagen -->
+          <div class="card-header-image" style="background-image: url('${hasImage ? imageURL : ''}'); ${!hasImage ? 'background: linear-gradient(135deg, #2c5f4f, #4a9066);' : ''}">
+            ${!hasImage ? '<div class="no-image-placeholder">📦</div>' : ''}
+            <button class="card-close-btn" onclick="window.mobileHomeActions.closeRepuestoCard()">✕</button>
+          </div>
+          
+          <!-- Contenido -->
+          <div class="card-content">
+            <!-- Título y código -->
+            <div class="card-title-section">
+              <h2 class="card-title">${nombre}</h2>
+              <div class="card-meta-row">
+                <span class="card-label">Cód. SAP:</span>
+                <span class="card-sap-code">${codSAP}</span>
+              </div>
+              <div class="card-meta-row">
+                <span class="card-label">Categoría:</span>
+                <span class="card-badge">${categoria}</span>
+              </div>
+            </div>
+            
+            <!-- Datos técnicos -->
+            ${datosTecnicos.length > 0 ? `
+            <div class="card-section">
+              <h3 class="card-section-title">📋 Datos técnicos</h3>
+              <ul class="card-tech-list">
+                ${datosTecnicos.map(dato => `<li>- ${dato}</li>`).join('')}
+              </ul>
+            </div>
+            ` : ''}
+            
+            <!-- Estado del stock -->
+            <div class="card-section">
+              <div class="card-stock-alert ${stockClass}">
+                ${stockStatus}
+              </div>
+            </div>
+            
+            <!-- Tabla de stock -->
+            <div class="card-section">
+              <h3 class="card-section-title">📊 Stock</h3>
+              <div class="card-stock-table">
+                <div class="stock-table-row">
+                  <div class="stock-table-cell header">EN USO</div>
+                  <div class="stock-table-cell header">MÍNIMO</div>
+                  <div class="stock-table-cell header">STOCK</div>
+                  <div class="stock-table-cell header">PRIMER</div>
+                </div>
+                <div class="stock-table-row values">
+                  <div class="stock-table-cell">${enUso}</div>
+                  <div class="stock-table-cell">${minimo}</div>
+                  <div class="stock-table-cell ${stockClass}">${cantidad}</div>
+                  <div class="stock-table-cell">${cantidad > 0 ? cantidad + ' und.' : '---'}</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Jerarquía -->
+            ${jerarquia.length > 0 ? `
+            <div class="card-section">
+              <h3 class="card-section-title">📍 Pendiente de verificación</h3>
+              <div class="card-jerarquia">
+                ${jerarquiaHTML}
+              </div>
+            </div>
+            ` : ''}
+            
+            <!-- Ubicación -->
+            <div class="card-section">
+              <div class="card-meta-row">
+                <span class="card-label">📍 Área/Planta:</span>
+                <span>${area}</span>
+              </div>
+              <div class="card-meta-row">
+                <span class="card-label">🎯 Primer:</span>
+                <span>${primer}</span>
+              </div>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="card-actions">
+              <button class="card-action-btn secondary" onclick="window.mobileHomeActions.closeRepuestoCard()">
+                🌳 Jerarquía
+              </button>
+              <button class="card-action-btn secondary" onclick="window.mobileHomeActions.closeRepuestoCard()">
+                📍 Ubicar
+              </button>
+              <button class="card-action-btn primary" onclick="window.mobileHomeActions.closeRepuestoCard(); window.mobileHomeActions.openRepuesto('${id}')">
+                ✏️ Editar
+              </button>
+              <button class="card-action-btn primary" onclick="window.mobileHomeActions.closeRepuestoCard(); window.mobileHomeActions.openQuickCount('${id}')">
+                🔢 Contar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Insertar modal en el DOM
+    const existingModal = document.getElementById('modalRepuestoCard');
+    if (existingModal) existingModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Mostrar modal con animación
     setTimeout(() => {
-      if (window.app && window.app.openModal) {
-        window.app.openModal('view', id);
-      }
-    }, 200);
+      const modal = document.getElementById('modalRepuestoCard');
+      if (modal) modal.classList.add('show');
+    }, 10);
+  },
+  
+  // Cerrar tarjeta de repuesto
+  closeRepuestoCard: function() {
+    const modal = document.getElementById('modalRepuestoCard');
+    if (modal) {
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 300);
+    }
   },
   
   // Icono según tipo de repuesto
