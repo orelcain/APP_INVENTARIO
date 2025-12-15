@@ -20775,9 +20775,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.124';
-window.CACHE_VERSION = 'inventario-v6.124';
-window.APP_BUILD = 124; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.126';
+window.CACHE_VERSION = 'inventario-v6.126';
+window.APP_BUILD = 126; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -72437,19 +72437,19 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   background: rgba(255,255,255,0.25);
 }
 
-/* Stats Section */
+/* Stats Section - Compacta */
 .home-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  padding: 20px;
+  gap: 8px;
+  padding: 12px;
 }
 
 .stat-card {
   background: var(--home-card);
   border: 1px solid var(--home-border);
-  border-radius: 12px;
-  padding: 16px 12px;
+  border-radius: 10px;
+  padding: 12px 8px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -72462,18 +72462,18 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .stat-card .stat-number {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--home-text);
   line-height: 1.1;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .stat-card .stat-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--home-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   font-weight: 500;
 }
 
@@ -72496,21 +72496,21 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   color: var(--home-warning);
 }
 
-/* Main Action - Escanear */
+/* Main Action - Escanear - Compacto */
 .home-main-action {
-  padding: 0 20px;
-  margin-bottom: 20px;
+  padding: 0 12px;
+  margin-bottom: 12px;
 }
 
 .scan-main-btn {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
-  padding: 18px 20px;
+  padding: 14px 16px;
   background: linear-gradient(135deg, var(--home-accent) 0%, #4a7a9e 100%);
   border: none;
-  border-radius: 14px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
@@ -72522,10 +72522,10 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .scan-btn-icon {
-  width: 52px;
-  height: 52px;
+  width: 46px;
+  height: 46px;
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72544,13 +72544,13 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .scan-title {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: white;
 }
 
 .scan-subtitle {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.75);
 }
 
@@ -72560,24 +72560,24 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   font-weight: 300;
 }
 
-/* Secondary Actions */
+/* Secondary Actions - Compactas */
 .home-actions {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  padding: 0 20px;
-  margin-bottom: 24px;
+  gap: 8px;
+  padding: 0 12px;
+  margin-bottom: 16px;
 }
 
 .action-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 16px 8px;
+  gap: 6px;
+  padding: 12px 6px;
   background: var(--home-card);
   border: 1px solid var(--home-border);
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -72588,10 +72588,10 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .action-icon {
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   background: var(--home-accent-soft);
-  border-radius: 10px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72602,43 +72602,43 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .action-label {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--home-text-muted);
   font-weight: 500;
   text-align: center;
 }
 
-/* Zones Section */
+/* Zones Section - Compacta */
 .home-zones {
-  padding: 0 20px;
-  margin-bottom: 20px;
+  padding: 0 12px;
+  margin-bottom: 14px;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .section-header h2 {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--home-text);
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
 .see-all-btn {
   background: none;
   border: none;
   color: var(--home-accent);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 3px 6px;
+  border-radius: 5px;
   transition: background 0.2s;
 }
 
@@ -72717,17 +72717,17 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 .alerts-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .alert-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 10px 12px;
   background: var(--home-card);
   border: 1px solid var(--home-border);
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -72745,13 +72745,13 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .alert-icon-wrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   flex-shrink: 0;
 }
 
@@ -72769,24 +72769,24 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .alert-title {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
   color: var(--home-text);
   margin-bottom: 2px;
 }
 
 .alert-desc {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--home-text-muted);
 }
 
 .alert-badge {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--home-warning);
   background: var(--home-warning-soft);
-  padding: 4px 12px;
-  border-radius: 20px;
+  padding: 3px 10px;
+  border-radius: 18px;
 }
 
 .alert-critical .alert-badge {

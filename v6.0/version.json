@@ -1,6 +1,6 @@
 {
-  "version": "v6.125",
-  "build": 125,
-  "date": "2024-12-15T04:00:00Z",
-  "changes": "Zoom out AGRESIVO: -40% padding total, -25% fuentes. Máxima densidad visual manteniendo usabilidad táctil."
+  "version": "v6.126",
+  "build": 126,
+  "date": "2024-12-15T04:15:00Z",
+  "changes": "Zoom out home móvil: stats, botones, alerts compactos. -35% padding, -20% iconos. Más contenido visible."
 }

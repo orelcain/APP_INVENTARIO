@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.125 - Zoom out AGRESIVO: -40% padding, -25% fuentes, máxima densidad visual
+ * v6.126 - Zoom out home móvil: stats, botones, alerts compactos. Mayor contenido visible
  */
 
-const CACHE_NAME = 'inventario-v6.125';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.125';
+const CACHE_NAME = 'inventario-v6.126';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.126';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
