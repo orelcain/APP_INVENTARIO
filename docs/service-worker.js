@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.122 - Modal móvil: Overlay se muestra inmediatamente. Try-catch para errores.
+ * v6.123 - Modal móvil optimizado: árbol compacto, selección rápida, fotos en edición
  */
 
-const CACHE_NAME = 'inventario-v6.122';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.122';
+const CACHE_NAME = 'inventario-v6.123';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.123';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

@@ -17597,12 +17597,13 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   .mobile-tree-node-content {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 10px;
-    border-radius: 8px;
+    gap: 6px;
+    padding: 8px 8px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background 0.2s;
-    min-height: 44px; /* Touch target size */
+    transition: all 0.2s;
+    min-height: 40px; /* Touch target optimizado */
+    position: relative;
   }
   
   .mobile-tree-node-content:active {
@@ -17610,19 +17611,41 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   }
   
   .mobile-tree-node-content.is-selected {
-    background: rgba(59, 130, 246, 0.2);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(59, 130, 246, 0.15) 100%);
     border-left: 3px solid #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  }
+  
+  /* Botón usar ubicación */
+  .mobile-tree-use-btn {
+    position: absolute;
+    right: 8px;
+    padding: 4px 10px;
+    background: rgba(34, 197, 94, 0.9);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .mobile-tree-use-btn:active {
+    transform: scale(0.95);
   }
   
   .mobile-tree-node-toggle {
-    font-size: 12px;
+    font-size: 10px;
     color: rgba(255,255,255,0.5);
-    width: 20px;
+    width: 16px;
     flex-shrink: 0;
+    text-align: center;
   }
   
   .mobile-tree-node-icon {
-    font-size: 16px;
+    font-size: 14px;
     flex-shrink: 0;
   }
   
@@ -17635,9 +17658,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   }
   
   .mobile-tree-node-children {
-    margin-left: 20px;
-    border-left: 1px dashed rgba(255,255,255,0.1);
-    padding-left: 8px;
+    margin-left: 12px;
+    border-left: 1px dashed rgba(255,255,255,0.08);
+    padding-left: 6px;
   }
   
   .mobile-tree-node-children[style*="display: none"] {
@@ -20078,12 +20101,12 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             <div class="mobile-empty-state">Sin ubicaciones asignadas</div>
           </div>
           
-          <!-- Selector Visual de Jerarquía MÓVIL -->
-          <div id="mobileUbicacionesTreeContainer" class="mobile-tree-selector" style="max-height: 350px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px; background: rgba(0,0,0,0.2);">
-            <!-- Botón crear jerarquía (dinámico - se renderiza al inicio) -->
-            <div id="mobile-tree-actions" style="padding: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); margin-bottom: 8px;">
-              <button type="button" onclick="window.app.agregarNodoJerarquiaMobile()" class="mobile-btn-add-area" style="width: 100%; padding: 12px; font-size: 14px; font-weight: 600; background: rgba(34, 197, 94, 0.15); border: 2px dashed rgba(34, 197, 94, 0.4); border-radius: 8px; color: #22c55e; cursor: pointer;">
-                ➕ Agregar Jerarquía
+          <!-- Selector Visual de Jerarquía MÓVIL - Optimizado PWA -->
+          <div id="mobileUbicacionesTreeContainer" class="mobile-tree-selector" style="max-height: 280px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px; background: rgba(0,0,0,0.25);">
+            <!-- Botón crear jerarquía -->
+            <div id="mobile-tree-actions" style="padding: 6px; border-bottom: 1px dashed rgba(255,255,255,0.08); margin-bottom: 6px;">
+              <button type="button" onclick="window.app.agregarNodoJerarquiaMobile()" class="mobile-btn-add-area" style="width: 100%; padding: 10px; font-size: 13px; font-weight: 600; background: rgba(34, 197, 94, 0.12); border: 1.5px dashed rgba(34, 197, 94, 0.35); border-radius: 6px; color: #22c55e; cursor: pointer;">
+                ➕ Nueva Ubicación
               </button>
             </div>
             <!-- Árbol de jerarquía se renderizará aquí -->
@@ -20743,9 +20766,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.122';
-window.CACHE_VERSION = 'inventario-v6.122';
-window.APP_BUILD = 122; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.123';
+window.CACHE_VERSION = 'inventario-v6.123';
+window.APP_BUILD = 123; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -43860,11 +43883,20 @@ class InventarioCompleto {
     );
     
     if (exists) {
-      this.showToast('⚠️ Esta ubicación ya está asignada', 'warning');
+      this.showToast('ℹ️ Esta ubicación ya está asignada', 'info');
       return;
     }
     
-    // Agregar ubicación a ubicacionesActuales (con TODOS los niveles)
+    // 🎯 Mostrar confirmación visual con toast interactivo
+    const ubicacionNombre = [
+      nodePath.areaGeneral,
+      nodePath.subArea,
+      nodePath.sistemaEquipo,
+      nodePath.subSistema,
+      nodePath.seccion
+    ].filter(Boolean).join(' → ');
+    
+    // Agregar ubicación directamente (experiencia optimizada para móvil)
     this.ubicacionesActuales.push({
       areaGeneral: nodePath.areaGeneral || '',
       subArea: nodePath.subArea || '',
@@ -43880,7 +43912,7 @@ class InventarioCompleto {
     this.renderMobileUbicaciones();
     this.renderMobileJerarquiaTree();
     
-    this.showToast('✅ Ubicación agregada', 'success');
+    this.showToast(`✅ ${ubicacionNombre}`, 'success');
   }
   
   // 📱 FOTOS - Cuando se selecciona una foto
