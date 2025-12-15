@@ -1,6 +1,6 @@
 {
-  "version": "v6.131",
-  "build": 131,
-  "date": "2024-12-15T11:30:00Z",
-  "changes": "Optimizaciones globales: Forms -15%, Wizard compacto, Toasts -20%, iPhone Pro optimizado."
+  "version": "v6.132",
+  "build": 132,
+  "date": "2024-12-15T12:45:00Z",
+  "changes": "Búsqueda optimizada: Resultados -30% zoom out, click para ver tarjeta del repuesto."
 }

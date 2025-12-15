@@ -72281,27 +72281,27 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   50% { box-shadow: 0 4px 14px rgba(74, 144, 102, 0.5); }
 }
 
-/* Resultados de búsqueda */
+/* Resultados de búsqueda - ZOOM OUT 30% */
 .quick-search-results {
   position: absolute;
   top: 100%;
-  left: 16px;
-  right: 16px;
+  left: 12px;
+  right: 12px;
   background: var(--home-card);
   border: 1px solid var(--home-border);
-  border-radius: 12px;
-  max-height: 300px;
+  border-radius: 10px;
+  max-height: 280px;
   overflow-y: auto;
   z-index: 100;
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .quick-result-item {
   display: flex;
   align-items: center;
-  padding: 12px 14px;
-  gap: 12px;
+  padding: 8px 10px;
+  gap: 8px;
   cursor: pointer;
   border-bottom: 1px solid var(--home-border);
   transition: background 0.15s ease;
@@ -72317,7 +72317,7 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .quick-result-icon {
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .quick-result-info {
@@ -72327,7 +72327,7 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 
 .quick-result-name {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   color: var(--home-text);
   white-space: nowrap;
   overflow: hidden;
@@ -72335,16 +72335,16 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .quick-result-meta {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--home-text-muted);
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .quick-result-stock {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 3px 6px;
+  border-radius: 5px;
   background: var(--home-success-bg, rgba(52, 199, 89, 0.15));
   color: var(--home-success, #34c759);
 }
@@ -72360,14 +72360,14 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .quick-search-empty {
-  padding: 24px;
+  padding: 18px;
   text-align: center;
   color: var(--home-text-muted);
 }
 
 .quick-search-empty-icon {
-  font-size: 32px;
-  margin-bottom: 8px;
+  font-size: 28px;
+  margin-bottom: 6px;
 }
 
 /* 📂 CATEGORÍAS DE ÁREAS */
@@ -74033,7 +74033,7 @@ window.mobileHomeActions = {
         const codSAPHighlighted = highlightMatch(codSAP, searchTerm);
         
         return `
-          <div class="quick-result-item-v2">
+          <div class="quick-result-item-v2" onclick="window.mobileHomeActions.viewRepuestoCard('${r.id}')" style="cursor: pointer;">
             <div class="quick-result-info-v2">
               <div class="quick-result-name-v2">${nombreHighlighted}</div>
               <div class="quick-result-code-v2">${codSAPHighlighted}</div>
@@ -74332,6 +74332,19 @@ window.mobileHomeActions = {
         window.app.editarRepuesto(id);
       }
     }, 300);
+  },
+  
+  // 🔍 v6.132 - Ver tarjeta del repuesto al hacer click en resultado de búsqueda
+  viewRepuestoCard: function(id) {
+    // Cerrar búsqueda
+    this.clearQuickSearch();
+    
+    // Abrir modal de visualización
+    setTimeout(() => {
+      if (window.app && window.app.openModal) {
+        window.app.openModal('view', id);
+      }
+    }, 200);
   },
   
   // Icono según tipo de repuesto
