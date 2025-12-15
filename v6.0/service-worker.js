@@ -4,13 +4,14 @@
  * 
  * ⚠️ IMPORTANTE: Al actualizar la versión, cambiar:
  * 1. CACHE_NAME y DYNAMIC_CACHE abajo
- * 2. window.APP_VERSION en index.html (línea ~20287)
+ * 2. window.APP_VERSION en index.html
+ * 3. version.json (build number)
  * 
- * v6.118 - CRITICAL FIX: Syntax error que impedía actualización automática
+ * v6.119 - Sistema de versionado definitivo con verificación remota
  */
 
-const CACHE_NAME = 'inventario-v6.118';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.118';
+const CACHE_NAME = 'inventario-v6.119';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.119';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
@@ -34,12 +35,13 @@ const NO_CACHE_URLS = [
   'firebasestorage.googleapis.com',
   'firebaseinstallations.googleapis.com',
   'identitytoolkit.googleapis.com',
-  'securetoken.googleapis.com'
+  'securetoken.googleapis.com',
+  'version.json'  // ⚠️ NUNCA cachear - usado para verificación de versión
 ];
 
 // Instalación del Service Worker
 self.addEventListener('install', (event) => {
-  console.log('🔧 [SW] Instalando Service Worker v6.117...');
+  console.log('🔧 [SW] Instalando Service Worker v6.119...');
   
   event.waitUntil(
     caches.open(CACHE_NAME)
