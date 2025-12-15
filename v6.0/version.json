@@ -1,6 +1,6 @@
 {
-  "version": "v6.138",
-  "build": 138,
-  "date": "2024-12-15T15:15:00Z",
-  "changes": "Zoom moderno: Centrado en punto de pellizco, transformación suave desde centro, doble tap mejorado."
+  "version": "v6.139",
+  "build": 139,
+  "date": "2024-12-15T16:00:00Z",
+  "changes": "Zoom suave estilo galería: Algoritmo simplificado, transiciones fluidas, comportamiento natural como fotos de celular."
 }

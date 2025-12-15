@@ -21207,9 +21207,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.138';
-window.CACHE_VERSION = 'inventario-v6.138';
-window.APP_BUILD = 138; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.139';
+window.CACHE_VERSION = 'inventario-v6.139';
+window.APP_BUILD = 139; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -75070,36 +75070,27 @@ window.mobileHomeActions = {
     }
   },
   
-  // v6.138 - Inicializar zoom moderno centrado en punto de pellizco
+  // v6.139 - Zoom suave y moderno estilo galería de celular
   initImageZoom: function() {
     const img = document.getElementById('fullscreenImg');
     const container = document.getElementById('imageContainer');
     if (!img || !container) return;
     
     let scale = 1;
-    let posX = 0;
-    let posY = 0;
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let initialDistance = 0;
-    let initialScale = 1;
-    let pinchCenterX = 0;
-    let pinchCenterY = 0;
+    let translateX = 0;
+    let translateY = 0;
     
     // Centrar imagen inicialmente
     const centerImage = () => {
       const containerRect = container.getBoundingClientRect();
-      
-      // Centrar y ajustar al contenedor
       const imgRatio = img.naturalWidth / img.naturalHeight;
       const containerRatio = containerRect.width / containerRect.height;
       
       if (imgRatio > containerRatio) {
-        img.style.width = containerRect.width + 'px';
+        img.style.width = '100%';
         img.style.height = 'auto';
       } else {
-        img.style.height = containerRect.height + 'px';
+        img.style.height = '100%';
         img.style.width = 'auto';
       }
       
@@ -75111,67 +75102,79 @@ window.mobileHomeActions = {
     img.onload = centerImage;
     if (img.complete) centerImage();
     
-    // Obtener centro del pellizco
-    const getPinchCenter = (touch1, touch2) => {
-      return {
-        x: (touch1.clientX + touch2.clientX) / 2,
-        y: (touch1.clientY + touch2.clientY) / 2
-      };
-    };
-    
-    // Obtener distancia entre dos toques
-    const getDistance = (touch1, touch2) => {
-      const dx = touch1.clientX - touch2.clientX;
-      const dy = touch1.clientY - touch2.clientY;
-      return Math.sqrt(dx * dx + dy * dy);
-    };
+    // Variables para gestos
+    let initialDistance = 0;
+    let initialScale = 1;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let lastTouchX = 0;
+    let lastTouchY = 0;
     
     // Actualizar transformación
-    const updateTransform = () => {
+    const updateTransform = (smooth = true) => {
+      img.style.transition = smooth ? 'transform 0.1s ease-out' : 'none';
+      
       if (scale === 1) {
-        // Sin zoom: centrar
-        img.style.left = '50%';
-        img.style.top = '50%';
         img.style.transform = 'translate(-50%, -50%)';
-        img.style.transformOrigin = 'center center';
+        translateX = 0;
+        translateY = 0;
       } else {
-        // Con zoom: aplicar transformación desde el centro original de la imagen
-        img.style.transform = `translate(calc(-50% + ${posX}px), calc(-50% + ${posY}px)) scale(${scale})`;
-        img.style.transformOrigin = 'center center';
+        img.style.transform = `translate(calc(-50% + ${translateX}px), calc(-50% + ${translateY}px)) scale(${scale})`;
       }
     };
     
     // Doble tap para zoom
     let lastTap = 0;
+    let lastTapX = 0;
+    let lastTapY = 0;
+    
     container.addEventListener('touchend', (e) => {
       if (e.touches.length > 0) return;
       
       const currentTime = new Date().getTime();
       const tapLength = currentTime - lastTap;
+      const touch = e.changedTouches[0];
       
+      // Verificar si es doble tap
       if (tapLength < 300 && tapLength > 0) {
-        e.preventDefault();
+        const tapDistance = Math.sqrt(
+          Math.pow(touch.clientX - lastTapX, 2) + 
+          Math.pow(touch.clientY - lastTapY, 2)
+        );
         
-        if (scale === 1) {
-          // Hacer zoom 2.5x centrado en el punto del tap
-          const touch = e.changedTouches[0];
-          const rect = img.getBoundingClientRect();
-          const imgCenterX = rect.left + rect.width / 2;
-          const imgCenterY = rect.top + rect.height / 2;
+        if (tapDistance < 30) {
+          e.preventDefault();
           
-          // Calcular desplazamiento para centrar el punto tocado
-          posX = (imgCenterX - touch.clientX) * 1.5;
-          posY = (imgCenterY - touch.clientY) * 1.5;
-          scale = 2.5;
-        } else {
-          // Volver a zoom normal
-          scale = 1;
-          posX = 0;
-          posY = 0;
+          if (scale > 1) {
+            // Volver a zoom normal
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateTransform(true);
+          } else {
+            // Zoom 2.5x en el punto del tap
+            const rect = img.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            // Calcular el centro de la imagen
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            // Calcular desplazamiento para centrar el punto tocado
+            translateX = (centerX - x) * 1.5;
+            translateY = (centerY - y) * 1.5;
+            scale = 2.5;
+            
+            updateTransform(true);
+          }
         }
-        updateTransform();
       }
+      
       lastTap = currentTime;
+      lastTapX = touch.clientX;
+      lastTapY = touch.clientY;
     });
     
     // Touch start
@@ -75179,23 +75182,20 @@ window.mobileHomeActions = {
       if (e.touches.length === 2) {
         // Inicio de pellizco
         e.preventDefault();
-        initialDistance = getDistance(e.touches[0], e.touches[1]);
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialDistance = Math.sqrt(dx * dx + dy * dy);
         initialScale = scale;
         
-        // Guardar centro del pellizco en coordenadas de la pantalla
-        const center = getPinchCenter(e.touches[0], e.touches[1]);
-        const rect = img.getBoundingClientRect();
-        const imgCenterX = rect.left + rect.width / 2;
-        const imgCenterY = rect.top + rect.height / 2;
-        
-        pinchCenterX = center.x - imgCenterX;
-        pinchCenterY = center.y - imgCenterY;
-        
-      } else if (e.touches.length === 1 && scale > 1) {
-        // Inicio de arrastre
-        isDragging = true;
-        dragStartX = e.touches[0].clientX - posX;
-        dragStartY = e.touches[0].clientY - posY;
+      } else if (e.touches.length === 1) {
+        // Inicio de arrastre (solo si hay zoom)
+        if (scale > 1) {
+          isDragging = true;
+          dragStartX = e.touches[0].clientX;
+          dragStartY = e.touches[0].clientY;
+          lastTouchX = translateX;
+          lastTouchY = translateY;
+        }
       }
     });
     
@@ -75204,33 +75204,33 @@ window.mobileHomeActions = {
       e.preventDefault();
       
       if (e.touches.length === 2) {
-        // Zoom con pellizco centrado en el punto medio
-        const currentDistance = getDistance(e.touches[0], e.touches[1]);
+        // Pellizco para zoom
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const currentDistance = Math.sqrt(dx * dx + dy * dy);
+        
+        // Calcular nuevo scale
         const newScale = initialScale * (currentDistance / initialDistance);
-        const boundedScale = Math.max(1, Math.min(newScale, 5));
+        scale = Math.max(1, Math.min(newScale, 5));
         
-        // Calcular nuevo centro del pellizco
-        const center = getPinchCenter(e.touches[0], e.touches[1]);
-        const rect = img.getBoundingClientRect();
-        const imgCenterX = rect.left + rect.width / 2;
-        const imgCenterY = rect.top + rect.height / 2;
+        // Si vuelve a scale 1, resetear posición
+        if (scale <= 1.05) {
+          scale = 1;
+          translateX = 0;
+          translateY = 0;
+        }
         
-        const currentPinchCenterX = center.x - imgCenterX;
-        const currentPinchCenterY = center.y - imgCenterY;
-        
-        // Ajustar posición para mantener el punto del pellizco fijo
-        const scaleDiff = boundedScale - scale;
-        posX -= pinchCenterX * scaleDiff / scale;
-        posY -= pinchCenterY * scaleDiff / scale;
-        
-        scale = boundedScale;
-        updateTransform();
+        updateTransform(false);
         
       } else if (isDragging && e.touches.length === 1) {
         // Arrastrar cuando hay zoom
-        posX = e.touches[0].clientX - dragStartX;
-        posY = e.touches[0].clientY - dragStartY;
-        updateTransform();
+        const deltaX = e.touches[0].clientX - dragStartX;
+        const deltaY = e.touches[0].clientY - dragStartY;
+        
+        translateX = lastTouchX + deltaX;
+        translateY = lastTouchY + deltaY;
+        
+        updateTransform(false);
       }
     });
     
@@ -75240,12 +75240,18 @@ window.mobileHomeActions = {
         isDragging = false;
         
         // Auto-reset si el zoom es muy pequeño
-        if (scale < 1.1) {
+        if (scale < 1.05 && scale !== 1) {
           scale = 1;
-          posX = 0;
-          posY = 0;
-          updateTransform();
+          translateX = 0;
+          translateY = 0;
+          updateTransform(true);
         }
+      } else if (e.touches.length === 1 && isDragging) {
+        // Continuar arrastre si queda un dedo
+        dragStartX = e.touches[0].clientX;
+        dragStartY = e.touches[0].clientY;
+        lastTouchX = translateX;
+        lastTouchY = translateY;
       }
     });
   },
