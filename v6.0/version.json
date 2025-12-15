@@ -1,6 +1,6 @@
 {
-  "version": "v6.124",
-  "build": 124,
-  "date": "2024-12-15T03:45:00Z",
-  "changes": "Zoom out global PWA: -20% padding, -15% fuentes, mayor densidad visual. Más contenido en pantalla."
+  "version": "v6.125",
+  "build": 125,
+  "date": "2024-12-15T04:00:00Z",
+  "changes": "Zoom out AGRESIVO: -40% padding total, -25% fuentes. Máxima densidad visual manteniendo usabilidad táctil."
 }

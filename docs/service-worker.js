@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.124 - Zoom out global PWA: mayor densidad visual, más contenido en pantalla
+ * v6.125 - Zoom out AGRESIVO: -40% padding, -25% fuentes, máxima densidad visual
  */
 
-const CACHE_NAME = 'inventario-v6.124';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.124';
+const CACHE_NAME = 'inventario-v6.125';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.125';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

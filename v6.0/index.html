@@ -17269,22 +17269,22 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     overflow: hidden;
   }
   
-  /* HEADER FIJO - Optimizado */
+  /* HEADER FIJO - Máximo compacto */
   .mobile-modal-header {
     flex-shrink: 0;
-    height: 50px;
-    padding: 0 10px;
+    height: 46px;
+    padding: 0 8px;
     padding-top: env(safe-area-inset-top);
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 6px;
+    gap: 4px;
   }
   
   .mobile-modal-title {
     flex: 1;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: white;
     text-align: center;
@@ -17295,13 +17295,13 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   
   .mobile-modal-close,
   .mobile-modal-save {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     border: none;
     background: rgba(255,255,255,0.15);
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17314,52 +17314,52 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     background: rgba(255,255,255,0.3);
   }
   
-  /* BODY SCROLLEABLE - Compacto */
+  /* BODY SCROLLEABLE - Ultra compacto */
   .mobile-modal-body {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 12px;
-    padding-bottom: 80px;
+    padding: 8px;
+    padding-bottom: 70px;
     -webkit-overflow-scrolling: touch;
   }
   
-  /* SECCIONES - Compactas */
+  /* SECCIONES - Ultra compactas */
   .mobile-section {
     background: #1e293b;
-    border-radius: 12px;
-    margin-bottom: 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.08);
   }
   
   .mobile-section-header {
-    padding: 10px 12px;
+    padding: 8px 10px;
     background: rgba(255,255,255,0.03);
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-weight: 600;
     color: white;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
   
   .mobile-section-badge {
     background: #3b82f6;
     color: white;
-    font-size: 0.7rem;
-    padding: 2px 7px;
-    border-radius: 10px;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 8px;
     font-weight: 700;
   }
   
   .mobile-section-content {
-    padding: 12px;
+    padding: 10px;
   }
   
-  /* FORM GROUPS - Compactos */
+  /* FORM GROUPS - Ultra compactos */
   .mobile-form-group {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   
   .mobile-form-group:last-child {
@@ -17368,23 +17368,23 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   
   .mobile-form-label {
     display: block;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.3px;
     color: rgba(255,255,255,0.5);
-    margin-bottom: 6px;
+    margin-bottom: 5px;
   }
   
   .mobile-form-input,
   .mobile-form-select,
   .mobile-form-textarea {
     width: 100%;
-    padding: 11px 12px;
+    padding: 9px 10px;
     font-size: 16px; /* Previene zoom en iOS */
     background: rgba(0,0,0,0.3);
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
+    border-radius: 8px;
     color: white;
     outline: none;
     transition: all 0.2s;
@@ -17421,7 +17421,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   .mobile-form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 8px;
   }
   
   .mobile-form-row .mobile-form-group {
@@ -17432,7 +17432,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   .mobile-form-row-3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 8px;
   }
   
   .mobile-form-row-3 .mobile-form-group {
@@ -17454,19 +17454,19 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   }
   
   .mobile-ubicacion-item {
-    padding: 9px 10px;
+    padding: 8px;
     background: rgba(0,0,0,0.2);
-    border-radius: 8px;
-    font-size: 0.85rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
     color: rgba(255,255,255,0.8);
     border-left: 3px solid #3b82f6;
   }
   
-  /* GRID DE FOTOS - Compacto */
+  /* GRID DE FOTOS - Ultra compacto */
   .mobile-fotos-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
+    gap: 5px;
   }
   
   .mobile-foto-item {
@@ -17497,25 +17497,25 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 12px;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    padding: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
     background: linear-gradient(to top, #0f172a 0%, #0f172a 70%, transparent 100%);
   }
   
   .mobile-btn-save {
     width: 100%;
-    padding: 13px;
-    font-size: 0.95rem;
+    padding: 11px;
+    font-size: 0.9rem;
     font-weight: 700;
     background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
     box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
     transition: transform 0.2s, box-shadow 0.2s;
   }
@@ -17597,12 +17597,12 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   .mobile-tree-node-content {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 8px;
-    border-radius: 6px;
+    gap: 4px;
+    padding: 6px;
+    border-radius: 5px;
     cursor: pointer;
     transition: all 0.2s;
-    min-height: 40px; /* Touch target optimizado */
+    min-height: 36px; /* Touch target mínimo */
     position: relative;
   }
   
@@ -17637,16 +17637,25 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   }
   
   .mobile-tree-node-toggle {
-    font-size: 10px;
+    font-size: 9px;
     color: rgba(255,255,255,0.5);
-    width: 16px;
+    width: 14px;
     flex-shrink: 0;
     text-align: center;
   }
   
   .mobile-tree-node-icon {
-    font-size: 14px;
+    font-size: 13px;
     flex-shrink: 0;
+  }
+  
+  .mobile-tree-node-name {
+    flex: 1;
+    color: rgba(255,255,255,0.9);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.8rem;
   }
   
   .mobile-tree-node-name {
@@ -17658,9 +17667,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   }
   
   .mobile-tree-node-children {
-    margin-left: 12px;
-    border-left: 1px dashed rgba(255,255,255,0.08);
-    padding-left: 6px;
+    margin-left: 10px;
+    border-left: 1px dashed rgba(255,255,255,0.06);
+    padding-left: 4px;
   }
   
   .mobile-tree-node-children[style*="display: none"] {
@@ -20101,11 +20110,11 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             <div class="mobile-empty-state">Sin ubicaciones asignadas</div>
           </div>
           
-          <!-- Selector Visual de Jerarquía MÓVIL - Optimizado PWA -->
-          <div id="mobileUbicacionesTreeContainer" class="mobile-tree-selector" style="max-height: 280px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px; background: rgba(0,0,0,0.25);">
+          <!-- Selector Visual de Jerarquía MÓVIL - Ultra compacto -->
+          <div id="mobileUbicacionesTreeContainer" class="mobile-tree-selector" style="max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.06); border-radius: 5px; padding: 3px; background: rgba(0,0,0,0.3);">
             <!-- Botón crear jerarquía -->
-            <div id="mobile-tree-actions" style="padding: 6px; border-bottom: 1px dashed rgba(255,255,255,0.08); margin-bottom: 6px;">
-              <button type="button" onclick="window.app.agregarNodoJerarquiaMobile()" class="mobile-btn-add-area" style="width: 100%; padding: 10px; font-size: 13px; font-weight: 600; background: rgba(34, 197, 94, 0.12); border: 1.5px dashed rgba(34, 197, 94, 0.35); border-radius: 6px; color: #22c55e; cursor: pointer;">
+            <div id="mobile-tree-actions" style="padding: 5px; border-bottom: 1px dashed rgba(255,255,255,0.06); margin-bottom: 5px;">
+              <button type="button" onclick="window.app.agregarNodoJerarquiaMobile()" class="mobile-btn-add-area" style="width: 100%; padding: 8px; font-size: 12px; font-weight: 600; background: rgba(34, 197, 94, 0.12); border: 1.5px dashed rgba(34, 197, 94, 0.3); border-radius: 5px; color: #22c55e; cursor: pointer;">
                 ➕ Nueva Ubicación
               </button>
             </div>
@@ -20766,9 +20775,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.123';
-window.CACHE_VERSION = 'inventario-v6.123';
-window.APP_BUILD = 123; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.124';
+window.CACHE_VERSION = 'inventario-v6.124';
+window.APP_BUILD = 124; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
