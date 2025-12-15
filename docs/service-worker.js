@@ -7,11 +7,11 @@
  * 2. window.APP_VERSION en index.html
  * 3. version.json (build number)
  * 
- * v6.127 - Zoom out +20% adicional, stats más altas/cuadradas, máxima densidad
+ * v6.128 - Optimización global PWA: header, buscador, cards, listas, nav -20%
  */
 
-const CACHE_NAME = 'inventario-v6.127';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.127';
+const CACHE_NAME = 'inventario-v6.128';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.128';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [

@@ -6870,8 +6870,8 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
       .cards-grid {
         grid-template-columns: 1fr;
-        gap: 16px;
-        padding: 16px;
+        gap: 12px;
+        padding: 12px;
       }
 
       .repuesto-card {
@@ -6879,13 +6879,13 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       }
 
       .card-image {
-        height: 220px;
+        height: 180px;
       }
 
       .stock-badge-new {
-        min-width: 120px !important;
-        padding: 6px 10px !important;
-        font-size: 0.7rem !important;
+        min-width: 100px !important;
+        padding: 5px 8px !important;
+        font-size: 0.65rem !important;
       }
 
       .form-row {
@@ -6900,12 +6900,12 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
       .list-header {
         grid-template-columns: 1fr;
-        font-size: 0.8rem;
-        padding: 12px;
+        font-size: 0.75rem;
+        padding: 10px;
       }
       
       .list-header-cell {
-        padding: 8px;
+        padding: 6px;
         justify-content: center;
       }
       
@@ -6915,29 +6915,29 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
       .list-row {
         grid-template-columns: 1fr;
-        padding: 16px 12px;
-        gap: 12px;
+        padding: 12px 10px;
+        gap: 10px;
       }
       
       .list-row > div {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 3px;
       }
       
       .list-row > div::before {
         content: attr(data-label);
         font-weight: 700;
         color: var(--text-secondary);
-        font-size: 0.75rem;
+        font-size: 0.68rem;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.4px;
       }
       
       .list-actions {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 8px !important;
+        gap: 6px !important;
         width: 100% !important;
       }
       
@@ -6946,19 +6946,19 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       }
       
       .list-actions button {
-        font-size: 0.75rem !important;
-        padding: 10px 8px !important;
+        font-size: 0.68rem !important;
+        padding: 8px 6px !important;
       }
       
       .stock-visual {
-        padding: 8px;
+        padding: 6px;
         background: var(--bg-primary);
-        border-radius: 6px;
+        border-radius: 5px;
       }
 
       .toolbar {
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
       }
 
       .search-box {
@@ -6971,32 +6971,32 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
       #pagination {
         flex-wrap: wrap;
-        padding: 12px;
-        gap: 8px;
+        padding: 10px;
+        gap: 6px;
         justify-content: center;
       }
 
       #pagination > div {
         flex-basis: 100%;
         justify-content: center;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
       }
 
       #itemsPerPageSelect {
-        font-size: 0.85rem;
-        padding: 6px 10px;
+        font-size: 0.8rem;
+        padding: 5px 8px;
       }
 
       #pagination .btn {
-        min-width: 70px;
-        font-size: 0.8rem;
-        padding: 8px 12px;
+        min-width: 60px;
+        font-size: 0.75rem;
+        padding: 7px 10px;
       }
 
       #pageNumbers .btn {
-        min-width: 36px;
-        padding: 8px;
-        font-size: 0.85rem;
+        min-width: 32px;
+        padding: 7px;
+        font-size: 0.8rem;
       }
 
       .nav-tab {
@@ -20775,9 +20775,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.127';
-window.CACHE_VERSION = 'inventario-v6.127';
-window.APP_BUILD = 127; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.128';
+window.CACHE_VERSION = 'inventario-v6.128';
+window.APP_BUILD = 128; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -71700,8 +71700,8 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid rgba(91, 139, 180, 0.2);
-  padding: 8px 0;
-  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  padding: 6px 0;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom));
   z-index: 9999;
   justify-content: space-around;
   align-items: center;
@@ -71716,11 +71716,11 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   background: transparent;
   border: none;
   color: var(--gray-600);
-  padding: 8px 16px;
-  border-radius: 12px;
+  padding: 6px 12px;
+  border-radius: 10px;
   transition: all 0.2s ease;
   cursor: pointer;
-  min-width: 60px;
+  min-width: 52px;
 }
 
 .mobile-bottom-nav .nav-item:active {
@@ -71736,13 +71736,13 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .mobile-bottom-nav .nav-icon {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   margin-bottom: 2px;
   transition: transform 0.2s ease;
 }
 
 .mobile-bottom-nav .nav-label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 500;
   letter-spacing: 0.3px;
 }
@@ -71751,13 +71751,13 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 .mobile-bottom-nav .nav-item-fab {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white !important;
-  width: 56px;
-  height: 56px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  margin-top: -28px;
+  margin-top: -25px;
   box-shadow: 0 4px 15px rgba(91, 139, 180, 0.4);
   padding: 0;
-  min-width: 56px;
+  min-width: 50px;
 }
 
 .mobile-bottom-nav .nav-item-fab:active {
@@ -71766,7 +71766,7 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .mobile-bottom-nav .nav-item-fab .nav-icon {
-  font-size: 1.6rem;
+  font-size: 1.45rem;
   margin: 0;
 }
 
@@ -71786,7 +71786,7 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 }
 
 .mobile-bottom-nav .nav-item-home .nav-icon {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
 }
 
 /* ================================================================== */
@@ -71822,14 +71822,14 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
     display: none !important;
   }
   
-  /* Mostrar buscador móvil */
+  /* Mostrar buscador móvil - Compacto */
   #inventario .mobile-search-bar {
     display: block !important;
     position: sticky;
     top: 0;
     z-index: 100;
     background: var(--bg-secondary);
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--border-color);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -71837,7 +71837,7 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   
   /* Ajustar contenedor principal de inventario en móvil */
   #inventario .main-content {
-    padding-top: 10px !important;
+    padding-top: 8px !important;
   }
   
   /* Modal de repuesto responsive para móvil */
@@ -71981,7 +71981,7 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
+  padding: 12px 16px;
   background: var(--home-bg);
   border-bottom: 1px solid var(--home-border);
   position: sticky;
@@ -71992,23 +71992,23 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 .home-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .brand-icon {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
 }
 
 .brand-text h1 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--home-text);
   letter-spacing: -0.02em;
 }
 
 .brand-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   color: var(--home-text-muted);
   font-weight: 400;
 }
@@ -72016,16 +72016,16 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 .home-header-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .home-refresh-btn {
   background: transparent;
   border: none;
-  padding: 10px;
+  padding: 8px;
   color: var(--home-text-muted);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 7px;
   transition: all 0.2s;
 }
 
@@ -72038,10 +72038,10 @@ console.log('🖼️ Visor de imágenes fullscreen disponible');
 .home-config-btn {
   background: transparent;
   border: none;
-  padding: 10px;
+  padding: 8px;
   color: var(--home-text-muted);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 7px;
   transition: all 0.2s;
 }
 

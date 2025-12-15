@@ -1,6 +1,6 @@
 {
-  "version": "v6.127",
-  "build": 127,
-  "date": "2024-12-15T04:25:00Z",
-  "changes": "Zoom out +20% adicional. Stats más altas/cuadradas para números grandes. Máxima densidad visual."
+  "version": "v6.128",
+  "build": 128,
+  "date": "2024-12-15T10:00:00Z",
+  "changes": "Optimización global PWA móvil: header, buscador, cards, listas, paginación, bottom nav. -20% adicional."
 }
