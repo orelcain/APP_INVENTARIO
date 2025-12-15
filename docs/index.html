@@ -5422,7 +5422,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
     /* Botón flotante para abrir consola */
     .pwa-console-toggle {
       position: fixed;
-      bottom: 80px;
+      bottom: 140px; /* ⬆️ Movido más arriba para no chocar con campana */
       right: 20px;
       width: 56px;
       height: 56px;
@@ -5435,9 +5435,14 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       z-index: 999997;
       transition: all 0.3s;
-      display: flex;
+      display: none; /* 🔒 Oculto por defecto, solo admin lo verá */
       align-items: center;
       justify-content: center;
+    }
+    
+    /* 🔒 Solo admins ven la consola */
+    .pwa-console-toggle.admin-only {
+      display: flex;
     }
 
     .pwa-console-toggle:hover {
@@ -5466,7 +5471,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
       }
 
       .pwa-console-toggle {
-        bottom: 70px;
+        bottom: 130px; /* ⬆️ Más arriba en móvil también */
         right: 16px;
         width: 50px;
         height: 50px;
@@ -63427,6 +63432,17 @@ window.mostrarSeccionesAdmin = function() {
   if (debugSection) {
     debugSection.style.display = isAdmin ? 'block' : 'none';
     console.log(`🔧 Debug: ${isAdmin ? 'visible' : 'oculto'}`);
+  }
+  
+  // 🆕 v6.119 - Mostrar/ocultar botón de consola PWA (solo admin)
+  const pwaConsoleBtn = document.getElementById('pwaConsoleToggle');
+  if (pwaConsoleBtn) {
+    if (isAdmin) {
+      pwaConsoleBtn.classList.add('admin-only');
+    } else {
+      pwaConsoleBtn.classList.remove('admin-only');
+    }
+    console.log(`🔧 Consola PWA: ${isAdmin ? 'visible' : 'oculta'} para rol ${role}`);
   }
   
   return isAdmin;
