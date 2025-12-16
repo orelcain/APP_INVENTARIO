@@ -198,6 +198,112 @@
         setTimeout(() => textarea.remove(), 100);
       };
       
+      // 🔥 v6.142 - FUNCIONES DE ACTUALIZACIÓN PWA
+      window.forzarActualizacionPWA = async function() {
+        if (!confirm('🔄 FORZAR ACTUALIZACIÓN PWA\n\n¿Deseas forzar la actualización completa?\n\nEsto hará:\n1. Desregistrar Service Worker\n2. Limpiar todos los cachés\n3. Recargar la página\n\n¿Continuar?')) {
+          return;
+        }
+        
+        try {
+          console.log('🔄 Iniciando actualización forzada PWA...');
+          
+          // 1. Desregistrar todos los service workers
+          if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (let registration of registrations) {
+              await registration.unregister();
+              console.log('✅ Service Worker desregistrado');
+            }
+          }
+          
+          // 2. Limpiar todos los cachés
+          if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map(name => caches.delete(name)));
+            console.log('✅ Todos los cachés eliminados:', cacheNames.length);
+          }
+          
+          // 3. Mostrar mensaje y recargar
+          alert('✅ Actualización completada!\n\nLa página se recargará ahora.');
+          
+          // 4. Recargar con bypass de caché
+          window.location.reload(true);
+          
+        } catch (error) {
+          console.error('❌ Error en actualización forzada:', error);
+          alert('❌ Error: ' + error.message + '\n\nIntenta Ctrl+Shift+R manualmente');
+        }
+      };
+      
+      window.limpiarCachePWA = async function() {
+        if (!confirm('🗑️ LIMPIAR CACHÉ PWA\n\n¿Deseas limpiar el caché de la PWA?\n\nEsto eliminará archivos temporales pero NO afectará tus datos.\n\n¿Continuar?')) {
+          return;
+        }
+        
+        try {
+          if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            let deleted = 0;
+            
+            for (let name of cacheNames) {
+              await caches.delete(name);
+              deleted++;
+              console.log('🗑️ Caché eliminado:', name);
+            }
+            
+            alert(`✅ Caché limpiado!\n\n${deleted} cachés eliminados.\n\nPuede que necesites recargar (F5) para ver cambios.`);
+          } else {
+            alert('⚠️ Cache API no disponible en este navegador');
+          }
+        } catch (error) {
+          console.error('❌ Error limpiando caché:', error);
+          alert('❌ Error: ' + error.message);
+        }
+      };
+      
+      window.recargarPWA = function() {
+        if (confirm('♻️ RECARGAR PWA\n\n¿Deseas recargar la aplicación?\n\nEsto es equivalente a F5 (recarga normal).\n\n¿Continuar?')) {
+          window.location.reload();
+        }
+      };
+      
+      // 🔥 v6.142 - Info de Service Worker
+      window.verInfoServiceWorker = async function() {
+        try {
+          if (!('serviceWorker' in navigator)) {
+            alert('⚠️ Service Worker no soportado en este navegador');
+            return;
+          }
+          
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          const cacheNames = 'caches' in window ? await caches.keys() : [];
+          
+          let info = `🔧 SERVICE WORKER INFO\n\n`;
+          info += `📊 Registros: ${registrations.length}\n`;
+          info += `💾 Cachés: ${cacheNames.length}\n\n`;
+          
+          if (registrations.length > 0) {
+            registrations.forEach((reg, i) => {
+              info += `SW ${i + 1}:\n`;
+              info += `  Estado: ${reg.active ? '✅ Activo' : '⏸️ Inactivo'}\n`;
+              info += `  Scope: ${reg.scope}\n\n`;
+            });
+          }
+          
+          if (cacheNames.length > 0) {
+            info += `Cachés activos:\n`;
+            cacheNames.forEach(name => {
+              info += `  📦 ${name}\n`;
+            });
+          }
+          
+          alert(info);
+          
+        } catch (error) {
+          alert('❌ Error: ' + error.message);
+        }
+      };
+      
       // 📤 DESCARGAR LOGS COMO ARCHIVO TXT
       window.shareDebugLogs = function() {
         if (window.debugLogs.length === 0) {
@@ -21186,6 +21292,19 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
             </button>
             <button onclick="window.sincronizarLocalAFirebase()" class="btn btn-primary" style="padding: 10px 20px; background: linear-gradient(135deg, #f59e0b, #d97706);">
               🔄 Forzar Sync a Firebase
+            </button>
+          </div>
+          
+          <!-- 🔥 v6.142 - Herramientas PWA -->
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <button onclick="window.forzarActualizacionPWA()" class="btn btn-success" style="padding: 10px 20px; background: linear-gradient(135deg, #10b981, #059669);">
+              🔄 Forzar Actualización PWA
+            </button>
+            <button onclick="window.limpiarCachePWA()" class="btn btn-warning" style="padding: 10px 20px;">
+              🗑️ Limpiar Caché PWA
+            </button>
+            <button onclick="window.recargarPWA()" class="btn btn-info" style="padding: 10px 20px; background: linear-gradient(135deg, #3b82f6, #2563eb);">
+              ♻️ Recargar PWA
             </button>
           </div>
           
