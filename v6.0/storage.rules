@@ -1,0 +1,61 @@
+rules_version = '2';
+
+// Firebase Storage Rules para APP_INVENTARIO
+// Solo usuarios autenticados pueden leer y escribir imágenes
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Función helper para verificar autenticación
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Función helper para verificar tamaño de archivo (máx 10MB)
+    function isValidSize() {
+      return request.resource.size < 10 * 1024 * 1024;
+    }
+    
+    // Función helper para verificar tipo de archivo (solo imágenes)
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    
+    // Reglas para imágenes de repuestos
+    match /repuestos/{repuestoId}/{fileName} {
+      // Solo usuarios autenticados pueden leer
+      allow read: if isAuthenticated();
+      
+      // Solo usuarios autenticados pueden escribir imágenes válidas
+      allow write: if isAuthenticated() 
+                   && isValidSize() 
+                   && isImage();
+      
+      // Solo usuarios autenticados pueden eliminar
+      allow delete: if isAuthenticated();
+    }
+    
+    // Reglas para imágenes de mapas
+    match /mapas/{mapaId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() 
+                   && isValidSize() 
+                   && isImage();
+      allow delete: if isAuthenticated();
+    }
+    
+    // Reglas para archivos temporales
+    match /temp/{userId}/{fileName} {
+      // Solo el propietario puede acceder a sus archivos temporales
+      allow read, write: if isAuthenticated() 
+                         && request.auth.uid == userId;
+      allow delete: if isAuthenticated() 
+                    && request.auth.uid == userId;
+    }
+    
+    // Denegar todo lo demás por defecto
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

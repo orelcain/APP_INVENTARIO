@@ -1,6 +1,6 @@
 {
   "version": "v6.143",
   "build": 143,
-  "date": "2024-12-15T23:15:00Z",
-  "changes": "Pull-to-refresh rediseñado estilo iOS: colores azul corporativo, efecto bajar contenido real, animación fluida con rotación, glassmorphism. Mapa interactivo fullscreen móvil."
+  "date": "2024-12-16T02:30:00Z",
+  "changes": "Pull-to-refresh minimalista y sutil (3 puntos con fade), Mapa interactivo fullscreen móvil con debug mejorado, PWA tools en consola. Optimizaciones de UX móvil."
 }

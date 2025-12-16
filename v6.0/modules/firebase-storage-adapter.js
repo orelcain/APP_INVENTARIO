@@ -103,55 +103,27 @@ class FirebaseStorageAdapter {
      */
     async guardarRepuestos(repuestos) {
         try {
-            console.log(`🔥 [FIRESTORE] guardarRepuestos() - Intentando guardar ${repuestos.length} repuestos`);
-            
-            if (!this.firebaseService || !this.firebaseService.db) {
-                throw new Error('FirebaseService no está disponible o no inicializado');
-            }
-            
-            if (!this.COLLECTIONS || !this.COLLECTIONS.REPUESTOS) {
-                throw new Error('COLLECTIONS no está definido correctamente');
-            }
-            
-            console.log(`🔥 [FIRESTORE] Colección destino: ${this.COLLECTIONS.REPUESTOS}`);
-            console.log(`🔥 [FIRESTORE] Usuario actual: ${this.firebaseService.currentUser?.uid || 'unknown'}`);
-            
             // Firestore maneja cada repuesto como documento individual
             // Por lo tanto, usamos batch writes para eficiencia
             const batch = this.firebaseService.db.batch();
-            
-            repuestos.forEach((repuesto, index) => {
-                // Sanitizar repuesto antes de guardar
-                const sanitizedRepuesto = this.sanitizeForFirebase(repuesto);
-                
-                // Validar que tiene ID
-                if (!sanitizedRepuesto.id) {
-                    console.error(`❌ [FIRESTORE] Repuesto ${index} sin ID:`, sanitizedRepuesto);
-                    throw new Error(`Repuesto ${index} no tiene ID`);
-                }
-                
+
+            repuestos.forEach(repuesto => {
                 const docRef = this.firebaseService.db
                     .collection(this.COLLECTIONS.REPUESTOS)
-                    .doc(sanitizedRepuesto.id);
-                
-                console.log(`📝 [FIRESTORE] Preparando documento: ${sanitizedRepuesto.id} - ${sanitizedRepuesto.nombre || 'sin nombre'}`);
+                    .doc(repuesto.id || this.generateId());
                 
                 batch.set(docRef, {
-                    ...sanitizedRepuesto,
+                    ...repuesto,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                     updatedBy: this.firebaseService.currentUser?.uid || 'unknown'
                 }, { merge: true });
             });
 
-            console.log(`🔥 [FIRESTORE] Ejecutando batch commit...`);
             await batch.commit();
-            console.log(`✅ [FIRESTORE] ${repuestos.length} repuestos guardados en Firestore exitosamente`);
-            
+            console.log(`✅ ${repuestos.length} repuestos guardados en Firestore`);
             return true;
         } catch (error) {
-            console.error('❌ [FIRESTORE] Error guardando repuestos:', error);
-            console.error('❌ [FIRESTORE] Error stack:', error.stack);
-            console.error('❌ [FIRESTORE] Datos que intentó guardar:', repuestos);
+            console.error('❌ Error guardando repuestos:', error);
             return false;
         }
     }
