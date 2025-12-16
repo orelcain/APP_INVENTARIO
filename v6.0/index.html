@@ -76370,58 +76370,6 @@ Total de mapas: ${window.mapStorage?.state?.mapas?.length || 0}`;
     
     alert(info);
   },
-      this.openMapaInteractivoMobile(repuestoId, mapas[0].id);
-      return;
-    }
-    
-    // Mostrar lista de mapas
-    const mapasListHTML = mapas.map((mapa, index) => `
-      <div class="mapa-selector-item" onclick="window.mobileHomeActions.openMapaInteractivoMobile('${repuestoId}', '${mapa.id}')">
-        <div class="mapa-selector-number">${index + 1}</div>
-        <div class="mapa-selector-info">
-          <div class="mapa-selector-name">${mapa.nombre || mapa.name || 'Mapa ' + mapa.id}</div>
-          <div class="mapa-selector-meta">${mapa.width || 800}x${mapa.height || 600}px</div>
-        </div>
-        <div class="mapa-selector-arrow">→</div>
-      </div>
-    `).join('');
-    
-    const modalHTML = `
-      <div class="modal-mapa-selector" id="modalMapaSelector" onclick="if(event.target === this) window.mobileHomeActions.closeMapaSelector()">
-        <div class="mapa-selector-container">
-          <div class="mapa-selector-header">
-            <h3>🗺️ Seleccionar Mapa</h3>
-            <button class="selector-close-btn" onclick="window.mobileHomeActions.closeMapaSelector()">✕</button>
-          </div>
-          
-          <div class="mapa-selector-info-box">
-            <strong>${repuesto.nombre || repuesto.descripcion}</strong>
-            <span>${repuesto.codSAP || repuesto.codigo || '---'}</span>
-          </div>
-          
-          <div class="mapa-selector-list">
-            <h4>Elige un mapa:</h4>
-            ${mapasListHTML}
-          </div>
-          
-          <div class="mapa-selector-actions">
-            <button class="btn-mobile secondary" onclick="window.mobileHomeActions.closeMapaSelector()">
-              Cancelar
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    const existing = document.getElementById('modalMapaSelector');
-    if (existing) existing.remove();
-    
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
-    setTimeout(() => {
-      document.getElementById('modalMapaSelector')?.classList.add('show');
-    }, 10);
-  },
   
   // Cerrar selector de mapa
   closeMapaSelector: function() {
