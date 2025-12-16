@@ -428,8 +428,68 @@
       window.buscarRepuestoEn = async function(termino) {
         console.log(`\n🔍 BUSCANDO "${termino}" EN TODAS LAS FUENTES...\n`);
         
-        // ... resto del código existente
+        const terminoLower = termino.toLowerCase();
+        const encontrados = { memoria: [], firebase: [], localStorage: [] };
+        
+        // 1. Buscar en memoria (window.app.repuestos)
+        const enMemoria = (window.app?.repuestos || []).filter(r => 
+          r.nombre?.toLowerCase().includes(terminoLower) ||
+          r.codSAP?.toLowerCase().includes(terminoLower)
+        );
+        encontrados.memoria = enMemoria;
+        console.log(`📦 EN MEMORIA: ${enMemoria.length} encontrados`);
+        enMemoria.forEach(r => console.log(`   - ${r.nombre} (${r.codSAP}) - ID: ${r.id}`));
+        
+        // 2. Buscar en Firebase directamente
+        try {
+          if (window.firebaseService && window.firebaseService.isAuthenticated()) {
+            const result = await window.firebaseService.readAll('repuestos');
+            if (result.success) {
+              const enFirebase = result.data.filter(r => 
+                r.nombre?.toLowerCase().includes(terminoLower) ||
+                r.codSAP?.toLowerCase().includes(terminoLower)
+              );
+              encontrados.firebase = enFirebase;
+              console.log(`☁️ EN FIREBASE: ${enFirebase.length} encontrados (de ${result.data.length} total)`);
+              enFirebase.forEach(r => console.log(`   - ${r.nombre} (${r.codSAP}) - ID: ${r.id}`));
+            }
+          } else {
+            console.log('☁️ FIREBASE: No autenticado');
+          }
+        } catch (e) {
+          console.error('❌ Error buscando en Firebase:', e);
+        }
+        
+        // 3. Buscar en localStorage
+        try {
+          const local = JSON.parse(localStorage.getItem('inventarioData') || '[]');
+          const enLocal = local.filter(r => 
+            r.nombre?.toLowerCase().includes(terminoLower) ||
+            r.codSAP?.toLowerCase().includes(terminoLower)
+          );
+          encontrados.localStorage = enLocal;
+          console.log(`💾 EN LOCALSTORAGE: ${enLocal.length} encontrados (de ${local.length} total)`);
+          enLocal.forEach(r => console.log(`   - ${r.nombre} (${r.codSAP}) - ID: ${r.id}`));
+        } catch (e) {
+          console.error('❌ Error buscando en localStorage:', e);
+        }
+        
+        // Resumen
+        console.log(`\n📊 RESUMEN:`);
+        console.log(`   Memoria: ${encontrados.memoria.length}`);
+        console.log(`   Firebase: ${encontrados.firebase.length}`);
+        console.log(`   localStorage: ${encontrados.localStorage.length}`);
+        console.log(`   Sync activa: ${window.syncActive ? '✅' : '❌'}`);
+        
+        // Alertar si hay discrepancia
+        if (encontrados.firebase.length > 0 && encontrados.memoria.length === 0) {
+          console.warn('⚠️ PROBLEMA: El repuesto EXISTE en Firebase pero NO en memoria');
+          console.log('💡 Solución: Recarga la página o ejecuta window.app.loadData()');
+        }
+        
+        return encontrados;
       };
+      console.log('💡 Usa: window.buscarRepuestoEn("perno") para diagnosticar');
       
       // 🔄 v6.142 - PULL TO REFRESH (Swipe hacia abajo para refrescar)
       (function() {
@@ -549,69 +609,6 @@
         
         console.log('🔄 Pull-to-refresh activado en móvil');
       })();
-      
-            const terminoLower = termino.toLowerCase();
-        let encontrados = { memoria: [], firebase: [], localStorage: [] };
-        
-        // 1. Buscar en memoria (window.app.repuestos)
-        const enMemoria = (window.app?.repuestos || []).filter(r => 
-          r.nombre?.toLowerCase().includes(terminoLower) ||
-          r.codSAP?.toLowerCase().includes(terminoLower)
-        );
-        encontrados.memoria = enMemoria;
-        console.log(`📦 EN MEMORIA: ${enMemoria.length} encontrados`);
-        enMemoria.forEach(r => console.log(`   - ${r.nombre} (${r.codSAP}) - ID: ${r.id}`));
-        
-        // 2. Buscar en Firebase directamente
-        try {
-          if (window.firebaseService && window.firebaseService.isAuthenticated()) {
-            const result = await window.firebaseService.readAll('repuestos');
-            if (result.success) {
-              const enFirebase = result.data.filter(r => 
-                r.nombre?.toLowerCase().includes(terminoLower) ||
-                r.codSAP?.toLowerCase().includes(terminoLower)
-              );
-              encontrados.firebase = enFirebase;
-              console.log(`☁️ EN FIREBASE: ${enFirebase.length} encontrados (de ${result.data.length} total)`);
-              enFirebase.forEach(r => console.log(`   - ${r.nombre} (${r.codSAP}) - ID: ${r.id}`));
-            }
-          } else {
-            console.log('☁️ FIREBASE: No autenticado');
-          }
-        } catch (e) {
-          console.error('❌ Error buscando en Firebase:', e);
-        }
-        
-        // 3. Buscar en localStorage
-        try {
-          const local = JSON.parse(localStorage.getItem('inventarioData') || '[]');
-          const enLocal = local.filter(r => 
-            r.nombre?.toLowerCase().includes(terminoLower) ||
-            r.codSAP?.toLowerCase().includes(terminoLower)
-          );
-          encontrados.localStorage = enLocal;
-          console.log(`💾 EN LOCALSTORAGE: ${enLocal.length} encontrados (de ${local.length} total)`);
-          enLocal.forEach(r => console.log(`   - ${r.nombre} (${r.codSAP}) - ID: ${r.id}`));
-        } catch (e) {
-          console.error('❌ Error buscando en localStorage:', e);
-        }
-        
-        // Resumen
-        console.log(`\n📊 RESUMEN:`);
-        console.log(`   Memoria: ${encontrados.memoria.length}`);
-        console.log(`   Firebase: ${encontrados.firebase.length}`);
-        console.log(`   localStorage: ${encontrados.localStorage.length}`);
-        console.log(`   Sync activa: ${window.syncActive ? '✅' : '❌'}`);
-        
-        // Alertar si hay discrepancia
-        if (encontrados.firebase.length > 0 && encontrados.memoria.length === 0) {
-          console.warn('⚠️ PROBLEMA: El repuesto EXISTE en Firebase pero NO en memoria');
-          console.log('💡 Solución: Recarga la página o ejecuta window.app.loadData()');
-        }
-        
-        return encontrados;
-      };
-      console.log('💡 Usa: window.buscarRepuestoEn("perno") para diagnosticar');
       
       // 🗑️ LIMPIAR REPUESTOS LOCALES (localStorage)
       window.limpiarRepuestosLocales = function() {
