@@ -19780,15 +19780,15 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 /* ================================================================== */
-/* 🔄 PULL TO REFRESH (v6.143) - Estilo Apps Modernas (3 Puntos)    */
+/* 🔄 PULL TO REFRESH (v6.143) - Estilo Instagram (Círculo Progresivo) */
 /* ================================================================== */
 .pull-to-refresh-indicator {
   position: fixed;
   top: -80px;
   left: 50%;
   transform: translateX(-50%);
-  width: 80px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19802,83 +19802,74 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   opacity: 1;
 }
 
-/* Contenedor de los 3 puntos */
+/* Contenedor del loader circular */
 .ptr-spinner {
+  width: 40px;
+  height: 40px;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: rgba(30, 34, 41, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(91, 139, 180, 0.2);
 }
 
-/* Cada punto individual */
-.ptr-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #5b8bb4;
-  opacity: 0.4;
+/* SVG del círculo (Instagram style) */
+.ptr-circle-container {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-/* Cuando está pulling - rotar el icono */
-.pull-to-refresh-indicator:not(.refreshing) .ptr-icon {
-  font-size: 18px;
-  transition: transform 0.1s;
+.ptr-circle {
+  fill: none;
+  stroke: #7ba5c8;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transform-origin: center;
+  transition: stroke-dashoffset 0.1s linear;
 }
 
-/* Cuando está refrescando - animar los puntos */
-.pull-to-refresh-indicator.refreshing .ptr-spinner {
-  background: linear-gradient(135deg, rgba(91, 139, 180, 0.25), rgba(123, 165, 200, 0.2));
-  box-shadow: 
-    0 4px 16px rgba(91, 139, 180, 0.4),
-    0 0 0 2px rgba(91, 139, 180, 0.3),
-    inset 0 0 20px rgba(91, 139, 180, 0.1);
+/* Cuando está refrescando - animar el círculo */
+.pull-to-refresh-indicator.refreshing .ptr-circle {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: instagramCircle 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-.pull-to-refresh-indicator.refreshing .ptr-dot:nth-child(1) {
-  animation: ptrDotBounce 1s ease-in-out 0s infinite;
+/* Animación tipo Instagram - el círculo se dibuja */
+@keyframes instagramCircle {
+  0% {
+    stroke-dashoffset: 100;
+    transform: rotate(0deg);
+  }
+  50% {
+    stroke-dashoffset: 0;
+    transform: rotate(180deg);
+  }
+  100% {
+    stroke-dashoffset: -100;
+    transform: rotate(360deg);
+  }
 }
 
-.pull-to-refresh-indicator.refreshing .ptr-dot:nth-child(2) {
-  animation: ptrDotBounce 1s ease-in-out 0.15s infinite;
-}
-
-.pull-to-refresh-indicator.refreshing .ptr-dot:nth-child(3) {
-  animation: ptrDotBounce 1s ease-in-out 0.3s infinite;
-}
-
-/* Icono oculto cuando está refrescando */
-.pull-to-refresh-indicator.refreshing .ptr-icon {
-  display: none;
-}
-
-/* Puntos visibles solo cuando refresca */
-.pull-to-refresh-indicator:not(.refreshing) .ptr-dot {
-  display: none;
-}
-
+/* Icono central */
 .ptr-icon {
   font-size: 18px;
   color: #7ba5c8;
+  z-index: 1;
+  transition: transform 0.1s;
 }
 
-/* Animación de salto de puntos (tipo Instagram/TikTok) */
-@keyframes ptrDotBounce {
-  0%, 60%, 100% {
-    transform: translateY(0);
-    opacity: 0.4;
-  }
-  30% {
-    transform: translateY(-12px);
-    opacity: 1;
-  }
+/* Ocultar icono cuando refresca */
+.pull-to-refresh-indicator.refreshing .ptr-icon {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+/* Ocultar círculo cuando no está refrescando */
+.pull-to-refresh-indicator:not(.refreshing) .ptr-circle-container {
+  display: none;
 }
 
 /* Texto oculto en este diseño minimalista */
@@ -19921,13 +19912,13 @@ body.ptr-pulling > :not(.pull-to-refresh-indicator) {
 </head>
 <body>
 
-<!-- 🔄 v6.143 - PULL TO REFRESH INDICATOR (3 Puntos Modernos) -->
+<!-- 🔄 v6.143 - PULL TO REFRESH INDICATOR (Instagram Style) -->
 <div id="pullToRefreshIndicator" class="pull-to-refresh-indicator">
   <div class="ptr-spinner">
+    <svg class="ptr-circle-container" viewBox="0 0 40 40">
+      <circle class="ptr-circle" cx="20" cy="20" r="16" />
+    </svg>
     <div class="ptr-icon">🔄</div>
-    <div class="ptr-dot"></div>
-    <div class="ptr-dot"></div>
-    <div class="ptr-dot"></div>
   </div>
   <div class="ptr-text"></div>
 </div>
