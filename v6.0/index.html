@@ -396,6 +396,11 @@
       
       // Actualizar info del sistema cuando DOM esté listo
       document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar pull-to-refresh
+        if (window.initPullToRefresh) {
+          window.initPullToRefresh();
+        }
+        
         setTimeout(() => {
           const infoDiv = document.getElementById('debugSystemInfo');
           if (infoDiv) {
@@ -492,17 +497,26 @@
       console.log('💡 Usa: window.buscarRepuestoEn("perno") para diagnosticar');
       
       // 🔄 v6.142 - PULL TO REFRESH (Swipe hacia abajo para refrescar)
-      (function() {
-        if (window.innerWidth > 768) return; // Solo en móvil
+      // Se ejecuta cuando DOM esté listo
+      window.initPullToRefresh = function() {
+        if (window.innerWidth > 768) {
+          console.log('🔄 Pull-to-refresh: Desactivado en pantallas grandes');
+          return;
+        }
         
+        const indicator = document.getElementById('pullToRefreshIndicator');
+        if (!indicator) {
+          console.error('❌ Pull-to-refresh: Elemento no encontrado');
+          return;
+        }
+        
+        const ptrText = indicator.querySelector('.ptr-text');
         let startY = 0;
         let currentY = 0;
         let isPulling = false;
         let isRefreshing = false;
-        const threshold = 80; // Píxeles para activar
+        const threshold = 80;
         const maxPull = 120;
-        const indicator = document.getElementById('pullToRefreshIndicator');
-        const ptrText = indicator?.querySelector('.ptr-text');
         
         // Solo activar si estamos en el top de la página
         const canPull = () => {
@@ -607,8 +621,8 @@
           currentY = 0;
         }, { passive: true });
         
-        console.log('🔄 Pull-to-refresh activado en móvil');
-      })();
+        console.log('🔄 Pull-to-refresh activado en móvil ✅');
+      };
       
       // 🗑️ LIMPIAR REPUESTOS LOCALES (localStorage)
       window.limpiarRepuestosLocales = function() {
@@ -76780,35 +76794,62 @@ Total de mapas: ${window.mapStorage?.state?.mapas?.length || 0}`;
     `).join('');
     
     // 🔥 Obtener URL de imagen - MEJORADO v6.142
-    let imageUrl = '';
+    console.log('🗺️ Datos del mapa:', { id: mapa.id, name: mapa.name, imageUrl: mapa.imageUrl, imageURL: mapa.imageURL, imagePath: mapa.imagePath, imagenId: mapa.imagenId });
+    
+    let imageUrl = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="400" height="300" fill="%23333"/><text x="200" y="150" text-anchor="middle" fill="%23999" font-size="16">Cargando mapa...</text></svg>';
+    let imageLoadMethod = 'placeholder';
     
     // Prioridad 1: imageUrl (Firebase Storage)
     if (mapa.imageUrl) {
       imageUrl = mapa.imageUrl;
-      console.log('📍 Usando imageUrl de Firebase:', imageUrl);
+      imageLoadMethod = 'imageUrl';
+      console.log('✅ Método 1: Usando imageUrl de Firebase:', imageUrl);
     } 
     // Prioridad 2: imageURL (legacy)
     else if (mapa.imageURL) {
       imageUrl = mapa.imageURL;
-      console.log('📍 Usando imageURL legacy:', imageUrl);
+      imageLoadMethod = 'imageURL';
+      console.log('✅ Método 2: Usando imageURL legacy:', imageUrl);
     }
     // Prioridad 3: imagePath (FileSystem local - necesita conversión)
     else if (mapa.imagePath) {
-      console.log('📍 Mapa usa imagePath local:', mapa.imagePath);
+      imageLoadMethod = 'imagePath';
+      console.log('⏳ Método 3: Mapa usa imagePath local:', mapa.imagePath);
       // En móvil, intentar cargar desde FileSystem si está disponible
       if (window.mapStorage?.mapImagesDir) {
         this.loadLocalMapImage(mapa.imagePath).then(url => {
-          if (url) document.getElementById('mapaInteractivoImage').src = url;
-        });
+          if (url) {
+            console.log('✅ ImagePath cargado:', url);
+            document.getElementById('mapaInteractivoImage').src = url;
+          } else {
+            console.error('❌ No se pudo cargar imagePath');
+          }
+        }).catch(err => console.error('❌ Error cargando imagePath:', err));
+      } else {
+        console.warn('⚠️ mapImagesDir no disponible');
       }
     }
     // Prioridad 4: imagenId (legacy - necesita getImageUrl)
     else if (mapa.imagenId) {
-      console.log('📍 Mapa usa imagenId legacy:', mapa.imagenId);
-      window.app?.getImageUrl(mapa.imagenId).then(url => {
-        if (url) document.getElementById('mapaInteractivoImage').src = url;
-      });
+      imageLoadMethod = 'imagenId';
+      console.log('⏳ Método 4: Mapa usa imagenId legacy:', mapa.imagenId);
+      if (window.app?.getImageUrl) {
+        window.app.getImageUrl(mapa.imagenId).then(url => {
+          if (url) {
+            console.log('✅ ImagenId cargado:', url);
+            document.getElementById('mapaInteractivoImage').src = url;
+          } else {
+            console.error('❌ getImageUrl retornó null para imagenId:', mapa.imagenId);
+          }
+        }).catch(err => console.error('❌ Error cargando imagenId:', err));
+      } else {
+        console.error('❌ window.app.getImageUrl no disponible');
+      }
+    } else {
+      console.error('❌ Mapa sin fuente de imagen válida');
     }
+    
+    console.log('📸 Método de carga:', imageLoadMethod, '| URL inicial:', imageUrl);
     
     // Jerarquía del mapa
     const jerarquiaDisplay = mapa.jerarquiaPath && mapa.jerarquiaPath.length > 0
@@ -76832,8 +76873,9 @@ Total de mapas: ${window.mapStorage?.state?.mapas?.length || 0}`;
                src="${imageUrl}" 
                draggable="false" 
                alt="Mapa"
-               onerror="console.error('Error cargando imagen:', this.src); this.style.border='2px solid red';"
-               onload="console.log('✅ Imagen cargada:', this.src); window.mobileHomeActions.ajustarMapaPantalla();">
+               style="max-width: 100%; height: auto;"
+               onerror="console.error('❌ ERROR cargando imagen. URL:', this.src, '| Método:', '${imageLoadMethod}'); this.style.border='3px solid red'; this.alt='Error: No se pudo cargar la imagen del mapa';"
+               onload="console.log('✅ IMAGEN CARGADA! Dimensiones:', this.naturalWidth, 'x', this.naturalHeight, '| URL:', this.src); window.mobileHomeActions.ajustarMapaPantalla();">
           
           <!-- Marcadores existentes -->
           ${marcadoresHTML}
