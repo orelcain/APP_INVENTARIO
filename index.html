@@ -19171,6 +19171,41 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   color: var(--text-secondary);
 }
 
+.mapa-selector-help {
+  padding: 12px 20px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.mapa-grupo {
+  margin-bottom: 16px;
+}
+
+.mapa-grupo:last-child {
+  margin-bottom: 0;
+}
+
+.mapa-grupo-titulo {
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-mobile.info-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
 /* ================================================================== */
 /* 🗺️ MAPA INTERACTIVO FULLSCREEN MÓVIL (v6.142)                    */
 /* Reutiliza visor fullscreen + zoom/pan touch existentes            */
@@ -19303,6 +19338,57 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 @keyframes markerPulse {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.15); opacity: 0.9; }
+}
+
+.mapa-info-bar {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90%;
+  padding: 8px 16px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9;
+  transition: all 0.3s ease;
+}
+
+.mapa-jerarquia {
+  color: white;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
+.btn-info-toggle {
+  width: 24px;
+  height: 24px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  color: white;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.btn-info-toggle:active {
+  background: rgba(255,255,255,0.25);
+}
+
+.mapa-info-bar.expanded .mapa-jerarquia {
+  max-width: none;
+  white-space: normal;
 }
 
 .mapa-interactivo-toolbar {
@@ -76161,12 +76247,129 @@ window.mobileHomeActions = {
     const mapas = window.mapStorage?.state?.mapas || [];
     
     if (mapas.length === 0) {
-      alert('⚠️ No hay mapas disponibles. Crea un mapa primero en la sección de Mapas.');
+      // Permitir crear mapa desde aquí
+      const crear = confirm('⚠️ No hay mapas disponibles.\n\n¿Deseas ir a la sección Mapas en PC para crear uno?\n\n(La creación de mapas requiere subir imágenes desde PC)');
+      if (crear) {
+        this.showToast('📱 Abre la app en PC para crear mapas', 'info');
+      }
       return;
     }
     
     // Si solo hay un mapa, abrirlo directamente
     if (mapas.length === 1) {
+      this.openMapaInteractivoMobile(repuestoId, mapas[0].id);
+      return;
+    }
+    
+    // Agrupar mapas por jerarquía
+    const mapasPorJerarquia = this.agruparMapasPorJerarquia(mapas);
+    
+    // Mostrar lista de mapas con jerarquía
+    const mapasListHTML = mapasPorJerarquia.map((grupo, index) => {
+      const tituloGrupo = grupo.jerarquia || '📂 Sin jerarquía';
+      const mapasGrupo = grupo.mapas.map((mapa, idx) => `
+        <div class="mapa-selector-item" onclick="window.mobileHomeActions.openMapaInteractivoMobile('${repuestoId}', '${mapa.id}')">
+          <div class="mapa-selector-number">${idx + 1}</div>
+          <div class="mapa-selector-info">
+            <div class="mapa-selector-name">${mapa.name || mapa.nombre || 'Mapa ' + mapa.id}</div>
+            <div class="mapa-selector-meta">${mapa.width || '?'}x${mapa.height || '?'}px</div>
+          </div>
+          <div class="mapa-selector-arrow">→</div>
+        </div>
+      `).join('');
+      
+      return `
+        <div class="mapa-grupo">
+          <div class="mapa-grupo-titulo">${tituloGrupo}</div>
+          ${mapasGrupo}
+        </div>
+      `;
+    }).join('');
+    
+    const modalHTML = `
+      <div class="modal-mapa-selector" id="modalMapaSelector" onclick="if(event.target === this) window.mobileHomeActions.closeMapaSelector()">
+        <div class="mapa-selector-container">
+          <div class="mapa-selector-header">
+            <h3>🗺️ Seleccionar Mapa</h3>
+            <button class="selector-close-btn" onclick="window.mobileHomeActions.closeMapaSelector()">✕</button>
+          </div>
+          
+          <div class="mapa-selector-info-box">
+            <strong>${repuesto.nombre || repuesto.descripcion}</strong>
+            <span>${repuesto.codSAP || repuesto.codigo || '---'}</span>
+          </div>
+          
+          <div class="mapa-selector-help">
+            <span>💡 Selecciona el mapa donde se encuentra el repuesto</span>
+          </div>
+          
+          <div class="mapa-selector-list">
+            ${mapasListHTML}
+          </div>
+          
+          <div class="mapa-selector-actions">
+            <button class="btn-mobile secondary" onclick="window.mobileHomeActions.closeMapaSelector()">
+              Cancelar
+            </button>
+            <button class="btn-mobile info-btn" onclick="window.mobileHomeActions.showMapasInfo()">
+              ℹ️ Gestionar
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    const existing = document.getElementById('modalMapaSelector');
+    if (existing) existing.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    setTimeout(() => {
+      document.getElementById('modalMapaSelector')?.classList.add('show');
+    }, 10);
+  },
+  
+  // 🔥 v6.142 - Agrupar mapas por jerarquía
+  agruparMapasPorJerarquia: function(mapas) {
+    const grupos = new Map();
+    
+    mapas.forEach(mapa => {
+      const jerarquia = mapa.jerarquiaPath && mapa.jerarquiaPath.length > 0
+        ? mapa.jerarquiaPath.join(' > ')
+        : '';
+      
+      if (!grupos.has(jerarquia)) {
+        grupos.set(jerarquia, { jerarquia, mapas: [] });
+      }
+      grupos.get(jerarquia).mapas.push(mapa);
+    });
+    
+    // Ordenar: primero con jerarquía, luego sin jerarquía
+    return Array.from(grupos.values()).sort((a, b) => {
+      if (!a.jerarquia && b.jerarquia) return 1;
+      if (a.jerarquia && !b.jerarquia) return -1;
+      return a.jerarquia.localeCompare(b.jerarquia);
+    });
+  },
+  
+  // 🔥 v6.142 - Mostrar info de gestión de mapas
+  showMapasInfo: function() {
+    const info = `📱 GESTIÓN DE MAPAS
+
+Para gestionar mapas (crear, editar, eliminar):
+1. Abre la app en PC
+2. Ve a la pestaña "Mapas"
+3. Usa las herramientas disponibles
+
+DESDE MÓVIL puedes:
+✓ Ver mapas existentes
+✓ Ubicar repuestos en mapas
+✓ Ver jerarquía de mapas
+
+Total de mapas: ${window.mapStorage?.state?.mapas?.length || 0}`;
+    
+    alert(info);
+  },
       this.openMapaInteractivoMobile(repuestoId, mapas[0].id);
       return;
     }
@@ -76278,13 +76481,41 @@ window.mobileHomeActions = {
       </div>
     `).join('');
     
-    // Obtener URL de imagen
-    let imageUrl = mapa.imageURL || '';
-    if (!imageUrl && mapa.imagenId) {
+    // 🔥 Obtener URL de imagen - MEJORADO v6.142
+    let imageUrl = '';
+    
+    // Prioridad 1: imageUrl (Firebase Storage)
+    if (mapa.imageUrl) {
+      imageUrl = mapa.imageUrl;
+      console.log('📍 Usando imageUrl de Firebase:', imageUrl);
+    } 
+    // Prioridad 2: imageURL (legacy)
+    else if (mapa.imageURL) {
+      imageUrl = mapa.imageURL;
+      console.log('📍 Usando imageURL legacy:', imageUrl);
+    }
+    // Prioridad 3: imagePath (FileSystem local - necesita conversión)
+    else if (mapa.imagePath) {
+      console.log('📍 Mapa usa imagePath local:', mapa.imagePath);
+      // En móvil, intentar cargar desde FileSystem si está disponible
+      if (window.mapStorage?.mapImagesDir) {
+        this.loadLocalMapImage(mapa.imagePath).then(url => {
+          if (url) document.getElementById('mapaInteractivoImage').src = url;
+        });
+      }
+    }
+    // Prioridad 4: imagenId (legacy - necesita getImageUrl)
+    else if (mapa.imagenId) {
+      console.log('📍 Mapa usa imagenId legacy:', mapa.imagenId);
       window.app?.getImageUrl(mapa.imagenId).then(url => {
         if (url) document.getElementById('mapaInteractivoImage').src = url;
       });
     }
+    
+    // Jerarquía del mapa
+    const jerarquiaDisplay = mapa.jerarquiaPath && mapa.jerarquiaPath.length > 0
+      ? mapa.jerarquiaPath.join(' > ')
+      : 'Sin jerarquía asignada';
     
     const modalHTML = `
       <div class="modal-mapa-interactivo" id="modalMapaInteractivo">
@@ -76292,14 +76523,19 @@ window.mobileHomeActions = {
         <div class="mapa-interactivo-header">
           <button class="btn-mapa-close" onclick="window.mobileHomeActions.closeMapaInteractivo()">✕</button>
           <div class="mapa-interactivo-title">
-            <div>${mapa.nombre || 'Mapa'}</div>
+            <div>${mapa.name || mapa.nombre || 'Mapa'}</div>
             <small>${repuesto.nombre || repuesto.descripcion}</small>
           </div>
         </div>
         
         <!-- Canvas con imagen y marcadores -->
         <div class="mapa-interactivo-canvas" id="mapaInteractivoCanvas">
-          <img id="mapaInteractivoImage" src="${imageUrl}" draggable="false" alt="Mapa">
+          <img id="mapaInteractivoImage" 
+               src="${imageUrl}" 
+               draggable="false" 
+               alt="Mapa"
+               onerror="console.error('Error cargando imagen:', this.src); this.style.border='2px solid red';"
+               onload="console.log('✅ Imagen cargada:', this.src); window.mobileHomeActions.ajustarMapaPantalla();">
           
           <!-- Marcadores existentes -->
           ${marcadoresHTML}
@@ -76310,8 +76546,17 @@ window.mobileHomeActions = {
           </div>
         </div>
         
+        <!-- Info bar superior (jerarquía del mapa) -->
+        <div class="mapa-info-bar" id="mapaInfoBar">
+          <span class="mapa-jerarquia">🗂️ ${jerarquiaDisplay}</span>
+          <button class="btn-info-toggle" onclick="window.mobileHomeActions.toggleMapaInfo()">ℹ️</button>
+        </div>
+        
         <!-- Toolbar flotante -->
         <div class="mapa-interactivo-toolbar">
+          <button class="btn-toolbar" onclick="window.mobileHomeActions.ajustarMapaPantalla()">
+            🔍 Ajustar
+          </button>
           <button class="btn-toolbar" id="btnColocarMarcador" onclick="window.mobileHomeActions.activarModoColocar()">
             📍 Colocar
           </button>
@@ -76333,9 +76578,57 @@ window.mobileHomeActions = {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     
     setTimeout(() => {
-      document.getElementById('modalMapaInteractivo')?.classList.add('show');
-      this.attachMapaTouchEvents();
+      const modal = document.getElementById('modalMapaInteractivo');
+      if (modal) {
+        modal.classList.add('show');
+        this.attachMapaTouchEvents();
+      }
     }, 10);
+  },
+  
+  // 🔥 v6.142 - Cargar imagen local desde FileSystem
+  loadLocalMapImage: async function(imagePath) {
+    try {
+      if (!window.mapStorage?.mapImagesDir) return null;
+      
+      const fileName = imagePath.split('/').pop();
+      const fileHandle = await window.mapStorage.mapImagesDir.getFileHandle(fileName);
+      const file = await fileHandle.getFile();
+      const url = URL.createObjectURL(file);
+      console.log('✅ Imagen local cargada:', url);
+      return url;
+    } catch (error) {
+      console.error('Error cargando imagen local:', error);
+      return null;
+    }
+  },
+  
+  // 🔥 v6.142 - Ajustar mapa a pantalla (fit to screen)
+  ajustarMapaPantalla: function() {
+    const img = document.getElementById('mapaInteractivoImage');
+    if (!img || !img.complete) return;
+    
+    const state = window.mobileMapInteractive;
+    if (!state) return;
+    
+    // Resetear transformación
+    state.scale = 1;
+    state.translateX = 0;
+    state.translateY = 0;
+    
+    img.style.transform = 'scale(1) translate(0, 0)';
+    img.classList.remove('zoomed');
+    
+    console.log('🔍 Mapa ajustado a pantalla');
+    this.showToast('🔍 Mapa ajustado a pantalla', 'info');
+  },
+  
+  // 🔥 v6.142 - Toggle info del mapa
+  toggleMapaInfo: function() {
+    const infoBar = document.getElementById('mapaInfoBar');
+    if (!infoBar) return;
+    
+    infoBar.classList.toggle('expanded');
   },
   
   // Adjuntar eventos de zoom/pan (REUTILIZA código del visor fullscreen)
