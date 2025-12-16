@@ -1,6 +1,6 @@
 {
-  "version": "v6.141",
-  "build": 141,
-  "date": "2024-12-15T17:00:00Z",
-  "changes": "Flujo completo móvil: Selector de jerarquía (8 niveles) + Selector de mapas con preview y marcador. Buscar → Ver tarjeta → Asignar jerarquía/mapa → Guardado automático."
+  "version": "v6.142",
+  "build": 142,
+  "date": "2024-12-15T19:30:00Z",
+  "changes": "Mapa interactivo fullscreen móvil con zoom/pan touch fluido. Reutiliza visor de imágenes existente. Muestra marcadores de otros repuestos. ~430 líneas nuevas reutilizando código."
 }

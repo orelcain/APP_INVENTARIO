@@ -18717,7 +18717,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   right: 0;
   bottom: 0;
   background: rgba(0,0,0,0.7);
-  z-index: 100000;
+  z-index: 100001;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18907,7 +18907,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   right: 0;
   bottom: 0;
   background: rgba(0,0,0,0.7);
-  z-index: 100000;
+  z-index: 100001;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19164,6 +19164,221 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+
+.mapa-selector-arrow {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+/* ================================================================== */
+/* 🗺️ MAPA INTERACTIVO FULLSCREEN MÓVIL (v6.142)                    */
+/* Reutiliza visor fullscreen + zoom/pan touch existentes            */
+/* ================================================================== */
+.modal-mapa-interactivo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000;
+  z-index: 100002;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-mapa-interactivo.show {
+  opacity: 1;
+}
+
+.mapa-interactivo-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+  padding-top: calc(12px + env(safe-area-inset-top));
+}
+
+.btn-mapa-close {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  color: white;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-mapa-close:active {
+  background: rgba(255,255,255,0.25);
+  transform: scale(0.95);
+}
+
+.mapa-interactivo-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mapa-interactivo-title div {
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.mapa-interactivo-title small {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.8rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.mapa-interactivo-canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+  background: #1a1a1a;
+}
+
+.mapa-interactivo-canvas img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform 0.15s ease-out;
+  transform-origin: center center;
+}
+
+.mapa-interactivo-canvas img.zoomed {
+  cursor: grab;
+}
+
+.mapa-marker {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.mapa-marker .marker-icon {
+  font-size: 28px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+}
+
+.mapa-marker.marker-actual .marker-icon {
+  font-size: 36px;
+  animation: markerPulse 2s ease-in-out infinite;
+}
+
+.mapa-marker.marker-nuevo {
+  z-index: 10;
+}
+
+.mapa-marker.marker-nuevo .marker-icon {
+  font-size: 40px;
+}
+
+.mapa-marker.pulse .marker-icon {
+  animation: markerBounce 0.6s ease;
+}
+
+@keyframes markerPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.9; }
+}
+
+.mapa-interactivo-toolbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  z-index: 10;
+}
+
+.btn-toolbar {
+  min-width: 120px;
+  padding: 12px 20px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-toolbar:active {
+  background: rgba(255,255,255,0.25);
+  transform: scale(0.95);
+}
+
+.btn-toolbar:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.btn-toolbar.active {
+  background: rgba(74, 144, 102, 0.9);
+  border-color: rgba(74, 144, 102, 1);
+}
+
+.mapa-modo-indicator {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background: rgba(74, 144, 102, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 9;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* ===== RESTO DEL CSS OMITIDO POR BREVEDAD - SE APLICAR COMPLETO ===== */
@@ -21667,9 +21882,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.141';
-window.CACHE_VERSION = 'inventario-v6.141';
-window.APP_BUILD = 141; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.142';
+window.CACHE_VERSION = 'inventario-v6.142';
+window.APP_BUILD = 142; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -75164,6 +75379,11 @@ window.mobileHomeActions = {
     // Actualizar UI
     if (window.app && window.app.render) window.app.render();
     if (window.updateMobileHome) window.updateMobileHome();
+    
+    // v6.142 - Reabrir tarjeta del repuesto después de contar
+    setTimeout(() => {
+      this.viewRepuestoCard(id);
+    }, 300);
   },
   
   // Limpiar búsqueda
@@ -75929,7 +76149,7 @@ window.mobileHomeActions = {
     }, 2500);
   },
   
-  // v6.141 - Selector de mapas móvil
+  // v6.142 - Mapa interactivo móvil (reutiliza visor fullscreen + zoom/pan existentes)
   openMapaSelectorMobile: function(repuestoId) {
     const repuesto = window.app?.repuestos?.find(r => r.id === repuestoId);
     if (!repuesto) {
@@ -75945,174 +76165,59 @@ window.mobileHomeActions = {
       return;
     }
     
-    // Variable para almacenar mapa y coordenadas seleccionadas
-    window.selectedMapData = {
-      mapaId: null,
-      x: null,
-      y: null,
-      repuestoId: repuestoId
-    };
+    // Si solo hay un mapa, abrirlo directamente
+    if (mapas.length === 1) {
+      this.openMapaInteractivoMobile(repuestoId, mapas[0].id);
+      return;
+    }
     
-    // HTML de lista de mapas
+    // Mostrar lista de mapas
     const mapasListHTML = mapas.map((mapa, index) => `
-      <div class="mapa-selector-item" data-mapa-id="${mapa.id}" onclick="window.mobileHomeActions.selectMapForPlacement('${mapa.id}')">
+      <div class="mapa-selector-item" onclick="window.mobileHomeActions.openMapaInteractivoMobile('${repuestoId}', '${mapa.id}')">
         <div class="mapa-selector-number">${index + 1}</div>
         <div class="mapa-selector-info">
           <div class="mapa-selector-name">${mapa.nombre || mapa.name || 'Mapa ' + mapa.id}</div>
           <div class="mapa-selector-meta">${mapa.width || 800}x${mapa.height || 600}px</div>
         </div>
-        <div class="mapa-selector-check">✓</div>
+        <div class="mapa-selector-arrow">→</div>
       </div>
     `).join('');
     
     const modalHTML = `
       <div class="modal-mapa-selector" id="modalMapaSelector" onclick="if(event.target === this) window.mobileHomeActions.closeMapaSelector()">
         <div class="mapa-selector-container">
-          <!-- Header -->
           <div class="mapa-selector-header">
-            <h3>🗺️ Ubicar en Mapa</h3>
+            <h3>🗺️ Seleccionar Mapa</h3>
             <button class="selector-close-btn" onclick="window.mobileHomeActions.closeMapaSelector()">✕</button>
           </div>
           
-          <!-- Repuesto info -->
           <div class="mapa-selector-info-box">
             <strong>${repuesto.nombre || repuesto.descripcion}</strong>
             <span>${repuesto.codSAP || repuesto.codigo || '---'}</span>
           </div>
           
-          <!-- Instrucciones -->
-          <div class="mapa-selector-instructions" id="mapaInstructions">
-            <div class="instruction-step">
-              <span class="step-number">1</span>
-              <span>Selecciona un mapa de la lista</span>
-            </div>
-            <div class="instruction-step">
-              <span class="step-number">2</span>
-              <span>Toca en el mapa para colocar el marcador</span>
-            </div>
-          </div>
-          
-          <!-- Lista de mapas -->
-          <div class="mapa-selector-list" id="mapaSelectorList">
-            <h4>Selecciona un mapa:</h4>
+          <div class="mapa-selector-list">
+            <h4>Elige un mapa:</h4>
             ${mapasListHTML}
           </div>
           
-          <!-- Preview del mapa (inicialmente oculto) -->
-          <div class="mapa-preview-container" id="mapaPreviewContainer" style="display: none;">
-            <div class="mapa-preview-header">
-              <button class="btn-back-to-list" onclick="window.mobileHomeActions.backToMapList()">
-                ← Cambiar mapa
-              </button>
-              <span id="selectedMapName"></span>
-            </div>
-            <div class="mapa-preview-canvas" id="mapaPreviewCanvas">
-              <img id="mapaPreviewImage" src="" alt="Mapa">
-              <div class="marker-preview" id="markerPreview" style="display: none;">
-                <div class="marker-pin">📍</div>
-              </div>
-            </div>
-            <div class="mapa-coords-display" id="coordsDisplay">
-              Toca en el mapa para colocar el marcador
-            </div>
-          </div>
-          
-          <!-- Botones -->
           <div class="mapa-selector-actions">
             <button class="btn-mobile secondary" onclick="window.mobileHomeActions.closeMapaSelector()">
               Cancelar
-            </button>
-            <button class="btn-mobile primary" id="btnSaveMapa" disabled onclick="window.mobileHomeActions.saveMapaUbicacion()">
-              ✓ Guardar
             </button>
           </div>
         </div>
       </div>
     `;
     
-    // Insertar modal
     const existing = document.getElementById('modalMapaSelector');
     if (existing) existing.remove();
     
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     
-    // Mostrar con animación
     setTimeout(() => {
-      const modal = document.getElementById('modalMapaSelector');
-      if (modal) modal.classList.add('show');
+      document.getElementById('modalMapaSelector')?.classList.add('show');
     }, 10);
-  },
-  
-  // Seleccionar mapa para colocar marcador
-  selectMapForPlacement: function(mapaId) {
-    const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === mapaId);
-    if (!mapa) return;
-    
-    window.selectedMapData.mapaId = mapaId;
-    
-    // Marcar mapa seleccionado visualmente
-    document.querySelectorAll('.mapa-selector-item').forEach(item => {
-      item.classList.remove('selected');
-    });
-    document.querySelector(`.mapa-selector-item[data-mapa-id="${mapaId}"]`)?.classList.add('selected');
-    
-    // Ocultar lista y mostrar preview
-    document.getElementById('mapaSelectorList').style.display = 'none';
-    document.getElementById('mapaInstructions').style.display = 'none';
-    const previewContainer = document.getElementById('mapaPreviewContainer');
-    previewContainer.style.display = 'flex';
-    
-    // Cargar imagen del mapa
-    const img = document.getElementById('mapaPreviewImage');
-    document.getElementById('selectedMapName').textContent = mapa.nombre || 'Mapa';
-    
-    // Obtener URL de la imagen
-    if (mapa.imageURL) {
-      img.src = mapa.imageURL;
-    } else if (mapa.imagenId) {
-      // Cargar desde app.getImageUrl
-      window.app?.getImageUrl(mapa.imagenId).then(url => {
-        if (url) img.src = url;
-      });
-    }
-    
-    // Setup click en el mapa para colocar marcador
-    const canvas = document.getElementById('mapaPreviewCanvas');
-    const marker = document.getElementById('markerPreview');
-    
-    canvas.onclick = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      
-      // Guardar coordenadas
-      window.selectedMapData.x = x;
-      window.selectedMapData.y = y;
-      
-      // Mostrar marcador
-      marker.style.display = 'block';
-      marker.style.left = x + '%';
-      marker.style.top = y + '%';
-      
-      // Actualizar display de coordenadas
-      document.getElementById('coordsDisplay').textContent = 
-        `📍 Marcador colocado: X=${x.toFixed(1)}%, Y=${y.toFixed(1)}%`;
-      
-      // Habilitar botón guardar
-      document.getElementById('btnSaveMapa').disabled = false;
-    };
-  },
-  
-  // Volver a lista de mapas
-  backToMapList: function() {
-    document.getElementById('mapaSelectorList').style.display = 'block';
-    document.getElementById('mapaInstructions').style.display = 'block';
-    document.getElementById('mapaPreviewContainer').style.display = 'none';
-    
-    // Resetear selección
-    window.selectedMapData.x = null;
-    window.selectedMapData.y = null;
-    document.getElementById('btnSaveMapa').disabled = true;
   },
   
   // Cerrar selector de mapa
@@ -76122,57 +76227,324 @@ window.mobileHomeActions = {
       modal.classList.remove('show');
       setTimeout(() => modal.remove(), 300);
     }
-    window.selectedMapData = null;
   },
   
-  // Guardar ubicación en mapa
-  saveMapaUbicacion: async function() {
-    if (!window.selectedMapData || !window.selectedMapData.mapaId || 
-        window.selectedMapData.x === null || window.selectedMapData.y === null) {
-      alert('⚠️ Debes seleccionar un mapa y colocar el marcador');
+  // v6.142 - Abrir mapa interactivo fullscreen con zoom/pan (REUTILIZA CÓDIGO EXISTENTE)
+  openMapaInteractivoMobile: function(repuestoId, mapaId) {
+    // Cerrar selector si está abierto
+    this.closeMapaSelector();
+    
+    const repuesto = window.app?.repuestos?.find(r => r.id === repuestoId);
+    const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === mapaId);
+    
+    if (!repuesto || !mapa) {
+      alert('Error cargando datos');
       return;
     }
     
-    const repuesto = window.app?.repuestos?.find(r => r.id === window.selectedMapData.repuestoId);
-    if (!repuesto) return;
+    // Estado del mapa interactivo
+    window.mobileMapInteractive = {
+      repuestoId,
+      mapaId,
+      scale: 1,
+      translateX: 0,
+      translateY: 0,
+      marcadorX: null,
+      marcadorY: null,
+      modo: 'ver' // 'ver' o 'colocar'
+    };
     
-    const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === window.selectedMapData.mapaId);
+    // Obtener todos los marcadores de repuestos en este mapa
+    const marcadores = (window.app?.repuestos || [])
+      .map(r => {
+        const ub = r.ubicacionesMapa?.find(u => u.mapaId === mapaId);
+        if (!ub || !ub.x || !ub.y) return null;
+        return {
+          id: r.id,
+          nombre: r.nombre || r.descripcion,
+          x: ub.x,
+          y: ub.y,
+          esActual: r.id === repuestoId
+        };
+      })
+      .filter(m => m !== null);
     
-    // Crear ubicación en mapa
+    // Generar HTML de marcadores
+    const marcadoresHTML = marcadores.map(m => `
+      <div class="mapa-marker ${m.esActual ? 'marker-actual' : ''}" 
+           style="left: ${m.x}%; top: ${m.y}%;"
+           title="${m.nombre}">
+        <div class="marker-icon">${m.esActual ? '📍' : '📌'}</div>
+      </div>
+    `).join('');
+    
+    // Obtener URL de imagen
+    let imageUrl = mapa.imageURL || '';
+    if (!imageUrl && mapa.imagenId) {
+      window.app?.getImageUrl(mapa.imagenId).then(url => {
+        if (url) document.getElementById('mapaInteractivoImage').src = url;
+      });
+    }
+    
+    const modalHTML = `
+      <div class="modal-mapa-interactivo" id="modalMapaInteractivo">
+        <!-- Header -->
+        <div class="mapa-interactivo-header">
+          <button class="btn-mapa-close" onclick="window.mobileHomeActions.closeMapaInteractivo()">✕</button>
+          <div class="mapa-interactivo-title">
+            <div>${mapa.nombre || 'Mapa'}</div>
+            <small>${repuesto.nombre || repuesto.descripcion}</small>
+          </div>
+        </div>
+        
+        <!-- Canvas con imagen y marcadores -->
+        <div class="mapa-interactivo-canvas" id="mapaInteractivoCanvas">
+          <img id="mapaInteractivoImage" src="${imageUrl}" draggable="false" alt="Mapa">
+          
+          <!-- Marcadores existentes -->
+          ${marcadoresHTML}
+          
+          <!-- Marcador nuevo (placeholder oculto) -->
+          <div class="mapa-marker marker-nuevo" id="marcadorNuevo" style="display: none;">
+            <div class="marker-icon">📍</div>
+          </div>
+        </div>
+        
+        <!-- Toolbar flotante -->
+        <div class="mapa-interactivo-toolbar">
+          <button class="btn-toolbar" id="btnColocarMarcador" onclick="window.mobileHomeActions.activarModoColocar()">
+            📍 Colocar
+          </button>
+          <button class="btn-toolbar" id="btnGuardarMapa" disabled onclick="window.mobileHomeActions.guardarMapaMarcador()">
+            ✓ Guardar
+          </button>
+        </div>
+        
+        <!-- Indicador de modo -->
+        <div class="mapa-modo-indicator" id="mapaModIndicator" style="display: none;">
+          Toca en el mapa para colocar el marcador
+        </div>
+      </div>
+    `;
+    
+    const existing = document.getElementById('modalMapaInteractivo');
+    if (existing) existing.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    setTimeout(() => {
+      document.getElementById('modalMapaInteractivo')?.classList.add('show');
+      this.attachMapaTouchEvents();
+    }, 10);
+  },
+  
+  // Adjuntar eventos de zoom/pan (REUTILIZA código del visor fullscreen)
+  attachMapaTouchEvents: function() {
+    const canvas = document.getElementById('mapaInteractivoCanvas');
+    const img = document.getElementById('mapaInteractivoImage');
+    if (!canvas || !img) return;
+    
+    const state = window.mobileMapInteractive;
+    
+    // Variables touch
+    let initialDistance = 0;
+    let initialScale = 1;
+    let initialTranslateX = 0;
+    let initialTranslateY = 0;
+    let lastTouchX = 0;
+    let lastTouchY = 0;
+    let isPanning = false;
+    let isPinching = false;
+    let lastTapTime = 0;
+    
+    // Aplicar transformación
+    const applyTransform = () => {
+      img.style.transform = `scale(${state.scale}) translate(${state.translateX}px, ${state.translateY}px)`;
+      img.classList.toggle('zoomed', state.scale > 1.05);
+    };
+    
+    // Touch start
+    canvas.addEventListener('touchstart', (e) => {
+      img.style.transition = 'none';
+      
+      if (e.touches.length === 1) {
+        lastTouchX = e.touches[0].clientX;
+        lastTouchY = e.touches[0].clientY;
+        initialTranslateX = state.translateX;
+        initialTranslateY = state.translateY;
+        isPanning = state.scale > 1;
+        isPinching = false;
+      } else if (e.touches.length === 2) {
+        isPanning = false;
+        isPinching = true;
+        initialDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        initialScale = state.scale;
+        initialTranslateX = state.translateX;
+        initialTranslateY = state.translateY;
+      }
+    }, { passive: true });
+    
+    // Touch move
+    canvas.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 1 && isPanning && state.scale > 1) {
+        e.preventDefault();
+        const deltaX = e.touches[0].clientX - lastTouchX;
+        const deltaY = e.touches[0].clientY - lastTouchY;
+        
+        const maxTranslate = (state.scale - 1) * 150;
+        state.translateX = Math.max(-maxTranslate, Math.min(maxTranslate, state.translateX + deltaX));
+        state.translateY = Math.max(-maxTranslate, Math.min(maxTranslate, state.translateY + deltaY));
+        
+        lastTouchX = e.touches[0].clientX;
+        lastTouchY = e.touches[0].clientY;
+        applyTransform();
+        
+      } else if (e.touches.length === 2 && isPinching) {
+        e.preventDefault();
+        const currentDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        );
+        
+        const scaleRatio = currentDistance / initialDistance;
+        const targetScale = Math.min(Math.max(initialScale * scaleRatio, 1), 5);
+        
+        state.scale = state.scale + (targetScale - state.scale) * 0.85;
+        
+        if (state.scale < 1.05) {
+          state.scale = 1;
+          state.translateX = 0;
+          state.translateY = 0;
+        }
+        
+        applyTransform();
+      }
+    }, { passive: false });
+    
+    // Touch end
+    canvas.addEventListener('touchend', (e) => {
+      img.style.transition = 'transform 0.15s ease-out';
+      
+      // Detectar tap/click para colocar marcador
+      if (e.touches.length === 0 && !isPanning && !isPinching && state.modo === 'colocar') {
+        const now = Date.now();
+        if (now - lastTapTime > 300) {
+          this.colocarMarcadorEnTap(e.changedTouches[0]);
+        }
+        lastTapTime = now;
+      }
+      
+      if (e.touches.length === 0) {
+        isPanning = false;
+        isPinching = false;
+        initialDistance = 0;
+        
+        if (state.scale < 1.1) {
+          state.scale = 1;
+          state.translateX = 0;
+          state.translateY = 0;
+          applyTransform();
+        }
+      }
+    }, { passive: true });
+    
+    // Click desktop
+    canvas.addEventListener('click', (e) => {
+      if (state.modo === 'colocar' && state.scale === 1) {
+        this.colocarMarcadorEnTap(e);
+      }
+    });
+  },
+  
+  // Activar modo colocar marcador
+  activarModoColocar: function() {
+    const state = window.mobileMapInteractive;
+    state.modo = 'colocar';
+    
+    document.getElementById('btnColocarMarcador')?.classList.add('active');
+    document.getElementById('mapaModIndicator').style.display = 'block';
+  },
+  
+  // Colocar marcador en coordenadas
+  colocarMarcadorEnTap: function(touch) {
+    const canvas = document.getElementById('mapaInteractivoCanvas');
+    const marker = document.getElementById('marcadorNuevo');
+    const state = window.mobileMapInteractive;
+    
+    if (!canvas || !marker) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = ((touch.clientX - rect.left) / rect.width) * 100;
+    const y = ((touch.clientY - rect.top) / rect.height) * 100;
+    
+    state.marcadorX = x;
+    state.marcadorY = y;
+    
+    marker.style.left = x + '%';
+    marker.style.top = y + '%';
+    marker.style.display = 'block';
+    marker.classList.add('pulse');
+    
+    setTimeout(() => marker.classList.remove('pulse'), 600);
+    
+    document.getElementById('btnGuardarMapa').disabled = false;
+    document.getElementById('mapaModIndicator').textContent = '✓ Marcador colocado - Pulsa Guardar';
+  },
+  
+  // Guardar marcador en mapa
+  guardarMapaMarcador: async function() {
+    const state = window.mobileMapInteractive;
+    
+    if (!state.marcadorX || !state.marcadorY) {
+      alert('⚠️ Coloca el marcador primero');
+      return;
+    }
+    
+    const repuesto = window.app?.repuestos?.find(r => r.id === state.repuestoId);
+    const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === state.mapaId);
+    if (!repuesto || !mapa) return;
+    
     const ubicacionMapa = {
-      mapaId: window.selectedMapData.mapaId,
-      mapaNombre: mapa?.nombre || mapa?.name || 'Mapa',
-      x: window.selectedMapData.x,
-      y: window.selectedMapData.y,
+      mapaId: state.mapaId,
+      mapaNombre: mapa.nombre || mapa.name || 'Mapa',
+      x: state.marcadorX,
+      y: state.marcadorY,
       cantidadEnUbicacion: repuesto.cantidad || 1
     };
     
-    // Guardar en repuesto
     if (!repuesto.ubicacionesMapa) repuesto.ubicacionesMapa = [];
     repuesto.ubicacionesMapa[0] = ubicacionMapa;
     
-    // Guardar en localStorage y Firebase
     if (window.app?.saveData) {
       try {
         await window.app.saveData();
         console.log('✅ Ubicación en mapa guardada:', ubicacionMapa);
         
-        // Cerrar modal
-        this.closeMapaSelector();
+        this.closeMapaInteractivo();
+        this.showToast('✅ Ubicación en mapa guardada');
         
-        // Mostrar confirmación
-        this.showToast('✅ Ubicación en mapa asignada correctamente');
-        
-        // Reabrir tarjeta actualizada
         setTimeout(() => {
-          this.viewRepuestoCard(window.selectedMapData.repuestoId);
+          this.viewRepuestoCard(state.repuestoId);
         }, 300);
         
       } catch (error) {
         console.error('Error guardando:', error);
-        alert('❌ Error al guardar. Intenta nuevamente.');
+        alert('❌ Error al guardar');
       }
     }
+  },
+  
+  // Cerrar mapa interactivo
+  closeMapaInteractivo: function() {
+    const modal = document.getElementById('modalMapaInteractivo');
+    if (modal) {
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 300);
+    }
+    window.mobileMapInteractive = null;
   },
   
   // Icono según tipo de repuesto

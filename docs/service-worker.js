@@ -8,10 +8,11 @@
  * 3. version.json (build number)
  * 
  * v6.131 - Forms -15%, Wizard compacto, Toasts -20%, iPhone Pro optimizado
+ * v6.142 - Mapa interactivo fullscreen móvil con zoom/pan touch reutilizado
  */
 
-const CACHE_NAME = 'inventario-v6.141';
-const DYNAMIC_CACHE = 'inventario-dynamic-v6.141';
+const CACHE_NAME = 'inventario-v6.142';
+const DYNAMIC_CACHE = 'inventario-dynamic-v6.142';
 
 // Archivos esenciales para funcionar offline
 const STATIC_ASSETS = [
