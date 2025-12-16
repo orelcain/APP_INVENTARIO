@@ -19780,7 +19780,7 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 /* ================================================================== */
-/* 🔄 PULL TO REFRESH (v6.143) - Estilo Instagram (Círculo Progresivo) */
+/* 🔄 PULL TO REFRESH (v6.143) - Instagram Real (Flechas Giratorias) */
 /* ================================================================== */
 .pull-to-refresh-indicator {
   position: fixed;
@@ -19802,74 +19802,47 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   opacity: 1;
 }
 
-/* Contenedor del loader circular */
+/* Contenedor del ícono */
 .ptr-spinner {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* SVG del círculo (Instagram style) */
+/* SVG de dos flechas circulares (como Instagram) */
 .ptr-circle-container {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   position: absolute;
-  top: 0;
-  left: 0;
 }
 
-.ptr-circle {
-  fill: none;
+.ptr-refresh-icon {
+  width: 100%;
+  height: 100%;
   stroke: #7ba5c8;
-  stroke-width: 3;
+  stroke-width: 2.5;
   stroke-linecap: round;
-  transform-origin: center;
-  transition: stroke-dashoffset 0.1s linear;
+  stroke-linejoin: round;
+  fill: none;
 }
 
-/* Cuando está refrescando - animar el círculo */
-.pull-to-refresh-indicator.refreshing .ptr-circle {
-  stroke-dasharray: 100;
-  stroke-dashoffset: 100;
-  animation: instagramCircle 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+/* Cuando está refrescando - girar el ícono */
+.pull-to-refresh-indicator.refreshing .ptr-circle-container {
+  animation: instagramRotate 1s linear infinite;
 }
 
-/* Animación tipo Instagram - el círculo se dibuja */
-@keyframes instagramCircle {
-  0% {
-    stroke-dashoffset: 100;
-    transform: rotate(0deg);
-  }
-  50% {
-    stroke-dashoffset: 0;
-    transform: rotate(180deg);
-  }
-  100% {
-    stroke-dashoffset: -100;
-    transform: rotate(360deg);
-  }
+@keyframes instagramRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-/* Icono central */
+/* Icono emoji de fallback */
 .ptr-icon {
-  font-size: 18px;
-  color: #7ba5c8;
-  z-index: 1;
-  transition: transform 0.1s;
-}
-
-/* Ocultar icono cuando refresca */
-.pull-to-refresh-indicator.refreshing .ptr-icon {
-  opacity: 0;
-  transform: scale(0.5);
-}
-
-/* Ocultar círculo cuando no está refrescando */
-.pull-to-refresh-indicator:not(.refreshing) .ptr-circle-container {
-  display: none;
+  font-size: 24px;
+  display: none; /* Usamos SVG en su lugar */
 }
 
 /* Texto oculto en este diseño minimalista */
@@ -19912,11 +19885,11 @@ body.ptr-pulling > :not(.pull-to-refresh-indicator) {
 </head>
 <body>
 
-<!-- 🔄 v6.143 - PULL TO REFRESH INDICATOR (Instagram Style) -->
+<!-- 🔄 v6.143 - PULL TO REFRESH INDICATOR (Instagram: Flechas Circulares) -->
 <div id="pullToRefreshIndicator" class="pull-to-refresh-indicator">
   <div class="ptr-spinner">
-    <svg class="ptr-circle-container" viewBox="0 0 40 40">
-      <circle class="ptr-circle" cx="20" cy="20" r="16" />
+    <svg class="ptr-circle-container" viewBox="0 0 24 24">
+      <path class="ptr-refresh-icon" d="M21 10c0-4.97-4.03-9-9-9-3.83 0-7.09 2.39-8.42 5.77M3 14c0 4.97 4.03 9 9 9 3.83 0 7.09-2.39 8.42-5.77M3 7v4h4M21 17v-4h-4"/>
     </svg>
     <div class="ptr-icon">🔄</div>
   </div>
