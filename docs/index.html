@@ -428,7 +428,129 @@
       window.buscarRepuestoEn = async function(termino) {
         console.log(`\n🔍 BUSCANDO "${termino}" EN TODAS LAS FUENTES...\n`);
         
-        const terminoLower = termino.toLowerCase();
+        // ... resto del código existente
+      };
+      
+      // 🔄 v6.142 - PULL TO REFRESH (Swipe hacia abajo para refrescar)
+      (function() {
+        if (window.innerWidth > 768) return; // Solo en móvil
+        
+        let startY = 0;
+        let currentY = 0;
+        let isPulling = false;
+        let isRefreshing = false;
+        const threshold = 80; // Píxeles para activar
+        const maxPull = 120;
+        const indicator = document.getElementById('pullToRefreshIndicator');
+        const ptrText = indicator?.querySelector('.ptr-text');
+        
+        // Solo activar si estamos en el top de la página
+        const canPull = () => {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          return scrollTop === 0 && !isRefreshing;
+        };
+        
+        document.addEventListener('touchstart', (e) => {
+          if (!canPull()) return;
+          startY = e.touches[0].clientY;
+          isPulling = true;
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', (e) => {
+          if (!isPulling || !canPull()) return;
+          
+          currentY = e.touches[0].clientY;
+          const pullDistance = Math.min(currentY - startY, maxPull);
+          
+          if (pullDistance > 0) {
+            // Prevenir scroll nativo solo si estamos jalando hacia abajo
+            if (pullDistance > 10) {
+              e.preventDefault();
+            }
+            
+            // Mostrar indicador progresivamente
+            const progress = Math.min(pullDistance / threshold, 1);
+            indicator.style.transform = `translateX(-50%) translateY(${pullDistance * 0.5}px)`;
+            indicator.style.opacity = progress;
+            
+            // Cambiar texto según progreso
+            if (pullDistance >= threshold) {
+              ptrText.textContent = '🔄 Suelta para actualizar';
+              indicator.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9))';
+            } else {
+              ptrText.textContent = 'Desliza hacia abajo';
+              indicator.style.background = 'rgba(0, 0, 0, 0.9)';
+            }
+          }
+        }, { passive: false });
+        
+        document.addEventListener('touchend', async (e) => {
+          if (!isPulling) return;
+          
+          const pullDistance = currentY - startY;
+          
+          if (pullDistance >= threshold && canPull()) {
+            // Activar refresh
+            isRefreshing = true;
+            indicator.classList.add('visible', 'refreshing');
+            indicator.style.transform = 'translateX(-50%) translateY(0)';
+            ptrText.textContent = '⏳ Actualizando...';
+            
+            try {
+              // 1. Recargar datos de Firebase
+              if (window.app?.loadData) {
+                await window.app.loadData();
+                console.log('✅ Datos recargados desde Firebase');
+              }
+              
+              // 2. Actualizar Service Worker si hay nueva versión
+              if ('serviceWorker' in navigator) {
+                const registration = await navigator.serviceWorker.getRegistration();
+                if (registration) {
+                  await registration.update();
+                  console.log('✅ Service Worker actualizado');
+                }
+              }
+              
+              // 3. Actualizar UI
+              if (window.app?.render) window.app.render();
+              if (window.updateMobileHome) window.updateMobileHome();
+              
+              ptrText.textContent = '✅ Actualizado!';
+              
+              // Pequeña vibración de feedback (si está soportado)
+              if (navigator.vibrate) {
+                navigator.vibrate(50);
+              }
+              
+            } catch (error) {
+              console.error('❌ Error en pull-to-refresh:', error);
+              ptrText.textContent = '❌ Error al actualizar';
+            }
+            
+            // Ocultar después de 1 segundo
+            setTimeout(() => {
+              indicator.classList.remove('visible', 'refreshing');
+              indicator.style.transform = 'translateX(-50%) translateY(-100%)';
+              indicator.style.opacity = '0';
+              isRefreshing = false;
+            }, 1000);
+            
+          } else {
+            // Cancelar - volver a ocultar
+            indicator.style.transform = 'translateX(-50%) translateY(-100%)';
+            indicator.style.opacity = '0';
+          }
+          
+          isPulling = false;
+          startY = 0;
+          currentY = 0;
+        }, { passive: true });
+        
+        console.log('🔄 Pull-to-refresh activado en móvil');
+      })();
+      
+            const terminoLower = termino.toLowerCase();
         let encontrados = { memoria: [], firebase: [], localStorage: [] };
         
         // 1. Buscar en memoria (window.app.repuestos)
@@ -5056,6 +5178,50 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 
     @keyframes pwa-spin {
       from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* 🔄 v6.142 - PULL TO REFRESH INDICATOR */
+    .pull-to-refresh-indicator {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 16px 24px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 100000;
+      transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .pull-to-refresh-indicator.active {
+      top: 20px;
+      top: calc(20px + env(safe-area-inset-top));
+    }
+
+    .ptr-spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: #10b981;
+      border-radius: 50%;
+      animation: ptr-spin 0.8s linear infinite;
+    }
+
+    .ptr-text {
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    @keyframes ptr-spin {
       to { transform: rotate(360deg); }
     }
 
@@ -19573,6 +19739,68 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   }
 }
 
+/* ================================================================== */
+/* 🔄 PULL TO REFRESH (v6.142)                                       */
+/* ================================================================== */
+.pull-to-refresh-indicator {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 0 0 20px 20px;
+  padding: 15px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 100005;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.pull-to-refresh-indicator.visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.pull-to-refresh-indicator.refreshing {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9));
+}
+
+.ptr-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: ptrSpin 0.8s linear infinite;
+}
+
+.pull-to-refresh-indicator.refreshing .ptr-spinner {
+  border-top-color: white;
+  animation: ptrSpin 0.6s linear infinite;
+}
+
+@keyframes ptrSpin {
+  to { transform: rotate(360deg); }
+}
+
+.ptr-text {
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Solo en móvil */
+@media (min-width: 769px) {
+  .pull-to-refresh-indicator {
+    display: none;
+  }
+}
+
 /* ===== RESTO DEL CSS OMITIDO POR BREVEDAD - SE APLICAR COMPLETO ===== */
     
   </style>
@@ -19591,7 +19819,13 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 </head>
 <body>
 
-<!-- 📱 SCRIPT CRÍTICO: Ocultar inventario en móvil ANTES de que se renderice -->
+<!-- � v6.142 - PULL TO REFRESH INDICATOR -->
+<div id="pullToRefreshIndicator" class="pull-to-refresh-indicator">
+  <div class="ptr-spinner"></div>
+  <div class="ptr-text">Suelta para actualizar</div>
+</div>
+
+<!-- �📱 SCRIPT CRÍTICO: Ocultar inventario en móvil ANTES de que se renderice -->
 <script>
 (function() {
   if (window.innerWidth <= 768) {
