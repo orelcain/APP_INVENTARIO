@@ -1,6 +1,6 @@
 {
   "version": "v6.142",
   "build": 142,
-  "date": "2024-12-15T19:30:00Z",
-  "changes": "Mapa interactivo fullscreen móvil con zoom/pan touch fluido. Reutiliza visor de imágenes existente. Muestra marcadores de otros repuestos. ~430 líneas nuevas reutilizando código."
+  "date": "2024-12-15T22:45:00Z",
+  "changes": "Mapa interactivo fullscreen móvil con zoom/pan touch fluido + Pull-to-refresh nativo (swipe down) + Debug mejorado de imágenes. PWA tools en consola debug."
 }
