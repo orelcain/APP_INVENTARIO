@@ -19780,15 +19780,15 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 }
 
 /* ================================================================== */
-/* 🔄 PULL TO REFRESH (v6.142) - Estilo App Nativo                   */
+/* 🔄 PULL TO REFRESH (v6.143) - Estilo Apps Modernas (3 Puntos)    */
 /* ================================================================== */
 .pull-to-refresh-indicator {
   position: fixed;
   top: -80px;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19802,71 +19802,83 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   opacity: 1;
 }
 
-/* Círculo contenedor del spinner */
+/* Contenedor de los 3 puntos */
 .ptr-spinner {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(30, 34, 41, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(30, 34, 41, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
   box-shadow: 
     0 4px 12px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(91, 139, 180, 0.2);
-  position: relative;
-  overflow: hidden;
 }
 
-/* Aro giratorio con colores de la app */
-.ptr-spinner::before {
-  content: '';
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  border: 3px solid transparent;
-  border-top-color: #5b8bb4;
-  border-right-color: #7ba5c8;
+/* Cada punto individual */
+.ptr-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  animation: ptrSpin 0.8s linear infinite;
+  background: #5b8bb4;
+  opacity: 0.4;
 }
 
-/* Cuando está refrescando - animación más rápida */
+/* Cuando está pulling - rotar el icono */
+.pull-to-refresh-indicator:not(.refreshing) .ptr-icon {
+  font-size: 18px;
+  transition: transform 0.1s;
+}
+
+/* Cuando está refrescando - animar los puntos */
 .pull-to-refresh-indicator.refreshing .ptr-spinner {
-  background: linear-gradient(135deg, rgba(91, 139, 180, 0.2), rgba(123, 165, 200, 0.15));
+  background: linear-gradient(135deg, rgba(91, 139, 180, 0.25), rgba(123, 165, 200, 0.2));
   box-shadow: 
     0 4px 16px rgba(91, 139, 180, 0.4),
     0 0 0 2px rgba(91, 139, 180, 0.3),
     inset 0 0 20px rgba(91, 139, 180, 0.1);
 }
 
-.pull-to-refresh-indicator.refreshing .ptr-spinner::before {
-  animation: ptrSpin 0.5s linear infinite;
-  border-top-color: #7ba5c8;
-  border-right-color: #5b8bb4;
+.pull-to-refresh-indicator.refreshing .ptr-dot:nth-child(1) {
+  animation: ptrDotBounce 1s ease-in-out 0s infinite;
 }
 
-/* Icono central */
-.ptr-icon {
-  position: absolute;
-  font-size: 16px;
-  z-index: 1;
-  transition: transform 0.3s;
+.pull-to-refresh-indicator.refreshing .ptr-dot:nth-child(2) {
+  animation: ptrDotBounce 1s ease-in-out 0.15s infinite;
 }
 
+.pull-to-refresh-indicator.refreshing .ptr-dot:nth-child(3) {
+  animation: ptrDotBounce 1s ease-in-out 0.3s infinite;
+}
+
+/* Icono oculto cuando está refrescando */
 .pull-to-refresh-indicator.refreshing .ptr-icon {
-  animation: ptrPulse 1s ease-in-out infinite;
+  display: none;
 }
 
-@keyframes ptrSpin {
-  to { transform: rotate(360deg); }
+/* Puntos visibles solo cuando refresca */
+.pull-to-refresh-indicator:not(.refreshing) .ptr-dot {
+  display: none;
 }
 
-@keyframes ptrPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.2); opacity: 0.8; }
+.ptr-icon {
+  font-size: 18px;
+  color: #7ba5c8;
+}
+
+/* Animación de salto de puntos (tipo Instagram/TikTok) */
+@keyframes ptrDotBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-12px);
+    opacity: 1;
+  }
 }
 
 /* Texto oculto en este diseño minimalista */
@@ -19909,10 +19921,13 @@ body.ptr-pulling > :not(.pull-to-refresh-indicator) {
 </head>
 <body>
 
-<!-- 🔄 v6.142 - PULL TO REFRESH INDICATOR -->
+<!-- 🔄 v6.143 - PULL TO REFRESH INDICATOR (3 Puntos Modernos) -->
 <div id="pullToRefreshIndicator" class="pull-to-refresh-indicator">
   <div class="ptr-spinner">
     <div class="ptr-icon">🔄</div>
+    <div class="ptr-dot"></div>
+    <div class="ptr-dot"></div>
+    <div class="ptr-dot"></div>
   </div>
   <div class="ptr-text"></div>
 </div>
