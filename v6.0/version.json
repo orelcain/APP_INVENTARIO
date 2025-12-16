@@ -1,6 +1,6 @@
 {
-  "version": "v6.140",
-  "build": 140,
-  "date": "2024-12-15T16:15:00Z",
-  "changes": "Modal fullscreen más arriba: Imagen posicionada 15% superior para mayor aprovechamiento de pantalla."
+  "version": "v6.141",
+  "build": 141,
+  "date": "2024-12-15T17:00:00Z",
+  "changes": "Flujo completo móvil: Selector de jerarquía (8 niveles) + Selector de mapas con preview y marcador. Buscar → Ver tarjeta → Asignar jerarquía/mapa → Guardado automático."
 }

@@ -18707,6 +18707,465 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
   background: var(--bg-secondary);
 }
 
+/* ================================================================== */
+/* 🌳 SELECTOR DE JERARQUÍA MÓVIL (v6.141)                          */
+/* ================================================================== */
+.modal-jerarquia-selector {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-jerarquia-selector.show {
+  opacity: 1;
+}
+
+.jerarquia-selector-container {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  width: 92%;
+  max-width: 500px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-jerarquia-selector.show .jerarquia-selector-container {
+  transform: scale(1);
+}
+
+.jerarquia-selector-header {
+  padding: 18px 20px;
+  background: linear-gradient(135deg, #4a9066, #3d7a56);
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.jerarquia-selector-header h3 {
+  margin: 0;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.selector-close-btn {
+  width: 32px;
+  height: 32px;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.selector-close-btn:active {
+  background: rgba(255,255,255,0.3);
+  transform: scale(0.95);
+}
+
+.jerarquia-selector-info {
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.jerarquia-selector-info strong {
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.jerarquia-selector-info span {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.jerarquia-selector-form {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group-mobile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group-mobile label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.form-group-mobile input {
+  padding: 12px 14px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.form-group-mobile input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--bg-secondary);
+}
+
+.jerarquia-selector-actions {
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn-mobile {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-mobile.primary {
+  background: linear-gradient(135deg, #4a9066, #3d7a56);
+  color: white;
+}
+
+.btn-mobile.primary:active {
+  transform: scale(0.97);
+}
+
+.btn-mobile.secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-mobile.secondary:active {
+  background: var(--bg-primary);
+}
+
+/* Toast de confirmación */
+.toast-mobile {
+  position: fixed;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(74, 144, 102, 0.95);
+  color: white;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  z-index: 100001;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: bottom 0.3s ease;
+}
+
+.toast-mobile.show {
+  bottom: 30px;
+}
+
+/* ================================================================== */
+/* 🗺️ SELECTOR DE MAPAS MÓVIL (v6.141)                              */
+/* ================================================================== */
+.modal-mapa-selector {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-mapa-selector.show {
+  opacity: 1;
+}
+
+.mapa-selector-container {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  width: 92%;
+  max-width: 500px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-mapa-selector.show .mapa-selector-container {
+  transform: scale(1);
+}
+
+.mapa-selector-header {
+  padding: 18px 20px;
+  background: linear-gradient(135deg, #4a9066, #3d7a56);
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mapa-selector-header h3 {
+  margin: 0;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.mapa-selector-info-box {
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mapa-selector-info-box strong {
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.mapa-selector-info-box span {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.mapa-selector-instructions {
+  padding: 16px 20px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.instruction-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.step-number {
+  width: 24px;
+  height: 24px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.mapa-selector-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mapa-selector-list h4 {
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.mapa-selector-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mapa-selector-item:active {
+  transform: scale(0.98);
+}
+
+.mapa-selector-item.selected {
+  border-color: var(--primary);
+  background: rgba(74, 144, 102, 0.1);
+}
+
+.mapa-selector-item.selected .mapa-selector-check {
+  opacity: 1;
+}
+
+.mapa-selector-number {
+  width: 32px;
+  height: 32px;
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.mapa-selector-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mapa-selector-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mapa-selector-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.mapa-selector-check {
+  width: 24px;
+  height: 24px;
+  color: var(--primary);
+  font-size: 1.2rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.mapa-preview-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mapa-preview-header {
+  padding: 12px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-back-to-list {
+  padding: 6px 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-back-to-list:active {
+  background: var(--bg-primary);
+}
+
+.mapa-preview-canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #f0f0f0;
+  cursor: crosshair;
+}
+
+.mapa-preview-canvas img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.marker-preview {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.marker-pin {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  animation: markerBounce 0.5s ease;
+}
+
+@keyframes markerBounce {
+  0% { transform: translateY(-20px) scale(0); }
+  50% { transform: translateY(0) scale(1.1); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.mapa-coords-display {
+  padding: 12px 20px;
+  background: var(--bg-tertiary);
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.mapa-selector-actions {
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
 /* ===== RESTO DEL CSS OMITIDO POR BREVEDAD - SE APLICAR COMPLETO ===== */
     
   </style>
@@ -21208,9 +21667,9 @@ ${exitosas > 0 ? '🔄 Recarga la página para ver los cambios' : ''}
 // ========================================================================
 //  VERSIÓN DE LA APLICACIÓN - CAMBIAR SOLO AQUÍ
 // ========================================================================
-window.APP_VERSION = 'v6.140';
-window.CACHE_VERSION = 'inventario-v6.140';
-window.APP_BUILD = 140; // Número de build para comparación numérica
+window.APP_VERSION = 'v6.141';
+window.CACHE_VERSION = 'inventario-v6.141';
+window.APP_BUILD = 141; // Número de build para comparación numérica
 console.log(`🚀 Iniciando aplicación ${window.APP_VERSION}`);
 
 // ========================================================================
@@ -74960,11 +75419,11 @@ window.mobileHomeActions = {
             
             <!-- Botones de acción -->
             <div class="card-actions">
-              <button class="card-action-btn secondary" onclick="window.mobileHomeActions.closeRepuestoCard()">
+              <button class="card-action-btn secondary" onclick="window.mobileHomeActions.openJerarquiaSelectorMobile('${id}')">
                 🌳 Jerarquía
               </button>
-              <button class="card-action-btn secondary" onclick="window.mobileHomeActions.closeRepuestoCard()">
-                📍 Ubicar
+              <button class="card-action-btn secondary" onclick="window.mobileHomeActions.openMapaSelectorMobile('${id}')">
+                �️ Ubicar en Mapa
               </button>
               <button class="card-action-btn primary" onclick="window.mobileHomeActions.closeRepuestoCard(); window.mobileHomeActions.openRepuesto('${id}')">
                 ✏️ Editar
@@ -75255,6 +75714,465 @@ window.mobileHomeActions = {
         lastTouchY = translateY;
       }
     });
+  },
+  
+  // v6.141 - Selector de jerarquía móvil (8 niveles)
+  openJerarquiaSelectorMobile: function(repuestoId) {
+    const repuesto = window.app?.repuestos?.find(r => r.id === repuestoId);
+    if (!repuesto) {
+      alert('Repuesto no encontrado');
+      return;
+    }
+
+    // Obtener ubicación actual si existe
+    const ubicacionActual = repuesto.ubicaciones && repuesto.ubicaciones[0] ? repuesto.ubicaciones[0] : {};
+    
+    // Obtener opciones de autocomplete
+    const jerarquiaOptions = window.app?.getJerarquiaOptionCatalog() || {};
+    
+    const buildDatalist = (id, options) => {
+      const items = Array.isArray(options) ? options : [];
+      return `<datalist id="${id}">
+        ${items.map(opt => `<option value="${opt}"></option>`).join('')}
+      </datalist>`;
+    };
+    
+    const modalHTML = `
+      <div class="modal-jerarquia-selector" id="modalJerarquiaSelector" onclick="if(event.target === this) window.mobileHomeActions.closeJerarquiaSelector()">
+        <div class="jerarquia-selector-container">
+          <!-- Header -->
+          <div class="jerarquia-selector-header">
+            <h3>🌳 Asignar Jerarquía</h3>
+            <button class="selector-close-btn" onclick="window.mobileHomeActions.closeJerarquiaSelector()">✕</button>
+          </div>
+          
+          <!-- Repuesto info -->
+          <div class="jerarquia-selector-info">
+            <strong>${repuesto.nombre || repuesto.descripcion}</strong>
+            <span>${repuesto.codSAP || repuesto.codigo || '---'}</span>
+          </div>
+          
+          <!-- Formulario de 8 niveles -->
+          <div class="jerarquia-selector-form" id="jerarquiaForm">
+            
+            <div class="form-group-mobile">
+              <label>N1: Planta General</label>
+              <input type="text" id="nivel1Input" placeholder="Ej: Aquachile Antarfood" 
+                     value="${ubicacionActual.plantaGeneral || 'Aquachile Antarfood'}" 
+                     list="nivel1List" autocomplete="off">
+              ${buildDatalist('nivel1List', ['Aquachile Antarfood'])}
+            </div>
+            
+            <div class="form-group-mobile">
+              <label>N2: Área General</label>
+              <input type="text" id="nivel2Input" placeholder="Ej: Planta Principal" 
+                     value="${ubicacionActual.areaGeneral || ''}" 
+                     list="nivel2List" autocomplete="off">
+              ${buildDatalist('nivel2List', jerarquiaOptions.areaGeneral || [])}
+            </div>
+            
+            <div class="form-group-mobile">
+              <label>N3: Sub-Área</label>
+              <input type="text" id="nivel3Input" placeholder="Ej: Eviscerado" 
+                     value="${ubicacionActual.subArea || ''}" 
+                     list="nivel3List" autocomplete="off">
+              ${buildDatalist('nivel3List', jerarquiaOptions.subArea || [])}
+            </div>
+            
+            <div class="form-group-mobile">
+              <label>N4: Sistema/Equipo</label>
+              <input type="text" id="nivel4Input" placeholder="Ej: Grader" 
+                     value="${ubicacionActual.sistemaEquipo || ''}" 
+                     list="nivel4List" autocomplete="off">
+              ${buildDatalist('nivel4List', jerarquiaOptions.sistemaEquipo || [])}
+            </div>
+            
+            <div class="form-group-mobile">
+              <label>N5: Sub-Sistema</label>
+              <input type="text" id="nivel5Input" placeholder="Ej: Pocket 1-4" 
+                     value="${ubicacionActual.subSistema || ''}" 
+                     list="nivel5List" autocomplete="off">
+              ${buildDatalist('nivel5List', jerarquiaOptions.subSistema || [])}
+            </div>
+            
+            <div class="form-group-mobile">
+              <label>N6: Componente Principal</label>
+              <input type="text" id="nivel6Input" placeholder="Ej: Sistema Neumático" 
+                     value="${ubicacionActual.componentePrincipal || ''}" 
+                     list="nivel6List" autocomplete="off">
+              ${buildDatalist('nivel6List', jerarquiaOptions.seccion || [])}
+            </div>
+            
+            <div class="form-group-mobile">
+              <label>N7: Sub-Componente</label>
+              <input type="text" id="nivel7Input" placeholder="Ej: Válvula Principal" 
+                     value="${ubicacionActual.subComponente || ''}" 
+                     list="nivel7List" autocomplete="off">
+              ${buildDatalist('nivel7List', jerarquiaOptions.subSeccion || [])}
+            </div>
+            
+            <div class="form-group-mobile">
+              <label>N8: Elemento Específico</label>
+              <input type="text" id="nivel8Input" placeholder="Ej: Detalle ubicación" 
+                     value="${ubicacionActual.elementoEspecifico || ''}" 
+                     list="nivel8List" autocomplete="off">
+              ${buildDatalist('nivel8List', [])}
+            </div>
+            
+          </div>
+          
+          <!-- Botones -->
+          <div class="jerarquia-selector-actions">
+            <button class="btn-mobile secondary" onclick="window.mobileHomeActions.closeJerarquiaSelector()">
+              Cancelar
+            </button>
+            <button class="btn-mobile primary" onclick="window.mobileHomeActions.saveJerarquia('${repuestoId}')">
+              ✓ Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Insertar modal
+    const existing = document.getElementById('modalJerarquiaSelector');
+    if (existing) existing.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Mostrar con animación
+    setTimeout(() => {
+      const modal = document.getElementById('modalJerarquiaSelector');
+      if (modal) modal.classList.add('show');
+    }, 10);
+  },
+  
+  // Cerrar selector de jerarquía
+  closeJerarquiaSelector: function() {
+    const modal = document.getElementById('modalJerarquiaSelector');
+    if (modal) {
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 300);
+    }
+  },
+  
+  // Guardar jerarquía asignada
+  saveJerarquia: async function(repuestoId) {
+    const repuesto = window.app?.repuestos?.find(r => r.id === repuestoId);
+    if (!repuesto) return;
+    
+    // Recoger valores del formulario
+    const ubicacion = {
+      plantaGeneral: document.getElementById('nivel1Input')?.value.trim() || '',
+      areaGeneral: document.getElementById('nivel2Input')?.value.trim() || '',
+      subArea: document.getElementById('nivel3Input')?.value.trim() || '',
+      sistemaEquipo: document.getElementById('nivel4Input')?.value.trim() || '',
+      subSistema: document.getElementById('nivel5Input')?.value.trim() || '',
+      componentePrincipal: document.getElementById('nivel6Input')?.value.trim() || '',
+      subComponente: document.getElementById('nivel7Input')?.value.trim() || '',
+      elementoEspecifico: document.getElementById('nivel8Input')?.value.trim() || '',
+      cantidadEnUbicacion: repuesto.cantidad || 1
+    };
+    
+    // Validar que al menos tenga N2 (Área General)
+    if (!ubicacion.areaGeneral) {
+      alert('⚠️ Debes completar al menos el Nivel 2: Área General');
+      return;
+    }
+    
+    // Guardar en repuesto
+    if (!repuesto.ubicaciones) repuesto.ubicaciones = [];
+    repuesto.ubicaciones[0] = ubicacion;
+    
+    // Actualizar campos legacy para compatibilidad
+    repuesto.area = ubicacion.areaGeneral;
+    repuesto.areaGeneral = ubicacion.areaGeneral;
+    repuesto.subArea = ubicacion.subArea;
+    repuesto.sistemaEquipo = ubicacion.sistemaEquipo;
+    repuesto.subSistema = ubicacion.subSistema;
+    
+    // Guardar en localStorage y Firebase
+    if (window.app?.saveData) {
+      try {
+        await window.app.saveData();
+        console.log('✅ Jerarquía guardada:', ubicacion);
+        
+        // Cerrar modal
+        this.closeJerarquiaSelector();
+        
+        // Mostrar confirmación
+        this.showToast('✅ Jerarquía asignada correctamente');
+        
+        // Reabrir tarjeta actualizada
+        setTimeout(() => {
+          this.viewRepuestoCard(repuestoId);
+        }, 300);
+        
+      } catch (error) {
+        console.error('Error guardando:', error);
+        alert('❌ Error al guardar. Intenta nuevamente.');
+      }
+    }
+  },
+  
+  // Toast de confirmación
+  showToast: function(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-mobile';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 2500);
+  },
+  
+  // v6.141 - Selector de mapas móvil
+  openMapaSelectorMobile: function(repuestoId) {
+    const repuesto = window.app?.repuestos?.find(r => r.id === repuestoId);
+    if (!repuesto) {
+      alert('Repuesto no encontrado');
+      return;
+    }
+    
+    // Obtener mapas disponibles
+    const mapas = window.mapStorage?.state?.mapas || [];
+    
+    if (mapas.length === 0) {
+      alert('⚠️ No hay mapas disponibles. Crea un mapa primero en la sección de Mapas.');
+      return;
+    }
+    
+    // Variable para almacenar mapa y coordenadas seleccionadas
+    window.selectedMapData = {
+      mapaId: null,
+      x: null,
+      y: null,
+      repuestoId: repuestoId
+    };
+    
+    // HTML de lista de mapas
+    const mapasListHTML = mapas.map((mapa, index) => `
+      <div class="mapa-selector-item" data-mapa-id="${mapa.id}" onclick="window.mobileHomeActions.selectMapForPlacement('${mapa.id}')">
+        <div class="mapa-selector-number">${index + 1}</div>
+        <div class="mapa-selector-info">
+          <div class="mapa-selector-name">${mapa.nombre || mapa.name || 'Mapa ' + mapa.id}</div>
+          <div class="mapa-selector-meta">${mapa.width || 800}x${mapa.height || 600}px</div>
+        </div>
+        <div class="mapa-selector-check">✓</div>
+      </div>
+    `).join('');
+    
+    const modalHTML = `
+      <div class="modal-mapa-selector" id="modalMapaSelector" onclick="if(event.target === this) window.mobileHomeActions.closeMapaSelector()">
+        <div class="mapa-selector-container">
+          <!-- Header -->
+          <div class="mapa-selector-header">
+            <h3>🗺️ Ubicar en Mapa</h3>
+            <button class="selector-close-btn" onclick="window.mobileHomeActions.closeMapaSelector()">✕</button>
+          </div>
+          
+          <!-- Repuesto info -->
+          <div class="mapa-selector-info-box">
+            <strong>${repuesto.nombre || repuesto.descripcion}</strong>
+            <span>${repuesto.codSAP || repuesto.codigo || '---'}</span>
+          </div>
+          
+          <!-- Instrucciones -->
+          <div class="mapa-selector-instructions" id="mapaInstructions">
+            <div class="instruction-step">
+              <span class="step-number">1</span>
+              <span>Selecciona un mapa de la lista</span>
+            </div>
+            <div class="instruction-step">
+              <span class="step-number">2</span>
+              <span>Toca en el mapa para colocar el marcador</span>
+            </div>
+          </div>
+          
+          <!-- Lista de mapas -->
+          <div class="mapa-selector-list" id="mapaSelectorList">
+            <h4>Selecciona un mapa:</h4>
+            ${mapasListHTML}
+          </div>
+          
+          <!-- Preview del mapa (inicialmente oculto) -->
+          <div class="mapa-preview-container" id="mapaPreviewContainer" style="display: none;">
+            <div class="mapa-preview-header">
+              <button class="btn-back-to-list" onclick="window.mobileHomeActions.backToMapList()">
+                ← Cambiar mapa
+              </button>
+              <span id="selectedMapName"></span>
+            </div>
+            <div class="mapa-preview-canvas" id="mapaPreviewCanvas">
+              <img id="mapaPreviewImage" src="" alt="Mapa">
+              <div class="marker-preview" id="markerPreview" style="display: none;">
+                <div class="marker-pin">📍</div>
+              </div>
+            </div>
+            <div class="mapa-coords-display" id="coordsDisplay">
+              Toca en el mapa para colocar el marcador
+            </div>
+          </div>
+          
+          <!-- Botones -->
+          <div class="mapa-selector-actions">
+            <button class="btn-mobile secondary" onclick="window.mobileHomeActions.closeMapaSelector()">
+              Cancelar
+            </button>
+            <button class="btn-mobile primary" id="btnSaveMapa" disabled onclick="window.mobileHomeActions.saveMapaUbicacion()">
+              ✓ Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Insertar modal
+    const existing = document.getElementById('modalMapaSelector');
+    if (existing) existing.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Mostrar con animación
+    setTimeout(() => {
+      const modal = document.getElementById('modalMapaSelector');
+      if (modal) modal.classList.add('show');
+    }, 10);
+  },
+  
+  // Seleccionar mapa para colocar marcador
+  selectMapForPlacement: function(mapaId) {
+    const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === mapaId);
+    if (!mapa) return;
+    
+    window.selectedMapData.mapaId = mapaId;
+    
+    // Marcar mapa seleccionado visualmente
+    document.querySelectorAll('.mapa-selector-item').forEach(item => {
+      item.classList.remove('selected');
+    });
+    document.querySelector(`.mapa-selector-item[data-mapa-id="${mapaId}"]`)?.classList.add('selected');
+    
+    // Ocultar lista y mostrar preview
+    document.getElementById('mapaSelectorList').style.display = 'none';
+    document.getElementById('mapaInstructions').style.display = 'none';
+    const previewContainer = document.getElementById('mapaPreviewContainer');
+    previewContainer.style.display = 'flex';
+    
+    // Cargar imagen del mapa
+    const img = document.getElementById('mapaPreviewImage');
+    document.getElementById('selectedMapName').textContent = mapa.nombre || 'Mapa';
+    
+    // Obtener URL de la imagen
+    if (mapa.imageURL) {
+      img.src = mapa.imageURL;
+    } else if (mapa.imagenId) {
+      // Cargar desde app.getImageUrl
+      window.app?.getImageUrl(mapa.imagenId).then(url => {
+        if (url) img.src = url;
+      });
+    }
+    
+    // Setup click en el mapa para colocar marcador
+    const canvas = document.getElementById('mapaPreviewCanvas');
+    const marker = document.getElementById('markerPreview');
+    
+    canvas.onclick = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      
+      // Guardar coordenadas
+      window.selectedMapData.x = x;
+      window.selectedMapData.y = y;
+      
+      // Mostrar marcador
+      marker.style.display = 'block';
+      marker.style.left = x + '%';
+      marker.style.top = y + '%';
+      
+      // Actualizar display de coordenadas
+      document.getElementById('coordsDisplay').textContent = 
+        `📍 Marcador colocado: X=${x.toFixed(1)}%, Y=${y.toFixed(1)}%`;
+      
+      // Habilitar botón guardar
+      document.getElementById('btnSaveMapa').disabled = false;
+    };
+  },
+  
+  // Volver a lista de mapas
+  backToMapList: function() {
+    document.getElementById('mapaSelectorList').style.display = 'block';
+    document.getElementById('mapaInstructions').style.display = 'block';
+    document.getElementById('mapaPreviewContainer').style.display = 'none';
+    
+    // Resetear selección
+    window.selectedMapData.x = null;
+    window.selectedMapData.y = null;
+    document.getElementById('btnSaveMapa').disabled = true;
+  },
+  
+  // Cerrar selector de mapa
+  closeMapaSelector: function() {
+    const modal = document.getElementById('modalMapaSelector');
+    if (modal) {
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 300);
+    }
+    window.selectedMapData = null;
+  },
+  
+  // Guardar ubicación en mapa
+  saveMapaUbicacion: async function() {
+    if (!window.selectedMapData || !window.selectedMapData.mapaId || 
+        window.selectedMapData.x === null || window.selectedMapData.y === null) {
+      alert('⚠️ Debes seleccionar un mapa y colocar el marcador');
+      return;
+    }
+    
+    const repuesto = window.app?.repuestos?.find(r => r.id === window.selectedMapData.repuestoId);
+    if (!repuesto) return;
+    
+    const mapa = window.mapStorage?.state?.mapas?.find(m => m.id === window.selectedMapData.mapaId);
+    
+    // Crear ubicación en mapa
+    const ubicacionMapa = {
+      mapaId: window.selectedMapData.mapaId,
+      mapaNombre: mapa?.nombre || mapa?.name || 'Mapa',
+      x: window.selectedMapData.x,
+      y: window.selectedMapData.y,
+      cantidadEnUbicacion: repuesto.cantidad || 1
+    };
+    
+    // Guardar en repuesto
+    if (!repuesto.ubicacionesMapa) repuesto.ubicacionesMapa = [];
+    repuesto.ubicacionesMapa[0] = ubicacionMapa;
+    
+    // Guardar en localStorage y Firebase
+    if (window.app?.saveData) {
+      try {
+        await window.app.saveData();
+        console.log('✅ Ubicación en mapa guardada:', ubicacionMapa);
+        
+        // Cerrar modal
+        this.closeMapaSelector();
+        
+        // Mostrar confirmación
+        this.showToast('✅ Ubicación en mapa asignada correctamente');
+        
+        // Reabrir tarjeta actualizada
+        setTimeout(() => {
+          this.viewRepuestoCard(window.selectedMapData.repuestoId);
+        }, 300);
+        
+      } catch (error) {
+        console.error('Error guardando:', error);
+        alert('❌ Error al guardar. Intenta nuevamente.');
+      }
+    }
   },
   
   // Icono según tipo de repuesto
